@@ -73,7 +73,7 @@
     .modal-desc { font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 20px; text-align: left; background: #f9f9f9; padding: 12px; border-radius: 6px; }
     .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-bottom: 8px; }
 
-    /* Payment Instructions / Modal */
+    /* Payment Instructions Modal */
     .pay-modal-content { background: white; width: 100%; max-width: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; padding: 24px; }
     .pay-modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
     .pay-details-box { background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.5; }
@@ -388,27 +388,27 @@
         return;
       }
 
-      // If GCash, Maya, or Bank, show clean instructions with easy copy button
+      // If GCash, Maya, or Bank, show clean instructions with updated King Jr. Caisip details
       let title = "";
       let details = "";
 
       if (selectedPayment === 'GCash') {
         title = "💙 GCash Payment Guide";
         details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>Jelson Roqueza</span><br>` +
-                  `• GCash Number: <span id='payNum'>09123456789</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09123456789'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
+                  `• Account Name: <span>King Jr. Caisip</span><br>` +
+                  `• GCash Number: <span id='payNum'>09750634497</span><br><br>` +
+                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
       } else if (selectedPayment === 'Maya') {
         title = "💚 Maya Payment Guide";
         details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>Jelson Roqueza</span><br>` +
-                  `• Maya Number: <span id='payNum'>09123456789</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09123456789'); alert('Maya number copied!');" class="btn-copy maya-btn">📋 Copy Maya Number</button>`;
+                  `• Account Name: <span>King Jr. Caisip</span><br>` +
+                  `• Maya Number: <span id='payNum'>09750634497</span><br><br>` +
+                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy maya-btn">📋 Copy Maya Number</button>`;
       } else {
         title = "🏦 Bank Transfer Guide";
         details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
                   `• Bank: <span>BPI / UnionBank</span><br>` +
-                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• Account Name: <span>King Jr. Caisip</span><br>` +
                   `• Account No: <span id='payNum'>123456789012</span><br><br>` +
                   `<button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
       }
