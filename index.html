@@ -82,6 +82,13 @@
     .cart-item-price { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
     .cart-footer { padding: 16px; border-top: 1px solid #eee; background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; }
+    
+    /* Payment Options Styles */
+    .payment-section { margin-bottom: 12px; text-align: left; }
+    .payment-section label { font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
+    .payment-options { display: flex; gap: 8px; margin-bottom: 12px; }
+    .pay-opt { flex: 1; border: 1px solid #ddd; border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: white; transition: all 0.2s; }
+    .pay-opt.active { border-color: var(--primary); background: #fff8f6; color: var(--primary); }
     .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
     /* Mobile Bottom Navigation */
@@ -155,6 +162,16 @@
         <span>Total:</span>
         <span id="cartTotal" style="color: var(--primary);">₱0</span>
       </div>
+      
+      <div class="payment-section">
+        <label>Select Payment Method:</label>
+        <div class="payment-options">
+          <div class="pay-opt active" id="payGcash" onclick="setPayment('GCash')">💙 GCash</div>
+          <div class="pay-opt" id="payMaya" onclick="setPayment('Maya')">💚 Maya</div>
+          <div class="pay-opt" id="payBank" onclick="setPayment('Bank Transfer')">🏦 Bank</div>
+        </div>
+      </div>
+
       <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
     </div>
   </div>
@@ -187,6 +204,15 @@
 
     let cart = [];
     let currentCat = 'All';
+    let selectedPayment = 'GCash';
+
+    function setPayment(method) {
+      selectedPayment = method;
+      document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('active'));
+      if(method === 'GCash') document.getElementById('payGcash').classList.add('active');
+      if(method === 'Maya') document.getElementById('payMaya').classList.add('active');
+      if(method === 'Bank Transfer') document.getElementById('payBank').classList.add('active');
+    }
 
     function render(list) {
       const grid = document.getElementById('productGrid');
@@ -274,7 +300,7 @@
         return;
       }
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      alert('Order placed successfully! Total amount: ₱' + totalPrice.toLocaleString() + '\nThank you for supporting Jelson Roqueza OPM & Merch!');
+      alert(`Order placed successfully via ${selectedPayment}!\nTotal Amount: ₱` + totalPrice.toLocaleString() + `\n\nThank you for supporting Jelson Roqueza OPM & Merch!`);
       cart = [];
       updateCartUI();
       toggleCart();
