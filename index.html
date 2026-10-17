@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GENMERCH | Official OPM & Podcast Store</title>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/genmerch/manifest.json">
+  <meta name="theme-color" content="#ee4d2d">
   <style>
     :root { --primary: #ee4d2d; --bg: #f5f5f5; --text: #222; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -164,6 +167,13 @@
   </nav>
 
   <script>
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/genmerch/sw.js').catch(err => console.log('SW registration failed: ', err));
+      });
+    }
+
     const products = [
       { id: 1, name: "CD Album: 'Sound Wave 3rd' (Signed)", price: 499, sold: "540 sold", icon: "💿", cat: "Music", off: "-20%", desc: "Official limited physical CD release of 'Sound Wave 3rd' featuring hand-signed autograph by Jelson Roqueza. Includes high-fidelity mastered OPM tracks." },
       { id: 2, name: "OPM Single Audio Card: 'Kung Makikinig Lang Ang Oras'", price: 150, sold: "1.2k sold", icon: "🎵", cat: "Music", off: "-50%", desc: "Exclusive digital audio download card + lyric art sheet for the hit emotional ballad 'Kung Makikinig Lang Ang Oras'." },
