@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GENMERCH | Official OPM & Podcast Store</title>
+  <title>GENMERCH - Suot Apparel | Official Store</title>
   <!-- PWA Manifest -->
   <link rel="manifest" href="/genmerch/manifest.json">
   <meta name="theme-color" content="#ee4d2d">
   <style>
-    :root { --primary: #ee4d2d; --bg: #f5f5f5; --text: #222; }
+    :root { --primary: #ee4d2d; --bg: #f9f9f9; --text: #222; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding-bottom: 70px; }
     
@@ -31,8 +31,11 @@
 
     /* Main Content */
     .container { max-width: 1200px; margin: 12px auto; padding: 0 12px; }
-    .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: 8px; padding: 28px 20px; text-align: center; margin-bottom: 16px; }
-    .hero-banner h1 { font-size: 1.8rem; margin-bottom: 6px; }
+    
+    /* Seamless & Modern Brand Banner */
+    .brand-banner { background: white; border-radius: 10px; padding: 22px 16px; text-align: center; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+    .brand-title { font-size: 1.6rem; font-weight: 900; letter-spacing: 0.5px; background: linear-gradient(135deg, #12005e, #730050, #ee4d2d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .brand-subtitle { font-size: 0.85rem; color: #666; font-weight: 500; letter-spacing: 0.3px; }
     
     /* Categories */
     .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
@@ -79,7 +82,6 @@
     .pay-details-box { background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.5; }
     .pay-details-box span { font-weight: bold; color: #222; }
     .btn-copy { display: block; width: 100%; background: #007df0; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
-    .btn-copy.maya-btn { background: #00b050; }
 
     /* Cart Drawer Styles */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
@@ -145,9 +147,10 @@
   </div>
 
   <div class="container">
-    <div class="hero-banner">
-      <h1>🎙️ JELSON ROQUEZA OPM & MERCH 🎧</h1>
-      <p>Official Album Drop & Limited Edition Streetwear Collection!</p>
+    <!-- Seamless & Glossy Brand Banner -->
+    <div class="brand-banner">
+      <div class="brand-title">GENMERCH <span style="font-weight: 300; color: #888;">-</span> <span style="font-style: italic; font-family: Georgia, serif; color: #00b050;">Suot Apparel</span></div>
+      <div class="brand-subtitle">🎙️ Official OPM Album Drops & Limited Streetwear Collection 🎧</div>
     </div>
 
     <div class="categories">
@@ -213,243 +216,4 @@
         <label>💳 Payment Method:</label>
         <div class="payment-options">
           <div class="pay-opt cod active" id="payCod" onclick="setPayment('COD')">💵 COD</div>
-          <div class="pay-opt gcash" id="payGcash" onclick="setPayment('GCash')">💙 GCash</div>
-          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')">💚 Maya</div>
-          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')">🏦 Bank</div>
-        </div>
-      </div>
-
-      <div class="total-row">
-        <span>Total:</span>
-        <span id="cartTotal" style="color: var(--primary);">₱0</span>
-      </div>
-
-      <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
-    </div>
-  </div>
-
-  <nav class="bottom-nav">
-    <div class="nav-item active"><span>🏠</span><span>Home</span></div>
-    <div class="nav-item" onclick="toggleCart()"><span>🛒</span><span>Cart</span></div>
-    <div class="nav-item" onclick="alert('Notifications')"><span>🔔</span><span>Updates</span></div>
-    <div class="nav-item" onclick="alert('My Profile')"><span>👤</span><span>Me</span></div>
-  </nav>
-
-  <script>
-    // PWA Service Worker Registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/genmerch/sw.js').catch(err => console.log('SW registration failed: ', err));
-      });
-    }
-
-    const products = [
-      { id: 1, name: "CD Album: 'Sound Wave 3rd' (Signed)", price: 499, sold: "540 sold", icon: "💿", cat: "Music", off: "-20%", desc: "Official limited physical CD release of 'Sound Wave 3rd' featuring hand-signed autograph by Jelson Roqueza. Includes high-fidelity mastered OPM tracks." },
-      { id: 2, name: "OPM Single Audio Card: 'Kung Makikinig Lang Ang Oras'", price: 150, sold: "1.2k sold", icon: "🎵", cat: "Music", off: "-50%", desc: "Exclusive digital audio download card + lyric art sheet for the hit emotional ballad 'Kung Makikinig Lang Ang Oras'." },
-      { id: 3, name: "GENMERCH Heavyweight Oversized Tee (Black)", price: 650, sold: "2.8k sold", icon: "👕", cat: "Merch", off: "-30%", desc: "Premium 240 GSM heavyweight cotton streetwear tee with custom minimalist GENMERCH branding. Comfortable and breathable for daily wear." },
-      { id: 4, name: "Podcast Hoodie: 'Lihim sa Dilim' (Kurumi Edition)", price: 1199, sold: "890 sold", icon: "🧥", cat: "Podcast", off: "-25%", desc: "Limited edition Pullover Hoodie featuring the iconic 'Lihim sa Dilim' horror podcast aesthetic hosted by Kurumi. Fleece-lined for ultimate comfort." },
-      { id: 5, name: "DJI Mic Mini Wireless Setup (Streamer Kit)", price: 3499, sold: "320 sold", icon: "🎙️", cat: "Podcast", off: "-15%", desc: "Compact wireless microphone transmitter & receiver unit optimized for iPhone 16 Pro and mobile podcast recording. Crystal clear audio." },
-      { id: 6, name: "Digital Single: 'Nasasaktan ng Lihim' High-Res", price: 100, sold: "2.1k sold", icon: "🎶", cat: "Music", off: "-40%", desc: "High-resolution WAV/MP3 digital single file download of the viral sad Tagalog ballad 'Nasasaktan ng Lihim'." },
-      { id: 7, name: "Limited Cap: 'The Project Podcast' Snapback", price: 450, sold: "760 sold", icon: "🧢", cat: "Merch", off: "-35%", desc: "Adjustable snapback cap embroidered with 'The Project Podcast' logo. Clean black finish with structured brim." },
-      { id: 8, name: "Audio Track: 'Minamahal Kita ng Hindi Mo Alam'", price: 100, sold: "1.5k sold", icon: "🎧", cat: "Music", off: "-40%", desc: "Upbeat OPM pop love song track release. Instant digital audio file download straight to your device." }
-    ];
-
-    let cart = [];
-    let currentCat = 'All';
-    let selectedPayment = 'COD';
-    let pendingOrderData = null;
-
-    function setPayment(method) {
-      selectedPayment = method;
-      document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('active'));
-      if(method === 'COD') document.getElementById('payCod').classList.add('active');
-      if(method === 'GCash') document.getElementById('payGcash').classList.add('active');
-      if(method === 'Maya') document.getElementById('payMaya').classList.add('active');
-      if(method === 'Bank Transfer') document.getElementById('payBank').classList.add('active');
-    }
-
-    function render(list) {
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = list.map(p => `
-        <div class="card" onclick="openModal(${p.id})">
-          <div class="card-img">
-            <span class="discount-tag">${p.off}</span>
-            ${p.icon}
-          </div>
-          <div class="card-body">
-            <div class="card-title">${p.name}</div>
-            <div class="card-price">₱${p.price.toLocaleString()}</div>
-            <div class="card-sold">${p.sold}</div>
-            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add to Cart</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openModal(id) {
-      const p = products.find(item => item.id === id);
-      document.getElementById('modalIcon').innerText = p.icon;
-      document.getElementById('modalTitle').innerText = p.name;
-      document.getElementById('modalPrice').innerText = '₱' + p.price.toLocaleString();
-      document.getElementById('modalDesc').innerText = p.desc;
-      document.getElementById('modalAddBtn').setAttribute('onclick', `addToCart(${p.id}); closeModalBtn();`);
-      document.getElementById('productModal').style.display = 'flex';
-    }
-
-    function closeModalBtn() {
-      document.getElementById('productModal').style.display = 'none';
-    }
-
-    function closeModal(e) {
-      if (e.target.id === 'productModal') {
-        closeModalBtn();
-      }
-    }
-
-    function closePayModal(e) {
-      if (e.target.id === 'payModal') {
-        document.getElementById('payModal').style.display = 'none';
-      }
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById('toastNotification');
-      document.getElementById('toastText').innerText = message;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 1800);
-    }
-
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      const existing = cart.find(item => item.id === id);
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ ...product, qty: 1 });
-      }
-      updateCartUI();
-      showToast("Successfully added to your cart!");
-    }
-
-    function updateCartUI() {
-      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-      document.getElementById('cartBadge').innerText = totalCount;
-      document.getElementById('drawerCount').innerText = totalCount;
-
-      const container = document.getElementById('cartItemsContainer');
-      if (cart.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>';
-      } else {
-        container.innerHTML = cart.map(item => `
-          <div class="cart-item">
-            <span style="font-size: 2rem;">${item.icon}</span>
-            <div class="cart-item-info">
-              <div class="cart-item-title">${item.name}</div>
-              <div class="cart-item-price">₱${item.price.toLocaleString()} x ${item.qty}</div>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      document.getElementById('cartTotal').innerText = '₱' + totalPrice.toLocaleString();
-    }
-
-    function toggleCart() {
-      const drawer = document.getElementById('cartDrawer');
-      const overlay = document.getElementById('cartOverlay');
-      drawer.classList.toggle('open');
-      overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
-    }
-
-    function checkout() {
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
-      
-      const name = document.getElementById('custName').value.trim();
-      const phone = document.getElementById('custPhone').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
-
-      if (!name || !phone || !address) {
-        alert('Please complete your delivery information (Name, Phone, Address)!');
-        return;
-      }
-
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      pendingOrderData = { name, phone, address, totalPrice, payment: selectedPayment };
-
-      // If COD, proceed directly
-      if (selectedPayment === 'COD') {
-        confirmFinalOrder();
-        return;
-      }
-
-      // If GCash, Maya, or Bank, show clean instructions with updated King Jr. Caisip details
-      let title = "";
-      let details = "";
-
-      if (selectedPayment === 'GCash') {
-        title = "💙 GCash Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• GCash Number: <span id='payNum'>09750634497</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
-      } else if (selectedPayment === 'Maya') {
-        title = "💚 Maya Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• Maya Number: <span id='payNum'>09750634497</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy maya-btn">📋 Copy Maya Number</button>`;
-      } else {
-        title = "🏦 Bank Transfer Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Bank: <span>BPI / UnionBank</span><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• Account No: <span id='payNum'>123456789012</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
-      }
-
-      document.getElementById('payModalTitle').innerText = title;
-      document.getElementById('payDetailsText').innerHTML = details;
-      document.getElementById('payModal').style.display = 'flex';
-    }
-
-    function confirmFinalOrder() {
-      if (!pendingOrderData) return;
-      
-      let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${pendingOrderData.name}\nPhone: ${pendingOrderData.phone}\nAddress: ${pendingOrderData.address}\nPayment: ${pendingOrderData.payment}\n\nItems:\n`;
-      cart.forEach(item => {
-        orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`;
-      });
-      orderSummary += `\nTotal Amount: ₱${pendingOrderData.totalPrice.toLocaleString()}`;
-
-      alert(`Order Successful!\n\n` + orderSummary);
-      
-      document.getElementById('payModal').style.display = 'none';
-      cart = [];
-      updateCartUI();
-      toggleCart();
-    }
-
-    function filterCat(cat, el) {
-      currentCat = cat;
-      document.querySelectorAll('.cat-pill').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      const filtered = cat === 'All' ? products : products.filter(p => p.cat === cat);
-      render(filtered);
-    }
-
-    function searchProducts() {
-      const q = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = products.filter(p => (currentCat === 'All' || p.cat === currentCat) && p.name.toLowerCase().includes(q));
-      render(filtered);
-    }
-
-    render(products);
-  </script>
-</body>
-</html>
+          <div class="pay-opt g
