@@ -83,12 +83,25 @@
     .cart-footer { padding: 16px; border-top: 1px solid #eee; background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; }
     
-    /* Payment Options Styles */
+    /* Payment Logo Styles */
     .payment-section { margin-bottom: 12px; text-align: left; }
     .payment-section label { font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
     .payment-options { display: flex; gap: 8px; margin-bottom: 12px; }
-    .pay-opt { flex: 1; border: 1px solid #ddd; border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: white; transition: all 0.2s; }
-    .pay-opt.active { border-color: var(--primary); background: #fff8f6; color: var(--primary); }
+    .pay-opt { flex: 1; border: 2px solid #ddd; border-radius: 6px; padding: 10px 4px; text-align: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; background: white; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+    
+    /* GCash Custom Style */
+    .pay-opt.gcash { color: #007df0; }
+    .pay-opt.gcash.active { border-color: #007df0; background: #f0f6ff; }
+    
+    /* Maya Custom Style */
+    .pay-opt.maya { color: #00b050; }
+    .pay-opt.maya.active { border-color: #00b050; background: #f0fcf4; }
+
+    /* Bank Custom Style */
+    .pay-opt.bank { color: #555; }
+    .pay-opt.bank.active { border-color: #333; background: #f5f5f5; }
+
+    .pay-logo { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.5px; }
     .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
     /* Mobile Bottom Navigation */
@@ -166,9 +179,15 @@
       <div class="payment-section">
         <label>Select Payment Method:</label>
         <div class="payment-options">
-          <div class="pay-opt active" id="payGcash" onclick="setPayment('GCash')">💙 GCash</div>
-          <div class="pay-opt" id="payMaya" onclick="setPayment('Maya')">💚 Maya</div>
-          <div class="pay-opt" id="payBank" onclick="setPayment('Bank Transfer')">🏦 Bank</div>
+          <div class="pay-opt gcash active" id="payGcash" onclick="setPayment('GCash')">
+            <span class="pay-logo">Gcash</span>
+          </div>
+          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')">
+            <span class="pay-logo">Maya</span>
+          </div>
+          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')">
+            <span class="pay-logo">🏦 Bank</span>
+          </div>
         </div>
       </div>
 
