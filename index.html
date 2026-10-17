@@ -69,6 +69,12 @@
     .modal-desc { font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 20px; text-align: left; background: #f9f9f9; padding: 12px; border-radius: 6px; }
     .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
+    /* Payment Instructions Modal */
+    .pay-modal-content { background: white; width: 100%; max-width: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; padding: 24px; }
+    .pay-modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
+    .pay-details-box { background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.5; }
+    .pay-details-box span { font-weight: bold; color: #222; }
+
     /* Cart Drawer Styles */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
     .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: white; z-index: 201; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transition: right 0.3s ease; display: flex; flex-direction: column; }
@@ -161,6 +167,17 @@
     </div>
   </div>
 
+  <!-- Payment Instructions / QR Modal -->
+  <div class="modal-overlay" id="payModal" onclick="closePayModal(event)">
+    <div class="pay-modal-content" onclick="event.stopPropagation()">
+      <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
+      <div class="pay-details-box" id="payDetailsText">
+        <!-- Dynamic Payment Info -->
+      </div>
+      <button class="modal-btn" onclick="confirmFinalOrder()">Confirm & Send Order</button>
+    </div>
+  </div>
+
   <!-- Cart Drawer Overlay -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
   <div class="cart-drawer" id="cartDrawer">
@@ -229,6 +246,7 @@
     let cart = [];
     let currentCat = 'All';
     let selectedPayment = 'COD';
+    let pendingOrderData = null;
 
     function setPayment(method) {
       selectedPayment = method;
@@ -274,6 +292,12 @@
     function closeModal(e) {
       if (e.target.id === 'productModal') {
         closeModalBtn();
+      }
+    }
+
+    function closePayModal(e) {
+      if (e.target.id === 'payModal') {
+        document.getElementById('payModal').style.display = 'none';
       }
     }
 
@@ -335,15 +359,56 @@
       }
 
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${selectedPayment}\n\nItems:\n`;
+      
+      pendingOrderData = { name, phone, address, totalPrice, payment: selectedPayment };
+
+      // If COD, proceed directly
+      if (selectedPayment === 'COD') {
+        confirmFinalOrder();
+        return;
+      }
+
+      // If GCash, Maya, or Bank, show payment instructions modal
+      let title = "";
+      let details = "";
+      if (selectedPayment === 'GCash') {
+        title = "💙 GCash Payment Instructions";
+        details = `Please send exactly <span>₱${totalPrice.toLocaleString()}</span> to:<br><br>` +
+                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• GCash Number: <span>0912-345-6789</span><br><br>` +
+                  `<i>Take a screenshot of your receipt and send it along with your order confirmation.</i>`;
+      } else if (selectedPayment === 'Maya') {
+        title = "💚 Maya Payment Instructions";
+        details = `Please send exactly <span>₱${totalPrice.toLocaleString()}</span> to:<br><br>` +
+                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• Maya Number: <span>0912-345-6789</span><br><br>` +
+                  `<i>Take a screenshot of your receipt and send it along with your order confirmation.</i>`;
+      } else {
+        title = "🏦 Bank Transfer Instructions";
+        details = `Please transfer exactly <span>₱${totalPrice.toLocaleString()}</span> to:<br><br>` +
+                  `• Bank: <span>BPI / UnionBank</span><br>` +
+                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• Account No: <span>1234-5678-9012</span><br><br>` +
+                  `<i>Send your deposit slip/screenshot upon confirmation.</i>`;
+      }
+
+      document.getElementById('payModalTitle').innerText = title;
+      document.getElementById('payDetailsText').innerHTML = details;
+      document.getElementById('payModal').style.display = 'flex';
+    }
+
+    function confirmFinalOrder() {
+      if (!pendingOrderData) return;
+      
+      let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${pendingOrderData.name}\nPhone: ${pendingOrderData.phone}\nAddress: ${pendingOrderData.address}\nPayment: ${pendingOrderData.payment}\n\nItems:\n`;
       cart.forEach(item => {
         orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`;
       });
-      orderSummary += `\nTotal Amount: ₱${totalPrice.toLocaleString()}`;
+      orderSummary += `\nTotal Amount: ₱${pendingOrderData.totalPrice.toLocaleString()}`;
 
-      // Open Messenger or Alert summary
       alert(`Order Successful!\n\n` + orderSummary);
       
+      document.getElementById('payModal').style.display = 'none';
       cart = [];
       updateCartUI();
       toggleCart();
