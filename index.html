@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GENMERCH | Online Shopping</title>
+  <title>GENMERCH | Official OPM & Podcast Store</title>
   <style>
     :root { --primary: #ee4d2d; --bg: #f5f5f5; --text: #222; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -44,10 +44,10 @@
 
     .card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; flex-direction: column; transition: transform 0.15s; }
     .card:hover { transform: translateY(-3px); }
-    .card-img { height: 155px; background: #fff8f6; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
+    .card-img { height: 155px; background: #fff8f6; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; position: relative; }
     .discount-tag { position: absolute; top: 8px; right: 8px; background: #ffe97a; color: #d0011b; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 3px; }
     .card-body { padding: 10px; display: flex; flex-direction: column; flex: 1; }
-    .card-title { font-size: 0.85rem; line-height: 1.3; height: 2.2rem; overflow: hidden; margin-bottom: 8px; }
+    .card-title { font-size: 0.85rem; line-height: 1.3; height: 2.2rem; overflow: hidden; margin-bottom: 8px; font-weight: 600; }
     .card-price { color: var(--primary); font-size: 1.05rem; font-weight: bold; margin-top: auto; }
     .card-sold { font-size: 0.7rem; color: #777; margin-bottom: 8px; }
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
@@ -81,7 +81,7 @@
     <div class="nav-container">
       <div class="logo">GENMERCH</div>
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search in GENMERCH..." onkeyup="searchProducts()">
+        <input type="text" id="searchInput" placeholder="Search OPM Merch & Songs..." onkeyup="searchProducts()">
         <button>🔍</button>
       </div>
       <div class="cart-icon" onclick="toggleCart()">
@@ -92,19 +92,18 @@
 
   <div class="container">
     <div class="hero-banner">
-      <h1>⚡ GENMERCH FLASH SALE ⚡</h1>
-      <p>Up to 70% OFF + Free Shipping Vouchers!</p>
+      <h1>🎙️ JELSON ROQUEZA OPM & MERCH 🎧</h1>
+      <p>Official Album Drop & Limited Edition Streetwear Collection!</p>
     </div>
 
     <div class="categories">
       <div class="cat-pill active" onclick="filterCat('All', this)">All Items</div>
-      <div class="cat-pill" onclick="filterCat('Tech', this)">📱 Gadgets & Tech</div>
-      <div class="cat-pill" onclick="filterCat('Fashion', this)">👕 Streetwear</div>
-      <div class="cat-pill" onclick="filterCat('Audio', this)">🎧 Audio & Gear</div>
-      <div class="cat-pill" onclick="filterCat('Home', this)">🏠 Home Living</div>
+      <div class="cat-pill" onclick="filterCat('Merch', this)">👕 Streetwear Merch</div>
+      <div class="cat-pill" onclick="filterCat('Music', this)">🎵 OPM Albums / Audio</div>
+      <div class="cat-pill" onclick="filterCat('Podcast', this)">👻 Lihim sa Dilim Gear</div>
     </div>
 
-    <div class="section-title">🔥 Daily Discover</div>
+    <div class="section-title">🔥 Featured Releases</div>
     <div class="grid" id="productGrid"></div>
   </div>
 
@@ -136,14 +135,14 @@
 
   <script>
     const products = [
-      { id: 1, name: "Wireless Mini Mic Pro (USB-C)", price: 1299, sold: "1.4k sold", icon: "🎙️", cat: "Audio", off: "-35%" },
-      { id: 2, name: "GENMERCH Oversized Heavyweight Tee", price: 349, sold: "3.8k sold", icon: "👕", cat: "Fashion", off: "-50%" },
-      { id: 3, name: "RGB Gaming TWS Earbuds Low Latency", price: 599, sold: "2.1k sold", icon: "🎧", cat: "Audio", off: "-40%" },
-      { id: 4, name: "MagSafe Shockproof Clear Phone Case", price: 199, sold: "5.2k sold", icon: "📱", cat: "Tech", off: "-60%" },
-      { id: 5, name: "Portable Laptop Cooling Stand Alloy", price: 450, sold: "890 sold", icon: "💻", cat: "Tech", off: "-25%" },
-      { id: 6, name: "Smart LED Sunset Lamp Projector", price: 185, sold: "4.3k sold", icon: "💡", cat: "Home", off: "-55%" },
-      { id: 7, name: "Classic Streetwear Cargo Pants", price: 650, sold: "1.1k sold", icon: "👖", cat: "Fashion", off: "-30%" },
-      { id: 8, name: "Studio Condenser Pop Filter Shield", price: 150, sold: "620 sold", icon: "🎚️", cat: "Audio", off: "-20%" }
+      { id: 1, name: "CD Album: 'Sound Wave 3rd' (Signed)", price: 499, sold: "540 sold", icon: "💿", cat: "Music", off: "-20%" },
+      { id: 2, name: "OPM Single Audio Card: 'Kung Makikinig Lang Ang Oras'", price: 150, sold: "1.2k sold", icon: "🎵", cat: "Music", off: "-50%" },
+      { id: 3, name: "GENMERCH Heavyweight Oversized Tee (Black)", price: 650, sold: "2.8k sold", icon: "👕", cat: "Merch", off: "-30%" },
+      { id: 4, name: "Podcast Hoodie: 'Lihim sa Dilim' (Kurumi Edition)", price: 1199, sold: "890 sold", icon: "🧥", cat: "Podcast", off: "-25%" },
+      { id: 5, name: "DJI Mic Mini Wireless Setup (Streamer Kit)", price: 3499, sold: "320 sold", icon: "🎙️", cat: "Podcast", off: "-15%" },
+      { id: 6, name: "Digital Single: 'Nasasaktan ng Lihim' High-Res", price: 100, sold: "2.1k sold", icon: "🎶", cat: "Music", off: "-40%" },
+      { id: 7, name: "Limited Cap: 'The Project Podcast' Snapback", price: 450, sold: "760 sold", icon: "🧢", cat: "Merch", off: "-35%" },
+      { id: 8, name: "Audio Track: 'Minamahal Kita ng Hindi Mo Alam'", price: 100, sold: "1.5k sold", icon: "🎧", cat: "Music", off: "-40%" }
     ];
 
     let cart = [];
@@ -215,7 +214,7 @@
         return;
       }
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      alert('Order placed successfully! Total amount: ₱' + totalPrice.toLocaleString() + '\nThank you for shopping at GENMERCH!');
+      alert('Order placed successfully! Total amount: ₱' + totalPrice.toLocaleString() + '\nThank you for supporting Jelson Roqueza OPM & Merch!');
       cart = [];
       updateCartUI();
       toggleCart();
