@@ -71,7 +71,7 @@
 
     /* Cart Drawer Styles */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
-    .cart-drawer { position: fixed; top: 0; right: -380px; width: 100%; max-width: 380px; height: 100%; background: white; z-index: 201; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transition: right 0.3s ease; display: flex; flex-direction: column; }
+    .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: white; z-index: 201; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transition: right 0.3s ease; display: flex; flex-direction: column; }
     .cart-drawer.open { right: 0; }
     .cart-header { padding: 16px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; }
     .close-cart { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; }
@@ -83,25 +83,26 @@
     .cart-footer { padding: 16px; border-top: 1px solid #eee; background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; }
     
+    /* Customer Info Form Styles */
+    .form-section { margin-bottom: 12px; text-align: left; }
+    .form-section label { font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 3px; color: #444; }
+    .form-section input, .form-section textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; margin-bottom: 8px; outline: none; }
+    
     /* Payment Logo Styles */
     .payment-section { margin-bottom: 12px; text-align: left; }
-    .payment-section label { font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
-    .payment-options { display: flex; gap: 8px; margin-bottom: 12px; }
-    .pay-opt { flex: 1; border: 2px solid #ddd; border-radius: 6px; padding: 10px 4px; text-align: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; background: white; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+    .payment-section label { font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
+    .payment-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; }
+    .pay-opt { border: 2px solid #ddd; border-radius: 6px; padding: 8px 4px; text-align: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; background: white; transition: all 0.2s; }
     
-    /* GCash Custom Style */
+    .pay-opt.cod { color: #d0011b; }
+    .pay-opt.cod.active { border-color: #d0011b; background: #fffdfd; }
     .pay-opt.gcash { color: #007df0; }
     .pay-opt.gcash.active { border-color: #007df0; background: #f0f6ff; }
-    
-    /* Maya Custom Style */
     .pay-opt.maya { color: #00b050; }
     .pay-opt.maya.active { border-color: #00b050; background: #f0fcf4; }
-
-    /* Bank Custom Style */
     .pay-opt.bank { color: #555; }
     .pay-opt.bank.active { border-color: #333; background: #f5f5f5; }
 
-    .pay-logo { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.5px; }
     .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
     /* Mobile Bottom Navigation */
@@ -171,24 +172,28 @@
       <p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>
     </div>
     <div class="cart-footer">
+      <!-- Customer Information Form -->
+      <div class="form-section">
+        <label>📦 Delivery Information:</label>
+        <input type="text" id="custName" placeholder="Full Name">
+        <input type="tel" id="custPhone" placeholder="Mobile Number (e.g. 09123456789)">
+        <textarea id="custAddress" placeholder="Complete Delivery Address & Notes" rows="2"></textarea>
+      </div>
+
+      <!-- Payment Options including COD -->
+      <div class="payment-section">
+        <label>💳 Payment Method:</label>
+        <div class="payment-options">
+          <div class="pay-opt cod active" id="payCod" onclick="setPayment('COD')">💵 COD</div>
+          <div class="pay-opt gcash" id="payGcash" onclick="setPayment('GCash')">💙 GCash</div>
+          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')">💚 Maya</div>
+          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')">🏦 Bank</div>
+        </div>
+      </div>
+
       <div class="total-row">
         <span>Total:</span>
         <span id="cartTotal" style="color: var(--primary);">₱0</span>
-      </div>
-      
-      <div class="payment-section">
-        <label>Select Payment Method:</label>
-        <div class="payment-options">
-          <div class="pay-opt gcash active" id="payGcash" onclick="setPayment('GCash')">
-            <span class="pay-logo">Gcash</span>
-          </div>
-          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')">
-            <span class="pay-logo">Maya</span>
-          </div>
-          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')">
-            <span class="pay-logo">🏦 Bank</span>
-          </div>
-        </div>
       </div>
 
       <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
@@ -223,11 +228,12 @@
 
     let cart = [];
     let currentCat = 'All';
-    let selectedPayment = 'GCash';
+    let selectedPayment = 'COD';
 
     function setPayment(method) {
       selectedPayment = method;
       document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('active'));
+      if(method === 'COD') document.getElementById('payCod').classList.add('active');
       if(method === 'GCash') document.getElementById('payGcash').classList.add('active');
       if(method === 'Maya') document.getElementById('payMaya').classList.add('active');
       if(method === 'Bank Transfer') document.getElementById('payBank').classList.add('active');
@@ -318,8 +324,26 @@
         alert('Your cart is empty!');
         return;
       }
+      
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+
+      if (!name || !phone || !address) {
+        alert('Please complete your delivery information (Name, Phone, Address)!');
+        return;
+      }
+
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      alert(`Order placed successfully via ${selectedPayment}!\nTotal Amount: ₱` + totalPrice.toLocaleString() + `\n\nThank you for supporting Jelson Roqueza OPM & Merch!`);
+      let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${address}\nPayment: ${selectedPayment}\n\nItems:\n`;
+      cart.forEach(item => {
+        orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`;
+      });
+      orderSummary += `\nTotal Amount: ₱${totalPrice.toLocaleString()}`;
+
+      // Open Messenger or Alert summary
+      alert(`Order Successful!\n\n` + orderSummary);
+      
       cart = [];
       updateCartUI();
       toggleCart();
