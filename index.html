@@ -73,13 +73,13 @@
     .modal-desc { font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 20px; text-align: left; background: #f9f9f9; padding: 12px; border-radius: 6px; }
     .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-bottom: 8px; }
 
-    /* Payment Instructions / QR Modal */
+    /* Payment Instructions / Modal */
     .pay-modal-content { background: white; width: 100%; max-width: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; padding: 24px; }
     .pay-modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
     .pay-details-box { background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.5; }
     .pay-details-box span { font-weight: bold; color: #222; }
-    .btn-pay-link { display: block; width: 100%; background: #007df0; color: white; text-decoration: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; margin-bottom: 8px; text-align: center; }
-    .btn-pay-link.maya-btn { background: #00b050; }
+    .btn-copy { display: block; width: 100%; background: #007df0; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
+    .btn-copy.maya-btn { background: #00b050; }
 
     /* Cart Drawer Styles */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
@@ -178,15 +178,12 @@
     </div>
   </div>
 
-  <!-- Payment Instructions / App Redirect Modal -->
+  <!-- Payment Instructions Modal -->
   <div class="modal-overlay" id="payModal" onclick="closePayModal(event)">
     <div class="pay-modal-content" onclick="event.stopPropagation()">
       <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
       <div class="pay-details-box" id="payDetailsText">
         <!-- Dynamic Payment Info -->
-      </div>
-      <div id="paymentWebLinkContainer">
-        <!-- Dynamic App / Web Deep Link Button -->
       </div>
       <button class="modal-btn" onclick="confirmFinalOrder()">Confirm & Complete Order</button>
     </div>
@@ -383,7 +380,6 @@
       }
 
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      
       pendingOrderData = { name, phone, address, totalPrice, payment: selectedPayment };
 
       // If COD, proceed directly
@@ -392,38 +388,33 @@
         return;
       }
 
-      // If GCash, Maya, or Bank, show mobile app deep-link helper modal
+      // If GCash, Maya, or Bank, show clean instructions with easy copy button
       let title = "";
       let details = "";
-      let linkButtonHtml = "";
 
       if (selectedPayment === 'GCash') {
-        title = "💙 Open GCash App to Pay";
-        details = `Total Amount to Send: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Send to Name: <span>Jelson Roqueza</span><br>` +
-                  `• Send to Number: <span>0912-345-6789</span><br><br>` +
-                  `<i>Tap the button below to automatically launch your GCash smartphone app:</i>`;
-        // Using GCash universal web redirect / deep link scheme
-        linkButtonHtml = `<a href="https://ings.gcash.com" target="_blank" class="btn-pay-link">Launch GCash App / Pay 📱</a>`;
+        title = "💙 GCash Payment Guide";
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
+                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• GCash Number: <span id='payNum'>09123456789</span><br><br>` +
+                  `<button onclick="navigator.clipboard.writeText('09123456789'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
       } else if (selectedPayment === 'Maya') {
-        title = "💚 Open Maya App to Pay";
-        details = `Total Amount to Send: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Send to Name: <span>Jelson Roqueza</span><br>` +
-                  `• Send to Number: <span>0912-345-6789</span><br><br>` +
-                  `<i>Tap the button below to automatically launch your Maya smartphone app:</i>`;
-        linkButtonHtml = `<a href="https://maya.ph" target="_blank" class="btn-pay-link maya-btn">Launch Maya App / Pay 📱</a>`;
+        title = "💚 Maya Payment Guide";
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
+                  `• Account Name: <span>Jelson Roqueza</span><br>` +
+                  `• Maya Number: <span id='payNum'>09123456789</span><br><br>` +
+                  `<button onclick="navigator.clipboard.writeText('09123456789'); alert('Maya number copied!');" class="btn-copy maya-btn">📋 Copy Maya Number</button>`;
       } else {
-        title = "🏦 Bank Transfer Portal";
-        details = `Please transfer exactly <span>₱${totalPrice.toLocaleString()}</span> to:<br><br>` +
+        title = "🏦 Bank Transfer Guide";
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
                   `• Bank: <span>BPI / UnionBank</span><br>` +
                   `• Account Name: <span>Jelson Roqueza</span><br>` +
-                  `• Account No: <span>1234-5678-9012</span>`;
-        linkButtonHtml = `<a href="https://www.bpi.com.ph" target="_blank" class="btn-pay-link" style="background:#555;">Open Bank App / Portal 🏦</a>`;
+                  `• Account No: <span id='payNum'>123456789012</span><br><br>` +
+                  `<button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
       }
 
       document.getElementById('payModalTitle').innerText = title;
       document.getElementById('payDetailsText').innerHTML = details;
-      document.getElementById('paymentWebLinkContainer').innerHTML = linkButtonHtml;
       document.getElementById('payModal').style.display = 'flex';
     }
 
