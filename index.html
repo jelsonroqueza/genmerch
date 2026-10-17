@@ -42,7 +42,7 @@
     @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
     @media (min-width: 1024px) { .grid { grid-template-columns: repeat(5, 1fr); } }
 
-    .card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; flex-direction: column; transition: transform 0.15s; }
+    .card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; flex-direction: column; transition: transform 0.15s; cursor: pointer; }
     .card:hover { transform: translateY(-3px); }
     .card-img { height: 155px; background: #fff8f6; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; position: relative; }
     .discount-tag { position: absolute; top: 8px; right: 8px; background: #ffe97a; color: #d0011b; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 3px; }
@@ -52,6 +52,19 @@
     .card-sold { font-size: 0.7rem; color: #777; margin-bottom: 8px; }
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
     .btn-add:active { opacity: 0.8; }
+
+    /* Product Modal Styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+    .modal-content { background: white; width: 100%; max-width: 450px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: scaleUp 0.2s ease; }
+    @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-header { background: var(--primary); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    .close-modal { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+    .modal-body { padding: 20px; text-align: center; }
+    .modal-img-box { font-size: 5rem; background: #fff8f6; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
+    .modal-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; }
+    .modal-price { color: var(--primary); font-size: 1.3rem; font-weight: bold; margin-bottom: 12px; }
+    .modal-desc { font-size: 0.9rem; color: #555; line-height: 1.4; margin-bottom: 20px; text-align: left; background: #f9f9f9; padding: 12px; border-radius: 6px; }
+    .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
     /* Cart Drawer Styles */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
@@ -107,6 +120,23 @@
     <div class="grid" id="productGrid"></div>
   </div>
 
+  <!-- Product Details Modal -->
+  <div class="modal-overlay" id="productModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span id="modalHeaderTitle">Product Details</span>
+        <button class="close-modal" onclick="closeModalBtn()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-img-box" id="modalIcon">💿</div>
+        <div class="modal-title" id="modalTitle">Product Name</div>
+        <div class="modal-price" id="modalPrice">₱0</div>
+        <div class="modal-desc" id="modalDesc">Detailed product description goes here.</div>
+        <button class="modal-btn" id="modalAddBtn" onclick="">+ Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Cart Drawer Overlay -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
   <div class="cart-drawer" id="cartDrawer">
@@ -135,14 +165,14 @@
 
   <script>
     const products = [
-      { id: 1, name: "CD Album: 'Sound Wave 3rd' (Signed)", price: 499, sold: "540 sold", icon: "💿", cat: "Music", off: "-20%" },
-      { id: 2, name: "OPM Single Audio Card: 'Kung Makikinig Lang Ang Oras'", price: 150, sold: "1.2k sold", icon: "🎵", cat: "Music", off: "-50%" },
-      { id: 3, name: "GENMERCH Heavyweight Oversized Tee (Black)", price: 650, sold: "2.8k sold", icon: "👕", cat: "Merch", off: "-30%" },
-      { id: 4, name: "Podcast Hoodie: 'Lihim sa Dilim' (Kurumi Edition)", price: 1199, sold: "890 sold", icon: "🧥", cat: "Podcast", off: "-25%" },
-      { id: 5, name: "DJI Mic Mini Wireless Setup (Streamer Kit)", price: 3499, sold: "320 sold", icon: "🎙️", cat: "Podcast", off: "-15%" },
-      { id: 6, name: "Digital Single: 'Nasasaktan ng Lihim' High-Res", price: 100, sold: "2.1k sold", icon: "🎶", cat: "Music", off: "-40%" },
-      { id: 7, name: "Limited Cap: 'The Project Podcast' Snapback", price: 450, sold: "760 sold", icon: "🧢", cat: "Merch", off: "-35%" },
-      { id: 8, name: "Audio Track: 'Minamahal Kita ng Hindi Mo Alam'", price: 100, sold: "1.5k sold", icon: "🎧", cat: "Music", off: "-40%" }
+      { id: 1, name: "CD Album: 'Sound Wave 3rd' (Signed)", price: 499, sold: "540 sold", icon: "💿", cat: "Music", off: "-20%", desc: "Official limited physical CD release of 'Sound Wave 3rd' featuring hand-signed autograph by Jelson Roqueza. Includes high-fidelity mastered OPM tracks." },
+      { id: 2, name: "OPM Single Audio Card: 'Kung Makikinig Lang Ang Oras'", price: 150, sold: "1.2k sold", icon: "🎵", cat: "Music", off: "-50%", desc: "Exclusive digital audio download card + lyric art sheet for the hit emotional ballad 'Kung Makikinig Lang Ang Oras'." },
+      { id: 3, name: "GENMERCH Heavyweight Oversized Tee (Black)", price: 650, sold: "2.8k sold", icon: "👕", cat: "Merch", off: "-30%", desc: "Premium 240 GSM heavyweight cotton streetwear tee with custom minimalist GENMERCH branding. Comfortable and breathable for daily wear." },
+      { id: 4, name: "Podcast Hoodie: 'Lihim sa Dilim' (Kurumi Edition)", price: 1199, sold: "890 sold", icon: "🧥", cat: "Podcast", off: "-25%", desc: "Limited edition Pullover Hoodie featuring the iconic 'Lihim sa Dilim' horror podcast aesthetic hosted by Kurumi. Fleece-lined for ultimate comfort." },
+      { id: 5, name: "DJI Mic Mini Wireless Setup (Streamer Kit)", price: 3499, sold: "320 sold", icon: "🎙️", cat: "Podcast", off: "-15%", desc: "Compact wireless microphone transmitter & receiver unit optimized for iPhone 16 Pro and mobile podcast recording. Crystal clear audio." },
+      { id: 6, name: "Digital Single: 'Nasasaktan ng Lihim' High-Res", price: 100, sold: "2.1k sold", icon: "🎶", cat: "Music", off: "-40%", desc: "High-resolution WAV/MP3 digital single file download of the viral sad Tagalog ballad 'Nasasaktan ng Lihim'." },
+      { id: 7, name: "Limited Cap: 'The Project Podcast' Snapback", price: 450, sold: "760 sold", icon: "🧢", cat: "Merch", off: "-35%", desc: "Adjustable snapback cap embroidered with 'The Project Podcast' logo. Clean black finish with structured brim." },
+      { id: 8, name: "Audio Track: 'Minamahal Kita ng Hindi Mo Alam'", price: 100, sold: "1.5k sold", icon: "🎧", cat: "Music", off: "-40%", desc: "Upbeat OPM pop love song track release. Instant digital audio file download straight to your device." }
     ];
 
     let cart = [];
@@ -151,7 +181,7 @@
     function render(list) {
       const grid = document.getElementById('productGrid');
       grid.innerHTML = list.map(p => `
-        <div class="card">
+        <div class="card" onclick="openModal(${p.id})">
           <div class="card-img">
             <span class="discount-tag">${p.off}</span>
             ${p.icon}
@@ -160,10 +190,30 @@
             <div class="card-title">${p.name}</div>
             <div class="card-price">₱${p.price.toLocaleString()}</div>
             <div class="card-sold">${p.sold}</div>
-            <button class="btn-add" onclick="addToCart(${p.id})">+ Add to Cart</button>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add to Cart</button>
           </div>
         </div>
       `).join('');
+    }
+
+    function openModal(id) {
+      const p = products.find(item => item.id === id);
+      document.getElementById('modalIcon').innerText = p.icon;
+      document.getElementById('modalTitle').innerText = p.name;
+      document.getElementById('modalPrice').innerText = '₱' + p.price.toLocaleString();
+      document.getElementById('modalDesc').innerText = p.desc;
+      document.getElementById('modalAddBtn').setAttribute('onclick', `addToCart(${p.id}); closeModalBtn();`);
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function closeModalBtn() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    function closeModal(e) {
+      if (e.target.id === 'productModal') {
+        closeModalBtn();
+      }
     }
 
     function addToCart(id) {
