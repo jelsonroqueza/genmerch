@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GENMERCH - Suot Apparel | Official OPM & Podcast Store</title>
   
-  <!-- SEO & Social Preview Meta Tags (Open Graph for Facebook / Messenger / Twitter) -->
+  <!-- SEO & Social Preview Meta Tags -->
   <meta name="description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza. Shop authentic merchandise now!">
   <meta property="og:title" content="GENMERCH - Suot Apparel | Official Store">
   <meta property="og:description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jelsonroqueza.github.io/genmerch/">
   
-  <!-- Branded Favicon (Inline Emoji/SVG Data URI) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+  <!-- Branded Shopping Cart Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="/genmerch/manifest.json">
@@ -42,7 +42,6 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
     
-    /* Accessibility Focus States */
     a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
       outline: 3px solid #0056b3;
       outline-offset: 2px;
@@ -50,7 +49,6 @@
 
     body { background: var(--bg); color: var(--text-main); padding-bottom: 70px; display: flex; flex-direction: column; min-height: 100vh; }
     
-    /* Header Component */
     header { background: linear-gradient(180deg, #f53d2d, #f63); color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
     .nav-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
     .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; order: 1; }
@@ -61,11 +59,9 @@
     .search-box button { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: bold; transition: background 0.2s; }
     .search-box button:hover { background: var(--primary-hover); }
 
-    /* Offline / Network Banner Feedback */
     .offline-banner { background: #d0011b; color: white; text-align: center; padding: 6px; font-size: 0.8rem; font-weight: bold; display: none; z-index: 105; }
     .offline-banner.show { display: block; }
 
-    /* Responsive Breakpoints */
     .container { max-width: 1200px; margin: 12px auto; padding: 0 10px; flex: 1; width: 100%; }
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .hero-banner { padding: 20px 14px; margin-bottom: 14px; }
@@ -92,23 +88,19 @@
       .suot-apparel-banner { font-size: 2.8rem; }
     }
 
-    /* Realtime Philippine Clock Bar */
     .ph-clock-bar { background: #111; color: #fff; padding: 8px 14px; text-align: center; font-size: 0.82rem; font-weight: 600; border-radius: var(--radius-md); margin-bottom: 14px; letter-spacing: 0.5px; box-shadow: var(--shadow-sm); }
     
-    /* Hero Banner */
     .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: var(--radius-md); text-align: center; box-shadow: var(--shadow-md); }
     .hero-title { font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
     .suot-apparel-banner { font-family: 'Great Vibes', cursive; font-weight: 400; color: #fff; margin-left: 4px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3)); }
     .hero-subtitle { font-size: 0.88rem; font-weight: 600; opacity: 0.98; letter-spacing: 0.3px; }
     @media (min-width: 768px) { .hero-subtitle { font-size: 0.98rem; } }
     
-    /* Categories */
     .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; }
     .cat-pill { background: var(--card-bg); padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); transition: all 0.2s; color: var(--text-main); }
     .cat-pill:hover { border-color: var(--primary); }
     .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Product Cards & Empty / Error States */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
     .card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #ddd; }
     .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
@@ -123,24 +115,20 @@
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: background 0.2s; }
     .btn-add:hover { background: var(--primary-hover); }
 
-    /* Branded Error / Empty State Styling */
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 45px 20px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted); }
     .empty-state span { font-size: 3.5rem; display: block; margin-bottom: 12px; }
     .empty-state h3 { font-size: 1.1rem; font-weight: bold; color: var(--text-main); margin-bottom: 6px; }
     .empty-state p { font-size: 0.9rem; color: var(--text-muted); }
 
-    /* Skeleton Loader Styling */
     .skeleton-card { background: white; border-radius: var(--radius-md); height: 260px; padding: 12px; display: flex; flex-direction: column; gap: 10px; animation: pulse 1.2s infinite ease-in-out; }
     .skeleton-img { background: #e0e0e0; height: 140px; border-radius: var(--radius-sm); }
     .skeleton-line { background: #e0e0e0; height: 14px; border-radius: 4px; width: 80%; }
     .skeleton-line.short { width: 40%; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-    /* Toast Notification */
     .toast-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0, 0, 0, 0.9); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: all 0.25s ease; }
     .toast-notification.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-    /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 300; align-items: center; justify-content: center; padding: 16px; }
     .modal-content { background: var(--card-bg); width: 100%; max-width: 450px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); animation: scaleUp 0.2s ease; }
     @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -160,7 +148,6 @@
     .pay-details-box span { font-weight: bold; color: var(--text-main); }
     .btn-copy { display: block; width: 100%; background: #0056b3; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
 
-    /* Drawer */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
     .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: var(--card-bg); z-index: 201; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; display: flex; flex-direction: column; }
     .cart-drawer.open { right: 0; }
@@ -174,7 +161,6 @@
     .cart-footer { padding: 16px; border-top: 1px solid var(--border-color); background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 14px; }
     
-    /* Form Controls */
     .form-section { margin-bottom: 14px; text-align: left; }
     .form-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 4px; color: var(--text-main); }
     .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; color: var(--text-main); }
@@ -194,12 +180,10 @@
 
     .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; }
 
-    /* Footer */
     footer { background: #1a1a1a; color: #ffffff; padding: 24px 16px; text-align: center; margin-top: auto; border-top: 3px solid var(--primary); }
     .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: #cccccc; }
     .footer-brand { font-weight: bold; color: #fff; font-size: 1.05rem; }
 
-    /* Mobile Bottom Navigation */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border-color); z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
     .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
     .nav-item.active { color: var(--primary); font-weight: bold; }
@@ -208,10 +192,8 @@
 </head>
 <body>
 
-  <!-- Offline / Online Banner Feedback Component -->
   <div class="offline-banner" id="offlineBanner" role="alert">⚠️ You are currently offline. Check your internet connection.</div>
 
-  <!-- Reusable Header Component with ARIA labels -->
   <header>
     <div class="nav-container">
       <div class="logo" tabindex="0" aria-label="GENMERCH Home">GENMERCH</div>
@@ -226,16 +208,13 @@
     </div>
   </header>
 
-  <!-- Reusable Toast Component -->
   <div class="toast-notification" id="toastNotification" role="status" aria-live="polite">
     <span>✅</span> <span id="toastText">Successfully added to your cart!</span>
   </div>
 
   <div class="container">
-    <!-- Realtime Philippine Time & Date Bar -->
     <div class="ph-clock-bar" id="phClockBar" aria-live="polite">Loading Philippine Time...</div>
 
-    <!-- Hero Banner -->
     <div class="hero-banner">
       <div class="hero-title">
         GENMERCH <span style="font-weight: 300; opacity: 0.8;">-</span> <span class="suot-apparel-banner">Suot Apparel</span>
@@ -243,7 +222,6 @@
       <div class="hero-subtitle">Official Album Drop & Limited Edition Streetwear Collection!</div>
     </div>
 
-    <!-- Categories with ARIA roles -->
     <div class="categories" role="tablist" aria-label="Product Categories">
       <div class="cat-pill active" onclick="filterCat('All', this)" role="tab" tabindex="0">All Items</div>
       <div class="cat-pill" onclick="filterCat('Merch', this)" role="tab" tabindex="0">👕 Streetwear Merch</div>
@@ -253,7 +231,6 @@
 
     <div class="section-title">🔥 Featured Releases</div>
     <div class="grid" id="productGrid" aria-label="Product Catalog">
-      <!-- Initial Skeleton Loaders -->
       <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
       <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
       <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
@@ -261,7 +238,6 @@
     </div>
   </div>
 
-  <!-- Reusable Footer Component -->
   <footer>
     <div class="footer-content">
       <div class="footer-brand">GENMERCH - Suot Apparel</div>
@@ -269,7 +245,6 @@
     </div>
   </footer>
 
-  <!-- Reusable Product Details Modal Component -->
   <div class="modal-overlay" id="productModal" onclick="closeModal(event)" role="dialog" aria-modal="true">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -286,7 +261,6 @@
     </div>
   </div>
 
-  <!-- Reusable Payment Instructions Modal Component -->
   <div class="modal-overlay" id="payModal" onclick="closePayModal(event)" role="dialog" aria-modal="true">
     <div class="pay-modal-content" onclick="event.stopPropagation()">
       <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
@@ -295,7 +269,6 @@
     </div>
   </div>
 
-  <!-- Reusable Cart Drawer Component -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
   <div class="cart-drawer" id="cartDrawer" role="region" aria-label="Shopping Cart Drawer">
     <div class="cart-header">
@@ -393,7 +366,7 @@
       if (list.length === 0) {
         grid.innerHTML = `
           <div class="empty-state" role="region" aria-label="No products found">
-            <span>🔍</span>
+            <span>🛒</span>
             <h3>No Products Found</h3>
             <p>Try searching for something else or switch categories.</p>
           </div>
