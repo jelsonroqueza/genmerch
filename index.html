@@ -50,7 +50,7 @@
     .cart-modal.open{display:flex;animation:modalIn .16s ease-out}@keyframes modalIn{from{opacity:.75;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
     .cart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;color:#fff;background:var(--primary);font-size:1.08rem;font-weight:850;flex-shrink:0}.cart-head .icon-btn{padding:0 2px}
     .cart-items{padding:10px 18px;overflow-y:auto;overscroll-behavior:contain;flex:0 0 auto;min-height:96px;max-height:clamp(96px,18dvh,155px);border-bottom:1px solid var(--line)}.cart-empty{text-align:center;color:#777;padding:16px 4px}.cart-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}.cart-item:last-child{border-bottom:0}.item-icon{font-size:1.9rem;text-align:center}.item-name{font-size:.9rem;font-weight:700;line-height:1.35}.item-price{font-size:.9rem;font-weight:850;color:var(--primary);margin-top:3px}.qty-row{display:flex;align-items:center;gap:9px;margin-top:7px}.qty-btn{width:28px;height:28px;border:0;border-radius:5px;background:#eee;font-weight:900}.qty-number{font-size:.85rem;font-weight:800;min-width:14px;text-align:center}.remove-btn{border:0;background:transparent;color:#c21b2a;font-size:1.15rem;padding:8px}
-    .cart-content{padding:14px 18px 18px;overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}.summary{border:1px solid #ddd;border-radius:7px;padding:11px 13px;margin-bottom:14px;background:#fff;font-size:.9rem}.summary-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:5px 0;color:#555}.summary-row.total{border-top:1px dashed #bbb;padding-top:9px;margin-top:9px;font-size:1.07rem;font-weight:900;color:#111}.summary-row.total span:last-child{color:var(--primary)}
+    .cart-content{padding:14px 18px 18px;overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}.summary{border:1px solid #ddd;border-radius:7px;padding:11px 13px;margin-bottom:14px;background:#fff;font-size:.9rem}.summary-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:5px 0;color:#555}.summary-row.total{border-top:1px dashed #bbb;padding-top:9px;margin-top:9px;font-size:1.07rem;font-weight:900;color:#111}.summary-row.total span:last-child{color:var(--primary)}.shipping-estimate{margin-top:10px;padding:9px 10px;border-radius:7px;background:#fff3ed;border:1px solid #ffd2c4;color:#7a2c18;font-size:.8rem;line-height:1.45}.shipping-disclosure{margin-top:8px;color:#666;font-size:.73rem;line-height:1.5}.shipping-estimate strong{font-weight:900}
     .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.field{display:flex;flex-direction:column;min-width:0;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:.8rem;font-weight:800;color:#333}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid #cfcfcf;border-radius:6px;padding:10px 11px;background:#fff;color:#222;font-size:.9rem}.field textarea{resize:vertical;min-height:66px}.field input:focus,.field textarea:focus{border-color:var(--primary);outline:2px solid #ee4d2d26}.field-error{display:none;font-size:.75rem;color:#c00;font-weight:700}.field-error.show{display:block}.form-section-title{grid-column:1/-1;font-size:.94rem;font-weight:900;margin:2px 0 0;padding-bottom:7px;border-bottom:1px solid #eee}
     .payment-section{margin-top:15px}.payment-title{font-size:.85rem;font-weight:850;margin-bottom:8px}.payment-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.pay-opt{border:1px solid #ccc;background:#fff;border-radius:7px;padding:10px 6px;font-size:.82rem;font-weight:800;color:#333}.pay-opt.active{border:2px solid var(--primary);padding:9px 5px;background:#fff5f2;color:var(--primary)}.checkout-btn{width:100%;margin-top:14px;padding:13px 16px;border:0;border-radius:7px;background:var(--primary);color:white;font-size:1rem;font-weight:900}.checkout-btn:hover{background:var(--primary-hover)}.checkout-note{font-size:.78rem;color:#666;line-height:1.4;margin-top:9px;text-align:center}
     .notice-modal{background:#fff;width:min(430px,100%);border-radius:13px;padding:23px;box-shadow:var(--shadow);max-height:90dvh;overflow:auto}.notice-modal h2{color:var(--primary);font-size:1.2rem;margin-bottom:12px}.notice-modal p{line-height:1.55;margin-bottom:10px;font-size:.92rem}.notice-modal .primary-btn{width:100%;margin-top:8px}
@@ -151,8 +151,10 @@
     <div class="cart-content">
       <div class="summary" id="summaryBox" style="display:none">
         <div class="summary-row"><span>Subtotal:</span><span id="subtotalText">₱0</span></div>
-        <div class="summary-row"><span>Shipping Fee:</span><span id="shippingText">₱0</span></div>
-        <div class="summary-row total"><span>Total Amount:</span><span id="finalTotalText">₱0</span></div>
+        <div class="summary-row"><span>Delivery Fee:</span><span id="shippingText">Enter address</span></div>
+        <div class="summary-row total"><span>Total Amount:</span><span id="finalTotalText">—</span></div>
+        <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
+        <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
       </div>
 
       <form id="checkoutForm" novalidate>
@@ -432,6 +434,62 @@
       updateCart();showToast('Item removed from cart.');
     }
 
+    // Region rates use the LOWEST amount supplied by the store as the default base estimate.
+    // This is rule-based matching of the typed province/city, not GPS or courier API validation.
+    const DELIVERY_BASE_RATES = {
+      Luzon: { fee: 50, range: '₱50–₱80' },
+      Visayas: { fee: 100, range: '₱100–₱150' },
+      Mindanao: { fee: 120, range: '₱120–₱180+' }
+    };
+
+    const DELIVERY_PROVINCES = {
+      Luzon: [
+        'abra','apayao','bataan','batanes','batangas','benguet','cordillera administrative region','ilocos region','cagayan valley','central luzon','calabarzon','mimaropa','bicol region','bulacan','cagayan','camarines norte','camarines sur','cam norte','cam sur','catanduanes','cavite','aurora','ifugao','ilocos norte','ilocos sur','isabela','kalinga','la union','laguna','marinduque','masbate','metro manila','national capital region','ncr','mountain province','mt province','mindoro occidental','occidental mindoro','mindoro oriental','oriental mindoro','nueva ecija','nueva vizcaya','pampanga','pangasinan','palawan','quezon','quirino','rizal','romblon','albay','sorsogon','tarlac','zambales','makati','manila','pasay','quezon city','taguig','paranaque','parañaque','las pinas','las piñas','mandaluyong','marikina','pasig','caloocan','malabon','navotas','valenzuela','san juan','muntinlupa','pateros'
+      ],
+      Visayas: [
+        'aklan','antique','bohol','capiz','cebu','western visayas','central visayas','eastern visayas','negros island region','eastern samar','guimaras','iloilo','leyte','negros occidental','negros oriental','northern samar','samar','siquijor','southern leyte','tacloban','biliran','bacolod','dumaguete','tagbilaran','roxas city','ormoc','baybay','catbalogan','calbayog','borongan','maasin','bogo'
+      ],
+      Mindanao: [
+        'agusan del norte','agusan del sur','zamboanga peninsula','northern mindanao','davao region','soccsksargen','caraga','barmm','bangsamoro autonomous region','basilan','bukidnon','camiguin','cotabato','davao de oro','davao del norte','davao del sur','davao occidental','davao oriental','dinagat islands','lanao del norte','lanao del sur','maguindanao del norte','maguindanao del sur','misamis occidental','misamis oriental','north cotabato','northern cotabato','sarangani','south cotabato','sultan kudarat','sulu','surigao del norte','surigao del sur','tawi-tawi','zamboanga del norte','zamboanga del sur','zamboanga sibugay','zamboanga','general santos','gensan','iligan','cagayan de oro','butuan','davao city','digos','tagum','panabo','samal','mati','kidapawan','koronadal','tacurong','marawi','ozamiz','oroquieta','dipolog','dapitan','pagadian','isabela city','lamitan','surigao city','bislig','tandag','bayugan','prosperidad','malaybalay','valencia city','kabasalan','cotabato city'
+      ]
+    };
+
+    function normalizeLocation(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\bprovince of\b/g, ' ')
+        .replace(/\bprovince\b/g, ' ')
+        .replace(/\bcity of\b/g, ' ')
+        .replace(/[^a-z0-9\s-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function matchIslandRegion(value) {
+      const place = normalizeLocation(value);
+      if (!place) return null;
+
+      // Check longer province/city names first to avoid matching a shorter alias prematurely.
+      for (const region of ['Mindanao', 'Visayas', 'Luzon']) {
+        const aliases = [...DELIVERY_PROVINCES[region]].sort((a, b) => b.length - a.length);
+        for (const aliasRaw of aliases) {
+          const alias = normalizeLocation(aliasRaw);
+          if (place === alias || place.includes(alias)) return region;
+        }
+      }
+      return null;
+    }
+
+    function detectDeliveryRegion() {
+      const province = normalizeLocation($('province').value);
+      const city = normalizeLocation($('city').value);
+      const region = matchIslandRegion(province) || matchIslandRegion(city);
+      if (!region) return null;
+      return { region, fee: DELIVERY_BASE_RATES[region].fee, range: DELIVERY_BASE_RATES[region].range };
+    }
+
     function updateCart(){
       const count=cart.reduce((sum,item)=>sum+item.qty,0);
       $('cartBadge').textContent=count;$('drawerCount').textContent=count;
@@ -441,9 +499,23 @@
           <div class="cart-item"><div class="item-icon">${item.icon}</div><div><div class="item-name">${escapeHtml(item.name)}</div><div class="item-size">Size: ${escapeHtml(item.size)}</div><div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">🗑</button></div>`).join('');
       }
       const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
-      const shipping=cart.length?150:0;
+      const delivery=detectDeliveryRegion();
       $('summaryBox').style.display=cart.length?'block':'none';
-      $('subtotalText').textContent=money(subtotal);$('shippingText').textContent=money(shipping);$('finalTotalText').textContent=money(subtotal+shipping);
+      $('subtotalText').textContent=money(subtotal);
+
+      if (!cart.length) {
+        $('shippingText').textContent=money(0);
+        $('finalTotalText').textContent=money(0);
+        $('shippingEstimate').textContent='Add an item to your cart, then enter your city/municipality and province to estimate delivery.';
+      } else if (delivery) {
+        $('shippingText').textContent=`${money(delivery.fee)} (${delivery.region})`;
+        $('finalTotalText').textContent=money(subtotal+delivery.fee);
+        $('shippingEstimate').innerHTML=`<strong>${delivery.region} detected.</strong> Default base delivery fee: <strong>${money(delivery.fee)}</strong> for a lightweight parcel up to 0.5 kg. Standard rate range: ${delivery.range}.`;
+      } else {
+        $('shippingText').textContent='Awaiting address';
+        $('finalTotalText').textContent='Complete address';
+        $('shippingEstimate').textContent='Enter a recognizable city/municipality and province. The delivery fee will be estimated automatically once the location is detected.';
+      }
     }
     $('cartItemsContainer').addEventListener('click',event=>{
       const qty=event.target.closest('[data-qty]');
@@ -482,6 +554,12 @@
     requiredFields.forEach(field=>$(field.id).addEventListener('input',()=>{
       const valid=field.valid($(field.id).value.trim());$(field.error).classList.toggle('show',!valid);
     }));
+
+    // Automatically refresh the delivery-region estimate as address details are typed.
+    ['streetAddress','barangay','city','province','postalCode','landmark'].forEach(id=>{
+      $(id).addEventListener('input',updateCart);
+      $(id).addEventListener('change',updateCart);
+    });
 
     $('checkoutForm').addEventListener('submit',event=>{
       event.preventDefault();
