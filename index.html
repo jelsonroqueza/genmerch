@@ -1049,6 +1049,79 @@
       .price{font-size:.98rem}
     }
 
+  
+
+    /* SOCIAL ORDER LINKS — real clickable brand marks, with no music icon. */
+    .social-links{
+      display:flex!important;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:nowrap;
+      gap:clamp(7px,.85vw,13px);
+      margin-left:auto;
+      min-width:0;
+      color:#fff;
+      font-size:clamp(.66rem,.78vw,.78rem);
+      line-height:1.2;
+    }
+    .social-order-label{
+      white-space:nowrap;
+      font-weight:750;
+      letter-spacing:.01em;
+    }
+    .social-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      min-height:28px;
+      color:#fff;
+      text-decoration:none;
+      white-space:nowrap;
+      font-weight:800;
+      border-radius:5px;
+      transition:opacity .15s ease, background-color .15s ease;
+    }
+    .social-link svg{display:block;width:16px;height:16px;flex:0 0 16px}
+    .social-link:hover{opacity:.82;text-decoration:underline;text-underline-offset:3px}
+    .social-link:focus-visible{outline:2px solid #fff;outline-offset:3px}
+    @media(max-width:1100px) and (min-width:761px){
+      .announcement-inner{gap:9px;padding-left:16px;padding-right:16px}
+      .social-links{gap:7px;font-size:.67rem}
+      .social-link{gap:3px}
+      .social-link svg{width:14px;height:14px;flex-basis:14px}
+    }
+    @media(max-width:760px){
+      .announcement-inner{
+        min-height:0;
+        height:auto;
+        padding:7px 12px 8px!important;
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+        justify-content:center!important;
+        gap:6px 10px!important;
+        overflow:visible!important;
+        white-space:normal!important;
+      }
+      .announcement-inner>span:nth-of-type(n+3),
+      .announcement-inner>i{display:none!important}
+      .announcement-inner>span:first-of-type{white-space:normal;text-align:center}
+      .social-links{
+        flex:1 0 100%;
+        width:100%;
+        justify-content:center!important;
+        flex-wrap:wrap;
+        gap:8px 12px;
+        margin:0!important;
+        font-size:.69rem;
+      }
+      .social-order-label{font-size:.68rem}
+      .social-link{min-height:22px;gap:4px}
+      .social-link svg{width:14px;height:14px;flex-basis:14px}
+    }
+    @media(prefers-reduced-motion:reduce){.social-link{transition:none}}
+
   </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
@@ -1577,7 +1650,21 @@
       <div class="announcement-inner">
         <span>🚚 <strong>Free shipping for orders ₱1,500 and up!</strong></span>
         <i></i><span>✓ Quality Prints</span><i></i><span>🚚 Nationwide Delivery</span><i></i><span>▣ Secure Payments</span>
-        <div class="social-links" aria-label="Social links"><span>f</span><span>◎</span><span>♪</span><span>𝕏</span></div>
+        <div class="social-links" aria-label="Order through our social media">
+          <span class="social-order-label">You can also order -</span>
+          <a class="social-link" href="https://www.facebook.com/nnp2012.genmerch/" target="_blank" rel="noopener noreferrer" aria-label="Order through Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.019 4.388 11.002 10.125 11.854v-8.385H7.078v-3.469h3.047V9.429c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.513c-1.491 0-1.956.93-1.956 1.885v2.261h3.328l-.532 3.469h-2.796v8.385C19.612 23.075 24 18.092 24 12.073z"/></svg>
+            <span>Facebook</span>
+          </a>
+          <a class="social-link" href="https://www.instagram.com/nnp2012.productsservices" target="_blank" rel="noopener noreferrer" aria-label="Order through Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.6" r="1.25" fill="currentColor"/></svg>
+            <span>Instagram</span>
+          </a>
+          <a class="social-link" href="https://x.com/NnP2012Trading" target="_blank" rel="noopener noreferrer" aria-label="Order through Twitter / X" title="Twitter / X">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18.901 1.153h3.68l-8.04 9.19 9.46 12.504H16.6l-5.8-7.584-6.64 7.584H.47l8.6-9.83L0 1.153h7.6l5.24 6.932zM17.61 20.644h2.039L6.486 3.24H4.298z"/></svg>
+            <span>Twitter</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="main-header">
