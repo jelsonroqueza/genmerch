@@ -51,13 +51,14 @@
     .cart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;color:#fff;background:var(--primary);font-size:1.08rem;font-weight:850;flex-shrink:0}.cart-head .icon-btn{padding:0 2px}
     .cart-items{padding:10px 18px;overflow-y:auto;overscroll-behavior:contain;flex:0 0 auto;min-height:96px;max-height:clamp(96px,18dvh,155px);border-bottom:1px solid var(--line)}.cart-empty{text-align:center;color:#777;padding:16px 4px}.cart-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}.cart-item:last-child{border-bottom:0}.item-icon{font-size:1.9rem;text-align:center}.item-name{font-size:.9rem;font-weight:700;line-height:1.35}.item-price{font-size:.9rem;font-weight:850;color:var(--primary);margin-top:3px}.qty-row{display:flex;align-items:center;gap:9px;margin-top:7px}.qty-btn{width:28px;height:28px;border:0;border-radius:5px;background:#eee;font-weight:900}.qty-number{font-size:.85rem;font-weight:800;min-width:14px;text-align:center}.remove-btn{border:0;background:transparent;color:#c21b2a;font-size:1.15rem;padding:8px}
     .cart-content{padding:14px 18px 18px;overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}.summary{border:1px solid #ddd;border-radius:7px;padding:11px 13px;margin-bottom:14px;background:#fff;font-size:.9rem}.summary-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:5px 0;color:#555}.summary-row.total{border-top:1px dashed #bbb;padding-top:9px;margin-top:9px;font-size:1.07rem;font-weight:900;color:#111}.summary-row.total span:last-child{color:var(--primary)}.shipping-estimate{margin-top:10px;padding:9px 10px;border-radius:7px;background:#fff3ed;border:1px solid #ffd2c4;color:#7a2c18;font-size:.8rem;line-height:1.45}.shipping-disclosure{margin-top:8px;color:#666;font-size:.73rem;line-height:1.5}.shipping-estimate strong{font-weight:900}
-    .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.field{display:flex;flex-direction:column;min-width:0;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:.8rem;font-weight:800;color:#333}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid #cfcfcf;border-radius:6px;padding:10px 11px;background:#fff;color:#222;font-size:.9rem}.field textarea{resize:vertical;min-height:66px}.field input:focus,.field textarea:focus{border-color:var(--primary);outline:2px solid #ee4d2d26}.field-error{display:none;font-size:.75rem;color:#c00;font-weight:700}.field-error.show{display:block}.form-section-title{grid-column:1/-1;font-size:.94rem;font-weight:900;margin:2px 0 0;padding-bottom:7px;border-bottom:1px solid #eee}
+    .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.field{display:flex;flex-direction:column;min-width:0;gap:5px;overflow:visible}.field.full{grid-column:1/-1}.field label{font-size:.8rem;font-weight:800;color:#333}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid #cfcfcf;border-radius:6px;padding:10px 11px;background:#fff;color:#222;font-size:.9rem}.field textarea{resize:vertical;min-height:66px}.field input:focus,.field textarea:focus{border-color:var(--primary);outline:2px solid #ee4d2d26}.field-error{display:none;font-size:.75rem;color:#c00;font-weight:700}.field-error.show{display:block}.form-section-title{grid-column:1/-1;font-size:.94rem;font-weight:900;margin:2px 0 0;padding-bottom:7px;border-bottom:1px solid #eee}
+    .autocomplete-wrap{position:relative;width:100%;min-width:0}.autocomplete-wrap input{width:100%}.address-suggestions{position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:950;display:none;max-height:230px;overflow-y:auto;overscroll-behavior:contain;background:#fff;border:1px solid #d8d8d8;border-radius:8px;box-shadow:0 10px 28px #0002}.address-suggestions.open{display:block}.address-suggestion{display:flex;flex-direction:column;align-items:flex-start;width:100%;border:0;border-bottom:1px solid #f0f0f0;background:#fff;color:#222;text-align:left;padding:10px 12px;font-size:.85rem;line-height:1.35;cursor:pointer}.address-suggestion:last-child{border-bottom:0}.address-suggestion:hover,.address-suggestion:focus-visible{background:#fff2ed;color:#a93218}.address-suggestion small{color:#686868;font-size:.73rem;font-weight:500;margin-top:3px}.address-suggestion-message{padding:11px 12px;color:#666;font-size:.82rem;line-height:1.4}.address-data-credit{font-size:.7rem;color:#777;line-height:1.45;margin-top:9px}.address-data-credit a{color:#9f3a25;text-decoration:underline}
     .payment-section{margin-top:15px}.payment-title{font-size:.85rem;font-weight:850;margin-bottom:8px}.payment-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.pay-opt{border:1px solid #ccc;background:#fff;border-radius:7px;padding:10px 6px;font-size:.82rem;font-weight:800;color:#333}.pay-opt.active{border:2px solid var(--primary);padding:9px 5px;background:#fff5f2;color:var(--primary)}.checkout-btn{width:100%;margin-top:14px;padding:13px 16px;border:0;border-radius:7px;background:var(--primary);color:white;font-size:1rem;font-weight:900}.checkout-btn:hover{background:var(--primary-hover)}.checkout-note{font-size:.78rem;color:#666;line-height:1.4;margin-top:9px;text-align:center}
     .notice-modal{background:#fff;width:min(430px,100%);border-radius:13px;padding:23px;box-shadow:var(--shadow);max-height:90dvh;overflow:auto}.notice-modal h2{color:var(--primary);font-size:1.2rem;margin-bottom:12px}.notice-modal p{line-height:1.55;margin-bottom:10px;font-size:.92rem}.notice-modal .primary-btn{width:100%;margin-top:8px}
     .bottom-nav{position:fixed;z-index:100;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 5px #00000008}.nav-item{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;color:#666;font-size:.72rem;font-weight:700}.nav-item.active{color:var(--primary)}
     @media(min-width:768px){body{padding-bottom:20px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card-img{height:165px}.bottom-nav{display:none}}
     @media(min-width:1024px){.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}.container{padding:0 20px}}
-    @media(max-width:600px){header{padding:10px 12px}.nav{gap:8px;flex-wrap:wrap}.logo{font-size:1.2rem}.search{order:3;flex-basis:100%}.cart-top{margin-left:auto}.container,main{padding:0 10px}.hero{padding:19px 12px 14px}.hero p{font-size:.86rem}.hero-clock{margin-top:10px;padding:8px 9px;font-size:.75rem}.grid{gap:9px}.card-img{height:125px;font-size:3.2rem}.card-body{padding:9px}.card-title{font-size:.8rem}.price{font-size:1rem}.cart-modal{width:calc(100vw - 18px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);border-radius:12px}.cart-head{padding:13px 15px;min-height:50px}.cart-items{padding:7px 12px;min-height:96px;max-height:clamp(96px,18dvh,140px);flex:0 0 auto}.cart-content{padding:11px 12px 14px;flex:1 1 auto;min-height:0}.checkout-grid{grid-template-columns:1fr;gap:9px}.field.full{grid-column:auto}.form-section-title{grid-column:auto}.payment-options{grid-template-columns:repeat(2,minmax(0,1fr))}.field input,.field textarea,.field select{padding:11px;font-size:16px}.checkout-btn{padding:13px}.product-modal{max-height:94dvh}}
+    @media(max-width:600px){header{padding:10px 12px}.nav{gap:8px;flex-wrap:wrap}.logo{font-size:1.2rem}.search{order:3;flex-basis:100%}.cart-top{margin-left:auto}.container,main{padding:0 10px}.hero{padding:19px 12px 14px}.hero p{font-size:.86rem}.hero-clock{margin-top:10px;padding:8px 9px;font-size:.75rem}.grid{gap:9px}.card-img{height:125px;font-size:3.2rem}.card-body{padding:9px}.card-title{font-size:.8rem}.price{font-size:1rem}.cart-modal{width:calc(100vw - 18px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);border-radius:12px}.cart-head{padding:13px 15px;min-height:50px}.cart-items{padding:7px 12px;min-height:96px;max-height:clamp(96px,18dvh,140px);flex:0 0 auto}.cart-content{padding:11px 12px 14px;flex:1 1 auto;min-height:0}.checkout-grid{grid-template-columns:1fr;gap:9px}.field.full{grid-column:auto}.form-section-title{grid-column:auto}.address-suggestions{max-height:190px}.payment-options{grid-template-columns:repeat(2,minmax(0,1fr))}.field input,.field textarea,.field select{padding:11px;font-size:16px}.checkout-btn{padding:13px}.product-modal{max-height:94dvh}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
@@ -176,23 +177,35 @@
             <span class="field-error" id="streetError">Please enter the house/unit number and street.</span>
           </div>
           <div class="field">
-            <label for="barangay">Barangay *</label>
-            <input id="barangay" name="barangay" type="text" autocomplete="address-level3" placeholder="Barangay name" required>
-            <span class="field-error" id="barangayError">Please enter the barangay.</span>
+            <label for="province">Province *</label>
+            <div class="autocomplete-wrap">
+              <input id="province" name="province" type="text" autocomplete="address-level1" placeholder="Type to search province" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="provinceSuggestions" required>
+              <div class="address-suggestions" id="provinceSuggestions" role="listbox" aria-label="Province suggestions"></div>
+            </div>
+            <span class="field-error" id="provinceError">Please choose a province from suggestions or enter it manually.</span>
           </div>
           <div class="field">
             <label for="city">City/Municipality *</label>
-            <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="City or municipality" required>
+            <div class="autocomplete-wrap">
+              <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Choose province, then search city" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" required>
+              <div class="address-suggestions" id="citySuggestions" role="listbox" aria-label="City and municipality suggestions"></div>
+            </div>
             <span class="field-error" id="cityError">Please enter the city or municipality.</span>
           </div>
           <div class="field">
-            <label for="province">Province *</label>
-            <input id="province" name="province" type="text" autocomplete="address-level1" placeholder="Province" required>
-            <span class="field-error" id="provinceError">Please enter the province.</span>
+            <label for="barangay">Barangay *</label>
+            <div class="autocomplete-wrap">
+              <input id="barangay" name="barangay" type="text" autocomplete="address-level3" placeholder="Choose city, then search barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="barangaySuggestions" required>
+              <div class="address-suggestions" id="barangaySuggestions" role="listbox" aria-label="Barangay suggestions"></div>
+            </div>
+            <span class="field-error" id="barangayError">Please enter the barangay.</span>
           </div>
           <div class="field">
             <label for="postalCode">Postal Code *</label>
-            <input id="postalCode" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="4" placeholder="4-digit postal code" required>
+            <div class="autocomplete-wrap">
+              <input id="postalCode" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="4" placeholder="Suggested from chosen barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="postalSuggestions" required>
+              <div class="address-suggestions" id="postalSuggestions" role="listbox" aria-label="Postal code suggestions"></div>
+            </div>
             <span class="field-error" id="postalError">Enter a 4-digit postal code.</span>
           </div>
           <div class="field full">
@@ -204,6 +217,7 @@
             <textarea id="specialInstructions" name="specialInstructions" placeholder="Delivery notes, gate instructions, preferred drop-off point, or other details"></textarea>
           </div>
         </div>
+        <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
 
         <div class="payment-section">
           <div class="payment-title">💳 Preferred Payment Method</div>
@@ -254,6 +268,486 @@
 
     const $ = id => document.getElementById(id);
     const money = value => '₱' + value.toLocaleString('en-PH');
+
+    // Philippine address suggestions from Open Admin Data's CORS-enabled static JSON API.
+    // Only public administrative place datasets are fetched; typed customer/street details are not sent to this provider.
+    const ADDRESS_DATA_BASE = 'https://api.openadmindata.org/api/v1';
+    let provinceDataPromise = null;
+    let municipalityDataPromise = null;
+    const barangayDataCache = new Map();
+    let allBarangayDataPromise = null;
+    let selectedProvinceRecord = null;
+    let selectedCityRecord = null;
+    let selectedBarangayRecord = null;
+    let currentCityBarangays = [];
+
+    function normalizeAddressText(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    async function fetchAddressJson(path) {
+      const response = await fetch(`${ADDRESS_DATA_BASE}/${path}`, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'omit',
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!response.ok) throw new Error(`Address data request failed (${response.status})`);
+      return response.json();
+    }
+
+    function responseEntities(payload) {
+      if (Array.isArray(payload?.entities)) return payload.entities;
+      if (Array.isArray(payload?.data?.entities)) return payload.data.entities;
+      if (Array.isArray(payload?.data)) return payload.data;
+      return [];
+    }
+
+    function loadProvinceData() {
+      if (!provinceDataPromise) {
+        provinceDataPromise = fetchAddressJson('ph/province.json')
+          .then(payload => responseEntities(payload))
+          .then(records => {
+            if (!records.length) throw new Error('Province list is empty');
+            return records;
+          })
+          .catch(error => {
+            provinceDataPromise = null;
+            throw error;
+          });
+      }
+      return provinceDataPromise;
+    }
+
+    function loadMunicipalityData() {
+      if (!municipalityDataPromise) {
+        municipalityDataPromise = fetchAddressJson('ph/municipality.json')
+          .then(payload => responseEntities(payload))
+          .then(records => {
+            if (!records.length) throw new Error('City and municipality list is empty');
+            return records;
+          })
+          .catch(error => {
+            municipalityDataPromise = null;
+            throw error;
+          });
+      }
+      return municipalityDataPromise;
+    }
+
+    function placeName(record) {
+      return record?.name_en || record?.name_local || record?.name || '';
+    }
+
+    function placeParentName(record) {
+      return record?.parent_name_en || record?.parent_name_local || '';
+    }
+
+    function getPostalCodes(record) {
+      const values = [];
+      if (record?.postal_code) values.push(String(record.postal_code));
+      if (Array.isArray(record?.zip_codes)) values.push(...record.zip_codes.map(String));
+      if (Array.isArray(record?.zipCodes)) values.push(...record.zipCodes.map(String));
+      return [...new Set(values.map(value => value.trim()).filter(value => /^\d{4}$/.test(value)))];
+    }
+
+    function showSuggestionMessage(fieldId, message) {
+      const input = $(fieldId);
+      const box = $(`${fieldId}Suggestions`);
+      box.replaceChildren();
+      const row = document.createElement('div');
+      row.className = 'address-suggestion-message';
+      row.textContent = message;
+      box.appendChild(row);
+      box.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function hideSuggestions(fieldId) {
+      const box = $(`${fieldId}Suggestions`);
+      if (!box) return;
+      box.classList.remove('open');
+      $(fieldId).setAttribute('aria-expanded', 'false');
+    }
+
+    function hideAllAddressSuggestions() {
+      ['province', 'city', 'barangay', 'postalCode'].forEach(hideSuggestions);
+    }
+
+    function renderAddressSuggestions(fieldId, records, selectRecord, options = {}) {
+      const input = $(fieldId);
+      const box = $(`${fieldId}Suggestions`);
+      box.replaceChildren();
+      const maxResults = options.maxResults || 9;
+      const results = records.slice(0, maxResults);
+
+      if (!results.length) {
+        showSuggestionMessage(fieldId, options.emptyMessage || 'No matches found. You may still enter the address manually.');
+        return;
+      }
+
+      results.forEach(record => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'address-suggestion';
+        button.setAttribute('role', 'option');
+        const title = document.createElement('span');
+        title.textContent = record.label || placeName(record) || String(record.value || '');
+        button.appendChild(title);
+        const detailText = record.detail || '';
+        if (detailText) {
+          const detail = document.createElement('small');
+          detail.textContent = detailText;
+          button.appendChild(detail);
+        }
+        // Do not hide suggestions on blur before the click event is handled.
+        button.addEventListener('mousedown', event => event.preventDefault());
+        button.addEventListener('keydown', event => {
+          const choices = [...box.querySelectorAll('button.address-suggestion')];
+          const currentIndex = choices.indexOf(button);
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            (choices[currentIndex + 1] || choices[0])?.focus();
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            if (currentIndex <= 0) input.focus();
+            else choices[currentIndex - 1]?.focus();
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            hideSuggestions(fieldId);
+            input.focus();
+          }
+        });
+        button.addEventListener('click', () => selectRecord(record));
+        box.appendChild(button);
+      });
+
+      box.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function containsQuery(record, query, extra = '') {
+      const needle = normalizeAddressText(query);
+      if (!needle) return true;
+      const haystack = normalizeAddressText([
+        placeName(record),
+        placeParentName(record),
+        record?.postal_code,
+        ...(Array.isArray(record?.zip_codes) ? record.zip_codes : []),
+        extra
+      ].join(' '));
+      return haystack.includes(needle);
+    }
+
+    function resetDownstreamAddressFields(fromLevel) {
+      if (fromLevel === 'province') {
+        selectedCityRecord = null;
+        selectedBarangayRecord = null;
+        currentCityBarangays = [];
+        $('city').value = '';
+        $('barangay').value = '';
+        $('postalCode').value = '';
+        ['city', 'barangay', 'postalCode'].forEach(hideSuggestions);
+      } else if (fromLevel === 'city') {
+        selectedBarangayRecord = null;
+        currentCityBarangays = [];
+        $('barangay').value = '';
+        $('postalCode').value = '';
+        ['barangay', 'postalCode'].forEach(hideSuggestions);
+      } else if (fromLevel === 'barangay') {
+        selectedBarangayRecord = null;
+        $('postalCode').value = '';
+        hideSuggestions('postalCode');
+      }
+      if (typeof updateCart === 'function') updateCart();
+    }
+
+    async function updateProvinceSuggestions() {
+      const query = $('province').value.trim();
+      try {
+        const records = await loadProvinceData();
+        if (query !== $('province').value.trim()) return;
+        const sorted = [...records].sort((a, b) => placeName(a).localeCompare(placeName(b)));
+        const matches = sorted.filter(record => containsQuery(record, query));
+        renderAddressSuggestions('province', matches, selectProvince, {
+          emptyMessage: 'No province match found. Check the spelling or enter the address manually.'
+        });
+      } catch (error) {
+        showSuggestionMessage('province', 'Address suggestions are temporarily unavailable. You can still type the province manually.');
+      }
+    }
+
+    async function updateCitySuggestions() {
+      const query = $('city').value.trim();
+      try {
+        const records = await loadMunicipalityData();
+        if (query !== $('city').value.trim()) return;
+        const province = selectedProvinceRecord;
+        const narrowed = province
+          ? records.filter(record => String(record.parent_id || '') === String(province.id || '') ||
+              normalizeAddressText(placeParentName(record)) === normalizeAddressText(placeName(province)))
+          : records;
+        const matches = narrowed
+          .filter(record => containsQuery(record, query))
+          .sort((a, b) => {
+            const left = normalizeAddressText(placeName(a));
+            const right = normalizeAddressText(placeName(b));
+            const needle = normalizeAddressText(query);
+            const leftScore = left.startsWith(needle) ? 0 : 1;
+            const rightScore = right.startsWith(needle) ? 0 : 1;
+            return leftScore - rightScore || left.localeCompare(right) || placeParentName(a).localeCompare(placeParentName(b));
+          })
+          .map(record => ({
+            ...record,
+            label: placeName(record),
+            detail: placeParentName(record) || (province ? placeName(province) : 'Philippines')
+          }));
+        renderAddressSuggestions('city', matches, selectCity, {
+          emptyMessage: province
+            ? 'No city or municipality matches this province. Check the spelling or enter it manually.'
+            : 'No matching city found. You may select a province first for more precise suggestions.'
+        });
+      } catch (error) {
+        showSuggestionMessage('city', 'City suggestions are temporarily unavailable. You can still type the city manually.');
+      }
+    }
+
+    async function loadBarangaysForCity(cityRecord) {
+      const key = String(cityRecord?.slug || cityRecord?.id || '');
+      if (!key) return [];
+      if (barangayDataCache.has(key)) return barangayDataCache.get(key);
+
+      const pending = (async () => {
+        // Fetch only the selected municipality's detail and child barangays first.
+        if (cityRecord.slug) {
+          try {
+            const detail = await fetchAddressJson(`ph/municipality/${encodeURIComponent(cityRecord.slug)}.json`);
+            const childList = detail?.children?.entities || detail?.data?.children?.entities || [];
+            if (Array.isArray(childList) && childList.length) return childList;
+          } catch (error) {
+            // The full barangay endpoint is a fallback; it is fetched at most once per browser session.
+          }
+        }
+
+        if (!allBarangayDataPromise) {
+          allBarangayDataPromise = fetchAddressJson('ph/barangay.json')
+            .then(payload => responseEntities(payload))
+            .catch(error => {
+              allBarangayDataPromise = null;
+              throw error;
+            });
+        }
+        const allBarangays = await allBarangayDataPromise;
+        const cityId = String(cityRecord.id || '');
+        const cityName = normalizeAddressText(placeName(cityRecord));
+        return allBarangays.filter(record =>
+          String(record.parent_id || '') === cityId ||
+          normalizeAddressText(placeParentName(record)) === cityName
+        );
+      })();
+
+      barangayDataCache.set(key, pending);
+      try {
+        const records = await pending;
+        barangayDataCache.set(key, records);
+        return records;
+      } catch (error) {
+        barangayDataCache.delete(key);
+        throw error;
+      }
+    }
+
+    async function ensureSelectedCityBarangays() {
+      if (!selectedCityRecord) return [];
+      if (currentCityBarangays.length) return currentCityBarangays;
+      const cityAtRequest = selectedCityRecord;
+      showSuggestionMessage('barangay', 'Loading barangays for the selected city…');
+      try {
+        const records = await loadBarangaysForCity(cityAtRequest);
+        if (selectedCityRecord && String(selectedCityRecord.slug || selectedCityRecord.id) === String(cityAtRequest.slug || cityAtRequest.id)) {
+          currentCityBarangays = records;
+        }
+        return records;
+      } catch (error) {
+        showSuggestionMessage('barangay', 'Barangay suggestions could not be loaded. You can still type the barangay manually.');
+        return [];
+      }
+    }
+
+    function selectProvince(record) {
+      selectedProvinceRecord = record;
+      $('province').value = placeName(record);
+      hideSuggestions('province');
+      resetDownstreamAddressFields('province');
+      $('provinceError').classList.remove('show');
+      $('city').focus();
+      updateCitySuggestions();
+    }
+
+    function findProvinceForCity(record, provinces) {
+      return provinces.find(province => String(province.id || '') === String(record.parent_id || '')) ||
+        provinces.find(province => normalizeAddressText(placeName(province)) === normalizeAddressText(placeParentName(record))) || null;
+    }
+
+    async function selectCity(record) {
+      selectedCityRecord = record;
+      $('city').value = placeName(record);
+      hideSuggestions('city');
+
+      try {
+        const provinces = await loadProvinceData();
+        const parentProvince = findProvinceForCity(record, provinces);
+        if (parentProvince) {
+          selectedProvinceRecord = parentProvince;
+          $('province').value = placeName(parentProvince);
+          $('provinceError').classList.remove('show');
+          hideSuggestions('province');
+        }
+      } catch (error) {
+        // If the province list fails, preserve the user's manually entered province.
+      }
+
+      resetDownstreamAddressFields('city');
+      $('cityError').classList.remove('show');
+      updateCart();
+      $('barangay').focus();
+      updateBarangaySuggestions();
+    }
+
+    async function updateBarangaySuggestions() {
+      const query = $('barangay').value.trim();
+      const cityAtRequest = selectedCityRecord;
+      if (!selectedCityRecord) {
+        showSuggestionMessage('barangay', 'Choose a city/municipality first to see matching barangays.');
+        return;
+      }
+      try {
+        const records = await ensureSelectedCityBarangays();
+        if (query !== $('barangay').value.trim() ||
+            String(cityAtRequest?.slug || cityAtRequest?.id || '') !== String(selectedCityRecord?.slug || selectedCityRecord?.id || '')) return;
+        const matches = records
+          .filter(record => containsQuery(record, query))
+          .sort((a, b) => {
+            const needle = normalizeAddressText(query);
+            const aName = normalizeAddressText(placeName(a));
+            const bName = normalizeAddressText(placeName(b));
+            const aScore = aName.startsWith(needle) ? 0 : 1;
+            const bScore = bName.startsWith(needle) ? 0 : 1;
+            return aScore - bScore || aName.localeCompare(bName);
+          })
+          .map(record => ({
+            ...record,
+            label: placeName(record),
+            detail: getPostalCodes(record).length ? `Postal code: ${getPostalCodes(record).join(', ')}` : 'Postal code not listed for this barangay'
+          }));
+        renderAddressSuggestions('barangay', matches, selectBarangay, {
+          emptyMessage: 'No barangay match found in this city. Check spelling or enter it manually.'
+        });
+      } catch (error) {
+        showSuggestionMessage('barangay', 'Barangay suggestions are temporarily unavailable. You can still type it manually.');
+      }
+    }
+
+    function selectBarangay(record) {
+      selectedBarangayRecord = record;
+      $('barangay').value = placeName(record);
+      hideSuggestions('barangay');
+      $('barangayError').classList.remove('show');
+      const postalCodes = getPostalCodes(record);
+      if (postalCodes.length) {
+        $('postalCode').value = postalCodes[0];
+        $('postalError').classList.remove('show');
+      } else {
+        $('postalCode').value = '';
+      }
+      updateCart();
+      if (!postalCodes.length) updatePostalSuggestions();
+    }
+
+    async function updatePostalSuggestions() {
+      const query = $('postalCode').value.trim();
+      const cityAtRequest = selectedCityRecord;
+      if (!selectedCityRecord) {
+        showSuggestionMessage('postalCode', 'Choose a city/municipality first to get postal-code suggestions.');
+        return;
+      }
+      try {
+        const records = await ensureSelectedCityBarangays();
+        if (query !== $('postalCode').value.trim() ||
+            String(cityAtRequest?.slug || cityAtRequest?.id || '') !== String(selectedCityRecord?.slug || selectedCityRecord?.id || '')) return;
+        const codes = new Map();
+        records.forEach(record => getPostalCodes(record).forEach(code => {
+          if (!codes.has(code)) codes.set(code, new Set());
+          codes.get(code).add(placeName(record));
+        }));
+        const matches = [...codes.entries()]
+          .filter(([code]) => !query || code.includes(query))
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .map(([code, barangays]) => ({
+            value: code,
+            label: code,
+            detail: `Listed for: ${[...barangays].slice(0, 3).join(', ')}${barangays.size > 3 ? '…' : ''}`
+          }));
+        renderAddressSuggestions('postalCode', matches, record => {
+          $('postalCode').value = record.value;
+          hideSuggestions('postalCode');
+          $('postalError').classList.remove('show');
+          updateCart();
+        }, { emptyMessage: 'No postal code is listed for this city and query. You can type it manually.' });
+      } catch (error) {
+        showSuggestionMessage('postalCode', 'Postal-code suggestions could not be loaded. You can still enter the code manually.');
+      }
+    }
+
+    function bindAutocompleteKeyboard(fieldId) {
+      $(fieldId).addEventListener('keydown', event => {
+        const box = $(`${fieldId}Suggestions`);
+        const options = [...box.querySelectorAll('button.address-suggestion')];
+        if (event.key === 'ArrowDown' && box.classList.contains('open') && options.length) {
+          event.preventDefault();
+          options[0].focus();
+        } else if (event.key === 'Enter' && box.classList.contains('open') && options.length) {
+          // Prevent Enter from accidentally submitting the checkout form while choosing a suggestion.
+          event.preventDefault();
+          options[0].click();
+        } else if (event.key === 'Escape' && box.classList.contains('open')) {
+          event.preventDefault();
+          hideSuggestions(fieldId);
+        }
+      });
+    }
+    ['province', 'city', 'barangay', 'postalCode'].forEach(bindAutocompleteKeyboard);
+
+    // Autocomplete only looks up administrative reference data; it does not submit the customer's personal address.
+    $('province').addEventListener('input', () => {
+      selectedProvinceRecord = null;
+      resetDownstreamAddressFields('province');
+      updateProvinceSuggestions();
+    });
+    $('province').addEventListener('focus', updateProvinceSuggestions);
+    $('city').addEventListener('input', () => {
+      selectedCityRecord = null;
+      resetDownstreamAddressFields('city');
+      updateCitySuggestions();
+    });
+    $('city').addEventListener('focus', updateCitySuggestions);
+    $('barangay').addEventListener('input', () => {
+      selectedBarangayRecord = null;
+      resetDownstreamAddressFields('barangay');
+      updateBarangaySuggestions();
+    });
+    $('barangay').addEventListener('focus', updateBarangaySuggestions);
+    $('postalCode').addEventListener('input', updatePostalSuggestions);
+    $('postalCode').addEventListener('focus', updatePostalSuggestions);
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.autocomplete-wrap')) hideAllAddressSuggestions();
+    });
 
     function updatePHClock(){
       const now = new Date();
