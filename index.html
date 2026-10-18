@@ -1926,7 +1926,7 @@
     async function fetchSupabaseTable(table, query) {
       const response = await fetch(GENMERCH_SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
         method: 'GET', mode: 'cors', credentials: 'omit',
-        headers: { apikey: GENMERCH_SUPABASE_PUBLISHABLE_KEY, Authorization: 'Bearer ' + GENMERCH_SUPABASE_PUBLISHABLE_KEY, Accept: 'application/json' }
+        headers: { apikey: GENMERCH_SUPABASE_PUBLISHABLE_KEY, Accept: 'application/json' }
       });
       if (!response.ok) { const details = await response.text().catch(() => ''); throw new Error('Supabase ' + table + ' request failed (' + response.status + '): ' + details.slice(0,180)); }
       const data = await response.json();
