@@ -1643,7 +1643,15 @@
       .hero-cart { font-size: 1.95rem !important; }
       .hero-wordmark { font-size: clamp(1.55rem, 7vw, 1.85rem) !important; }
     }
-  </style>
+  
+    /* Supabase catalog imagery and live inventory */
+.card-img{overflow:hidden}
+.catalog-card-image{display:block;width:100%;height:100%;object-fit:cover;object-position:center;background:#fff8f6}
+.catalog-card-placeholder{display:grid;place-items:center;width:100%;height:100%;font-size:3.7rem}
+.product-modal-icon img{display:block;width:100%;max-height:260px;object-fit:contain;border-radius:8px}
+.add-btn:disabled,.primary-btn:disabled{background:#c9c9c9;color:#666;cursor:not-allowed}
+.size-option:disabled{background:#f1f1f1;color:#999;border-color:#ddd;cursor:not-allowed;opacity:.85}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -1723,7 +1731,7 @@
 
     <div class="catalog-heading">
       <h2 class="section-title" id="productSectionTitle">🔥 Suot Apparel — All Products</h2>
-      <span class="product-count" id="productCount" aria-live="polite">10 demo products</span>
+      <span class="product-count" id="productCount" aria-live="polite">Connecting to catalog…</span>
     </div>
     <section class="grid" id="productGrid" aria-label="Product catalog"></section>
   </main>
@@ -1886,8 +1894,8 @@
   <script>
     'use strict';
 
-    // Demo catalog: product categories and category filters are generated from this data.
-    const products = [
+    // Local catalog is retained as a safe fallback if Supabase cannot be reached.
+    let products = [
       {id:1,name:'GENMERCH Classic Logo T-Shirt — Black',price:499,sold:'Demo item',icon:'👕',cat:'T-Shirts',off:'DEMO',desc:'Classic everyday T-shirt demo in black. Suggested sizes: S, M, L, XL, and XXL. Regular fit.'},
       {id:2,name:'Suot Apparel Oversized T-Shirt — White',price:599,sold:'Demo item',icon:'👕',cat:'T-Shirts',off:'DEMO',desc:'Relaxed oversized white T-shirt demo with a clean streetwear silhouette. Suggested sizes: S, M, L, XL, and XXL.'},
       {id:3,name:'GENMERCH Graphic T-Shirt — Orange',price:549,sold:'Demo item',icon:'👕',cat:'T-Shirts',off:'DEMO',desc:'Bright graphic T-shirt demo for casual outfits. Suggested sizes: S, M, L, XL, and XXL.'},
@@ -1899,6 +1907,7 @@
       {id:9,name:'GENMERCH Relaxed Denim Shorts — Blue',price:749,sold:'Demo item',icon:'🩳',cat:'Shorts',off:'DEMO',desc:'Blue relaxed-fit denim shorts demo for casual daily wear. Suggested sizes: S, M, L, XL, and XXL.'},
       {id:10,name:'Suot Apparel Drawstring Lounge Shorts — Navy',price:379,sold:'Demo item',icon:'🩳',cat:'Shorts',off:'DEMO',desc:'Navy drawstring lounge shorts demo designed for a comfortable casual fit. Suggested sizes: S, M, L, XL, and XXL.'}
     ];
+    const LOCAL_DEMO_PRODUCTS = products.map(product => ({ ...product }));
 
     let cart = [];
     let currentCategory = 'All';
@@ -1906,9 +1915,52 @@
     let toastTimer;
     let pendingSizeProductId = null;
     let pendingSelectedSize = '';
+    let pendingSelectedVariantId = null;
+    let catalogLoadState = 'loading';
 
     const $ = id => document.getElementById(id);
-    const money = value => '₱' + value.toLocaleString('en-PH');
+    const money = value => '₱' + Number(value || 0).toLocaleString('en-PH', { maximumFractionDigits: 2 });
+    // Browser-safe Supabase publishable key only. Never add a service-role/secret key here.
+    const GENMERCH_SUPABASE_URL = 'https://csbaxyzfcaxhyyzxfxjw.supabase.co';
+    const GENMERCH_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4k2dHjjZu6AD4OsV2J8eow_AlhBl_7j';
+    async function fetchSupabaseTable(table, query) {
+      const response = await fetch(GENMERCH_SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
+        method: 'GET', mode: 'cors', credentials: 'omit',
+        headers: { apikey: GENMERCH_SUPABASE_PUBLISHABLE_KEY, Authorization: 'Bearer ' + GENMERCH_SUPABASE_PUBLISHABLE_KEY, Accept: 'application/json' }
+      });
+      if (!response.ok) { const details = await response.text().catch(() => ''); throw new Error('Supabase ' + table + ' request failed (' + response.status + '): ' + details.slice(0,180)); }
+      const data = await response.json();
+      if (!Array.isArray(data)) throw new Error('Unexpected Supabase response for ' + table);
+      return data;
+    }
+    function safeCatalogImageUrl(value) {
+      try { const url = new URL(String(value || '')); return ['https:','http:'].includes(url.protocol) ? url.href : ''; }
+      catch (_) { return ''; }
+    }
+    async function loadSupabaseCatalog() {
+      const result = await Promise.all([
+        fetchSupabaseTable('categories','select=id,name,slug,is_active,sort_order&is_active=eq.true&order=sort_order.asc'),
+        fetchSupabaseTable('products','select=id,category_id,name,slug,sku,description,base_price,compare_at_price,is_active,is_demo,is_featured,created_at&is_active=eq.true&order=created_at.asc,id.asc'),
+        fetchSupabaseTable('product_variants','select=id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active&is_active=eq.true'),
+        fetchSupabaseTable('product_images','select=id,product_id,image_url,alt_text,sort_order,is_primary&order=sort_order.asc')
+      ]);
+      const categoryRows=result[0], productRows=result[1], variantRows=result[2], imageRows=result[3];
+      const categoryById=new Map(categoryRows.map(row=>[String(row.id),row.name||'Other']));
+      const variantsByProduct=new Map(), imagesByProduct=new Map();
+      variantRows.forEach(row=>{const k=String(row.product_id);if(!variantsByProduct.has(k))variantsByProduct.set(k,[]);variantsByProduct.get(k).push({id:String(row.id),sku:row.sku||'',size:String(row.size_label||'One Size'),color:String(row.color_label||''),price:row.price_override===null||row.price_override===undefined?null:Number(row.price_override),stock:Math.max(0,Math.floor(Number(row.stock_quantity)||0))});});
+      imageRows.forEach(row=>{const k=String(row.product_id);if(!imagesByProduct.has(k))imagesByProduct.set(k,[]);imagesByProduct.get(k).push(row);});
+      const mapped=productRows.map(row=>{
+        const category=categoryById.get(String(row.category_id))||'Other';
+        const variants=(variantsByProduct.get(String(row.id))||[]).slice().sort((a,b)=>a.size.localeCompare(b.size));
+        const imgs=(imagesByProduct.get(String(row.id))||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+        const primary=imgs.find(image=>image.is_primary)||imgs[0]||null;
+        const totalStock=variants.reduce((sum,v)=>sum+v.stock,0), isDemo=row.is_demo===true;
+        return {id:String(row.id),sku:String(row.sku||''),name:String(row.name||'Unnamed product'),price:Number(row.base_price)||0,sold:totalStock>0?(isDemo?'Demo Only':'In stock'):'Out of stock',icon:category==='Shorts'?'🩳':'👕',cat:category,off:isDemo?'DEMO':(row.is_featured?'FEATURED':'NEW'),desc:String(row.description||(isDemo?'Demo Only':'Product details coming soon.')),image:safeCatalogImageUrl(primary&&primary.image_url),imageAlt:String((primary&&primary.alt_text)||row.name||'GENMERCH product'),isDemo:isDemo,totalStock:totalStock,variants:variants};
+      });
+      products.splice(0,products.length,...mapped);
+      catalogLoadState='connected';
+      return mapped.length;
+    }
 
     // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
@@ -1963,7 +2015,8 @@
       return {
         schemaVersion: 1,
         cart: cart.slice(0, 100).map(item => ({
-          id: Number(item.id),
+          id: String(item.id),
+          variantId: item.variantId ? String(item.variantId) : null,
           size: String(item.size || ''),
           qty: Math.max(1, Math.min(999, Math.floor(Number(item.qty) || 1)))
         })),
@@ -2045,16 +2098,19 @@
       const seen = new Map();
       const savedItems = Array.isArray(saved.cart) ? saved.cart.slice(0, 100) : [];
       savedItems.forEach(entry => {
-        const product = products.find(item => item.id === Number(entry?.id));
+        const product = products.find(item => String(item.id) === String(entry?.id)) || (catalogLoadState !== 'connected' ? LOCAL_DEMO_PRODUCTS.find(item => String(item.id) === String(entry?.id)) : null);
         const size = String(entry?.size || '');
         const qty = Math.floor(Number(entry?.qty));
-        if (!product || !GENMERCH_ALLOWED_SIZES.includes(size) || !Number.isFinite(qty) || qty < 1) return;
+        if (!product || !Number.isFinite(qty) || qty < 1) return;
+        const savedVariant = Array.isArray(product.variants) ? product.variants.find(variant => String(variant.id) === String(entry?.variantId || '') || (!entry?.variantId && variant.size === size)) : null;
+        if (Array.isArray(product.variants) && (!savedVariant || savedVariant.stock < 1)) return;
+        if (!Array.isArray(product.variants) && !GENMERCH_ALLOWED_SIZES.includes(size)) return;
         const safeQty = Math.min(999, qty);
-        const key = `${product.id}|${size}`;
+        const key = `${product.id}|${savedVariant?.id || ''}|${size}`;
         if (seen.has(key)) {
-          seen.get(key).qty = Math.min(999, seen.get(key).qty + safeQty);
+          seen.get(key).qty = Math.min(savedVariant?.stock ?? 999, seen.get(key).qty + safeQty);
         } else {
-          const item = { ...product, size, qty: safeQty };
+          const item = { ...product, ...(savedVariant ? { variantId: savedVariant.id, variantSku: savedVariant.sku, availableStock: savedVariant.stock, price: savedVariant.price ?? product.price } : {}), size, qty: savedVariant ? Math.min(safeQty, savedVariant.stock) : safeQty };
           seen.set(key, item);
           restoredCart.push(item);
         }
@@ -2641,7 +2697,8 @@
 
     const categoryIcons = {
       'T-Shirts': '👕',
-      'Shorts': '🩳'
+      'Shorts': '🩳',
+      'Sando': '👕'
     };
 
     function renderCategoryFilters(){
@@ -2680,26 +2737,22 @@
     }
 
     function renderProducts(){
-      const query = $('searchInput').value.trim().toLowerCase();
-      const list = products.filter(product => {
-        const searchable = [product.name, product.cat, product.desc].join(' ').toLowerCase();
-        const categoryMatch = currentCategory === 'All' || product.cat === currentCategory;
-        return categoryMatch && searchable.includes(query);
-      });
-
-      const categoryTitle = currentCategory === 'All' ? 'Suot Apparel — All Products' : `${categoryIcons[currentCategory] || '🛍️'} ${currentCategory} Collection`;
-      $('productSectionTitle').textContent = `${categoryTitle}`;
-      $('productCount').textContent = `${list.length} demo ${list.length === 1 ? 'product' : 'products'}`;
-
-      if(!list.length){
-        $('productGrid').innerHTML='<div class="empty-state"><div class="emoji">🛍️</div><h3>No Demo Products Found</h3><p>Try another keyword or select a different product category.</p></div>';
-        return;
-      }
-      $('productGrid').innerHTML=list.map(product=>`
-        <article class="card" data-product-id="${product.id}" tabindex="0" aria-label="View ${escapeHtml(product.name)}">
-          <div class="card-img"><span class="discount">${escapeHtml(product.off)}</span>${product.icon}</div>
-          <div class="card-body"><div class="product-type">${escapeHtml(product.cat)} · DEMO</div><div class="card-title">${escapeHtml(product.name)}</div><div class="price">${money(product.price)}</div><div class="sold">${escapeHtml(product.sold)}</div><button class="add-btn" data-add-id="${product.id}" type="button">+ Add to Cart</button></div>
-        </article>`).join('');
+      const query=$('searchInput').value.trim().toLowerCase();
+      const list=products.filter(product=>{const searchable=[product.name,product.cat,product.desc,product.sku||''].join(' ').toLowerCase();return (currentCategory==='All'||product.cat===currentCategory)&&searchable.includes(query);});
+      const title=currentCategory==='All'?'Suot Apparel — All Products':(categoryIcons[currentCategory]||'🛍️')+' '+currentCategory+' Collection';
+      $('productSectionTitle').textContent=title;
+      const stateText=catalogLoadState==='connected'?' · Supabase connected':catalogLoadState==='fallback'?' · Offline demo catalog':' · Connecting…';
+      $('productCount').textContent=list.length+' '+(list.length===1?'product':'products')+stateText;
+      if(!list.length){$('productGrid').innerHTML='<div class="empty-state"><div class="emoji">🛍️</div><h3>No Products Found</h3><p>Try another keyword or select a different product category.</p></div>';return;}
+      $('productGrid').innerHTML=list.map(product=>{
+        const tracked=Array.isArray(product.variants), outOfStock=tracked&&!product.variants.some(variant=>variant.stock>0);
+        const visual=product.image?'<img class="catalog-card-image" src="'+escapeHtml(product.image)+'" alt="'+escapeHtml(product.imageAlt||product.name)+'" loading="lazy">':'<span class="catalog-card-placeholder" aria-hidden="true">'+escapeHtml(product.icon||'🛍️')+'</span>';
+        const label=product.isDemo===false?'STORE':'DEMO ONLY';
+        const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
+        return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
+          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+money(product.price)+'</div><div class="sold">'+escapeHtml(stockText)+'</div>'+
+          '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
+      }).join('');
     }
 
     function escapeHtml(text){
@@ -2719,21 +2772,21 @@
 
     $('productGrid').addEventListener('click',event=>{
       const addButton=event.target.closest('[data-add-id]');
-      if(addButton){event.stopPropagation();openSizeSelector(Number(addButton.dataset.addId));return;}
+      if(addButton){event.stopPropagation();openSizeSelector(addButton.dataset.addId);return;}
       const card=event.target.closest('[data-product-id]');
-      if(card)openProduct(Number(card.dataset.productId));
+      if(card)openProduct(card.dataset.productId);
     });
     $('productGrid').addEventListener('keydown',event=>{
-      if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-product-id]')){event.preventDefault();openProduct(Number(event.target.dataset.productId));}
+      if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-product-id]')){event.preventDefault();openProduct(event.target.dataset.productId);}
     });
 
     function openProduct(id){
-      const p=products.find(item=>item.id===id);if(!p)return;
+      const p=products.find(item=>String(item.id)===String(id));if(!p)return;
       $('productModalTitle').textContent='Product Details';
-      $('productModalIcon').textContent=p.icon;
-      $('productModalName').textContent=p.name;
-      $('productModalPrice').textContent=money(p.price);
-      $('productModalDescription').textContent=p.desc;
+      $('productModalIcon').innerHTML=p.image?'<img src="'+escapeHtml(p.image)+'" alt="'+escapeHtml(p.imageAlt||p.name)+'">':escapeHtml(p.icon||'🛍️');
+      $('productModalName').textContent=p.name;$('productModalPrice').textContent=money(p.price);$('productModalDescription').textContent=p.desc;
+      const noStock=Array.isArray(p.variants)&&!p.variants.some(variant=>variant.stock>0);
+      $('productModalAdd').textContent=noStock?'Out of Stock':'+ Add to Cart';$('productModalAdd').disabled=noStock;
       $('productModalAdd').onclick=()=>{closeProduct();openSizeSelector(p.id);};
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
     }
@@ -2742,33 +2795,33 @@
     $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay'))closeProduct();});
 
     function cartLineKey(item){
-      return `${item.id}|${item.size}`;
+      return `${item.id}|${item.variantId || ''}|${item.size}`;
     }
 
     function openSizeSelector(id){
-      const product=products.find(item=>item.id===id);
-      if(!product)return;
-      pendingSizeProductId=product.id;
-      pendingSelectedSize='';
+      const product=products.find(item=>String(item.id)===String(id));if(!product)return;
+      pendingSizeProductId=product.id;pendingSelectedSize='';pendingSelectedVariantId=null;
       $('sizeProductName').textContent=product.name;
-      $('sizeSelectionHint').textContent='No size selected yet.';
-      document.querySelectorAll('[data-size]').forEach(button=>{
-        button.classList.remove('active');
-        button.setAttribute('aria-pressed','false');
+      const options=$('sizeOptions');options.replaceChildren();
+      const variants=Array.isArray(product.variants)?product.variants:GENMERCH_ALLOWED_SIZES.map(size=>({id:null,size,color:'',price:null,stock:null,sku:''}));
+      let inStock=0;
+      variants.forEach(variant=>{
+        const button=document.createElement('button');button.type='button';button.className='size-option';button.dataset.size=variant.size;
+        if(variant.id)button.dataset.variantId=variant.id;
+        button.dataset.stock=variant.stock===null?'':String(variant.stock);
+        const soldOut=variant.stock!==null&&variant.stock<1;button.disabled=soldOut;button.setAttribute('aria-pressed','false');
+        button.textContent=variant.size+(variant.color?' · '+variant.color:'')+(soldOut?' — Out of stock':(variant.price!==null&&variant.price!==product.price?' · '+money(variant.price):''));
+        options.appendChild(button);if(!soldOut)inStock++;
       });
-      $('confirmSizeButton').disabled=true;
-      $('sizeOverlay').classList.add('open');
-      $('sizeOverlay').setAttribute('aria-hidden','false');
-      document.body.style.overflow='hidden';
-      const firstSize=$('sizeOptions').querySelector('[data-size]');
-      if(firstSize)firstSize.focus();
+      $('sizeSelectionHint').textContent=Array.isArray(product.variants)?(inStock?'Select an available size before adding this product to your cart.':'All sizes are currently out of stock.'):'No size selected yet.';
+      $('confirmSizeButton').disabled=true;$('sizeOverlay').classList.add('open');$('sizeOverlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+      options.querySelector('button:not(:disabled)')?.focus();
     }
-
     function closeSizeSelector(){
       $('sizeOverlay').classList.remove('open');
       $('sizeOverlay').setAttribute('aria-hidden','true');
       pendingSizeProductId=null;
-      pendingSelectedSize='';
+      pendingSelectedSize='';pendingSelectedVariantId=null;
       if(!$('cartModal').classList.contains('open') &&
          !$('productOverlay').classList.contains('open') &&
          !$('noticeOverlay').classList.contains('open')){
@@ -2776,37 +2829,32 @@
       }
     }
 
-    document.querySelectorAll('[data-size]').forEach(button=>button.addEventListener('click',()=>{
-      pendingSelectedSize=button.dataset.size;
-      document.querySelectorAll('[data-size]').forEach(option=>{
-        const active=option===button;
-        option.classList.toggle('active',active);
-        option.setAttribute('aria-pressed',String(active));
-      });
-      $('sizeSelectionHint').textContent=`Selected size: ${pendingSelectedSize}`;
+    $('sizeOptions').addEventListener('click',event=>{
+      const button=event.target.closest('[data-size]');if(!button||button.disabled)return;
+      pendingSelectedSize=button.dataset.size;pendingSelectedVariantId=button.dataset.variantId||null;
+      document.querySelectorAll('[data-size]').forEach(option=>{const active=option===button;option.classList.toggle('active',active);option.setAttribute('aria-pressed',String(active));});
+      const stock=button.dataset.stock===''?null:Number(button.dataset.stock);
+      $('sizeSelectionHint').textContent=stock===null?'Selected size: '+pendingSelectedSize:'Selected size: '+pendingSelectedSize+' · '+stock+' in stock';
       $('confirmSizeButton').disabled=false;
-    }));
-
-    function confirmSizeSelection(){
-      if(pendingSizeProductId===null || !pendingSelectedSize)return;
-      const id=pendingSizeProductId;
-      const size=pendingSelectedSize;
-      closeSizeSelector();
-      addToCart(id,size);
-    }
+    });
+    function confirmSizeSelection(){if(pendingSizeProductId===null||!pendingSelectedSize)return;const id=pendingSizeProductId,size=pendingSelectedSize,variantId=pendingSelectedVariantId;closeSizeSelector();addToCart(id,size,variantId);}
     $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
     $('closeSizeModal').addEventListener('click',closeSizeSelector);
     $('cancelSizeButton').addEventListener('click',closeSizeSelector);
     $('sizeOverlay').addEventListener('click',event=>{if(event.target===$('sizeOverlay'))closeSizeSelector();});
 
-    function addToCart(id,size){
-      const p=products.find(item=>item.id===id);if(!p || !size)return;
-      const existing=cart.find(item=>item.id===id && item.size===size);
-      if(existing)existing.qty+=1;else cart.push({...p,size,qty:1});
-      updateCart();showToast(`${p.name} (${size}) added to your cart`);
+    function addToCart(id,size,variantId=null){
+      const p=products.find(item=>String(item.id)===String(id));if(!p||!size)return;
+      let variant=null;if(Array.isArray(p.variants)){variant=p.variants.find(item=>String(item.id)===String(variantId||'')||(!variantId&&item.size===size));if(!variant||variant.stock<1){showToast('This size is currently out of stock.');return;}}
+      const chosenPrice=variant&&variant.price!==null?variant.price:p.price;
+      const existing=cart.find(item=>String(item.id)===String(id)&&item.size===size&&String(item.variantId||'')===String(variant?variant.id:''));
+      if(existing){if(variant&&existing.qty>=variant.stock){showToast('No more stock is available for this size.');return;}existing.qty+=1;}
+      else cart.push({...p,variantId:variant?variant.id:null,variantSku:variant?variant.sku:'',availableStock:variant?variant.stock:null,size,price:chosenPrice,qty:1});
+      updateCart();showToast(p.name+' ('+size+') added to your cart');
     }
     function changeQuantity(key,delta){
       const item=cart.find(product=>cartLineKey(product)===key);if(!item)return;
+      if(delta>0&&Number.isFinite(item.availableStock)&&item.qty>=item.availableStock){showToast('No more stock is available for this size.');return;}
       item.qty+=delta;
       if(item.qty<1)cart=cart.filter(product=>cartLineKey(product)!==key);
       updateCart();
@@ -3101,11 +3149,13 @@
     $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay'))closeNotice();});
     function showInfo(section){showNotice(section,'<p>This section is not connected yet.</p>');}
 
-    restoreDraftState();
-    renderCategoryFilters();
-    renderProducts();
-    updateCart();
-    restoreAddressReferenceContext();
+    async function initializeStorefront(){
+      try{await loadSupabaseCatalog();}
+      catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
+      restoreDraftState();renderCategoryFilters();renderProducts();updateCart();
+      await restoreAddressReferenceContext();
+    }
+    initializeStorefront();
 
     // Flush a final draft snapshot when the browser is backgrounded or about to navigate away.
     window.addEventListener('pagehide', saveDraftState);
