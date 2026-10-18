@@ -22,9 +22,9 @@
     main{max-width:1200px;width:100%;margin:20px auto;padding:0 16px;flex:1}.clock{background:rgba(255,255,255,.16);color:#fff;text-align:center;border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 12px;font-size:.8rem;font-weight:750;line-height:1.35;box-shadow:inset 0 1px 0 rgba(255,255,255,.16);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}.hero{background:linear-gradient(90deg,#ff7337,#ee4d2d);border-radius:10px;padding:22px 18px 18px;color:white;text-align:center;box-shadow:0 5px 16px #0002;margin-bottom:18px}.hero h1{font-size:clamp(1.4rem,3.5vw,2.1rem);font-weight:900;line-height:1.2}.hero .script{font-family:'Great Vibes',cursive;font-size:clamp(2rem,4vw,2.8rem);font-weight:400;margin-left:5px}.hero p{margin-top:5px;font-size:.95rem;font-weight:600;line-height:1.4}.hero-clock{width:min(720px,100%);margin:12px auto 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}.categories{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;margin-bottom:20px}.category{white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:24px;padding:9px 17px;font-size:.86rem;font-weight:700}.category.active,.category:hover{background:var(--primary);color:#fff;border-color:var(--primary)}.catalog-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.section-title{color:var(--primary);font-size:1.05rem;font-weight:850;margin-bottom:0}.product-count{color:var(--muted);font-size:.8rem;font-weight:650}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{display:flex;flex-direction:column;overflow:hidden;background:#fff;border:1px solid #e3e3e3;border-radius:9px;box-shadow:0 2px 5px #0000000b;cursor:pointer;min-width:0;transition:transform .15s,box-shadow .15s}.card:hover{transform:translateY(-2px);box-shadow:0 5px 16px #0002}.card-img{height:150px;background:#fff8f6;display:grid;place-items:center;position:relative;font-size:3.7rem}.discount{position:absolute;top:8px;right:8px;background:#ffe97a;color:#c01;font-size:.72rem;font-weight:800;padding:3px 6px;border-radius:4px}.card-body{padding:12px;display:flex;flex:1;flex-direction:column}.card-title{font-size:.88rem;line-height:1.35;min-height:2.4em;margin-bottom:7px;font-weight:650}.product-type{align-self:flex-start;background:#fff0eb;color:var(--primary);font-size:.68rem;font-weight:850;letter-spacing:.2px;border-radius:4px;padding:4px 6px;margin-bottom:7px}.price{font-size:1.1rem;font-weight:850;color:var(--primary);margin-top:auto}.sold{font-size:.73rem;color:var(--muted);margin:4px 0 10px}.add-btn,.primary-btn{border:0;background:var(--primary);color:white;border-radius:6px;padding:10px 12px;font-weight:800}.add-btn:hover,.primary-btn:hover{background:var(--primary-hover)}.empty-state{grid-column:1/-1;background:#fff;padding:50px 20px;text-align:center;border:1px dashed var(--line);border-radius:10px}.empty-state .emoji{font-size:3rem;margin-bottom:10px}.empty-state p{color:var(--muted);margin-top:6px}
     .toast{position:fixed;top:82px;left:50%;transform:translate(-50%,-10px);z-index:1000;background:#222;color:#fff;border-radius:10px;padding:13px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100vw - 28px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s;font-size:.9rem;font-weight:700}.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}.toast-icon{display:grid;place-items:center;background:var(--accent);border-radius:50%;width:23px;height:23px;flex-shrink:0}
     footer{margin-top:28px;background:#1a1a1a;color:#ddd;padding:24px 16px;text-align:center;border-top:3px solid var(--primary);font-size:.88rem}.footer-brand{font-weight:850;color:#fff;font-size:1.05rem;margin-bottom:8px}
-    /* Product detail modal */
+    
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.56);z-index:400;display:none;align-items:center;justify-content:center;padding:14px}.overlay.open{display:flex}.product-modal{background:#fff;width:min(460px,100%);max-height:92dvh;overflow:auto;border-radius:14px;box-shadow:var(--shadow)}.modal-head{background:var(--primary);color:#fff;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;font-weight:850}.icon-btn{border:0;background:transparent;color:inherit;font-size:1.4rem;line-height:1}.product-modal-body{padding:22px;text-align:center}.product-modal-icon{font-size:4.5rem;background:#fff8f6;padding:18px;border-radius:10px;margin-bottom:12px}.product-modal-body h2{font-size:1.12rem;margin-bottom:8px}.product-modal-price{font-size:1.35rem;color:var(--primary);font-weight:850;margin-bottom:12px}.product-description{background:#f8f8f8;border-radius:7px;padding:12px;text-align:left;color:#555;font-size:.9rem;line-height:1.5;margin-bottom:16px}
-    /* Product size selector shown before an item is added to cart */
+    
     .size-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,15,15,.62);backdrop-filter:blur(3px)}
     .size-overlay.open{display:flex}
     .size-modal{width:min(450px,100%);max-height:min(90vh,90dvh);overflow-y:auto;background:#fff;border-radius:14px;box-shadow:0 22px 70px #0005}
@@ -44,7 +44,6 @@
     .item-size{font-size:.76rem;color:#666;margin-top:3px}
     @media(max-width:420px){.size-modal-body{padding:16px}.size-option{min-height:46px;font-size:.85rem}.size-modal-actions{grid-template-columns:1fr 1.25fr}}
 
-    /* Cart/checkout modal: centered on every viewport */
     .cart-overlay{position:fixed;inset:0;display:none;background:rgba(15,15,15,.56);z-index:500;backdrop-filter:blur(2px)}.cart-overlay.open{display:block}
     .cart-modal{position:fixed;z-index:501;top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(820px,calc(100vw - 28px));max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);height:auto;display:none;flex-direction:column;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 22px 70px #0004}
     .cart-modal.open{display:flex;animation:modalIn .16s ease-out}@keyframes modalIn{from{opacity:.75;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -61,23 +60,16 @@
     @media(max-width:600px){header{padding:10px 12px}.nav{gap:8px;flex-wrap:wrap}.logo{font-size:1.2rem}.search{order:3;flex-basis:100%}.cart-top{margin-left:auto}.container,main{padding:0 10px}.hero{padding:19px 12px 14px}.hero p{font-size:.86rem}.hero-clock{margin-top:10px;padding:8px 9px;font-size:.75rem}.grid{gap:9px}.card-img{height:125px;font-size:3.2rem}.card-body{padding:9px}.card-title{font-size:.8rem}.price{font-size:1rem}.cart-modal{width:calc(100vw - 18px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);border-radius:12px}.cart-head{padding:13px 15px;min-height:50px}.cart-items{padding:7px 12px;min-height:96px;max-height:clamp(96px,18dvh,140px);flex:0 0 auto}.cart-content{padding:11px 12px 14px;flex:1 1 auto;min-height:0}.checkout-grid{grid-template-columns:1fr;gap:9px}.field.full{grid-column:auto}.form-section-title{grid-column:auto}.address-suggestions{max-height:190px}.payment-options{grid-template-columns:repeat(2,minmax(0,1fr))}.field input,.field textarea,.field select{padding:11px;font-size:16px}.checkout-btn{padding:13px}.product-modal{max-height:94dvh}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   
-    /* Official supplied GenMerch logo, cropped to its artwork and kept on its intended black field. */
     .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
     .hero{padding:15px 18px 16px}
-    .hero-brand-lockup{width:clamp(132px,13vw,160px);margin:0 auto 8px;padding:3px;background:#000;border:1px solid rgba(255,255,255,.24);border-radius:13px;line-height:0;overflow:hidden;box-shadow:0 9px 25px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.12)}
-    .hero-brand-image{display:block;width:100%;height:auto;aspect-ratio:1215/1271;object-fit:contain;border-radius:9px}
     .hero p{margin-top:4px}
     .hero-clock{margin-top:10px}
     @media(max-width:600px){
       .hero{padding:13px 12px 14px}
-      .hero-brand-lockup{width:clamp(120px,38vw,146px);margin-bottom:8px;border-radius:11px}
-      .hero-brand-image{border-radius:8px}
       .hero p{max-width:34rem;margin:4px auto 0;font-size:.84rem;line-height:1.4}
       .hero-clock{margin-top:10px}
     }
 
-
-    /* GENMERCH approved storefront redesign — visual layer only; commerce logic remains intact. */
     :root{--primary:#ff2b16;--primary-hover:#d91e0d;--accent:#ff351b;--bg:#fbf8f4;--card:#fff;--text:#151515;--muted:#696969;--line:#e9e2dc;--shadow:0 10px 28px rgba(53,27,14,.09);--r:14px}
     body{background:#fbf8f4;color:#171717;padding-bottom:0}
     .site-header{padding:0;background:#fff;color:#111;box-shadow:0 3px 15px rgba(35,20,10,.08)}
@@ -107,6 +99,7 @@
     .desktop-links button.active{color:#fff;background:linear-gradient(120deg,#ff3c16,#f3230f);border-radius:22px;padding:9px 28px}
     .desktop-links span{flex:1}
     main.container{max-width:1500px;width:100%;margin:0 auto;padding:0 4.5%;flex:1}
+    
     .hero{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);align-items:stretch;overflow:hidden;text-align:left;color:#171717;background:linear-gradient(112deg,#fffaf2 0%,#fff0dc 48%,#ff7b24 48.1%,#ff4c16 100%);border-radius:0;box-shadow:none;margin:0 calc(-1 * 4.5%) 0;padding:26px 4.5% 22px;min-height:350px}
     .hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;border:30px solid rgba(255,120,32,.12);width:250px;height:250px;left:-165px;top:35px}
     .hero:after{width:380px;height:380px;left:32%;top:-280px;border-color:rgba(255,83,25,.08)}
@@ -123,17 +116,38 @@
     .shop-now{border:0;border-radius:30px;background:linear-gradient(100deg,#ff2516,#ff4c0c);color:white;padding:13px 32px;min-width:220px;font-size:1rem;font-weight:850;box-shadow:0 5px 12px #f33a1d22}
     .shop-now span{font-size:1.25rem;margin-left:12px}
     .hero-clock{background:rgba(255,255,255,.58);color:#7a2a15;border:1px solid rgba(237,89,31,.22);border-radius:9px;box-shadow:none;backdrop-filter:blur(6px);font-size:.72rem;padding:6px 10px;margin-top:12px;width:fit-content;max-width:100%}
-    .hero-art{position:relative;z-index:1;min-height:300px;display:flex;align-items:center;justify-content:center;gap:clamp(4px,1vw,15px);padding:8px 0 0}
-    .hero-circle{position:absolute;inset:7% 0 0 0;border-radius:48% 52% 0 0;background:linear-gradient(145deg,#ffb56a,#ff5d1c 65%,#f42d14);opacity:.45}
-    .model-card{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:30%;height:clamp(150px,22vw,255px);border-radius:95px 95px 18px 18px;background:linear-gradient(145deg,#fefefe,#e9e2db);box-shadow:0 12px 30px #9d320f25;transform:translateY(15px);overflow:hidden}
-    .model-card span{font-size:clamp(3.2rem,7vw,7rem);filter:drop-shadow(0 6px 2px #0001)}
-    .model-card b{font-size:clamp(.48rem,.9vw,.85rem);font-style:italic;margin-top:12px;white-space:nowrap}
-    .model-card small{font-size:clamp(.38rem,.65vw,.6rem);letter-spacing:1px}
-    .model-two{height:clamp(180px,25vw,285px);background:linear-gradient(145deg,#222,#080808);color:#fff;transform:translateY(-2px)}
-    .model-two span{font-size:clamp(3.8rem,8vw,7.5rem)}
-    .model-three{background:linear-gradient(145deg,#fff4dd,#e9cfa6);transform:translateY(18px)}
-    .wear-style{position:absolute;right:-1%;top:3%;font-size:clamp(1rem,2vw,1.8rem);font-style:italic;font-weight:900;line-height:1.05;transform:rotate(7deg);color:#20160f}
+    
+    /* NEW: Customized Solid Image Frame for the Hero Art */
+    .hero-art {position:relative; z-index:1; min-height:300px; display:flex; align-items:center; justify-content:center; padding:8px 0 0;}
+    .hero-circle {position:absolute; inset:7% 0 0 0; border-radius:48% 52% 0 0; background:linear-gradient(145deg,#ffb56a,#ff5d1c 65%,#f42d14); opacity:.45;}
+    
+    .hero-custom-image-wrapper {
+        position: relative;
+        z-index: 2;
+        width: 90%;
+        height: clamp(250px, 35vw, 380px);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(120, 20, 5, 0.3);
+        border: 4px solid rgba(255, 255, 255, 0.15);
+        margin: 0 auto;
+    }
+    .hero-custom-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top; 
+        transform: scale(1.05); /* Slight default zoom to ensure no crop lines */
+        transition: transform 0.4s ease;
+        background: #000; /* Dark backdrop to compliment your models picture */
+    }
+    .hero-custom-image-wrapper:hover .hero-custom-image {
+        transform: scale(1.12); /* Interactive zoom-in highlight on hover */
+    }
+    
+    .wear-style{position:absolute;right:-1%;top:3%;font-size:clamp(1rem,2vw,1.8rem);font-style:italic;font-weight:900;line-height:1.05;transform:rotate(7deg);color:#20160f; z-index: 3;}
     .wear-style b{color:#f22b12}
+    
     .trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-bottom:1px solid #eee4dd;margin:0 calc(-1 * 4.5%);padding:15px 4.5%;gap:15px}
     .trust-strip>div{display:flex;align-items:center;gap:12px;min-width:0;border-right:1px solid #ffd0bf;padding:0 10px}
     .trust-strip>div:last-child{border-right:0}
@@ -162,6 +176,7 @@
     .footer-brand{color:#151515;font-size:1.1rem}.footer-brand:before{content:"GEN";color:#151515}.footer-brand{font-size:0}
     .footer-brand:before{content:"GEN";font-size:1.1rem}.footer-brand:after{content:"MERCH — Suot Apparel";color:#f12d16;font-size:1.1rem}
     .bottom-nav{display:none}
+    
     @media(min-width:768px){body{padding-bottom:0}.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.card-img{height:clamp(150px,16vw,215px)}}
     @media(max-width:1100px){
       .main-header{padding-left:3%;padding-right:3%}.main-header .nav{gap:16px}
@@ -183,7 +198,12 @@
       .hero-tagline{font-size:.78rem!important;letter-spacing:2px;margin-bottom:12px!important}
       .hero-benefits{justify-content:center;gap:10px 14px}.hero-benefits span{font-size:.7rem;text-align:left}.hero-benefits b{font-size:1.35rem}
       .shop-now{min-width:190px;padding:11px 22px}.hero-clock{font-size:.68rem;margin:10px auto 0}
-      .hero-art{min-height:160px;padding:0 20px;max-width:480px;width:100%;margin:0 auto}.model-card{height:145px;width:30%;transform:translateY(10px)}.model-card span{font-size:3.5rem}.model-two{height:165px;transform:translateY(0)}.model-two span{font-size:4rem}.model-card b{font-size:.52rem}.model-card small{font-size:.4rem}.wear-style{font-size:1rem;right:0}
+      
+      /* Mobile override for the new image wrapper */
+      .hero-art{min-height:160px;padding:0 20px;max-width:480px;width:100%;margin:0 auto}
+      .hero-custom-image-wrapper { height: clamp(200px, 50vw, 260px); width: 100%; border-radius: 16px; margin-top: 10px; border-width: 2px; }
+      
+      .wear-style{font-size:1rem;right:0}
       .trust-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 7px;padding:14px;margin:0 -14px}.trust-strip>div{border-right:0;padding:0 3px;gap:8px}.trust-icon{flex-basis:37px;width:37px;height:37px;font-size:1.15rem}.trust-strip b{font-size:.73rem}.trust-strip small{font-size:.65rem}
       .categories{padding:17px 0 8px;margin-bottom:9px}.catalog-heading{margin-top:5px}.section-title{font-size:1.2rem}.product-count{font-size:.72rem}
       .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card-img{height:clamp(125px,38vw,185px);font-size:3.7rem}.card-body{padding:10px}.card-title{font-size:.82rem}.price{font-size:1.03rem}.add-btn{font-size:.8rem;padding:10px 7px}
@@ -245,13 +265,17 @@
         <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop Now <span>→</span></button>
         <div class="clock hero-clock" id="phClockBar">Loading Philippine Time…</div>
       </div>
+      
+      <!-- Custom Image Block Starts Here -->
       <div class="hero-art" aria-label="GENMERCH apparel collection">
         <div class="hero-circle"></div>
-        <div class="model-card model-one"><span>👕</span><b>GENMERCH</b><small>Suot Apparel</small></div>
-        <div class="model-card model-two"><span>🧥</span><b>GENMERCH</b><small>Suot Apparel</small></div>
-        <div class="model-card model-three"><span>🧢</span><b>GENMERCH</b><small>Suot Apparel</small></div>
+        <div class="hero-custom-image-wrapper">
+           <img src="855628639_1103510345899780_7331644643401687587_n-removebg-preview.jpg" alt="GENMERCH Models" class="hero-custom-image">
+        </div>
         <div class="wear-style">Wear<br>Your<br>Style <b>♡</b></div>
       </div>
+      <!-- Custom Image Block Ends Here -->
+      
     </section>
     <section class="trust-strip" aria-label="Store benefits">
       <div><span class="trust-icon">✓</span><p><b>100% Original Merch</b><small>Official and exclusive designs</small></p></div>
@@ -426,7 +450,6 @@
   <script>
     'use strict';
 
-    // Demo catalog: product categories and category filters are generated from this data.
     const products = [
       {id:1,name:'GENMERCH Classic Logo T-Shirt — Black',price:499,sold:'Demo item',icon:'👕',cat:'T-Shirts',off:'DEMO',desc:'Classic everyday T-shirt demo in black. Suggested sizes: S, M, L, XL, and XXL. Regular fit.'},
       {id:2,name:'Suot Apparel Oversized T-Shirt — White',price:599,sold:'Demo item',icon:'👕',cat:'T-Shirts',off:'DEMO',desc:'Relaxed oversized white T-shirt demo with a clean streetwear silhouette. Suggested sizes: S, M, L, XL, and XXL.'},
@@ -450,7 +473,6 @@
     const $ = id => document.getElementById(id);
     const money = value => '₱' + value.toLocaleString('en-PH');
 
-    // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
     const GENMERCH_DRAFT_FIELD_IDS = [
       'custName', 'custPhone', 'streetAddress', 'province', 'city', 'barangay',
@@ -623,7 +645,6 @@
     }
 
     async function restoreAddressReferenceContext() {
-      // Rebuild autocomplete selections after refresh so the address still resolves to its delivery zone.
       if (!$('province').value.trim() && !$('city').value.trim()) return;
       try {
         const [provinces, municipalities] = await Promise.all([loadProvinceData(), loadMunicipalityData()]);
@@ -632,7 +653,6 @@
         if (!selectedProvinceRecord && selectedCityRecord) {
           selectedProvinceRecord = findProvinceForCity(selectedCityRecord, provinces);
         }
-        // Keep the record only if it corresponds to the text currently in the matching input.
         if (selectedProvinceRecord && normalizeAddressText(placeName(selectedProvinceRecord)) !== normalizeAddressText($('province').value)) {
           selectedProvinceRecord = findExactProvinceRecord($('province').value.trim());
         }
@@ -648,7 +668,6 @@
           selectedBarangayRecord = barangays.find(record => normalizeAddressText(placeName(record)) === typedBarangay) || null;
         }
       } catch (error) {
-        // Preserve the customer's saved address even if the suggestion provider is temporarily unavailable.
       }
       updateCart();
     }
@@ -665,11 +684,9 @@
         setDraftSaveStatus('The form is cleared, but browser storage could not be cleared. Check your browser settings.', true);
       }
       updateCart();
-      // updateCart autosaves the empty draft so the cleared information cannot reappear on reload.
       setDraftSaveStatus('✓ Saved cart and delivery details cleared. Autosave remains active for future changes.');
     }
 
-    // Keep open tabs on the same browser profile in sync. This does not sync across separate devices.
     window.addEventListener('storage', event => {
       if (event.key !== GENMERCH_DRAFT_STORAGE_KEY && event.key !== null) return;
       restoreDraftState(event.key === null ? null : event.newValue);
@@ -677,8 +694,6 @@
       restoreAddressReferenceContext();
     });
 
-    // Philippine address suggestions from Open Admin Data's CORS-enabled static JSON API.
-    // Only public administrative place datasets are fetched; typed customer/street details are not sent to this provider.
     const ADDRESS_DATA_BASE = 'https://api.openadmindata.org/api/v1';
     let provinceDataPromise = null;
     let municipalityDataPromise = null;
@@ -818,7 +833,6 @@
           detail.textContent = detailText;
           button.appendChild(detail);
         }
-        // Do not hide suggestions on blur before the click event is handled.
         button.addEventListener('mousedown', event => event.preventDefault());
         button.addEventListener('keydown', event => {
           const choices = [...box.querySelectorAll('button.address-suggestion')];
@@ -938,14 +952,12 @@
       if (barangayDataCache.has(key)) return barangayDataCache.get(key);
 
       const pending = (async () => {
-        // Fetch only the selected municipality's detail and child barangays first.
         if (cityRecord.slug) {
           try {
             const detail = await fetchAddressJson(`ph/municipality/${encodeURIComponent(cityRecord.slug)}.json`);
             const childList = detail?.children?.entities || detail?.data?.children?.entities || [];
             if (Array.isArray(childList) && childList.length) return childList;
           } catch (error) {
-            // The full barangay endpoint is a fallback; it is fetched at most once per browser session.
           }
         }
 
@@ -1024,7 +1036,6 @@
           hideSuggestions('province');
         }
       } catch (error) {
-        // If the province list fails, preserve the user's manually entered province.
       }
 
       resetDownstreamAddressFields('city');
@@ -1127,7 +1138,6 @@
           event.preventDefault();
           options[0].focus();
         } else if (event.key === 'Enter' && box.classList.contains('open') && options.length) {
-          // Prevent Enter from accidentally submitting the checkout form while choosing a suggestion.
           event.preventDefault();
           options[0].click();
         } else if (event.key === 'Escape' && box.classList.contains('open')) {
@@ -1138,7 +1148,6 @@
     }
     ['province', 'city', 'barangay', 'postalCode'].forEach(bindAutocompleteKeyboard);
 
-    // Autocomplete only looks up administrative reference data; it does not submit the customer's personal address.
     $('province').addEventListener('input', () => {
       selectedProvinceRecord = null;
       resetDownstreamAddressFields('province');
@@ -1252,33 +1261,27 @@
       currentCategory = button.dataset.category;
       renderCategoryFilters();
       renderProducts();
-    });
-    $('searchInput').addEventListener('input',renderProducts);
-    $('searchButton').addEventListener('click',renderProducts);
-    $('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
+    });$('searchInput').addEventListener('input',renderProducts);
+    $('searchButton').addEventListener('click',renderProducts);$('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
 
     $('productGrid').addEventListener('click',event=>{
       const addButton=event.target.closest('[data-add-id]');
       if(addButton){event.stopPropagation();openSizeSelector(Number(addButton.dataset.addId));return;}
       const card=event.target.closest('[data-product-id]');
       if(card)openProduct(Number(card.dataset.productId));
-    });
-    $('productGrid').addEventListener('keydown',event=>{
+    });$('productGrid').addEventListener('keydown',event=>{
       if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-product-id]')){event.preventDefault();openProduct(Number(event.target.dataset.productId));}
     });
 
     function openProduct(id){
       const p=products.find(item=>item.id===id);if(!p)return;
-      $('productModalTitle').textContent='Product Details';
-      $('productModalIcon').textContent=p.icon;
+      $('productModalTitle').textContent='Product Details';$('productModalIcon').textContent=p.icon;
       $('productModalName').textContent=p.name;
-      $('productModalPrice').textContent=money(p.price);
-      $('productModalDescription').textContent=p.desc;
+      $('productModalPrice').textContent=money(p.price);$('productModalDescription').textContent=p.desc;
       $('productModalAdd').onclick=()=>{closeProduct();openSizeSelector(p.id);};
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
     }
-    function closeProduct(){ $('productOverlay').classList.remove('open');$('productOverlay').setAttribute('aria-hidden','true'); }
-    $('closeProductModal').addEventListener('click',closeProduct);
+    function closeProduct(){ $('productOverlay').classList.remove('open');$('productOverlay').setAttribute('aria-hidden','true'); }$('closeProductModal').addEventListener('click',closeProduct);
     $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay'))closeProduct();});
 
     function cartLineKey(item){
@@ -1297,16 +1300,14 @@
         button.setAttribute('aria-pressed','false');
       });
       $('confirmSizeButton').disabled=true;
-      $('sizeOverlay').classList.add('open');
-      $('sizeOverlay').setAttribute('aria-hidden','false');
+      $('sizeOverlay').classList.add('open');$('sizeOverlay').setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
       const firstSize=$('sizeOptions').querySelector('[data-size]');
       if(firstSize)firstSize.focus();
     }
 
     function closeSizeSelector(){
-      $('sizeOverlay').classList.remove('open');
-      $('sizeOverlay').setAttribute('aria-hidden','true');
+      $('sizeOverlay').classList.remove('open');$('sizeOverlay').setAttribute('aria-hidden','true');
       pendingSizeProductId=null;
       pendingSelectedSize='';
       if(!$('cartModal').classList.contains('open') &&
@@ -1335,8 +1336,7 @@
       addToCart(id,size);
     }
     $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
-    $('closeSizeModal').addEventListener('click',closeSizeSelector);
-    $('cancelSizeButton').addEventListener('click',closeSizeSelector);
+    $('closeSizeModal').addEventListener('click',closeSizeSelector);$('cancelSizeButton').addEventListener('click',closeSizeSelector);
     $('sizeOverlay').addEventListener('click',event=>{if(event.target===$('sizeOverlay'))closeSizeSelector();});
 
     function addToCart(id,size){
@@ -1356,18 +1356,13 @@
       updateCart();showToast('Item removed from cart.');
     }
 
-    // Region rates use the LOWEST amount supplied by the store as the default base estimate.
-    // This is rule-based matching of the typed province/city, not GPS or courier API validation.
     const DELIVERY_BASE_RATES = {
       Luzon: { fee: 50, range: '₱50–₱80' },
       Visayas: { fee: 100, range: '₱100–₱150' },
       Mindanao: { fee: 120, range: '₱120–₱180+' }
     };
 
-    // Use the address provider's official administrative parent metadata instead of a short manual list.
-    // This lets every province supported by the source data map to the same store shipping zones.
     const ISLAND_ZONE_BY_REGION_ID = new Map([
-      // Luzon and NCR/MIMAROPA
       ['NCR', 'Luzon'], ['CAR', 'Luzon'],
       ['R01', 'Luzon'], ['R1', 'Luzon'], ['R02', 'Luzon'], ['R2', 'Luzon'],
       ['R03', 'Luzon'], ['R3', 'Luzon'], ['R04A', 'Luzon'], ['R4A', 'Luzon'],
@@ -1375,11 +1370,9 @@
       ['010000', 'Luzon'], ['020000', 'Luzon'], ['030000', 'Luzon'],
       ['040000', 'Luzon'], ['050000', 'Luzon'], ['130000', 'Luzon'], ['140000', 'Luzon'],
       ['170000', 'Luzon'],
-      // Visayas, including the restored Negros Island Region where the source exposes it
       ['R06', 'Visayas'], ['R6', 'Visayas'], ['R07', 'Visayas'], ['R7', 'Visayas'],
       ['R08', 'Visayas'], ['R8', 'Visayas'], ['R18', 'Visayas'], ['NIR', 'Visayas'],
       ['060000', 'Visayas'], ['070000', 'Visayas'], ['080000', 'Visayas'], ['180000', 'Visayas'],
-      // Mindanao and BARMM/legacy ARMM identifiers
       ['R09', 'Mindanao'], ['R9', 'Mindanao'], ['R10', 'Mindanao'], ['R11', 'Mindanao'],
       ['R12', 'Mindanao'], ['R13', 'Mindanao'], ['ARMM', 'Mindanao'], ['BARMM', 'Mindanao'],
       ['090000', 'Mindanao'], ['100000', 'Mindanao'], ['110000', 'Mindanao'],
@@ -1408,7 +1401,6 @@
       const name = normalizeAddressText(value);
       if (!name) return null;
 
-      // Names only come from the administrative-region field of a place record, not from an address string.
       if (name.includes('mimaropa') || name.includes('calabarzon') || name.includes('ilocos region') ||
           name.includes('cagayan valley') || name.includes('central luzon') || name.includes('bicol region') ||
           name.includes('cordillera') || name.includes('national capital region') || name === 'ncr' ||
@@ -1426,13 +1418,12 @@
           name.includes('region ix (') || name.includes('region x (') || name.includes('region xi (') ||
           name.includes('region xii (') || name.includes('region xiii (')) return 'Mindanao';
 
-      // Fallback for source records whose region text is only the numbered region label.
-      if (/^region (i|1)$/.test(name) || /^region (ii|2)$/.test(name) || /^region (iii|3)$/.test(name) ||
-          /^region (iv-a|4-a)$/.test(name) || /^region (iv-b|4-b)$/.test(name) || /^region (v|5)$/.test(name)) return 'Luzon';
-      if (/^region (vi|6)$/.test(name) || /^region (vii|7)$/.test(name) || /^region (viii|8)$/.test(name) ||
+      if (/^region (i|1)$/.test(name) || /^region (ii|2)$/.test(name) \vert{}\vert{} /^region (iii\vert{}3)$/.test(name) ||
+          /^region (iv-a|4-a)$/.test(name) || /^region (iv-b|4-b)$/.test(name) \vert{}\vert{} /^region (v\vert{}5)$/.test(name)) return 'Luzon';
+      if (/^region (vi|6)$/.test(name) || /^region (vii|7)$/.test(name) \vert{}\vert{} /^region (viii\vert{}8)$/.test(name) ||
           /^region (xviii|18)$/.test(name)) return 'Visayas';
-      if (/^region (ix|9)$/.test(name) || /^region (x|10)$/.test(name) || /^region (xi|11)$/.test(name) ||
-          /^region (xii|12)$/.test(name) || /^region (xiii|13)$/.test(name)) return 'Mindanao';
+      if (/^region (ix|9)$/.test(name) || /^region (x|10)$/.test(name) \vert{}\vert{} /^region (xi\vert{}11)$/.test(name) ||
+          /^region (xii|12)$/.test(name) \vert{}\vert{} /^region (xiii\vert{}13)$/.test(name)) return 'Mindanao';
       return null;
     }
 
@@ -1478,7 +1469,6 @@
       const provinceRecord = findExactProvinceRecord(typedProvince);
       if (provinceRecord) return provinceRecord;
 
-      // If City/Municipality was chosen first, resolve its parent province from the same dataset.
       const cityRecord = findExactCityRecord($('city').value.trim());
       if (cityRecord) {
         const byId = cachedProvinceRecords.find(record => String(record.id || '') === String(cityRecord.parent_id || ''));
@@ -1507,7 +1497,6 @@
       const destination = getDeliveryDestination();
       const city = $('city').value.trim();
       const cityRecord = city ? findExactCityRecord(city, provinceRecord) : null;
-      // Do not estimate from stale city/province selections if the hierarchy contradicts itself.
       if (city && cityRecord && String(cityRecord.parent_id || '') !== String(provinceRecord.id || '') &&
           normalizeAddressText(placeParentName(cityRecord)) !== normalizeAddressText(placeName(provinceRecord))) {
         return null;
@@ -1537,8 +1526,7 @@
 
       if (!cart.length) {
         $('shippingText').textContent=money(0);
-        $('finalTotalText').textContent=money(0);
-        $('shippingEstimate').textContent='Add an item to your cart, then enter your city/municipality and province to estimate delivery.';
+        $('finalTotalText').textContent=money(0);$('shippingEstimate').textContent='Add an item to your cart, then enter your city/municipality and province to estimate delivery.';
       } else if (delivery) {
         const zoneLabel = delivery.adminRegion
           ? `${delivery.region} · ${delivery.adminRegion}`
@@ -1551,8 +1539,7 @@
         $('shippingEstimate').innerHTML=`${destinationLabel}<strong>Shipping zone: ${zoneLabel}.</strong> Default base delivery fee: <strong>${money(delivery.fee)}</strong> for a lightweight parcel up to 0.5 kg. Standard rate range: ${delivery.range}.`;
       } else {
         $('shippingText').textContent='Awaiting address';
-        $('finalTotalText').textContent='Complete address';
-        $('shippingEstimate').textContent='Choose a city/municipality and province from the suggestions. The matched destination and shipping zone will appear here automatically.';
+        $('finalTotalText').textContent='Complete address';$('shippingEstimate').textContent='Choose a city/municipality and province from the suggestions. The matched destination and shipping zone will appear here automatically.';
       }
       saveDraftState();
     }
@@ -1564,16 +1551,13 @@
     });
 
     function openCart(){
-      $('cartOverlay').classList.add('open');$('cartModal').classList.add('open');
-      $('cartModal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+      $('cartOverlay').classList.add('open');$('cartModal').classList.add('open');$('cartModal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     }
     function closeCart(){
-      $('cartOverlay').classList.remove('open');$('cartModal').classList.remove('open');
-      $('cartModal').setAttribute('aria-hidden','true');document.body.style.overflow='';
+      $('cartOverlay').classList.remove('open');$('cartModal').classList.remove('open');$('cartModal').setAttribute('aria-hidden','true');document.body.style.overflow='';
     }
     $('openCartButton').addEventListener('click',openCart);
-    $('closeCartButton').addEventListener('click',closeCart);
-    $('cartOverlay').addEventListener('click',closeCart);
+    $('closeCartButton').addEventListener('click',closeCart);$('cartOverlay').addEventListener('click',closeCart);
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();}});
 
     document.querySelectorAll('[data-payment]').forEach(button=>button.addEventListener('click',()=>{
@@ -1596,15 +1580,13 @@
       const valid=field.valid($(field.id).value.trim());$(field.error).classList.toggle('show',!valid);
     }));
 
-    // Autosave all delivery fields on input/change; refresh delivery estimate on location fields.
     GENMERCH_DRAFT_FIELD_IDS.forEach(id=>{
       const field=$(id);
       field.addEventListener('input',saveDraftState);
       field.addEventListener('change',saveDraftState);
     });
     ['streetAddress','barangay','city','province','postalCode','landmark'].forEach(id=>{
-      $(id).addEventListener('input',updateCart);
-      $(id).addEventListener('change',updateCart);
+      $(id).addEventListener('input',updateCart);$(id).addEventListener('change',updateCart);
     });
 
     $('checkoutForm').addEventListener('submit',event=>{
@@ -1612,14 +1594,10 @@
       if(!cart.length){showNotice('Your cart is empty.','Add at least one product before opening checkout.');return;}
       let valid=true;let firstInvalid=null;
       requiredFields.forEach(field=>{
-        const input=$(field.id);const fieldValid=field.valid(input.value.trim());
-        $(field.error).classList.toggle('show',!fieldValid);
+        const input=$(field.id);const fieldValid=field.valid(input.value.trim());$(field.error).classList.toggle('show',!fieldValid);
         if(!fieldValid){valid=false;if(!firstInvalid)firstInvalid=input;}
       });
       if(!valid){firstInvalid?.focus();return;}
-
-      // Addresses are separated into explicit fields for future backend submission.
-      // Do not show a fake successful order or clear the cart without server validation.
       showCheckoutUnavailable();
     });
 
@@ -1647,7 +1625,6 @@
     updateCart();
     restoreAddressReferenceContext();
 
-    // Flush a final draft snapshot when the browser is backgrounded or about to navigate away.
     window.addEventListener('pagehide', saveDraftState);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') saveDraftState();
