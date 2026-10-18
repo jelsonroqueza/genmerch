@@ -5,24 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GENMERCH - Suot Apparel | Official OPM & Podcast Store</title>
   
-  <!-- SEO & Social Preview Meta Tags -->
   <meta name="description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza. Shop authentic merchandise now!">
   <meta property="og:title" content="GENMERCH - Suot Apparel | Official Store">
   <meta property="og:description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jelsonroqueza.github.io/genmerch/">
   
-  <!-- Branded Shopping Cart Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-
-  <!-- PWA Manifest -->
   <link rel="manifest" href="/genmerch/manifest.json">
   <meta name="theme-color" content="#ee4d2d">
   
-  <!-- Import Google Font for Cursive Script Style -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    /* UI Foundation & Design System */
     :root {
       --primary: #ee4d2d;
       --primary-hover: #d7381a;
@@ -148,22 +142,38 @@
     .pay-details-box span { font-weight: bold; color: var(--text-main); }
     .btn-copy { display: block; width: 100%; background: #0056b3; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
 
+    /* Cart Drawer & Summary Breakdown */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
-    .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: var(--card-bg); z-index: 201; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; display: flex; flex-direction: column; }
+    .cart-drawer { position: fixed; top: 0; right: -420px; width: 100%; max-width: 420px; height: 100%; background: var(--card-bg); z-index: 201; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; display: flex; flex-direction: column; }
     .cart-drawer.open { right: 0; }
     .cart-header { padding: 16px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; }
     .close-cart { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; }
     .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
-    .cart-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-    .cart-item-info { flex: 1; margin-left: 12px; }
+    
+    /* Cart Item & Quantity Adjustments (+ / -) */
+    .cart-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid #eee; padding-bottom: 12px; gap: 10px; }
+    .cart-item-info { flex: 1; }
     .cart-item-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
-    .cart-item-price { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+    .cart-item-price { color: var(--primary); font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; }
+    .qty-controls { display: flex; align-items: center; gap: 8px; }
+    .qty-btn { background: #eee; border: none; width: 24px; height: 24px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:hover { background: #ddd; }
+    .qty-display { font-size: 0.85rem; font-weight: bold; min-width: 20px; text-align: center; }
+    .btn-delete { background: none; border: none; color: #d0011b; font-size: 1rem; cursor: pointer; padding: 4px; }
+    .btn-delete:hover { opacity: 0.8; }
+
+    /* Cart Summary Breakdown */
     .cart-footer { padding: 16px; border-top: 1px solid var(--border-color); background: #fafafa; }
-    .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 14px; }
+    .summary-box { background: white; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px; font-size: 0.85rem; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text-muted); }
+    .summary-row.total { font-size: 1.05rem; font-weight: bold; color: var(--text-main); border-top: 1px dashed var(--border-color); padding-top: 6px; margin-top: 6px; }
+    .summary-row.total span:last-child { color: var(--primary); }
     
     .form-section { margin-bottom: 14px; text-align: left; }
     .form-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 4px; color: var(--text-main); }
-    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; color: var(--text-main); }
+    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 4px; outline: none; color: var(--text-main); }
+    .error-msg { color: #d0011b; font-size: 0.75rem; font-weight: bold; display: none; margin-bottom: 6px; }
+    .error-msg.show { display: block; }
     
     .payment-section { margin-bottom: 14px; text-align: left; }
     .payment-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 6px; color: var(--text-main); }
@@ -178,7 +188,8 @@
     .pay-opt.bank { color: #333; }
     .pay-opt.bank.active { border-color: #333; background: #f5f5f5; }
 
-    .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; }
+    .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+    .btn-checkout:hover { background: var(--primary-hover); }
 
     footer { background: #1a1a1a; color: #ffffff; padding: 24px 16px; text-align: center; margin-top: auto; border-top: 3px solid var(--primary); }
     .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: #cccccc; }
@@ -261,14 +272,18 @@
     </div>
   </div>
 
+  <!-- Payment Instructions / Success Modal with Copy-to-Clipboard -->
   <div class="modal-overlay" id="payModal" onclick="closePayModal(event)" role="dialog" aria-modal="true">
     <div class="pay-modal-content" onclick="event.stopPropagation()">
       <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
       <div class="pay-details-box" id="payDetailsText"></div>
-      <button class="modal-btn" onclick="confirmFinalOrder()">Confirm & Complete Order</button>
+      <div id="successActionArea">
+        <button class="modal-btn" id="confirmOrderBtn" onclick="confirmFinalOrder()">Confirm & Complete Order</button>
+      </div>
     </div>
   </div>
 
+  <!-- Cart Drawer with Summary Breakdown & PH Number Validation -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
   <div class="cart-drawer" id="cartDrawer" role="region" aria-label="Shopping Cart Drawer">
     <div class="cart-header">
@@ -279,11 +294,23 @@
       <p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>
     </div>
     <div class="cart-footer">
+      <!-- Order Summary Breakdown Box -->
+      <div class="summary-box" id="summaryBox" style="display: none;">
+        <div class="summary-row"><span>Subtotal:</span> <span id="subtotalText">₱0</span></div>
+        <div class="summary-row"><span>Shipping Fee:</span> <span id="shippingText">₱150</span></div>
+        <div class="summary-row total"><span>Total Amount:</span> <span id="finalTotalText">₱0</span></div>
+      </div>
+
       <div class="form-section">
         <label for="custName">📦 Delivery Information:</label>
         <input type="text" id="custName" placeholder="Full Name" aria-label="Full Name">
-        <input type="tel" id="custPhone" placeholder="Mobile Number (e.g. 09123456789)" aria-label="Mobile Number">
+        <span class="error-msg" id="nameError">Please enter your full name.</span>
+
+        <input type="tel" id="custPhone" placeholder="Mobile Number (e.g. 09123456789)" maxlength="11" aria-label="Mobile Number">
+        <span class="error-msg" id="phoneError">Invalid PH mobile number (Must start with 09 & be 11 digits).</span>
+
         <textarea id="custAddress" placeholder="Complete Delivery Address & Notes" rows="2" aria-label="Complete Delivery Address"></textarea>
+        <span class="error-msg" id="addressError">Please provide a complete delivery address.</span>
       </div>
 
       <div class="payment-section">
@@ -294,11 +321,6 @@
           <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')" role="button" tabindex="0">💚 Maya</div>
           <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')" role="button" tabindex="0">🏦 Bank</div>
         </div>
-      </div>
-
-      <div class="total-row">
-        <span>Total:</span>
-        <span id="cartTotal" style="color: var(--primary);">₱0</span>
       </div>
 
       <button class="btn-checkout" onclick="checkout()">Proceed to Checkout</button>
@@ -420,28 +442,63 @@
       showToast("Successfully added to your cart!");
     }
 
+    // Cart Quantity Adjustments (+ / -) and Deletion
+    function changeQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      updateCartUI();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+      showToast("Item removed from cart.");
+    }
+
     function updateCartUI() {
       const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
       document.getElementById('cartBadge').innerText = totalCount;
       document.getElementById('drawerCount').innerText = totalCount;
 
       const container = document.getElementById('cartItemsContainer');
+      const summaryBox = document.getElementById('summaryBox');
+
       if (cart.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>';
+        summaryBox.style.display = 'none';
+        document.getElementById('cartTotal').innerText = '₱0';
       } else {
+        summaryBox.style.display = 'block';
         container.innerHTML = cart.map(item => `
           <div class="cart-item">
             <span style="font-size: 2rem;">${item.icon}</span>
             <div class="cart-item-info">
               <div class="cart-item-title">${item.name}</div>
-              <div class="cart-item-price">₱${item.price.toLocaleString()} x ${item.qty}</div>
+              <div class="cart-item-price">₱${(item.price * item.qty).toLocaleString()}</div>
+              <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                <span class="qty-display">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+              </div>
             </div>
+            <button class="btn-delete" onclick="removeFromCart(${item.id})" aria-label="Remove item">🗑️</button>
           </div>
         `).join('');
       }
 
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      document.getElementById('cartTotal').innerText = '₱' + totalPrice.toLocaleString();
+      // Order Summary Calculations
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const shipping = cart.length > 0 ? 150 : 0;
+      const finalTotal = subtotal + (cart.length > 0 ? shipping : 0);
+
+      document.getElementById('subtotalText').innerText = '₱' + subtotal.toLocaleString();
+      document.getElementById('shippingText').innerText = '₱' + shipping.toLocaleString();
+      document.getElementById('finalTotalText').innerText = '₱' + finalTotal.toLocaleString();
+      document.getElementById('cartTotal').innerText = '₱' + finalTotal.toLocaleString();
     }
 
     function toggleCart() {
@@ -451,45 +508,100 @@
       overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
     }
 
+    // Checkout with PH Mobile Number Validation (Must start with 09 and be 11 digits)
     function checkout() {
       if (cart.length === 0) { alert('Your cart is empty!'); return; }
-      const name = document.getElementById('custName').value.trim();
-      const phone = document.getElementById('custPhone').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
+      
+      const nameField = document.getElementById('custName');
+      const phoneField = document.getElementById('custPhone');
+      const addressField = document.getElementById('custAddress');
 
-      if (!name || !phone || !address) { alert('Please complete your delivery information (Name, Phone, Address)!'); return; }
+      const name = nameField.value.trim();
+      const phone = phoneField.value.trim();
+      const address = addressField.value.trim();
 
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      pendingOrderData = { name, phone, address, totalPrice, payment: selectedPayment };
+      let isValid = true;
 
-      if (selectedPayment === 'COD') { confirmFinalOrder(); return; }
+      // Validation checks
+      if (!name) {
+        document.getElementById('nameError').classList.add('show');
+        isValid = false;
+      } else {
+        document.getElementById('nameError').classList.remove('show');
+      }
+
+      const phPhoneRegex = /^09\d{9}$/;
+      if (!phPhoneRegex.test(phone)) {
+        document.getElementById('phoneError').classList.add('show');
+        isValid = false;
+      } else {
+        document.getElementById('phoneError').classList.remove('show');
+      }
+
+      if (!address || address.length < 5) {
+        document.getElementById('addressError').classList.add('show');
+        isValid = false;
+      } else {
+        document.getElementById('addressError').classList.remove('show');
+      }
+
+      if (!isValid) return;
+
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const shipping = 150;
+      const finalTotal = subtotal + shipping;
+
+      pendingOrderData = { name, phone, address, subtotal, shipping, finalTotal, payment: selectedPayment };
+
+      if (selectedPayment === 'COD') {
+        showSuccessModal(pendingOrderData);
+        return;
+      }
 
       let title = ""; let details = "";
       if (selectedPayment === 'GCash') {
         title = "💙 GCash Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• GCash Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
+        details = `Total Amount: <span>₱${finalTotal.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• GCash Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
       } else if (selectedPayment === 'Maya') {
         title = "💚 Maya Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• Maya Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#006b31;">📋 Copy Maya Number</button>`;
+        details = `Total Amount: <span>₱${finalTotal.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• Maya Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#006b31;">📋 Copy Maya Number</button>`;
       } else {
         title = "🏦 Bank Transfer Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Bank: <span>BPI / UnionBank</span><br>• Account Name: <span>King Jr. Caisip</span><br>• Account No: <span>123456789012</span><br><br><button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#333;">📋 Copy Account Number</button>`;
+        details = `Total Amount: <span>₱${finalTotal.toLocaleString()}</span><br><br>• Bank: <span>BPI / UnionBank</span><br>• Account Name: <span>King Jr. Caisip</span><br>• Account No: <span>123456789012</span><br><br><button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#333;">📋 Copy Account Number</button>`;
       }
 
       document.getElementById('payModalTitle').innerText = title;
       document.getElementById('payDetailsText').innerHTML = details;
+      document.getElementById('confirmOrderBtn').style.display = 'block';
       document.getElementById('payModal').style.display = 'flex';
     }
 
     function confirmFinalOrder() {
       if (!pendingOrderData) return;
-      let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${pendingOrderData.name}\nPhone: ${pendingOrderData.phone}\nAddress: ${pendingOrderData.address}\nPayment: ${pendingOrderData.payment}\n\nItems:\n`;
-      cart.forEach(item => { orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`; });
-      orderSummary += `\nTotal Amount: ₱${pendingOrderData.totalPrice.toLocaleString()}`;
+      showSuccessModal(pendingOrderData);
+    }
 
-      alert(`Order Successful!\n\n` + orderSummary);
-      document.getElementById('payModal').style.display = 'none';
-      cart = []; updateCartUI(); toggleCart();
+    // Order Success Confirmation with Copy-to-Clipboard Order Summary
+    function showSuccessModal(data) {
+      let orderText = `🎉 NEW ORDER - GENMERCH 🎉\n\nCustomer: ${data.name}\nPhone: ${data.phone}\nAddress: ${data.address}\nPayment: ${data.payment}\n\nItems:\n`;
+      cart.forEach(item => {
+        orderText += `- ${item.name} (x${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`;
+      });
+      orderText += `\nSubtotal: ₱${data.subtotal.toLocaleString()}\nShipping: ₱${data.shipping.toLocaleString()}\nTotal Amount: ₱${data.finalTotal.toLocaleString()}`;
+
+      document.getElementById('payModalTitle').innerText = "✅ Order Placed Successfully!";
+      document.getElementById('payDetailsText').innerHTML = `
+        <p style="margin-bottom: 10px; font-weight: bold; color: var(--accent);">Thank you for ordering, ${data.name}!</p>
+        <div style="background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.8rem; white-space: pre-line; text-align: left; max-height: 150px; overflow-y: auto;">${orderText}</div>
+        <button onclick="navigator.clipboard.writeText(\`${orderText}\`); showToast('Order summary copied to clipboard!');" class="btn-copy" style="background: var(--accent); margin-top: 12px;">📋 Copy Order Summary</button>
+      `;
+      document.getElementById('confirmOrderBtn').style.display = 'none';
+      document.getElementById('payModal').style.display = 'flex';
+
+      // Clear Cart & Close Drawer
+      cart = [];
+      updateCartUI();
+      toggleCart();
     }
 
     function filterCat(cat, el) {
