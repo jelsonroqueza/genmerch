@@ -120,7 +120,7 @@
     .skeleton-line.short { width: 40%; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-    /* Fixed & Polished Toast Notification Styles */
+    /* Exact Toast Notification Styling */
     .toast-notification {
       position: fixed;
       top: 50%;
@@ -240,9 +240,9 @@
     </div>
   </header>
 
-  <!-- Toast Notification -->
+  <!-- Toast Notification with exact "Added to your cart" text -->
   <div class="toast-notification" id="toastNotification" role="status" aria-live="polite">
-    <span>✅</span> <span id="toastText">Successfully added to your cart!</span>
+    <span>✅</span> <span id="toastText">Added to your cart</span>
   </div>
 
   <div class="container">
@@ -458,7 +458,7 @@
       if (existing) existing.qty++;
       else cart.push({ ...product, qty: 1 });
       updateCartUI();
-      showToast("Successfully added to your cart!");
+      showToast("Added to your cart");
     }
 
     function changeQty(id, delta) {
