@@ -24,6 +24,26 @@
     footer{margin-top:28px;background:#1a1a1a;color:#ddd;padding:24px 16px;text-align:center;border-top:3px solid var(--primary);font-size:.88rem}.footer-brand{font-weight:850;color:#fff;font-size:1.05rem;margin-bottom:8px}
     /* Product detail modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.56);z-index:400;display:none;align-items:center;justify-content:center;padding:14px}.overlay.open{display:flex}.product-modal{background:#fff;width:min(460px,100%);max-height:92dvh;overflow:auto;border-radius:14px;box-shadow:var(--shadow)}.modal-head{background:var(--primary);color:#fff;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;font-weight:850}.icon-btn{border:0;background:transparent;color:inherit;font-size:1.4rem;line-height:1}.product-modal-body{padding:22px;text-align:center}.product-modal-icon{font-size:4.5rem;background:#fff8f6;padding:18px;border-radius:10px;margin-bottom:12px}.product-modal-body h2{font-size:1.12rem;margin-bottom:8px}.product-modal-price{font-size:1.35rem;color:var(--primary);font-weight:850;margin-bottom:12px}.product-description{background:#f8f8f8;border-radius:7px;padding:12px;text-align:left;color:#555;font-size:.9rem;line-height:1.5;margin-bottom:16px}
+    /* Product size selector shown before an item is added to cart */
+    .size-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,15,15,.62);backdrop-filter:blur(3px)}
+    .size-overlay.open{display:flex}
+    .size-modal{width:min(450px,100%);max-height:min(90vh,90dvh);overflow-y:auto;background:#fff;border-radius:14px;box-shadow:0 22px 70px #0005}
+    .size-modal-body{padding:20px}
+    .size-product-name{font-size:.95rem;font-weight:800;line-height:1.4;margin-bottom:6px}
+    .size-instruction{color:var(--muted);font-size:.84rem;line-height:1.45}
+    .size-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0 10px}
+    .size-option{display:flex;align-items:center;justify-content:center;min-height:48px;padding:11px 8px;border:1px solid #ccc;border-radius:8px;background:#fff;color:#222;font-size:.9rem;font-weight:800;transition:background .15s,border-color .15s,color .15s}
+    .size-option:hover{border-color:var(--primary)}
+    .size-option.active{border:2px solid var(--primary);padding:10px 7px;background:#fff2ed;color:var(--primary)}
+    .size-selection-hint{font-size:.78rem;color:var(--muted);min-height:1.3em}
+    .size-modal-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:9px;margin-top:16px}
+    .size-cancel,.size-confirm{min-height:44px;border-radius:7px;padding:10px 12px;font-weight:850}
+    .size-cancel{border:1px solid #ccc;background:#fff;color:#333}
+    .size-confirm{border:0;background:var(--primary);color:#fff}
+    .size-confirm:disabled{background:#c9c9c9;color:#666;cursor:not-allowed}
+    .item-size{font-size:.76rem;color:#666;margin-top:3px}
+    @media(max-width:420px){.size-modal-body{padding:16px}.size-option{min-height:46px;font-size:.85rem}.size-modal-actions{grid-template-columns:1fr 1.25fr}}
+
     /* Cart/checkout modal: centered on every viewport */
     .cart-overlay{position:fixed;inset:0;display:none;background:rgba(15,15,15,.56);z-index:500;backdrop-filter:blur(2px)}.cart-overlay.open{display:block}
     .cart-modal{position:fixed;z-index:501;top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(820px,calc(100vw - 28px));max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);height:auto;display:none;flex-direction:column;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 22px 70px #0004}
@@ -92,6 +112,31 @@
         <div class="product-modal-price" id="productModalPrice"></div>
         <p class="product-description" id="productModalDescription"></p>
         <button class="primary-btn" id="productModalAdd">+ Add to Cart</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="size-overlay" id="sizeOverlay" aria-hidden="true">
+    <section class="size-modal" role="dialog" aria-modal="true" aria-labelledby="sizeModalTitle">
+      <div class="modal-head">
+        <span id="sizeModalTitle">Choose Your Size</span>
+        <button class="icon-btn" id="closeSizeModal" type="button" aria-label="Close size selector">×</button>
+      </div>
+      <div class="size-modal-body">
+        <p class="size-product-name" id="sizeProductName">Product name</p>
+        <p class="size-instruction">Select a size before adding this product to your cart.</p>
+        <div class="size-options" id="sizeOptions" role="group" aria-label="Available sizes">
+          <button class="size-option" type="button" data-size="Small" aria-pressed="false">Small</button>
+          <button class="size-option" type="button" data-size="Medium" aria-pressed="false">Medium</button>
+          <button class="size-option" type="button" data-size="Large" aria-pressed="false">Large</button>
+          <button class="size-option" type="button" data-size="Free Size" aria-pressed="false">Free Size</button>
+          <button class="size-option" type="button" data-size="Extra Size" aria-pressed="false">Extra Size</button>
+        </div>
+        <p class="size-selection-hint" id="sizeSelectionHint" aria-live="polite">No size selected yet.</p>
+        <div class="size-modal-actions">
+          <button class="size-cancel" type="button" id="cancelSizeButton">Cancel</button>
+          <button class="size-confirm" type="button" id="confirmSizeButton" disabled>Add to Cart</button>
+        </div>
       </div>
     </section>
   </div>
@@ -202,6 +247,8 @@
     let currentCategory = 'All';
     let selectedPayment = 'COD';
     let toastTimer;
+    let pendingSizeProductId = null;
+    let pendingSelectedSize = '';
 
     const $ = id => document.getElementById(id);
     const money = value => '₱' + value.toLocaleString('en-PH');
@@ -288,7 +335,7 @@
 
     $('productGrid').addEventListener('click',event=>{
       const addButton=event.target.closest('[data-add-id]');
-      if(addButton){event.stopPropagation();addToCart(Number(addButton.dataset.addId));return;}
+      if(addButton){event.stopPropagation();openSizeSelector(Number(addButton.dataset.addId));return;}
       const card=event.target.closest('[data-product-id]');
       if(card)openProduct(Number(card.dataset.productId));
     });
@@ -303,25 +350,87 @@
       $('productModalName').textContent=p.name;
       $('productModalPrice').textContent=money(p.price);
       $('productModalDescription').textContent=p.desc;
-      $('productModalAdd').onclick=()=>{addToCart(p.id);closeProduct();};
+      $('productModalAdd').onclick=()=>{closeProduct();openSizeSelector(p.id);};
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
     }
     function closeProduct(){ $('productOverlay').classList.remove('open');$('productOverlay').setAttribute('aria-hidden','true'); }
     $('closeProductModal').addEventListener('click',closeProduct);
     $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay'))closeProduct();});
 
-    function addToCart(id){
-      const p=products.find(item=>item.id===id);if(!p)return;
-      const existing=cart.find(item=>item.id===id);
-      if(existing)existing.qty+=1;else cart.push({...p,qty:1});
-      updateCart();showToast('Added to your cart');
+    function cartLineKey(item){
+      return `${item.id}|${item.size}`;
     }
-    function changeQuantity(id,delta){
-      const item=cart.find(product=>product.id===id);if(!item)return;
-      item.qty+=delta;if(item.qty<1)cart=cart.filter(product=>product.id!==id);
+
+    function openSizeSelector(id){
+      const product=products.find(item=>item.id===id);
+      if(!product)return;
+      pendingSizeProductId=product.id;
+      pendingSelectedSize='';
+      $('sizeProductName').textContent=product.name;
+      $('sizeSelectionHint').textContent='No size selected yet.';
+      document.querySelectorAll('[data-size]').forEach(button=>{
+        button.classList.remove('active');
+        button.setAttribute('aria-pressed','false');
+      });
+      $('confirmSizeButton').disabled=true;
+      $('sizeOverlay').classList.add('open');
+      $('sizeOverlay').setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      const firstSize=$('sizeOptions').querySelector('[data-size]');
+      if(firstSize)firstSize.focus();
+    }
+
+    function closeSizeSelector(){
+      $('sizeOverlay').classList.remove('open');
+      $('sizeOverlay').setAttribute('aria-hidden','true');
+      pendingSizeProductId=null;
+      pendingSelectedSize='';
+      if(!$('cartModal').classList.contains('open') &&
+         !$('productOverlay').classList.contains('open') &&
+         !$('noticeOverlay').classList.contains('open')){
+        document.body.style.overflow='';
+      }
+    }
+
+    document.querySelectorAll('[data-size]').forEach(button=>button.addEventListener('click',()=>{
+      pendingSelectedSize=button.dataset.size;
+      document.querySelectorAll('[data-size]').forEach(option=>{
+        const active=option===button;
+        option.classList.toggle('active',active);
+        option.setAttribute('aria-pressed',String(active));
+      });
+      $('sizeSelectionHint').textContent=`Selected size: ${pendingSelectedSize}`;
+      $('confirmSizeButton').disabled=false;
+    }));
+
+    function confirmSizeSelection(){
+      if(pendingSizeProductId===null || !pendingSelectedSize)return;
+      const id=pendingSizeProductId;
+      const size=pendingSelectedSize;
+      closeSizeSelector();
+      addToCart(id,size);
+    }
+    $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
+    $('closeSizeModal').addEventListener('click',closeSizeSelector);
+    $('cancelSizeButton').addEventListener('click',closeSizeSelector);
+    $('sizeOverlay').addEventListener('click',event=>{if(event.target===$('sizeOverlay'))closeSizeSelector();});
+
+    function addToCart(id,size){
+      const p=products.find(item=>item.id===id);if(!p || !size)return;
+      const existing=cart.find(item=>item.id===id && item.size===size);
+      if(existing)existing.qty+=1;else cart.push({...p,size,qty:1});
+      updateCart();showToast(`${p.name} (${size}) added to your cart`);
+    }
+    function changeQuantity(key,delta){
+      const item=cart.find(product=>cartLineKey(product)===key);if(!item)return;
+      item.qty+=delta;
+      if(item.qty<1)cart=cart.filter(product=>cartLineKey(product)!==key);
       updateCart();
     }
-    function removeFromCart(id){cart=cart.filter(product=>product.id!==id);updateCart();showToast('Item removed from cart.');}
+    function removeFromCart(key){
+      cart=cart.filter(product=>cartLineKey(product)!==key);
+      updateCart();showToast('Item removed from cart.');
+    }
 
     function updateCart(){
       const count=cart.reduce((sum,item)=>sum+item.qty,0);
@@ -329,7 +438,7 @@
       if(!cart.length){$('cartItemsContainer').innerHTML='<p class="cart-empty">Your cart is empty.</p>';}
       else{
         $('cartItemsContainer').innerHTML=cart.map(item=>`
-          <div class="cart-item"><div class="item-icon">${item.icon}</div><div><div class="item-name">${escapeHtml(item.name)}</div><div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-id="${item.id}" aria-label="Decrease quantity">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-id="${item.id}" aria-label="Increase quantity">+</button></div></div><button class="remove-btn" data-remove-id="${item.id}" aria-label="Remove ${escapeHtml(item.name)}">🗑</button></div>`).join('');
+          <div class="cart-item"><div class="item-icon">${item.icon}</div><div><div class="item-name">${escapeHtml(item.name)}</div><div class="item-size">Size: ${escapeHtml(item.size)}</div><div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">🗑</button></div>`).join('');
       }
       const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
       const shipping=cart.length?150:0;
@@ -337,8 +446,10 @@
       $('subtotalText').textContent=money(subtotal);$('shippingText').textContent=money(shipping);$('finalTotalText').textContent=money(subtotal+shipping);
     }
     $('cartItemsContainer').addEventListener('click',event=>{
-      const qty=event.target.closest('[data-qty]');if(qty){changeQuantity(Number(qty.dataset.id),Number(qty.dataset.qty));return;}
-      const remove=event.target.closest('[data-remove-id]');if(remove)removeFromCart(Number(remove.dataset.removeId));
+      const qty=event.target.closest('[data-qty]');
+      if(qty){changeQuantity(qty.dataset.cartKey,Number(qty.dataset.qty));return;}
+      const remove=event.target.closest('[data-remove-key]');
+      if(remove)removeFromCart(remove.dataset.removeKey);
     });
 
     function openCart(){
@@ -352,7 +463,7 @@
     $('openCartButton').addEventListener('click',openCart);
     $('closeCartButton').addEventListener('click',closeCart);
     $('cartOverlay').addEventListener('click',closeCart);
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeCart();closeProduct();closeNotice();}});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();}});
 
     document.querySelectorAll('[data-payment]').forEach(button=>button.addEventListener('click',()=>{
       selectedPayment=button.dataset.payment;
