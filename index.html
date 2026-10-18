@@ -10,7 +10,7 @@
   <!-- Import Google Font for Cursive Script Style -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    /* UI Foundation & Design System Standardization */
+    /* UI Foundation & Reusable Component System */
     :root {
       --primary: #ee4d2d;
       --primary-hover: #d7381a;
@@ -29,9 +29,9 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
-    body { background: var(--bg); color: var(--text-main); padding-bottom: 70px; line-height: 1.5; }
+    body { background: var(--bg); color: var(--text-main); padding-bottom: 70px; display: flex; flex-direction: column; min-height: 100vh; }
     
-    /* Standardized Header */
+    /* 1. Reusable Header Component */
     header { background: linear-gradient(180deg, #f53d2d, #f63); color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
     .nav-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
     .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; order: 1; }
@@ -50,35 +50,24 @@
     }
 
     /* Container & Layout Spacing */
-    .container { max-width: 1200px; margin: 16px auto; padding: 0 12px; }
+    .container { max-width: 1200px; margin: 16px auto; padding: 0 12px; flex: 1; width: 100%; }
     
     /* Realtime Philippine Clock Bar */
     .ph-clock-bar { background: #222; color: #fff; padding: 8px 14px; text-align: center; font-size: 0.8rem; font-weight: 600; border-radius: var(--radius-md); margin-bottom: 14px; letter-spacing: 0.5px; box-shadow: var(--shadow-sm); }
     
-    /* Standardized Hero Banner */
-    .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: var(--radius-md); padding: 28px 20px; text-align: center; margin-bottom: 16px; box-shadow: var(--shadow-md); }
+    /* Hero Banner */
+    .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: var(--radius-md); padding: 26px 20px; text-align: center; margin-bottom: 16px; box-shadow: var(--shadow-md); }
     .hero-title { font-size: 1.7rem; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
-    
-    /* Standardized Script Font for Suot Apparel */
-    .suot-apparel-banner {
-      font-family: 'Great Vibes', cursive;
-      font-size: 2.6rem;
-      font-weight: 400;
-      color: #fff;
-      margin-left: 4px;
-      vertical-align: middle;
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
-    }
-
+    .suot-apparel-banner { font-family: 'Great Vibes', cursive; font-size: 2.5rem; font-weight: 400; color: #fff; margin-left: 4px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3)); }
     .hero-subtitle { font-size: 0.9rem; font-weight: 500; opacity: 0.95; letter-spacing: 0.3px; }
     
-    /* Standardized Categories (Pills) */
+    /* Categories */
     .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; }
     .cat-pill { background: var(--card-bg); padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); transition: all 0.2s; }
     .cat-pill:hover { border-color: var(--primary); }
     .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Standardized Product Grid & Cards */
+    /* Product Grid & Cards */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
@@ -94,13 +83,12 @@
     .card-sold { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; }
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background 0.2s; }
     .btn-add:hover { background: var(--primary-hover); }
-    .btn-add:active { opacity: 0.8; }
 
-    /* Standardized Toast Notification */
+    /* 2. Reusable Toast Component */
     .toast-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0, 0, 0, 0.88); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: all 0.25s ease; }
     .toast-notification.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-    /* Standardized Modals */
+    /* 3. Reusable Modal Components */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 300; align-items: center; justify-content: center; padding: 16px; }
     .modal-content { background: var(--card-bg); width: 100%; max-width: 450px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); animation: scaleUp 0.2s ease; }
     @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -114,15 +102,13 @@
     .modal-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
     .modal-btn:hover { background: var(--primary-hover); }
 
-    /* Payment Instructions Modal Specific */
     .pay-modal-content { background: var(--card-bg); width: 100%; max-width: 400px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); text-align: center; padding: 24px; }
     .pay-modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
     .pay-details-box { background: #f8f9fa; border: 1px dashed var(--border-color); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.6; }
     .pay-details-box span { font-weight: bold; color: var(--text-main); }
-    .btn-copy { display: block; width: 100%; background: #007df0; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; transition: opacity 0.2s; }
-    .btn-copy:hover { opacity: 0.9; }
+    .btn-copy { display: block; width: 100%; background: #007df0; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
 
-    /* Standardized Cart Drawer */
+    /* 4. Reusable Drawer Component */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
     .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: var(--card-bg); z-index: 201; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; display: flex; flex-direction: column; }
     .cart-drawer.open { right: 0; }
@@ -136,18 +122,15 @@
     .cart-footer { padding: 16px; border-top: 1px solid var(--border-color); background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 14px; }
     
-    /* Standardized Form Controls */
+    /* Form Controls */
     .form-section { margin-bottom: 14px; text-align: left; }
     .form-section label { font-size: 0.82rem; font-weight: bold; display: block; margin-bottom: 4px; color: #444; }
-    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; transition: border-color 0.2s; }
-    .form-section input:focus, .form-section textarea:focus { border-color: var(--primary); }
+    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; }
     
-    /* Standardized Payment Option Cards */
     .payment-section { margin-bottom: 14px; text-align: left; }
     .payment-section label { font-size: 0.82rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
     .payment-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
     .pay-opt { border: 2px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; font-size: 0.82rem; font-weight: bold; cursor: pointer; background: white; transition: all 0.2s; }
-    
     .pay-opt.cod { color: #d0011b; }
     .pay-opt.cod.active { border-color: #d0011b; background: #fffdfd; }
     .pay-opt.gcash { color: #007df0; }
@@ -157,18 +140,23 @@
     .pay-opt.bank { color: #555; }
     .pay-opt.bank.active { border-color: #333; background: #f5f5f5; }
 
-    .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
-    .btn-checkout:hover { background: var(--primary-hover); }
+    .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; }
+
+    /* 5. Reusable Footer Component */
+    footer { background: #222222; color: #ffffff; padding: 24px 16px; text-align: center; margin-top: auto; border-top: 3px solid var(--primary); }
+    .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; color: #aaa; }
+    .footer-brand { font-weight: bold; color: #fff; font-size: 1rem; }
 
     /* Mobile Bottom Navigation */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border-color); z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; }
     .nav-item.active { color: var(--primary); font-weight: bold; }
     @media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 20px; } }
   </style>
 </head>
 <body>
 
+  <!-- Reusable Header Component -->
   <header>
     <div class="nav-container">
       <div class="logo">GENMERCH</div>
@@ -182,18 +170,16 @@
     </div>
   </header>
 
-  <!-- Toast Notification Box -->
+  <!-- Reusable Toast Component -->
   <div class="toast-notification" id="toastNotification">
     <span>✅</span> <span id="toastText">Successfully added to your cart!</span>
   </div>
 
   <div class="container">
     <!-- Realtime Philippine Time & Date Bar -->
-    <div class="ph-clock-bar" id="phClockBar">
-      Loading Philippine Time...
-    </div>
+    <div class="ph-clock-bar" id="phClockBar">Loading Philippine Time...</div>
 
-    <!-- Orange Hero Banner with Exact Logo Styling -->
+    <!-- Hero Banner -->
     <div class="hero-banner">
       <div class="hero-title">
         GENMERCH <span style="font-weight: 300; opacity: 0.8;">-</span> <span class="suot-apparel-banner">Suot Apparel</span>
@@ -212,7 +198,15 @@
     <div class="grid" id="productGrid"></div>
   </div>
 
-  <!-- Product Details Modal -->
+  <!-- Reusable Footer Component -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">GENMERCH - Suot Apparel</div>
+      <p>© 2026 Jelson Roqueza. All rights reserved. Official OPM & Podcast Merchandise Store.</p>
+    </div>
+  </footer>
+
+  <!-- Reusable Product Details Modal Component -->
   <div class="modal-overlay" id="productModal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -229,18 +223,16 @@
     </div>
   </div>
 
-  <!-- Payment Instructions Modal -->
+  <!-- Reusable Payment Instructions Modal Component -->
   <div class="modal-overlay" id="payModal" onclick="closePayModal(event)">
     <div class="pay-modal-content" onclick="event.stopPropagation()">
       <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
-      <div class="pay-details-box" id="payDetailsText">
-        <!-- Dynamic Payment Info -->
-      </div>
+      <div class="pay-details-box" id="payDetailsText"></div>
       <button class="modal-btn" onclick="confirmFinalOrder()">Confirm & Complete Order</button>
     </div>
   </div>
 
-  <!-- Cart Drawer Overlay -->
+  <!-- Reusable Cart Drawer Component -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
   <div class="cart-drawer" id="cartDrawer">
     <div class="cart-header">
@@ -251,7 +243,6 @@
       <p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>
     </div>
     <div class="cart-footer">
-      <!-- Customer Information Form -->
       <div class="form-section">
         <label>📦 Delivery Information:</label>
         <input type="text" id="custName" placeholder="Full Name">
@@ -259,7 +250,6 @@
         <textarea id="custAddress" placeholder="Complete Delivery Address & Notes" rows="2"></textarea>
       </div>
 
-      <!-- Payment Options including COD -->
       <div class="payment-section">
         <label>💳 Payment Method:</label>
         <div class="payment-options">
@@ -287,21 +277,15 @@
   </nav>
 
   <script>
-    // Realtime Philippine Time & Date Widget
     function updatePHClock() {
       const now = new Date();
       const optionsTime = { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
       const optionsDate = { timeZone: 'Asia/Manila', month: 'long', day: 'numeric', year: 'numeric', weekday: 'long' };
-      
-      const timeString = new Intl.DateTimeFormat('en-US', optionsTime).format(now);
-      const dateString = new Intl.DateTimeFormat('en-US', optionsDate).format(now);
-      
-      document.getElementById('phClockBar').innerText = `${dateString} | Philippine Time - ${timeString}`;
+      document.getElementById('phClockBar').innerText = `${new Intl.DateTimeFormat('en-US', optionsDate).format(now)} | Philippine Time - ${new Intl.DateTimeFormat('en-US', optionsTime).format(now)}`;
     }
     setInterval(updatePHClock, 1000);
     updatePHClock();
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/genmerch/sw.js').catch(err => console.log('SW registration failed: ', err));
@@ -361,33 +345,22 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
-    function closeModalBtn() {
-      document.getElementById('productModal').style.display = 'none';
-    }
-
-    function closeModal(e) {
-      if (e.target.id === 'productModal') {
-        closeModalBtn();
-      }
-    }
+    function closeModalBtn() { document.getElementById('productModal').style.display = 'none'; }
+    function closeModal(e) { if (e.target.id === 'productModal') closeModalBtn(); }
+    function closePayModal(e) { if (e.target.id === 'payModal') document.getElementById('payModal').style.display = 'none'; }
 
     function showToast(message) {
       const toast = document.getElementById('toastNotification');
       document.getElementById('toastText').innerText = message;
       toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 1800);
+      setTimeout(() => toast.classList.remove('show'), 1800);
     }
 
     function addToCart(id) {
       const product = products.find(p => p.id === id);
       const existing = cart.find(item => item.id === id);
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ ...product, qty: 1 });
-      }
+      if (existing) existing.qty++;
+      else cart.push({ ...product, qty: 1 });
       updateCartUI();
       showToast("Successfully added to your cart!");
     }
@@ -424,52 +397,28 @@
     }
 
     function checkout() {
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
-      
+      if (cart.length === 0) { alert('Your cart is empty!'); return; }
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
 
-      if (!name || !phone || !address) {
-        alert('Please complete your delivery information (Name, Phone, Address)!');
-        return;
-      }
+      if (!name || !phone || !address) { alert('Please complete your delivery information (Name, Phone, Address)!'); return; }
 
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       pendingOrderData = { name, phone, address, totalPrice, payment: selectedPayment };
 
-      // If COD, proceed directly
-      if (selectedPayment === 'COD') {
-        confirmFinalOrder();
-        return;
-      }
+      if (selectedPayment === 'COD') { confirmFinalOrder(); return; }
 
-      // If GCash, Maya, or Bank, show clean instructions with King Jr. Caisip details
-      let title = "";
-      let details = "";
-
+      let title = ""; let details = "";
       if (selectedPayment === 'GCash') {
         title = "💙 GCash Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• GCash Number: <span id='payNum'>09750634497</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• GCash Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
       } else if (selectedPayment === 'Maya') {
         title = "💚 Maya Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• Maya Number: <span id='payNum'>09750634497</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#00b050;">📋 Copy Maya Number</button>`;
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• Maya Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#00b050;">📋 Copy Maya Number</button>`;
       } else {
         title = "🏦 Bank Transfer Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>` +
-                  `• Bank: <span>BPI / UnionBank</span><br>` +
-                  `• Account Name: <span>King Jr. Caisip</span><br>` +
-                  `• Account No: <span id='payNum'>123456789012</span><br><br>` +
-                  `<button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Bank: <span>BPI / UnionBank</span><br>• Account Name: <span>King Jr. Caisip</span><br>• Account No: <span>123456789012</span><br><br><button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
       }
 
       document.getElementById('payModalTitle').innerText = title;
@@ -479,39 +428,25 @@
 
     function confirmFinalOrder() {
       if (!pendingOrderData) return;
-      
       let orderSummary = `New Order from GENMERCH!\n\nCustomer: ${pendingOrderData.name}\nPhone: ${pendingOrderData.phone}\nAddress: ${pendingOrderData.address}\nPayment: ${pendingOrderData.payment}\n\nItems:\n`;
-      cart.forEach(item => {
-        orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`;
-      });
+      cart.forEach(item => { orderSummary += `- ${item.name} (Qty: ${item.qty}) - ₱${(item.price * item.qty).toLocaleString()}\n`; });
       orderSummary += `\nTotal Amount: ₱${pendingOrderData.totalPrice.toLocaleString()}`;
 
       alert(`Order Successful!\n\n` + orderSummary);
-      
       document.getElementById('payModal').style.display = 'none';
-      cart = [];
-      updateCartUI();
-      toggleCart();
-    }
-
-    function closePayModal(e) {
-      if (e.target.id === 'payModal') {
-        document.getElementById('payModal').style.display = 'none';
-      }
+      cart = []; updateCartUI(); toggleCart();
     }
 
     function filterCat(cat, el) {
       currentCat = cat;
       document.querySelectorAll('.cat-pill').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
-      const filtered = cat === 'All' ? products : products.filter(p => p.cat === cat);
-      render(filtered);
+      render(cat === 'All' ? products : products.filter(p => p.cat === cat));
     }
 
     function searchProducts() {
       const q = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = products.filter(p => (currentCat === 'All' || p.cat === currentCat) && p.name.toLowerCase().includes(q));
-      render(filtered);
+      render(products.filter(p => (currentCat === 'All' || p.cat === currentCat) && p.name.toLowerCase().includes(q)));
     }
 
     render(products);
