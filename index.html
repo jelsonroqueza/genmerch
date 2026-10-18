@@ -34,18 +34,19 @@
     /* Main Content */
     .container { max-width: 1200px; margin: 12px auto; padding: 0 12px; }
     
-    /* Orange Hero Banner with Exact Logo Styling */
-    .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: 8px; padding: 28px 20px; text-align: center; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .hero-title { font-size: 1.8rem; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+    /* Realtime Philippine Clock Bar */
+    .ph-clock-bar { background: #222; color: #fff; padding: 6px 12px; text-align: center; font-size: 0.78rem; font-weight: 600; border-radius: 6px; margin-bottom: 10px; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    
+    /* Orange Hero Banner with Exact Logo Styling (No Emojis on sides) */
+    .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: 8px; padding: 26px 20px; text-align: center; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .hero-title { font-size: 1.7rem; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
     
     /* Exact Matching Font for Suot Apparel inside Orange Banner */
     .suot-apparel-banner {
       font-family: 'Great Vibes', cursive;
-      font-size: 2.6rem;
+      font-size: 2.5rem;
       font-weight: 400;
-      background: linear-gradient(90deg, #e0f7fa, #ffffff, #f8bbd0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
       margin-left: 4px;
       vertical-align: middle;
       filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
@@ -163,10 +164,15 @@
   </div>
 
   <div class="container">
+    <!-- Realtime Philippine Time & Date Bar -->
+    <div class="ph-clock-bar" id="phClockBar">
+      Loading Philippine Time...
+    </div>
+
     <!-- Orange Hero Banner with Exact Logo Styling -->
     <div class="hero-banner">
       <div class="hero-title">
-        🎙️ GENMERCH <span style="font-weight: 300; opacity: 0.8;">-</span> <span class="suot-apparel-banner">Suot Apparel</span> 🎧
+        GENMERCH <span style="font-weight: 300; opacity: 0.8;">-</span> <span class="suot-apparel-banner">Suot Apparel</span>
       </div>
       <div class="hero-subtitle">Official Album Drop & Limited Edition Streetwear Collection!</div>
     </div>
@@ -257,6 +263,20 @@
   </nav>
 
   <script>
+    // Realtime Philippine Time & Date Widget
+    function updatePHClock() {
+      const now = new Date();
+      const optionsTime = { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+      const optionsDate = { timeZone: 'Asia/Manila', month: 'long', day: 'numeric', year: 'numeric', weekday: 'long' };
+      
+      const timeString = new Intl.DateTimeFormat('en-US', optionsTime).format(now);
+      const dateString = new Intl.DateTimeFormat('en-US', optionsDate).format(now);
+      
+      document.getElementById('phClockBar').innerText = `${dateString} | Philippine Time - ${timeString}`;
+    }
+    setInterval(updatePHClock, 1000);
+    updatePHClock();
+
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -324,12 +344,6 @@
     function closeModal(e) {
       if (e.target.id === 'productModal') {
         closeModalBtn();
-      }
-    }
-
-    function closePayModal(e) {
-      if (e.target.id === 'payModal') {
-        document.getElementById('payModal').style.display = 'none';
       }
     }
 
@@ -454,6 +468,12 @@
       cart = [];
       updateCartUI();
       toggleCart();
+    }
+
+    function closePayModal(e) {
+      if (e.target.id === 'payModal') {
+        document.getElementById('payModal').style.display = 'none';
+      }
     }
 
     function filterCat(cat, el) {
