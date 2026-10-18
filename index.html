@@ -1050,6 +1050,457 @@
     }
 
   </style>
+  <style id="genmerch-final-visual-refinement">
+    /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
+    :root {
+      --store-max: 1600px;
+      --catalog-max: 1400px;
+    }
+
+    .announcement-inner,
+    .main-header {
+      width: 100%;
+      max-width: var(--store-max);
+      margin-inline: auto;
+      padding-inline: clamp(18px, 3vw, 48px);
+    }
+
+    .main-header .nav {
+      width: 100%;
+      max-width: none;
+      align-items: center;
+      gap: clamp(12px, 1.7vw, 26px);
+    }
+
+    .brand-lockup {
+      flex: 0 0 auto;
+      align-items: center;
+    }
+
+    .search {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .header-actions {
+      flex: 0 0 auto;
+      align-items: center;
+    }
+
+    .desktop-links {
+      width: 100%;
+      max-width: none;
+      margin-inline: auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(8px, 1.05vw, 17px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .desktop-links::-webkit-scrollbar { display: none; }
+
+    main.container {
+      width: 100%;
+      max-width: var(--store-max);
+      margin-inline: auto;
+      padding-inline: clamp(16px, 2.6vw, 42px);
+      flex: 1 0 auto;
+    }
+
+    .hero {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      min-height: clamp(360px, 28vw, 430px);
+      margin-inline: auto;
+      padding: 0;
+      grid-template-columns: minmax(0, 53%) minmax(0, 47%);
+      align-items: stretch;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 4;
+      width: 100%;
+      min-width: 0;
+      padding: clamp(24px, 2.7vw, 42px) clamp(20px, 2.6vw, 40px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-brand-lockup {
+      display: flex;
+      flex: 0 1 auto;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      max-width: 100%;
+      margin: 0 auto clamp(10px, 1.1vw, 15px);
+      padding: 0;
+      gap: clamp(8px, .85vw, 14px);
+      overflow: visible;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      line-height: 1;
+    }
+
+    .hero-cart {
+      flex: 0 0 auto;
+      display: block;
+      font-size: clamp(2.4rem, 3.65vw, 4.1rem);
+      line-height: 1;
+      filter: saturate(1.25);
+    }
+
+    .hero-wordmark {
+      display: flex;
+      flex: 0 1 auto;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      width: max-content;
+      max-width: 100%;
+      min-width: 0;
+      margin: 0;
+      font-size: clamp(2rem, 4.15vw, 4.35rem);
+      line-height: .97;
+      letter-spacing: -.055em;
+      white-space: nowrap;
+    }
+
+    .hero-wordmark small {
+      display: block;
+      flex: 0 0 100%;
+      width: 100%;
+      margin-top: clamp(4px, .55vw, 8px);
+      text-align: center;
+      font-size: clamp(.78rem, 1.2vw, 1.22rem);
+      letter-spacing: clamp(1.4px, .28vw, 3.8px);
+      line-height: 1.2;
+    }
+
+    .hero-tagline {
+      align-self: center;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto clamp(13px, 1.4vw, 18px) !important;
+      padding: 5px clamp(10px, 1.15vw, 16px);
+      text-align: center;
+      white-space: normal;
+      line-height: 1.35;
+      font-size: clamp(.76rem, 1.35vw, 1.08rem) !important;
+      letter-spacing: clamp(.8px, .25vw, 3.2px);
+    }
+
+    .hero-benefits {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 590px;
+      margin: 0 auto clamp(15px, 1.45vw, 20px);
+      gap: clamp(7px, .85vw, 13px);
+    }
+
+    .hero-benefits > span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      gap: clamp(5px, .45vw, 8px);
+      font-size: clamp(.63rem, .78vw, .82rem);
+      font-weight: 750;
+      line-height: 1.28;
+      text-align: left;
+    }
+
+    .hero-benefits > span > b {
+      display: block;
+      flex: 0 0 auto;
+      font-size: clamp(1.1rem, 1.35vw, 1.5rem);
+      line-height: 1;
+    }
+
+    .hero-benefits > span > span {
+      display: block;
+      min-width: 0;
+    }
+
+    .shop-now {
+      align-self: center;
+      width: clamp(180px, 16vw, 245px);
+      min-width: 0;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: clamp(12px, 1.1vw, 16px) 24px;
+      text-align: center;
+    }
+
+    .hero-clock {
+      align-self: center;
+      width: fit-content;
+      max-width: 100%;
+      margin: clamp(12px, 1.15vw, 16px) auto 0 !important;
+      padding: 7px clamp(9px, 1vw, 14px);
+      text-align: center;
+      white-space: normal;
+      line-height: 1.35;
+    }
+
+    .hero-art {
+      position: relative;
+      z-index: 1;
+      align-self: stretch;
+      width: calc(100% + clamp(60px, 7vw, 108px));
+      max-width: none;
+      min-width: 0;
+      height: 100%;
+      min-height: 0;
+      margin-left: calc(-1 * clamp(60px, 7vw, 108px));
+      padding: 0;
+      overflow: hidden;
+      clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+      background: #ff641c;
+      isolation: isolate;
+    }
+
+    .hero-models-photo {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none;
+      object-fit: cover;
+      object-position: center 18%;
+      transform: none;
+      border: 0 !important;
+      border-radius: 0 !important;
+      outline: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      -webkit-mask-image: none !important;
+      mask-image: none !important;
+      filter: saturate(1.02) contrast(1.02) sepia(.025);
+    }
+
+    .hero-art::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      inset: 0 auto 0 0;
+      width: 18%;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(255,240,220,0), rgba(255,112,30,.12));
+    }
+
+    .trust-strip {
+      width: 100%;
+      max-width: none;
+      margin: 0 auto;
+      padding: 16px clamp(12px, 2vw, 28px);
+      gap: clamp(8px, 1.3vw, 20px);
+      align-items: center;
+    }
+
+    .trust-strip > div {
+      min-width: 0;
+      justify-content: center;
+      padding-inline: clamp(4px, .6vw, 9px);
+      gap: clamp(8px, .9vw, 13px);
+    }
+
+    /* Let the catalog use the same usable width as the hero and trust strip. */
+    .categories,
+    .catalog-heading,
+    #productGrid {
+      width: 100%;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .categories {
+      padding: 18px 0 9px;
+      margin-top: 0;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .catalog-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+    }
+
+    #productGrid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: clamp(12px, 1.2vw, 18px);
+    }
+
+    @media (min-width: 1101px) {
+      .hero { grid-template-columns: minmax(0, 53%) minmax(0, 47%); }
+      .hero-copy { padding-inline: clamp(22px, 2.6vw, 40px); }
+    }
+
+    @media (min-width: 761px) and (max-width: 1100px) {
+      .announcement-inner,
+      .main-header { padding-inline: 22px; }
+
+      main.container { padding-inline: 22px; }
+
+      .hero {
+        min-height: clamp(330px, 38vw, 390px);
+        grid-template-columns: minmax(0, 52%) minmax(0, 48%);
+      }
+
+      .hero-copy { padding: 22px clamp(14px, 2vw, 22px); }
+      .hero-brand-lockup { gap: 7px; }
+      .hero-cart { font-size: clamp(2rem, 3.3vw, 2.8rem); }
+      .hero-wordmark { font-size: clamp(1.55rem, 3.2vw, 2.5rem); }
+      .hero-wordmark small { font-size: clamp(.66rem, 1vw, .82rem); letter-spacing: 1.5px; }
+      .hero-tagline { font-size: clamp(.64rem, 1vw, .82rem) !important; letter-spacing: .8px; }
+      .hero-benefits {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 380px;
+        gap: 9px 10px;
+        margin-bottom: 14px;
+      }
+      .hero-benefits > span { justify-content: flex-start; font-size: .7rem; }
+      .shop-now { width: min(100%, 220px); }
+      .hero-art {
+        width: calc(100% + 54px);
+        margin-left: -54px;
+        clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+      }
+      #productGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .trust-strip { gap: 10px; padding-inline: 12px; }
+      .trust-strip > div { gap: 8px; padding-inline: 3px; }
+    }
+
+    @media (max-width: 760px) {
+      .announcement-inner { padding-inline: 12px; }
+      .main-header { padding: 8px 12px 0; }
+      main.container { padding-inline: 12px; }
+
+      .hero {
+        width: 100%;
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        margin-inline: auto;
+        background: linear-gradient(135deg, #fff9ef 0%, #fff0dc 58%, #ff8b2a 100%);
+      }
+
+      .hero-copy { padding: 22px clamp(14px, 4vw, 24px) 19px; }
+      .hero-brand-lockup {
+        width: max-content;
+        max-width: 100%;
+        flex-wrap: nowrap;
+        gap: 7px;
+        margin: 0 auto 10px;
+      }
+      .hero-cart { font-size: clamp(2.1rem, 8vw, 3rem); }
+      .hero-wordmark { font-size: clamp(1.7rem, 7.6vw, 2.9rem); }
+      .hero-wordmark small { font-size: clamp(.66rem, 3vw, .88rem); letter-spacing: clamp(1.2px, .55vw, 2.3px); }
+      .hero-tagline {
+        max-width: 100%;
+        margin-bottom: 14px !important;
+        font-size: clamp(.67rem, 2.7vw, .86rem) !important;
+        letter-spacing: clamp(.5px, .3vw, 1.8px);
+      }
+      .hero-benefits {
+        width: 100%;
+        max-width: 450px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 11px 14px;
+        margin-bottom: 15px;
+      }
+      .hero-benefits > span { justify-content: flex-start; font-size: clamp(.67rem, 2.5vw, .78rem); }
+      .hero-benefits > span > b { font-size: 1.2rem; }
+      .shop-now { width: min(100%, 280px); padding: 12px 20px; }
+      .hero-clock { max-width: 100%; font-size: clamp(.6rem, 2vw, .7rem); }
+
+      .hero-art {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        margin: 0;
+        aspect-ratio: 16 / 9;
+        clip-path: none;
+      }
+      .hero-models-photo {
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        object-position: center top;
+      }
+      .hero-art::before { width: 0; }
+
+      .trust-strip {
+        width: 100%;
+        margin: 0 auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 10px;
+        padding: 15px 12px;
+      }
+      .trust-strip > div { justify-content: flex-start; border-right: 0; padding: 0; gap: 8px; }
+      .trust-strip b { font-size: .74rem; }
+      .trust-strip small { font-size: .67rem; }
+
+      .categories { padding: 16px 0 8px; margin-bottom: 12px; gap: 8px; }
+      .catalog-heading { margin: 12px 0; gap: 10px; }
+      .section-title { font-size: clamp(1.05rem, 4vw, 1.25rem); }
+      .product-count { font-size: .7rem; white-space: nowrap; }
+      #productGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    }
+
+    @media (max-width: 420px) {
+      .main-header .nav { gap: 8px; }
+      .brand-cart { font-size: 1.95rem; }
+      .brand-word { font-size: 1.34rem; }
+      .brand-sub { font-size: .55rem; letter-spacing: 1.2px; }
+      .header-actions { gap: 5px; }
+      .header-action { min-width: 29px; }
+      .header-action > span,
+      .cart-icon { font-size: 1.22rem; }
+      .header-action small { font-size: .56rem; }
+      .hero-copy { padding: 19px 12px 16px; }
+      .hero-brand-lockup { gap: 5px; }
+      .hero-cart { font-size: 2rem; }
+      .hero-wordmark { font-size: clamp(1.55rem, 7.2vw, 1.85rem); }
+      .hero-wordmark small { font-size: .64rem; letter-spacing: 1.3px; }
+      .hero-benefits { gap: 10px 7px; }
+      .hero-benefits > span { font-size: .64rem; }
+      .hero-clock { padding: 6px 8px; }
+      .trust-strip { grid-template-columns: 1fr; gap: 12px; padding: 14px 18px; }
+      .trust-strip > div { justify-content: flex-start; }
+      #productGrid { gap: 8px; }
+      .card-body { padding: 8px; }
+      .card-title { font-size: .77rem; }
+      .price { font-size: .98rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shop-now,
+      .category,
+      .card { transition: none !important; }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -1092,8 +1543,11 @@
           <span class="hero-wordmark"><span>GEN</span><b>MERCH</b><small>— Suot Apparel —</small></span>
         </div>
         <p class="hero-tagline">Comfort. Style. For Every You.</p>
-        <div class="hero-benefits">
-          <span><b>♧</b> Premium<br>Quality Fabric</span><span><b>◇</b> Trendy<br>Designs</span><span><b>🚚</b> Nationwide<br>Shipping</span><span><b>♡</b> Cash on<br>Delivery</span>
+        <div class="hero-benefits" aria-label="Store highlights">
+          <span><b aria-hidden="true">♧</b><span>Premium<br>Quality Fabric</span></span>
+          <span><b aria-hidden="true">◇</b><span>Trendy<br>Designs</span></span>
+          <span><b aria-hidden="true">🚚</b><span>Nationwide<br>Shipping</span></span>
+          <span><b aria-hidden="true">♡</b><span>Cash on<br>Delivery</span></span>
         </div>
         <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop Now <span>→</span></button>
         <div class="clock hero-clock" id="phClockBar">Loading Philippine Time…</div>
