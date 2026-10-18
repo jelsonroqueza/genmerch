@@ -18,8 +18,8 @@
       --bg: #f5f5f5;
       --card-bg: #ffffff;
       --text-main: #222222;
-      --text-muted: #666666;
-      --border-color: #e0e0e0;
+      --text-muted: #555555;
+      --border-color: #cccccc;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
       --radius-sm: 4px;
@@ -29,6 +29,13 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+    
+    /* Accessibility Focus States */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 3px solid #0056b3;
+      outline-offset: 2px;
+    }
+
     body { background: var(--bg); color: var(--text-main); padding-bottom: 70px; display: flex; flex-direction: column; min-height: 100vh; }
     
     /* Header Component */
@@ -38,7 +45,7 @@
     .cart-icon { position: relative; font-size: 1.5rem; cursor: pointer; padding: 4px 8px; order: 2; }
     .badge { position: absolute; top: -2px; right: -2px; background: white; color: var(--primary); font-size: 0.75rem; font-weight: bold; border-radius: 50%; padding: 2px 6px; border: 1px solid var(--primary); }
     .search-box { width: 100%; order: 3; display: flex; background: white; border-radius: var(--radius-sm); overflow: hidden; padding: 3px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
-    .search-box input { flex: 1; border: none; padding: 8px 12px; outline: none; font-size: 0.95rem; width: 100%; }
+    .search-box input { flex: 1; border: none; padding: 8px 12px; outline: none; font-size: 0.95rem; width: 100%; color: var(--text-main); }
     .search-box button { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: bold; transition: background 0.2s; }
     .search-box button:hover { background: var(--primary-hover); }
 
@@ -74,40 +81,40 @@
     }
 
     /* Realtime Philippine Clock Bar */
-    .ph-clock-bar { background: #222; color: #fff; padding: 8px 14px; text-align: center; font-size: 0.8rem; font-weight: 600; border-radius: var(--radius-md); margin-bottom: 14px; letter-spacing: 0.5px; box-shadow: var(--shadow-sm); }
+    .ph-clock-bar { background: #111; color: #fff; padding: 8px 14px; text-align: center; font-size: 0.82rem; font-weight: 600; border-radius: var(--radius-md); margin-bottom: 14px; letter-spacing: 0.5px; box-shadow: var(--shadow-sm); }
     
     /* Hero Banner */
     .hero-banner { background: linear-gradient(90deg, #ff7337, #ee4d2d); color: white; border-radius: var(--radius-md); text-align: center; box-shadow: var(--shadow-md); }
     .hero-title { font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
     .suot-apparel-banner { font-family: 'Great Vibes', cursive; font-weight: 400; color: #fff; margin-left: 4px; vertical-align: middle; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3)); }
-    .hero-subtitle { font-size: 0.85rem; font-weight: 500; opacity: 0.95; letter-spacing: 0.3px; }
-    @media (min-width: 768px) { .hero-subtitle { font-size: 0.95rem; } }
+    .hero-subtitle { font-size: 0.88rem; font-weight: 600; opacity: 0.98; letter-spacing: 0.3px; }
+    @media (min-width: 768px) { .hero-subtitle { font-size: 0.98rem; } }
     
     /* Categories */
     .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; }
-    .cat-pill { background: var(--card-bg); padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); transition: all 0.2s; }
+    .cat-pill { background: var(--card-bg); padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); transition: all 0.2s; color: var(--text-main); }
     .cat-pill:hover { border-color: var(--primary); }
     .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
     /* Product Cards & Empty States */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #eee; }
+    .card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #ddd; }
     .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
     .card-img { height: 150px; background: #fff8f6; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; }
     @media (min-width: 768px) { .card-img { height: 165px; font-size: 3.5rem; } }
     .discount-tag { position: absolute; top: 8px; right: 8px; background: #ffe97a; color: #d0011b; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: var(--radius-sm); }
     .card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
-    .card-title { font-size: 0.82rem; line-height: 1.3; height: 2.2rem; overflow: hidden; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
-    @media (min-width: 768px) { .card-title { font-size: 0.88rem; height: 2.4rem; } }
-    .card-price { color: var(--primary); font-size: 1.05rem; font-weight: bold; margin-top: auto; }
-    .card-sold { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 8px; }
-    .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.82rem; transition: background 0.2s; }
+    .card-title { font-size: 0.85rem; line-height: 1.3; height: 2.2rem; overflow: hidden; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
+    @media (min-width: 768px) { .card-title { font-size: 0.9rem; height: 2.4rem; } }
+    .card-price { color: var(--primary); font-size: 1.1rem; font-weight: bold; margin-top: auto; }
+    .card-sold { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+    .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: background 0.2s; }
     .btn-add:hover { background: var(--primary-hover); }
 
     /* Empty State Styling */
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted); }
     .empty-state span { font-size: 3rem; display: block; margin-bottom: 10px; }
-    .empty-state h3 { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
+    .empty-state h3 { font-size: 1.05rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
 
     /* Skeleton Loader Styling */
     .skeleton-card { background: white; border-radius: var(--radius-md); height: 260px; padding: 12px; display: flex; flex-direction: column; gap: 10px; animation: pulse 1.2s infinite ease-in-out; }
@@ -117,7 +124,7 @@
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
     /* Toast Notification */
-    .toast-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0, 0, 0, 0.88); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: all 0.25s ease; }
+    .toast-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0, 0, 0, 0.9); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: all 0.25s ease; }
     .toast-notification.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
     /* Modals */
@@ -138,7 +145,7 @@
     .pay-modal-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
     .pay-details-box { background: #f8f9fa; border: 1px dashed var(--border-color); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; text-align: left; font-size: 0.9rem; line-height: 1.6; }
     .pay-details-box span { font-weight: bold; color: var(--text-main); }
-    .btn-copy { display: block; width: 100%; background: #007df0; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
+    .btn-copy { display: block; width: 100%; background: #0056b3; color: white; border: none; padding: 10px; border-radius: var(--radius-sm); font-weight: bold; font-size: 0.9rem; margin-top: 10px; cursor: pointer; }
 
     /* Drawer */
     .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 200; }
@@ -154,34 +161,34 @@
     .cart-footer { padding: 16px; border-top: 1px solid var(--border-color); background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 14px; }
     
-    /* Form Controls */
+    /* Form Controls with Accessible Labels */
     .form-section { margin-bottom: 14px; text-align: left; }
-    .form-section label { font-size: 0.82rem; font-weight: bold; display: block; margin-bottom: 4px; color: #444; }
-    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; }
+    .form-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 4px; color: var(--text-main); }
+    .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; color: var(--text-main); }
     
     .payment-section { margin-bottom: 14px; text-align: left; }
-    .payment-section label { font-size: 0.82rem; font-weight: bold; display: block; margin-bottom: 6px; color: #444; }
+    .payment-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 6px; color: var(--text-main); }
     .payment-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
-    .pay-opt { border: 2px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; font-size: 0.82rem; font-weight: bold; cursor: pointer; background: white; transition: all 0.2s; }
-    .pay-opt.cod { color: #d0011b; }
-    .pay-opt.cod.active { border-color: #d0011b; background: #fffdfd; }
-    .pay-opt.gcash { color: #007df0; }
-    .pay-opt.gcash.active { border-color: #007df0; background: #f0f6ff; }
-    .pay-opt.maya { color: #00b050; }
-    .pay-opt.maya.active { border-color: #00b050; background: #f0fcf4; }
-    .pay-opt.bank { color: #555; }
+    .pay-opt { border: 2px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; font-size: 0.85rem; font-weight: 700; cursor: pointer; background: white; transition: all 0.2s; color: var(--text-main); }
+    .pay-opt.cod { color: #a50112; }
+    .pay-opt.cod.active { border-color: #a50112; background: #fffdfd; }
+    .pay-opt.gcash { color: #0056b3; }
+    .pay-opt.gcash.active { border-color: #0056b3; background: #f0f6ff; }
+    .pay-opt.maya { color: #006b31; }
+    .pay-opt.maya.active { border-color: #006b31; background: #f0fcf4; }
+    .pay-opt.bank { color: #333; }
     .pay-opt.bank.active { border-color: #333; background: #f5f5f5; }
 
     .btn-checkout { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: bold; font-size: 1rem; cursor: pointer; }
 
     /* Footer */
-    footer { background: #222222; color: #ffffff; padding: 24px 16px; text-align: center; margin-top: auto; border-top: 3px solid var(--primary); }
-    .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; color: #aaa; }
-    .footer-brand { font-weight: bold; color: #fff; font-size: 1rem; }
+    footer { background: #1a1a1a; color: #ffffff; padding: 24px 16px; text-align: center; margin-top: auto; border-top: 3px solid var(--primary); }
+    .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: #cccccc; }
+    .footer-brand { font-weight: bold; color: #fff; font-size: 1.05rem; }
 
     /* Mobile Bottom Navigation */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border-color); z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.03); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; cursor: pointer; }
     .nav-item.active { color: var(--primary); font-weight: bold; }
     @media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 20px; } }
   </style>
@@ -189,30 +196,31 @@
 <body>
 
   <!-- Offline / Online Banner Feedback Component -->
-  <div class="offline-banner" id="offlineBanner">⚠️ You are currently offline. Check your internet connection.</div>
+  <div class="offline-banner" id="offlineBanner" role="alert">⚠️ You are currently offline. Check your internet connection.</div>
 
-  <!-- Reusable Header Component -->
+  <!-- Reusable Header Component with ARIA labels -->
   <header>
     <div class="nav-container">
-      <div class="logo">GENMERCH</div>
+      <div class="logo" tabindex="0" aria-label="GENMERCH Home">GENMERCH</div>
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search OPM Merch & Songs..." onkeyup="searchProducts()">
-        <button>🔍</button>
+        <label for="searchInput" style="display:none;">Search OPM Merch & Songs</label>
+        <input type="text" id="searchInput" placeholder="Search OPM Merch & Songs..." onkeyup="searchProducts()" aria-label="Search OPM Merch and Songs">
+        <button aria-label="Search Button">🔍</button>
       </div>
-      <div class="cart-icon" onclick="toggleCart()">
+      <div class="cart-icon" onclick="toggleCart()" tabindex="0" role="button" aria-label="Shopping Cart">
         🛒 <span class="badge" id="cartBadge">0</span>
       </div>
     </div>
   </header>
 
   <!-- Reusable Toast Component -->
-  <div class="toast-notification" id="toastNotification">
+  <div class="toast-notification" id="toastNotification" role="status" aria-live="polite">
     <span>✅</span> <span id="toastText">Successfully added to your cart!</span>
   </div>
 
   <div class="container">
     <!-- Realtime Philippine Time & Date Bar -->
-    <div class="ph-clock-bar" id="phClockBar">Loading Philippine Time...</div>
+    <div class="ph-clock-bar" id="phClockBar" aria-live="polite">Loading Philippine Time...</div>
 
     <!-- Hero Banner -->
     <div class="hero-banner">
@@ -222,15 +230,16 @@
       <div class="hero-subtitle">Official Album Drop & Limited Edition Streetwear Collection!</div>
     </div>
 
-    <div class="categories">
-      <div class="cat-pill active" onclick="filterCat('All', this)">All Items</div>
-      <div class="cat-pill" onclick="filterCat('Merch', this)">👕 Streetwear Merch</div>
-      <div class="cat-pill" onclick="filterCat('Music', this)">🎵 OPM Albums / Audio</div>
-      <div class="cat-pill" onclick="filterCat('Podcast', this)">👻 Lihim sa Dilim Gear</div>
+    <!-- Categories with ARIA roles -->
+    <div class="categories" role="tablist" aria-label="Product Categories">
+      <div class="cat-pill active" onclick="filterCat('All', this)" role="tab" tabindex="0">All Items</div>
+      <div class="cat-pill" onclick="filterCat('Merch', this)" role="tab" tabindex="0">👕 Streetwear Merch</div>
+      <div class="cat-pill" onclick="filterCat('Music', this)" role="tab" tabindex="0">🎵 OPM Albums / Audio</div>
+      <div class="cat-pill" onclick="filterCat('Podcast', this)" role="tab" tabindex="0">👻 Lihim sa Dilim Gear</div>
     </div>
 
     <div class="section-title">🔥 Featured Releases</div>
-    <div class="grid" id="productGrid">
+    <div class="grid" id="productGrid" aria-label="Product Catalog">
       <!-- Initial Skeleton Loaders -->
       <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
       <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
@@ -248,11 +257,11 @@
   </footer>
 
   <!-- Reusable Product Details Modal Component -->
-  <div class="modal-overlay" id="productModal" onclick="closeModal(event)">
+  <div class="modal-overlay" id="productModal" onclick="closeModal(event)" role="dialog" aria-modal="true">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
         <span id="modalHeaderTitle">Product Details</span>
-        <button class="close-modal" onclick="closeModalBtn()">✕</button>
+        <button class="close-modal" onclick="closeModalBtn()" aria-label="Close modal">✕</button>
       </div>
       <div class="modal-body">
         <div class="modal-img-box" id="modalIcon">💿</div>
@@ -265,7 +274,7 @@
   </div>
 
   <!-- Reusable Payment Instructions Modal Component -->
-  <div class="modal-overlay" id="payModal" onclick="closePayModal(event)">
+  <div class="modal-overlay" id="payModal" onclick="closePayModal(event)" role="dialog" aria-modal="true">
     <div class="pay-modal-content" onclick="event.stopPropagation()">
       <div class="pay-modal-title" id="payModalTitle">Payment Details</div>
       <div class="pay-details-box" id="payDetailsText"></div>
@@ -275,29 +284,29 @@
 
   <!-- Reusable Cart Drawer Component -->
   <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-  <div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer" id="cartDrawer" role="region" aria-label="Shopping Cart Drawer">
     <div class="cart-header">
       <span>Shopping Cart (<span id="drawerCount">0</span>)</span>
-      <button class="close-cart" onclick="toggleCart()">✕</button>
+      <button class="close-cart" onclick="toggleCart()" aria-label="Close cart">✕</button>
     </div>
     <div class="cart-items" id="cartItemsContainer">
       <p style="text-align: center; color: #777; margin-top: 40px;">Your cart is empty.</p>
     </div>
     <div class="cart-footer">
       <div class="form-section">
-        <label>📦 Delivery Information:</label>
-        <input type="text" id="custName" placeholder="Full Name">
-        <input type="tel" id="custPhone" placeholder="Mobile Number (e.g. 09123456789)">
-        <textarea id="custAddress" placeholder="Complete Delivery Address & Notes" rows="2"></textarea>
+        <label for="custName">📦 Delivery Information:</label>
+        <input type="text" id="custName" placeholder="Full Name" aria-label="Full Name">
+        <input type="tel" id="custPhone" placeholder="Mobile Number (e.g. 09123456789)" aria-label="Mobile Number">
+        <textarea id="custAddress" placeholder="Complete Delivery Address & Notes" rows="2" aria-label="Complete Delivery Address"></textarea>
       </div>
 
       <div class="payment-section">
         <label>💳 Payment Method:</label>
         <div class="payment-options">
-          <div class="pay-opt cod active" id="payCod" onclick="setPayment('COD')">💵 COD</div>
-          <div class="pay-opt gcash" id="payGcash" onclick="setPayment('GCash')">💙 GCash</div>
-          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')">💚 Maya</div>
-          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')">🏦 Bank</div>
+          <div class="pay-opt cod active" id="payCod" onclick="setPayment('COD')" role="button" tabindex="0">💵 COD</div>
+          <div class="pay-opt gcash" id="payGcash" onclick="setPayment('GCash')" role="button" tabindex="0">💙 GCash</div>
+          <div class="pay-opt maya" id="payMaya" onclick="setPayment('Maya')" role="button" tabindex="0">💚 Maya</div>
+          <div class="pay-opt bank" id="payBank" onclick="setPayment('Bank Transfer')" role="button" tabindex="0">🏦 Bank</div>
         </div>
       </div>
 
@@ -310,15 +319,14 @@
     </div>
   </div>
 
-  <nav class="bottom-nav">
-    <div class="nav-item active"><span>🏠</span><span>Home</span></div>
-    <div class="nav-item" onclick="toggleCart()"><span>🛒</span><span>Cart</span></div>
-    <div class="nav-item" onclick="alert('Notifications')"><span>🔔</span><span>Updates</span></div>
-    <div class="nav-item" onclick="alert('My Profile')"><span>👤</span><span>Me</span></div>
+  <nav class="bottom-nav" aria-label="Mobile Bottom Navigation">
+    <div class="nav-item active" tabindex="0"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="toggleCart()" tabindex="0"><span>🛒</span><span>Cart</span></div>
+    <div class="nav-item" onclick="alert('Notifications')" tabindex="0"><span>🔔</span><span>Updates</span></div>
+    <div class="nav-item" onclick="alert('My Profile')" tabindex="0"><span>👤</span><span>Me</span></div>
   </nav>
 
   <script>
-    // Offline / Online Status Feedback Handler
     window.addEventListener('online', () => {
       document.getElementById('offlineBanner').classList.remove('show');
       showToast("Back online! Connection restored.");
@@ -371,7 +379,7 @@
       const grid = document.getElementById('productGrid');
       if (list.length === 0) {
         grid.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state" role="region" aria-label="No products found">
             <span>🔍</span>
             <h3>No Products Found</h3>
             <p>Try searching for something else or switch categories.</p>
@@ -381,7 +389,7 @@
       }
 
       grid.innerHTML = list.map(p => `
-        <div class="card" onclick="openModal(${p.id})">
+        <div class="card" onclick="openModal(${p.id})" tabindex="0" role="article" aria-label="${p.name}">
           <div class="card-img">
             <span class="discount-tag">${p.off}</span>
             ${p.icon}
@@ -390,7 +398,7 @@
             <div class="card-title">${p.name}</div>
             <div class="card-price">₱${p.price.toLocaleString()}</div>
             <div class="card-sold">${p.sold}</div>
-            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add to Cart</button>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})" aria-label="Add ${p.name} to cart">+ Add to Cart</button>
           </div>
         </div>
       `).join('');
@@ -476,10 +484,10 @@
         details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• GCash Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('GCash number copied!');" class="btn-copy">📋 Copy GCash Number</button>`;
       } else if (selectedPayment === 'Maya') {
         title = "💚 Maya Payment Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• Maya Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#00b050;">📋 Copy Maya Number</button>`;
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Account Name: <span>King Jr. Caisip</span><br>• Maya Number: <span>09750634497</span><br><br><button onclick="navigator.clipboard.writeText('09750634497'); alert('Maya number copied!');" class="btn-copy" style="background:#006b31;">📋 Copy Maya Number</button>`;
       } else {
         title = "🏦 Bank Transfer Guide";
-        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Bank: <span>BPI / UnionBank</span><br>• Account Name: <span>King Jr. Caisip</span><br>• Account No: <span>123456789012</span><br><br><button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#555;">📋 Copy Account Number</button>`;
+        details = `Total Amount: <span>₱${totalPrice.toLocaleString()}</span><br><br>• Bank: <span>BPI / UnionBank</span><br>• Account Name: <span>King Jr. Caisip</span><br>• Account No: <span>123456789012</span><br><br><button onclick="navigator.clipboard.writeText('123456789012'); alert('Account number copied!');" class="btn-copy" style="background:#333;">📋 Copy Account Number</button>`;
       }
 
       document.getElementById('payModalTitle').innerText = title;
@@ -510,7 +518,6 @@
       render(products.filter(p => (currentCat === 'All' || p.cat === currentCat) && p.name.toLowerCase().includes(q)));
     }
 
-    // Simulate initial loading skeleton then render products
     setTimeout(() => {
       render(products);
     }, 600);
