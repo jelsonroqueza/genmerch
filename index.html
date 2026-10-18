@@ -3,10 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GENMERCH - Suot Apparel | Official Store</title>
+  <title>GENMERCH - Suot Apparel | Official OPM & Podcast Store</title>
+  
+  <!-- SEO & Social Preview Meta Tags (Open Graph for Facebook / Messenger / Twitter) -->
+  <meta name="description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza. Shop authentic merchandise now!">
+  <meta property="og:title" content="GENMERCH - Suot Apparel | Official Store">
+  <meta property="og:description" content="Official OPM Album Drops & Limited Edition Streetwear Collection by Jelson Roqueza.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jelsonroqueza.github.io/genmerch/">
+  
+  <!-- Branded Favicon (Inline Emoji/SVG Data URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>">
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="/genmerch/manifest.json">
   <meta name="theme-color" content="#ee4d2d">
+  
   <!-- Import Google Font for Cursive Script Style -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
@@ -96,7 +108,7 @@
     .cat-pill:hover { border-color: var(--primary); }
     .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Product Cards & Empty States */
+    /* Product Cards & Empty / Error States */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
     .card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #ddd; }
     .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
@@ -111,10 +123,11 @@
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: background 0.2s; }
     .btn-add:hover { background: var(--primary-hover); }
 
-    /* Empty State Styling */
-    .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted); }
-    .empty-state span { font-size: 3rem; display: block; margin-bottom: 10px; }
-    .empty-state h3 { font-size: 1.05rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
+    /* Branded Error / Empty State Styling */
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 45px 20px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted); }
+    .empty-state span { font-size: 3.5rem; display: block; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 1.1rem; font-weight: bold; color: var(--text-main); margin-bottom: 6px; }
+    .empty-state p { font-size: 0.9rem; color: var(--text-muted); }
 
     /* Skeleton Loader Styling */
     .skeleton-card { background: white; border-radius: var(--radius-md); height: 260px; padding: 12px; display: flex; flex-direction: column; gap: 10px; animation: pulse 1.2s infinite ease-in-out; }
@@ -161,7 +174,7 @@
     .cart-footer { padding: 16px; border-top: 1px solid var(--border-color); background: #fafafa; }
     .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold; margin-bottom: 14px; }
     
-    /* Form Controls with Accessible Labels */
+    /* Form Controls */
     .form-section { margin-bottom: 14px; text-align: left; }
     .form-section label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 4px; color: var(--text-main); }
     .form-section input, .form-section textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 8px; outline: none; color: var(--text-main); }
