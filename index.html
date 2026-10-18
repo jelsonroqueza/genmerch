@@ -1500,6 +1500,75 @@
       .category,
       .card { transition: none !important; }
     }
+
+
+    /* USER-REQUESTED HERO BRAND LOCKUP: cart immediately before centered GENMERCH; omit hero subtitle. */
+    .hero-copy {
+      align-items: center !important;
+      text-align: center !important;
+    }
+
+    .hero-brand-lockup {
+      display: flex !important;
+      flex-flow: row nowrap !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: max-content !important;
+      max-width: 100% !important;
+      margin: 0 auto clamp(10px, 1.1vw, 15px) !important;
+      padding: 0 !important;
+      gap: clamp(8px, 1.1vw, 15px) !important;
+      text-align: center !important;
+    }
+
+    .hero-cart {
+      display: inline-block !important;
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      font-size: clamp(2.25rem, 4.1vw, 3.8rem) !important;
+      line-height: 1 !important;
+      transform: none !important;
+    }
+
+    .hero-wordmark {
+      display: flex !important;
+      flex-flow: row nowrap !important;
+      align-items: baseline !important;
+      justify-content: center !important;
+      width: auto !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: clamp(2rem, 4.3vw, 4.1rem) !important;
+      line-height: .96 !important;
+      letter-spacing: -.055em !important;
+      white-space: nowrap !important;
+    }
+
+    /* Remove only the hero subtitle; keep Suot Apparel in the site header and footer. */
+    .hero-wordmark small { display: none !important; }
+
+    @media (max-width: 900px) {
+      .hero-brand-lockup { gap: 8px !important; }
+      .hero-cart { font-size: clamp(2rem, 4.1vw, 2.8rem) !important; }
+      .hero-wordmark { font-size: clamp(1.75rem, 4.1vw, 2.75rem) !important; }
+    }
+
+    @media (max-width: 760px) {
+      .hero-brand-lockup {
+        gap: clamp(6px, 1.6vw, 10px) !important;
+        margin-bottom: 10px !important;
+      }
+      .hero-cart { font-size: clamp(2.05rem, 8vw, 3rem) !important; }
+      .hero-wordmark { font-size: clamp(1.75rem, 7.4vw, 2.8rem) !important; }
+    }
+
+    @media (max-width: 380px) {
+      .hero-brand-lockup { gap: 5px !important; }
+      .hero-cart { font-size: 1.95rem !important; }
+      .hero-wordmark { font-size: clamp(1.55rem, 7vw, 1.85rem) !important; }
+    }
   </style>
 </head>
 <body>
@@ -1538,9 +1607,9 @@
   <main class="container">
     <section class="hero">
       <div class="hero-copy">
-        <div class="hero-brand-lockup" aria-label="GENMERCH Suot Apparel">
+        <div class="hero-brand-lockup" aria-label="GENMERCH">
           <span class="hero-cart" aria-hidden="true">🛒</span>
-          <span class="hero-wordmark"><span>GEN</span><b>MERCH</b><small>— Suot Apparel —</small></span>
+          <span class="hero-wordmark"><span>GEN</span><b>MERCH</b></span>
         </div>
         <p class="hero-tagline">Comfort. Style. For Every You.</p>
         <div class="hero-benefits" aria-label="Store highlights">
