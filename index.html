@@ -42,24 +42,22 @@
     .search-box button { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: bold; transition: background 0.2s; }
     .search-box button:hover { background: var(--primary-hover); }
 
-    /* ==========================================
-       RESPONSIVE BREAKPOINTS (MOBILE, TABLET, DESKTOP)
-       ========================================== */
-    
-    /* Mobile Default (< 768px) */
+    /* Offline / Network Banner Feedback */
+    .offline-banner { background: #d0011b; color: white; text-align: center; padding: 6px; font-size: 0.8rem; font-weight: bold; display: none; z-index: 105; }
+    .offline-banner.show { display: block; }
+
+    /* Responsive Breakpoints */
     .container { max-width: 1200px; margin: 12px auto; padding: 0 10px; flex: 1; width: 100%; }
     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .hero-banner { padding: 20px 14px; margin-bottom: 14px; }
     .hero-title { font-size: 1.4rem; }
     .suot-apparel-banner { font-size: 2.1rem; }
 
-    /* Tablet Breakpoint (≥ 768px) */
     @media (min-width: 768px) {
       .nav-container { flex-wrap: nowrap; gap: 20px; }
       .logo { order: 1; }
       .search-box { order: 2; flex: 1; width: auto; }
       .cart-icon { order: 3; }
-      
       .container { margin: 20px auto; padding: 0 16px; }
       .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .hero-banner { padding: 26px 20px; margin-bottom: 20px; }
@@ -67,7 +65,6 @@
       .suot-apparel-banner { font-size: 2.5rem; }
     }
 
-    /* Desktop Breakpoint (≥ 1024px) */
     @media (min-width: 1024px) {
       .container { margin: 24px auto; padding: 0 20px; }
       .grid { grid-template-columns: repeat(5, 1fr); gap: 18px; }
@@ -92,7 +89,7 @@
     .cat-pill:hover { border-color: var(--primary); }
     .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Product Cards */
+    /* Product Cards & Empty States */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
     .card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #eee; }
     .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
@@ -106,6 +103,18 @@
     .card-sold { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 8px; }
     .btn-add { background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.82rem; transition: background 0.2s; }
     .btn-add:hover { background: var(--primary-hover); }
+
+    /* Empty State Styling */
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted); }
+    .empty-state span { font-size: 3rem; display: block; margin-bottom: 10px; }
+    .empty-state h3 { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
+
+    /* Skeleton Loader Styling */
+    .skeleton-card { background: white; border-radius: var(--radius-md); height: 260px; padding: 12px; display: flex; flex-direction: column; gap: 10px; animation: pulse 1.2s infinite ease-in-out; }
+    .skeleton-img { background: #e0e0e0; height: 140px; border-radius: var(--radius-sm); }
+    .skeleton-line { background: #e0e0e0; height: 14px; border-radius: 4px; width: 80%; }
+    .skeleton-line.short { width: 40%; }
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
     /* Toast Notification */
     .toast-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0, 0, 0, 0.88); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: all 0.25s ease; }
@@ -179,6 +188,9 @@
 </head>
 <body>
 
+  <!-- Offline / Online Banner Feedback Component -->
+  <div class="offline-banner" id="offlineBanner">⚠️ You are currently offline. Check your internet connection.</div>
+
   <!-- Reusable Header Component -->
   <header>
     <div class="nav-container">
@@ -218,7 +230,13 @@
     </div>
 
     <div class="section-title">🔥 Featured Releases</div>
-    <div class="grid" id="productGrid"></div>
+    <div class="grid" id="productGrid">
+      <!-- Initial Skeleton Loaders -->
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+    </div>
   </div>
 
   <!-- Reusable Footer Component -->
@@ -300,6 +318,15 @@
   </nav>
 
   <script>
+    // Offline / Online Status Feedback Handler
+    window.addEventListener('online', () => {
+      document.getElementById('offlineBanner').classList.remove('show');
+      showToast("Back online! Connection restored.");
+    });
+    window.addEventListener('offline', () => {
+      document.getElementById('offlineBanner').classList.add('show');
+    });
+
     function updatePHClock() {
       const now = new Date();
       const optionsTime = { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
@@ -342,6 +369,17 @@
 
     function render(list) {
       const grid = document.getElementById('productGrid');
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <span>🔍</span>
+            <h3>No Products Found</h3>
+            <p>Try searching for something else or switch categories.</p>
+          </div>
+        `;
+        return;
+      }
+
       grid.innerHTML = list.map(p => `
         <div class="card" onclick="openModal(${p.id})">
           <div class="card-img">
@@ -472,7 +510,10 @@
       render(products.filter(p => (currentCat === 'All' || p.cat === currentCat) && p.name.toLowerCase().includes(q)));
     }
 
-    render(products);
+    // Simulate initial loading skeleton then render products
+    setTimeout(() => {
+      render(products);
+    }, 600);
   </script>
 </body>
 </html>
