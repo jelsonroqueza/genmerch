@@ -274,6 +274,8 @@
     const ADDRESS_DATA_BASE = 'https://api.openadmindata.org/api/v1';
     let provinceDataPromise = null;
     let municipalityDataPromise = null;
+    let cachedProvinceRecords = [];
+    let cachedMunicipalityRecords = [];
     const barangayDataCache = new Map();
     let allBarangayDataPromise = null;
     let selectedProvinceRecord = null;
@@ -315,6 +317,7 @@
           .then(payload => responseEntities(payload))
           .then(records => {
             if (!records.length) throw new Error('Province list is empty');
+            cachedProvinceRecords = records;
             return records;
           })
           .catch(error => {
@@ -331,6 +334,7 @@
           .then(payload => responseEntities(payload))
           .then(records => {
             if (!records.length) throw new Error('City and municipality list is empty');
+            cachedMunicipalityRecords = records;
             return records;
           })
           .catch(error => {
@@ -478,6 +482,7 @@
         renderAddressSuggestions('province', matches, selectProvince, {
           emptyMessage: 'No province match found. Check the spelling or enter the address manually.'
         });
+        updateCart();
       } catch (error) {
         showSuggestionMessage('province', 'Address suggestions are temporarily unavailable. You can still type the province manually.');
       }
@@ -513,6 +518,7 @@
             ? 'No city or municipality matches this province. Check the spelling or enter it manually.'
             : 'No matching city found. You may select a province first for more precise suggestions.'
         });
+        updateCart();
       } catch (error) {
         showSuggestionMessage('city', 'City suggestions are temporarily unavailable. You can still type the city manually.');
       }
@@ -936,52 +942,162 @@
       Mindanao: { fee: 120, range: '₱120–₱180+' }
     };
 
-    const DELIVERY_PROVINCES = {
-      Luzon: [
-        'abra','apayao','bataan','batanes','batangas','benguet','cordillera administrative region','ilocos region','cagayan valley','central luzon','calabarzon','mimaropa','bicol region','bulacan','cagayan','camarines norte','camarines sur','cam norte','cam sur','catanduanes','cavite','aurora','ifugao','ilocos norte','ilocos sur','isabela','kalinga','la union','laguna','marinduque','masbate','metro manila','national capital region','ncr','mountain province','mt province','mindoro occidental','occidental mindoro','mindoro oriental','oriental mindoro','nueva ecija','nueva vizcaya','pampanga','pangasinan','palawan','quezon','quirino','rizal','romblon','albay','sorsogon','tarlac','zambales','makati','manila','pasay','quezon city','taguig','paranaque','parañaque','las pinas','las piñas','mandaluyong','marikina','pasig','caloocan','malabon','navotas','valenzuela','san juan','muntinlupa','pateros'
-      ],
-      Visayas: [
-        'aklan','antique','bohol','capiz','cebu','western visayas','central visayas','eastern visayas','negros island region','eastern samar','guimaras','iloilo','leyte','negros occidental','negros oriental','northern samar','samar','siquijor','southern leyte','tacloban','biliran','bacolod','dumaguete','tagbilaran','roxas city','ormoc','baybay','catbalogan','calbayog','borongan','maasin','bogo'
-      ],
-      Mindanao: [
-        'agusan del norte','agusan del sur','zamboanga peninsula','northern mindanao','davao region','soccsksargen','caraga','barmm','bangsamoro autonomous region','basilan','bukidnon','camiguin','cotabato','davao de oro','davao del norte','davao del sur','davao occidental','davao oriental','dinagat islands','lanao del norte','lanao del sur','maguindanao del norte','maguindanao del sur','misamis occidental','misamis oriental','north cotabato','northern cotabato','sarangani','south cotabato','sultan kudarat','sulu','surigao del norte','surigao del sur','tawi-tawi','zamboanga del norte','zamboanga del sur','zamboanga sibugay','zamboanga','general santos','gensan','iligan','cagayan de oro','butuan','davao city','digos','tagum','panabo','samal','mati','kidapawan','koronadal','tacurong','marawi','ozamiz','oroquieta','dipolog','dapitan','pagadian','isabela city','lamitan','surigao city','bislig','tandag','bayugan','prosperidad','malaybalay','valencia city','kabasalan','cotabato city'
-      ]
-    };
+    // Use the address provider's official administrative parent metadata instead of a short manual list.
+    // This lets every province supported by the source data map to the same store shipping zones.
+    const ISLAND_ZONE_BY_REGION_ID = new Map([
+      // Luzon and NCR/MIMAROPA
+      ['NCR', 'Luzon'], ['CAR', 'Luzon'],
+      ['R01', 'Luzon'], ['R1', 'Luzon'], ['R02', 'Luzon'], ['R2', 'Luzon'],
+      ['R03', 'Luzon'], ['R3', 'Luzon'], ['R04A', 'Luzon'], ['R4A', 'Luzon'],
+      ['R05', 'Luzon'], ['R5', 'Luzon'], ['R17', 'Luzon'], ['R4B', 'Luzon'],
+      ['010000', 'Luzon'], ['020000', 'Luzon'], ['030000', 'Luzon'],
+      ['040000', 'Luzon'], ['050000', 'Luzon'], ['130000', 'Luzon'], ['140000', 'Luzon'],
+      ['170000', 'Luzon'],
+      // Visayas, including the restored Negros Island Region where the source exposes it
+      ['R06', 'Visayas'], ['R6', 'Visayas'], ['R07', 'Visayas'], ['R7', 'Visayas'],
+      ['R08', 'Visayas'], ['R8', 'Visayas'], ['R18', 'Visayas'], ['NIR', 'Visayas'],
+      ['060000', 'Visayas'], ['070000', 'Visayas'], ['080000', 'Visayas'], ['180000', 'Visayas'],
+      // Mindanao and BARMM/legacy ARMM identifiers
+      ['R09', 'Mindanao'], ['R9', 'Mindanao'], ['R10', 'Mindanao'], ['R11', 'Mindanao'],
+      ['R12', 'Mindanao'], ['R13', 'Mindanao'], ['ARMM', 'Mindanao'], ['BARMM', 'Mindanao'],
+      ['090000', 'Mindanao'], ['100000', 'Mindanao'], ['110000', 'Mindanao'],
+      ['120000', 'Mindanao'], ['150000', 'Mindanao'], ['160000', 'Mindanao'], ['190000', 'Mindanao']
+    ]);
 
-    function normalizeLocation(value) {
-      return String(value || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/\bprovince of\b/g, ' ')
-        .replace(/\bprovince\b/g, ' ')
-        .replace(/\bcity of\b/g, ' ')
-        .replace(/[^a-z0-9\s-]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    function normalizedRegionId(value) {
+      return String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
     }
 
-    function matchIslandRegion(value) {
-      const place = normalizeLocation(value);
-      if (!place) return null;
+    function administrativeRegionDetails(record) {
+      if (!record) return { id: '', name: '' };
+      const ancestors = Array.isArray(record.ancestors) ? record.ancestors : [];
+      const regionAncestor = ancestors.find(item => Number(item?.level) === 1) || ancestors[0] || null;
+      const parent = record.parent || null;
+      const name = record.region_name_en || record.region_name || record.parent_name_en ||
+        record.parent_name_local || record.region?.name_en || record.region?.name?.en ||
+        parent?.name_en || parent?.name?.en || parent?.name ||
+        regionAncestor?.name_en || regionAncestor?.name?.en || regionAncestor?.name || '';
+      const id = record.region_id || record.region_code || record.parent_region_id ||
+        record.region?.id || parent?.id || regionAncestor?.id || record.parent_id || '';
+      return { id: normalizedRegionId(id), name: String(name || '') };
+    }
 
-      // Check longer province/city names first to avoid matching a shorter alias prematurely.
-      for (const region of ['Mindanao', 'Visayas', 'Luzon']) {
-        const aliases = [...DELIVERY_PROVINCES[region]].sort((a, b) => b.length - a.length);
-        for (const aliasRaw of aliases) {
-          const alias = normalizeLocation(aliasRaw);
-          if (place === alias || place.includes(alias)) return region;
+    function classifyAdministrativeRegionName(value) {
+      const name = normalizeAddressText(value);
+      if (!name) return null;
+
+      // Names only come from the administrative-region field of a place record, not from an address string.
+      if (name.includes('mimaropa') || name.includes('calabarzon') || name.includes('ilocos region') ||
+          name.includes('cagayan valley') || name.includes('central luzon') || name.includes('bicol region') ||
+          name.includes('cordillera') || name.includes('national capital region') || name === 'ncr' ||
+          name === 'metro manila' || name.includes('region i (') || name.includes('region ii (') ||
+          name.includes('region iii (') || name.includes('region iv a') || name.includes('region iv b') ||
+          name.includes('region v (')) return 'Luzon';
+
+      if (name.includes('negros island region') || name === 'nir' || name.includes('western visayas') ||
+          name.includes('central visayas') || name.includes('eastern visayas') ||
+          name.includes('region vi (') || name.includes('region vii (') || name.includes('region viii (')) return 'Visayas';
+
+      if (name.includes('zamboanga peninsula') || name.includes('northern mindanao') ||
+          name.includes('davao region') || name.includes('soccsksargen') || name.includes('caraga') ||
+          name.includes('muslim mindanao') || name.includes('bangsamoro') || name === 'armm' || name === 'barmm' ||
+          name.includes('region ix (') || name.includes('region x (') || name.includes('region xi (') ||
+          name.includes('region xii (') || name.includes('region xiii (')) return 'Mindanao';
+
+      // Fallback for source records whose region text is only the numbered region label.
+      if (/^region (i|1)$/.test(name) || /^region (ii|2)$/.test(name) || /^region (iii|3)$/.test(name) ||
+          /^region (iv-a|4-a)$/.test(name) || /^region (iv-b|4-b)$/.test(name) || /^region (v|5)$/.test(name)) return 'Luzon';
+      if (/^region (vi|6)$/.test(name) || /^region (vii|7)$/.test(name) || /^region (viii|8)$/.test(name) ||
+          /^region (xviii|18)$/.test(name)) return 'Visayas';
+      if (/^region (ix|9)$/.test(name) || /^region (x|10)$/.test(name) || /^region (xi|11)$/.test(name) ||
+          /^region (xii|12)$/.test(name) || /^region (xiii|13)$/.test(name)) return 'Mindanao';
+      return null;
+    }
+
+    function classifyRegionRecord(record) {
+      const details = administrativeRegionDetails(record);
+      const byId = ISLAND_ZONE_BY_REGION_ID.get(details.id);
+      if (byId) return { region: byId, administrativeRegion: details.name };
+      const byName = classifyAdministrativeRegionName(details.name);
+      if (byName) return { region: byName, administrativeRegion: details.name };
+      return null;
+    }
+
+    function findExactProvinceRecord(value) {
+      const needle = normalizeAddressText(value);
+      if (!needle) return null;
+      if (selectedProvinceRecord && normalizeAddressText(placeName(selectedProvinceRecord)) === needle) {
+        return selectedProvinceRecord;
+      }
+      return cachedProvinceRecords.find(record => normalizeAddressText(placeName(record)) === needle) || null;
+    }
+
+    function findExactCityRecord(value, provinceRecord = null) {
+      const needle = normalizeAddressText(value);
+      if (!needle) return null;
+      if (selectedCityRecord && normalizeAddressText(placeName(selectedCityRecord)) === needle) {
+        const selectedParent = String(selectedCityRecord.parent_id || '');
+        if (!provinceRecord || selectedParent === String(provinceRecord.id || '') ||
+            normalizeAddressText(placeParentName(selectedCityRecord)) === normalizeAddressText(placeName(provinceRecord))) {
+          return selectedCityRecord;
         }
+      }
+      const matches = cachedMunicipalityRecords.filter(record => normalizeAddressText(placeName(record)) === needle);
+      if (provinceRecord) {
+        const sameProvince = matches.find(record => String(record.parent_id || '') === String(provinceRecord.id || '') ||
+          normalizeAddressText(placeParentName(record)) === normalizeAddressText(placeName(provinceRecord)));
+        if (sameProvince) return sameProvince;
+      }
+      return matches.length === 1 ? matches[0] : null;
+    }
+
+    function resolveProvinceForCurrentAddress() {
+      const typedProvince = $('province').value.trim();
+      const provinceRecord = findExactProvinceRecord(typedProvince);
+      if (provinceRecord) return provinceRecord;
+
+      // If City/Municipality was chosen first, resolve its parent province from the same dataset.
+      const cityRecord = findExactCityRecord($('city').value.trim());
+      if (cityRecord) {
+        const byId = cachedProvinceRecords.find(record => String(record.id || '') === String(cityRecord.parent_id || ''));
+        if (byId) return byId;
+        const parentName = normalizeAddressText(placeParentName(cityRecord));
+        const byName = cachedProvinceRecords.find(record => normalizeAddressText(placeName(record)) === parentName);
+        if (byName) return byName;
       }
       return null;
     }
 
+    function getDeliveryDestination() {
+      const city = $('city').value.trim();
+      const province = $('province').value.trim();
+      if (city && province) return `${city}, ${province}`;
+      return province || city || '';
+    }
+
     function detectDeliveryRegion() {
-      const province = normalizeLocation($('province').value);
-      const city = normalizeLocation($('city').value);
-      const region = matchIslandRegion(province) || matchIslandRegion(city);
-      if (!region) return null;
-      return { region, fee: DELIVERY_BASE_RATES[region].fee, range: DELIVERY_BASE_RATES[region].range };
+      const provinceRecord = resolveProvinceForCurrentAddress();
+      if (!provinceRecord) return null;
+
+      const classified = classifyRegionRecord(provinceRecord);
+      if (!classified) return null;
+
+      const destination = getDeliveryDestination();
+      const city = $('city').value.trim();
+      const cityRecord = city ? findExactCityRecord(city, provinceRecord) : null;
+      // Do not estimate from stale city/province selections if the hierarchy contradicts itself.
+      if (city && cityRecord && String(cityRecord.parent_id || '') !== String(provinceRecord.id || '') &&
+          normalizeAddressText(placeParentName(cityRecord)) !== normalizeAddressText(placeName(provinceRecord))) {
+        return null;
+      }
+
+      return {
+        region: classified.region,
+        fee: DELIVERY_BASE_RATES[classified.region].fee,
+        range: DELIVERY_BASE_RATES[classified.region].range,
+        destination,
+        adminRegion: classified.administrativeRegion || ''
+      };
     }
 
     function updateCart(){
@@ -1002,13 +1118,19 @@
         $('finalTotalText').textContent=money(0);
         $('shippingEstimate').textContent='Add an item to your cart, then enter your city/municipality and province to estimate delivery.';
       } else if (delivery) {
-        $('shippingText').textContent=`${money(delivery.fee)} (${delivery.region})`;
+        const zoneLabel = delivery.adminRegion
+          ? `${delivery.region} · ${delivery.adminRegion}`
+          : delivery.region;
+        $('shippingText').textContent=`${money(delivery.fee)} (${zoneLabel})`;
         $('finalTotalText').textContent=money(subtotal+delivery.fee);
-        $('shippingEstimate').innerHTML=`<strong>${delivery.region} detected.</strong> Default base delivery fee: <strong>${money(delivery.fee)}</strong> for a lightweight parcel up to 0.5 kg. Standard rate range: ${delivery.range}.`;
+        const destinationLabel = delivery.destination
+          ? `<strong>Destination matched:</strong> ${escapeHtml(delivery.destination)}. `
+          : '';
+        $('shippingEstimate').innerHTML=`${destinationLabel}<strong>Shipping zone: ${zoneLabel}.</strong> Default base delivery fee: <strong>${money(delivery.fee)}</strong> for a lightweight parcel up to 0.5 kg. Standard rate range: ${delivery.range}.`;
       } else {
         $('shippingText').textContent='Awaiting address';
         $('finalTotalText').textContent='Complete address';
-        $('shippingEstimate').textContent='Enter a recognizable city/municipality and province. The delivery fee will be estimated automatically once the location is detected.';
+        $('shippingEstimate').textContent='Choose a city/municipality and province from the suggestions. The matched destination and shipping zone will appear here automatically.';
       }
     }
     $('cartItemsContainer').addEventListener('click',event=>{
