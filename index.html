@@ -1651,6 +1651,18 @@
 .product-modal-icon img{display:block;width:100%;max-height:260px;object-fit:contain;border-radius:8px}
 .add-btn:disabled,.primary-btn:disabled{background:#c9c9c9;color:#666;cursor:not-allowed}
 .size-option:disabled{background:#f1f1f1;color:#999;border-color:#ddd;cursor:not-allowed;opacity:.85}
+
+/* Product detail image gallery */
+.product-modal-gallery{margin:10px 0 16px}
+.product-modal-gallery[hidden]{display:none!important}
+.product-gallery-thumbnails{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.product-gallery-thumb{width:62px;height:62px;padding:3px;border:2px solid #e5e5e5;border-radius:8px;background:#fff;cursor:pointer;overflow:hidden;transition:border-color .15s,transform .15s}
+.product-gallery-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:4px}
+.product-gallery-thumb:hover{transform:translateY(-1px)}
+.product-gallery-thumb.active{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.product-gallery-thumb:focus-visible{outline:3px solid #111;outline-offset:2px}
+.product-modal-icon img{width:100%;max-height:260px;object-fit:contain}
+@media(max-width:520px){.product-gallery-thumb{width:54px;height:54px}.product-modal-body{padding:16px}.product-modal-icon{padding:12px}}
 </style>
 </head>
 <body>
@@ -1753,6 +1765,9 @@
       <div class="modal-head"><span id="productModalTitle">Product details</span><button class="icon-btn" id="closeProductModal" aria-label="Close product details">×</button></div>
       <div class="product-modal-body">
         <div class="product-modal-icon" id="productModalIcon">💿</div>
+        <div class="product-modal-gallery" id="productModalGallery" hidden>
+          <div class="product-gallery-thumbnails" id="productGalleryThumbnails" role="group" aria-label="More product photos"></div>
+        </div>
         <h2 id="productModalName"></h2>
         <div class="product-modal-price" id="productModalPrice"></div>
         <p class="product-description" id="productModalDescription"></p>
@@ -1955,7 +1970,7 @@
         const imgs=(imagesByProduct.get(String(row.id))||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
         const primary=imgs.find(image=>image.is_primary)||imgs[0]||null;
         const totalStock=variants.reduce((sum,v)=>sum+v.stock,0), isDemo=row.is_demo===true;
-        return {id:String(row.id),sku:String(row.sku||''),name:String(row.name||'Unnamed product'),price:Number(row.base_price)||0,sold:totalStock>0?(isDemo?'Demo Only':'In stock'):'Out of stock',icon:category==='Shorts'?'🩳':'👕',cat:category,off:isDemo?'DEMO':(row.is_featured?'FEATURED':'NEW'),desc:String(row.description||(isDemo?'Demo Only':'Product details coming soon.')),image:safeCatalogImageUrl(primary&&primary.image_url),imageAlt:String((primary&&primary.alt_text)||row.name||'GENMERCH product'),isDemo:isDemo,totalStock:totalStock,variants:variants};
+        return {id:String(row.id),sku:String(row.sku||''),name:String(row.name||'Unnamed product'),price:Number(row.base_price)||0,sold:totalStock>0?(isDemo?'Demo Only':'In stock'):'Out of stock',icon:category==='Shorts'?'🩳':'👕',cat:category,off:isDemo?'DEMO':(row.is_featured?'FEATURED':'NEW'),desc:String(row.description||(isDemo?'Demo Only':'Product details coming soon.')),image:safeCatalogImageUrl(primary&&primary.image_url),imageAlt:String((primary&&primary.alt_text)||row.name||'GENMERCH product'),images:imgs.map(image=>({url:safeCatalogImageUrl(image.image_url),alt:String(image.alt_text||row.name||'GENMERCH product')})).filter(image=>image.url),isDemo:isDemo,totalStock:totalStock,variants:variants};
       });
       products.splice(0,products.length,...mapped);
       catalogLoadState='connected';
@@ -2783,7 +2798,21 @@
     function openProduct(id){
       const p=products.find(item=>String(item.id)===String(id));if(!p)return;
       $('productModalTitle').textContent='Product Details';
-      $('productModalIcon').innerHTML=p.image?'<img src="'+escapeHtml(p.image)+'" alt="'+escapeHtml(p.imageAlt||p.name)+'">':escapeHtml(p.icon||'🛍️');
+      const images=(Array.isArray(p.images)?p.images:[]).filter(image=>image&&image.url);
+      if(!images.length&&p.image)images.push({url:p.image,alt:p.imageAlt||p.name});
+      const mainImage=images[0]||null;
+      $('productModalIcon').innerHTML=mainImage?'<img id="productGalleryMainImage" src="'+escapeHtml(mainImage.url)+'" alt="'+escapeHtml(mainImage.alt||p.name)+'">':escapeHtml(p.icon||'🛍️');
+      const gallery=$('productModalGallery'), thumbnails=$('productGalleryThumbnails');
+      if(images.length>1){
+        gallery.hidden=false;
+        thumbnails.innerHTML=images.map((image,index)=>'<button type="button" class="product-gallery-thumb'+(index===0?' active':'')+'" data-gallery-index="'+index+'" aria-label="View photo '+(index+1)+' of '+images.length+'" aria-pressed="'+(index===0?'true':'false')+'"><img src="'+escapeHtml(image.url)+'" alt="" loading="lazy"></button>').join('');
+        thumbnails.onclick=event=>{
+          const button=event.target.closest('[data-gallery-index]');if(!button)return;
+          const index=Number(button.dataset.galleryIndex), selected=images[index];if(!selected)return;
+          const main=$('productGalleryMainImage');if(main){main.src=selected.url;main.alt=selected.alt||p.name;}
+          thumbnails.querySelectorAll('[data-gallery-index]').forEach(thumb=>{const active=thumb===button;thumb.classList.toggle('active',active);thumb.setAttribute('aria-pressed',String(active));});
+        };
+      }else{gallery.hidden=true;thumbnails.replaceChildren();thumbnails.onclick=null;}
       $('productModalName').textContent=p.name;$('productModalPrice').textContent=money(p.price);$('productModalDescription').textContent=p.desc;
       const noStock=Array.isArray(p.variants)&&!p.variants.some(variant=>variant.stock>0);
       $('productModalAdd').textContent=noStock?'Out of Stock':'+ Add to Cart';$('productModalAdd').disabled=noStock;
