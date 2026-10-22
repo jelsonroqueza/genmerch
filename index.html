@@ -2716,21 +2716,31 @@
       'Sando': '👕'
     };
 
+    function getProductsWithImages(){
+      return products.filter(product => Boolean(product.image || (Array.isArray(product.images) && product.images.some(image => image && image.url))));
+    }
+
     function renderCategoryFilters(){
-      const uniqueCategories = [...new Set(products.map(product => product.cat).filter(Boolean))];
+      const visibleProducts = getProductsWithImages();
+      const uniqueCategories = [...new Set(visibleProducts.map(product => product.cat).filter(Boolean))];
       const nav = $('categoryFilters');
-      const allButton = `<button class="category ${currentCategory === 'All' ? 'active' : ''}" data-category="All" type="button">All Items (${products.length})</button>`;
+      const allButton = `<button class="category ${currentCategory === 'All' ? 'active' : ''}" data-category="All" type="button">All Items (${visibleProducts.length})</button>`;
       const categoryButtons = uniqueCategories.map(category => {
-        const count = products.filter(product => product.cat === category).length;
+        const count = visibleProducts.filter(product => product.cat === category).length;
         const icon = categoryIcons[category] || '🛍️';
         const active = currentCategory === category ? 'active' : '';
         return `<button class="category ${active}" data-category="${escapeHtml(category)}" type="button">${icon} ${escapeHtml(category)} (${count})</button>`;
       }).join('');
       nav.innerHTML = allButton + categoryButtons;
+      const visibleCategoryNames = new Set(uniqueCategories.map(category => category.toLowerCase()));
+      document.querySelectorAll('.desktop-links button[onclick*="setCategoryByLabel"]').forEach(button => {
+        const match = button.getAttribute('onclick').match(/setCategoryByLabel\('([^']+)'\)/);
+        if (match) button.style.display = visibleCategoryNames.has(match[1].toLowerCase()) ? '' : 'none';
+      });
     }
 
     function setCategoryByLabel(label){
-      const match = [...new Set(products.map(product => product.cat).filter(Boolean))]
+      const match = [...new Set(getProductsWithImages().map(product => product.cat).filter(Boolean))]
         .find(category => category.toLowerCase() === label.toLowerCase() || category.toLowerCase().includes(label.toLowerCase()));
       if (!match) {
         showInfo(label);
@@ -2753,7 +2763,7 @@
 
     function renderProducts(){
       const query=$('searchInput').value.trim().toLowerCase();
-      const list=products.filter(product=>{const searchable=[product.name,product.cat,product.desc,product.sku||''].join(' ').toLowerCase();return (currentCategory==='All'||product.cat===currentCategory)&&searchable.includes(query);});
+      const list=getProductsWithImages().filter(product=>{const searchable=[product.name,product.cat,product.desc,product.sku||''].join(' ').toLowerCase();return (currentCategory==='All'||product.cat===currentCategory)&&searchable.includes(query);});
       const title=currentCategory==='All'?'Suot Apparel — All Products':(categoryIcons[currentCategory]||'🛍️')+' '+currentCategory+' Collection';
       $('productSectionTitle').textContent=title;
       const stateText=catalogLoadState==='connected'?' · Supabase connected':catalogLoadState==='fallback'?' · Offline demo catalog':' · Connecting…';
