@@ -1894,7 +1894,8 @@
 .customer-auth-divider:before,.customer-auth-divider:after{content:"";height:1px;flex:1;background:#e8e8e8}
 .customer-auth-google{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:46px;padding:10px 14px;border:1px solid #d8d8d8;border-radius:8px;background:#fff;color:#262626;font-size:.88rem;font-weight:800}
 .customer-auth-google:hover{background:#f7f7f7;border-color:#bdbdbd}
-.customer-google-g{font-family:Arial,Helvetica,sans-serif;font-size:1.24rem;font-weight:900;color:#4285f4}
+.customer-google-g{display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;font-size:0;line-height:0}
+.customer-google-g svg{display:block;width:22px;height:22px}
 .customer-auth-otp-panel h3,.customer-auth-signed-in h3{margin:0 0 6px;font-size:1.05rem;font-weight:900}
 .customer-auth-otp-panel>p,.customer-auth-signed-in>p{margin:0 0 17px;color:#666;font-size:.84rem;line-height:1.5;overflow-wrap:anywhere}
 .customer-auth-otp-panel input{font-size:1.2rem;letter-spacing:.32em;text-align:center;font-weight:850}
@@ -2217,7 +2218,14 @@
           <div class="customer-auth-divider"><span>OR</span></div>
 
           <button class="customer-auth-google" type="button" id="customerGoogleButton">
-            <span class="customer-google-g" aria-hidden="true">G</span>
+            <span class="customer-google-g" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="img" aria-label="Google">
+                <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11c-.5 2.5-1.9 4.6-4.1 6l6.6 5.1c3.9-3.6 6.1-8.9 6.1-14.8Z"/>
+                <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4l-6.8 5.3C9.2 39.5 16 44 24 44Z"/>
+                <path fill="#FBBC05" d="M12.6 27.7a12 12 0 0 1 0-7.4l-6.8-5.3a20.1 20.1 0 0 0 0 18l6.8-5.3Z"/>
+                <path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4 16 4 9.2 8.5 5.8 15l6.8 5.3c1.6-4.8 6.1-8.2 11.4-8.2Z"/>
+              </svg>
+            </span>
             <span>Continue using Google account</span>
           </button>
 
@@ -3922,6 +3930,26 @@
         }
       },1000);
     }
+    function customerAuthFriendlyError(error,method){
+      const raw=String(error&&error.message||'Could not send the one-time code.');
+      const normalized=raw.toLowerCase();
+      if(method==='phone'&&(
+        normalized.includes('unsupported phone provider')||
+        normalized.includes('phone provider is not enabled')||
+        normalized.includes('phone provider not configured')
+      )){
+        return 'Phone OTP is not configured in Supabase yet. Enable Authentication → Sign In / Providers → Phone, then connect an SMS provider such as Twilio, MessageBird, or Vonage. No SMS code was sent.';
+      }
+      if(method==='email'&&(
+        normalized.includes('email address not authorized')||
+        normalized.includes('custom smtp')||
+        normalized.includes('sending rate limit exceeded')||
+        normalized.includes('email rate limit exceeded')
+      )){
+        return 'Supabase could not deliver the email code. Configure Custom SMTP, then set Authentication → Email Templates → Magic Link to include {{ .Token }} for a six-digit OTP. No code was confirmed as sent.';
+      }
+      return raw;
+    }
     async function requestCustomerAuthOtp(method,isResend=false){
       if(customerAuthBusy)return;
       let target;
@@ -3962,13 +3990,14 @@
         $('customerAuthOtpPanel').hidden=false;
         $('customerAuthOtpDescription').textContent='Enter the six-digit code sent to '+target.display+'.';
         $('customerOtpCode').value='';
+        $('customerOtpCode').setAttribute('aria-label','Six-digit OTP sent to '+target.display);
         setCustomerAuthMessage(target.method==='email'
           ?'Email code requested. Check your inbox and spam folder.'
           :'SMS code requested. Check your phone for the one-time password.','success');
         startCustomerAuthResendCountdown();
         $('customerOtpCode').focus();
       }catch(error){
-        const message=String(error&&error.message||'Could not send the one-time code.');
+        const message=customerAuthFriendlyError(error,target.method);
         setCustomerAuthMessage(message,'error');
       }finally{
         customerAuthBusy=false;
@@ -4035,7 +4064,11 @@
         const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo}});
         if(error)throw error;
       }catch(error){
-        setCustomerAuthMessage(error.message||'Google sign-in could not start.','error');
+        const raw=String(error&&error.message||'Google sign-in could not start.');
+        const message=/unsupported provider|provider.*not enabled/i.test(raw)
+          ? 'Google sign-in is not configured in Supabase yet. Enable the Google provider and configure its OAuth client ID, client secret, and Supabase callback URL.'
+          : raw;
+        setCustomerAuthMessage(message,'error');
       }finally{
         customerAuthBusy=false;
         button.disabled=false;
