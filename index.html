@@ -1146,6 +1146,28 @@
 .seller-gallery-previews{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.seller-gallery-previews[hidden]{display:none!important}.seller-gallery-item{display:flex;flex-direction:column;align-items:center;gap:6px;width:104px;padding:7px;border:1px solid #e9dfd8;border-radius:9px;background:#fff}.seller-gallery-item img{width:88px;height:86px;object-fit:cover;border:1px solid #eee4dd;border-radius:6px;background:#faf6f2}.seller-gallery-item .seller-gallery-file-name{max-width:100%;font-size:.65rem;line-height:1.3;color:#5f554e;overflow-wrap:anywhere;text-align:center}.seller-gallery-item .seller-gallery-remove{display:flex;align-items:center;gap:4px;color:#b42318;font-size:.68rem;font-weight:800;cursor:pointer}.seller-gallery-item .seller-gallery-remove input{width:14px;height:14px;accent-color:#d92d20}.seller-gallery-empty{font-size:.76rem;color:#887d76;padding:8px 0}.seller-product-form.editing{border-color:#ffb8a5;background:#fffaf7;box-shadow:0 0 0 2px #ff32180d}
 @media(max-width:760px){.seller-row-actions{min-width:64px}.seller-gallery-item{width:91px;padding:6px}.seller-gallery-item img{width:77px;height:76px}.seller-gallery-previews{gap:7px}}
 
+
+.seller-metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 20px}
+.seller-metric-card{display:flex;flex-direction:column;gap:6px;min-width:0;padding:14px 13px;border:1px solid #eee1da;border-radius:11px;background:linear-gradient(155deg,#fff,#fff8f4);box-shadow:0 3px 12px rgba(67,35,20,.035)}
+.seller-metric-label{color:#66564e;font-size:.72rem;line-height:1.35;font-weight:800}
+.seller-metric-value{color:#201714;font-size:clamp(1.2rem,2.1vw,1.75rem);font-weight:950;line-height:1.15;overflow-wrap:anywhere}
+.seller-metric-detail{color:#8a7b72;font-size:.68rem;line-height:1.4}
+.seller-inventory-tools{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:13px;border:1px solid #eee5df;border-radius:10px;background:#fffdfb}
+.seller-inventory-tools .seller-field input{min-height:41px}
+.seller-inventory-table{min-width:950px}
+.seller-stock-input{width:66px;max-width:66px;padding:7px 5px!important;text-align:center;font-size:.82rem!important;font-weight:850}
+.seller-stock-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.seller-stock-actions .seller-primary-button,.seller-stock-actions .seller-secondary-button{min-height:32px;padding:7px 9px;font-size:.7rem}
+.seller-stock-actions .seller-secondary-button:disabled{opacity:.4;cursor:not-allowed}
+.seller-stock-count{font-size:.92rem;font-weight:950;color:#211a16}
+.seller-movement-kind{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:.68rem;font-weight:850;background:#f4f0ed;color:#5d4b40;white-space:nowrap}
+.seller-movement-kind.restock{background:#eaf8ee;color:#236b39}
+.seller-movement-kind.sale{background:#fff0e6;color:#a74712}
+.seller-movement-kind.cancellation_return{background:#eaf2ff;color:#214f91}
+.seller-movement-kind.adjustment{background:#fff8df;color:#7a5a00}
+@media(max-width:900px){.seller-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seller-tabs{gap:2px}.seller-tab-button{padding-left:10px;padding-right:10px}}
+@media(max-width:600px){.seller-inventory-tools{grid-template-columns:1fr;gap:9px;padding:10px}.seller-metrics-grid{gap:7px;margin:11px 0 16px}.seller-metric-card{padding:11px 10px;gap:5px}.seller-metric-label{font-size:.68rem}.seller-metric-detail{font-size:.63rem}.seller-stock-actions{gap:4px}.seller-stock-actions .seller-primary-button,.seller-stock-actions .seller-secondary-button{padding:7px 8px}}
+
 </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
@@ -2041,6 +2063,7 @@
       <div class="seller-tabs" role="tablist" aria-label="Seller Centre sections">
         <button class="seller-tab-button active" type="button" role="tab" id="sellerProductsTab" aria-selected="true" aria-controls="sellerProductsPanel" onclick="switchSellerTab('products')">Products</button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerOrdersTab" aria-selected="false" aria-controls="sellerOrdersPanel" onclick="switchSellerTab('orders')">Orders</button>
+        <button class="seller-tab-button" type="button" role="tab" id="sellerInventoryTab" aria-selected="false" aria-controls="sellerInventoryPanel" onclick="switchSellerTab('inventory')">Inventory &amp; Analytics</button>
         <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
       </div>
       <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
@@ -2074,7 +2097,38 @@
         <div class="seller-feedback" id="sellerOrdersFeedback" role="status" aria-live="polite" hidden></div>
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
       </section>
-      <div class="seller-dashboard-foot">GENMERCH Seller Centre · Supabase admin-only cloud access · Inventory remains at zero until verified stock is entered.</div>
+      <section class="seller-panel" id="sellerInventoryPanel" role="tabpanel" aria-labelledby="sellerInventoryTab" hidden>
+        <h3 class="seller-panel-title">Inventory overview &amp; analytics</h3>
+        <p class="seller-panel-subtitle">Adjust stock by size/variant. Stock deductions and cancellation returns are recorded in Supabase. Low stock means 1–5 units.</p>
+        <div class="seller-feedback" id="sellerInventoryFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-metrics-grid" id="sellerInventoryMetrics">
+          <div class="seller-metric-card"><span class="seller-metric-label">Active products</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Storefront catalog</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Sellable variants</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Active sizes</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Units on hand</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Available inventory</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Low stock</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">1–5 units left</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Out of stock</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">0 units left</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Stock value (retail)</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Unit price × quantity</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Orders received</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">All recorded orders</span></div>
+          <div class="seller-metric-card"><span class="seller-metric-label">Paid sales</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Paid, non-cancelled orders</span></div>
+        </div>
+        <div class="seller-inventory-tools">
+          <div class="seller-field"><label for="sellerStockReason">Reason for stock adjustment (optional)</label><input id="sellerStockReason" type="text" maxlength="250" placeholder="e.g. New delivery, damaged item, stock count correction"></div>
+          <div class="seller-field"><label for="sellerInventorySearch">Find product or size</label><input id="sellerInventorySearch" type="search" placeholder="Search product, SKU, size or color"></div>
+        </div>
+        <h3 class="seller-panel-title" style="margin-top:20px">Stock by product variant</h3>
+        <p class="seller-panel-subtitle">Use Add to receive stock or Remove to reduce it. Stock can never go below zero.</p>
+        <div class="seller-table-wrap"><table class="seller-table seller-inventory-table">
+          <thead><tr><th>Product</th><th>Variant / SKU</th><th>Unit price</th><th>Stock</th><th>Status</th><th>Adjust quantity</th></tr></thead>
+          <tbody id="sellerInventoryTableBody"><tr><td colspan="6" class="seller-table-empty">Open this tab to load stock levels.</td></tr></tbody>
+        </table></div>
+        <h3 class="seller-panel-title" style="margin-top:22px">Recent inventory movements</h3>
+        <p class="seller-panel-subtitle">Records manual stock changes, order deductions, and stock returned by cancellations.</p>
+        <div class="seller-table-wrap"><table class="seller-table seller-movements-table">
+          <thead><tr><th>Date</th><th>Product variant</th><th>Movement</th><th>Change</th><th>Stock before → after</th><th>Reason / order</th></tr></thead>
+          <tbody id="sellerMovementTableBody"><tr><td colspan="6" class="seller-table-empty">Stock movement history appears here after inventory changes.</td></tr></tbody>
+        </table></div>
+      </section>
+      <div class="seller-dashboard-foot">GENMERCH Seller Centre · Admin-only Supabase access · Stock changes are recorded in the inventory movement history.</div>
     </section>
   </div>
 
@@ -4289,6 +4343,9 @@
     let sellerCurrentTab = 'products';
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
+    let sellerInventoryLoaded = false;
+    let sellerInventoryRows = [];
+    let sellerMovementRows = [];
     let sellerEditingProductId = null;
     let sellerEditingImages = [];
     let sellerProductRowsById = new Map();
