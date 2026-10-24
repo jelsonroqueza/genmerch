@@ -1,7 +1,7 @@
 {
   "name": "GENMERCH OPM Store",
   "short_name": "GENMERCH",
-  "start_url": "/genmerch/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#ee4d2d",
