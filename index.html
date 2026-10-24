@@ -1232,6 +1232,87 @@
     .wishlist-continue-button:hover{background:#fff0eb}
     @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:flex-start;flex-direction:column;padding:11px 13px}.wishlist-continue-button{align-self:flex-end}}
 
+
+.customer-orders-badge{position:absolute;right:-9px;top:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#f22a12;color:#fff;font-size:.62rem;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1}
+.customer-orders-badge[hidden]{display:none!important}
+.customer-orders-overlay{position:fixed;inset:0;z-index:860;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(12,12,12,.64);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.customer-orders-overlay.open{display:flex}
+.customer-orders-modal{width:min(980px,100%);max-height:min(92dvh,940px);display:flex;flex-direction:column;overflow:hidden;background:#fff;border-radius:15px;border:1px solid #eee1da;box-shadow:0 24px 80px #0005}
+.customer-orders-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 20px;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff;flex-shrink:0}
+.customer-orders-head h2{margin:0;font-size:1.08rem;font-weight:900;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.customer-orders-head-tag{border-radius:999px;background:#ffffff25;padding:4px 8px;font-size:.62rem;font-weight:850;letter-spacing:.04em}
+.customer-orders-head p{margin:5px 0 0;font-size:.78rem;opacity:.94;line-height:1.4}
+.customer-orders-close{width:36px;height:36px;flex:0 0 auto;border:0;border-radius:50%;background:#ffffff22;color:#fff;font-size:1.65rem;line-height:1}
+.customer-orders-close:hover{background:#ffffff3b}
+.customer-orders-content{overflow:auto;overscroll-behavior:contain;padding:18px;flex:1;min-height:0;background:#fffdfb}
+.customer-orders-account-banner{padding:10px 12px;margin-bottom:16px;border:1px solid #f0ddd4;border-radius:9px;background:#fff7f3;color:#785447;font-size:.78rem;line-height:1.5}
+.customer-orders-account-banner:empty{display:none}
+.customer-my-orders-section,.customer-guest-track-section{padding:14px;margin-bottom:15px;border:1px solid #eee4de;border-radius:11px;background:#fff}
+.customer-guest-track-section{margin-bottom:0}
+.customer-orders-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.customer-orders-section-head h3,.customer-guest-track-section h3{margin:0;color:#251d18;font-size:.98rem;font-weight:900}
+.customer-orders-section-head p,.customer-guest-track-section>p{margin:5px 0 0;color:#756b64;font-size:.76rem;line-height:1.5}
+.customer-orders-refresh{flex:0 0 auto;border:1px solid #e6d4cb;border-radius:7px;background:#fff;color:#5f4338;padding:8px 10px;font-size:.74rem;font-weight:850}
+.customer-orders-loading,.customer-orders-empty{padding:22px 12px;text-align:center;color:#756b64;font-size:.82rem;line-height:1.5}
+.customer-orders-empty strong{display:block;color:#2c211b;margin-bottom:5px}
+.customer-orders-empty button{margin-top:10px;padding:9px 13px;border:1px solid #f22a12;border-radius:7px;background:#f22a12;color:#fff;font-weight:850;font-size:.75rem}
+.customer-guest-track-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end;gap:10px;margin-top:13px}
+.customer-track-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.customer-track-field label{font-size:.73rem;color:#332822;font-weight:850}
+.customer-track-field input{width:100%;min-height:40px;border:1px solid #dfd4cd;border-radius:7px;background:#fff;padding:9px 11px;outline:none;color:#241d19;font:inherit;font-size:.82rem}
+.customer-track-field input:focus{border-color:#f22a12;box-shadow:0 0 0 3px #f22a121a}
+.customer-track-submit{min-height:40px;padding:9px 13px;border:1px solid #f22a12;border-radius:7px;background:#f22a12;color:#fff;font-size:.76rem;font-weight:900;white-space:nowrap}
+.customer-track-submit:hover{background:#d92510}
+.customer-track-submit:disabled{opacity:.6;cursor:wait}
+.customer-orders-message{margin-top:10px;padding:10px 12px;border:1px solid #f0c6bc;border-radius:8px;background:#fff4f0;color:#9d2d1d;font-size:.76rem;line-height:1.5}
+.customer-orders-message[hidden]{display:none!important}
+.customer-orders-message.success{border-color:#b9dfc1;background:#f0faf2;color:#216537}
+.customer-order-card{margin-top:12px;padding:14px;border:1px solid #e9ded7;border-radius:11px;background:#fff;box-shadow:0 2px 6px #41210a06}
+.customer-order-card:first-child{margin-top:0}
+.customer-order-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:11px;border-bottom:1px solid #f0e7e2}
+.customer-order-number{font-size:.82rem;font-weight:950;letter-spacing:.025em;color:#281d17;overflow-wrap:anywhere}
+.customer-order-date{margin-top:4px;font-size:.7rem;color:#82766f}
+.customer-order-status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 9px;background:#fff0eb;color:#b82b17;font-size:.69rem;font-weight:900}
+.customer-order-status-pill.delivered{background:#ecf8ee;color:#246a36}
+.customer-order-status-pill.cancelled,.customer-order-status-pill.refunded{background:#f6eeee;color:#8e2929}
+.customer-order-total{margin-top:8px;font-size:.82rem;font-weight:900;color:#e92d17}
+.customer-order-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;position:relative;margin:17px 0 13px}
+.customer-order-progress-step{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-width:0;color:#9b918a}
+.customer-order-progress-dot{width:20px;height:20px;border:2px solid #d9cec7;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:.65rem;line-height:1;z-index:1}
+.customer-order-progress-step.completed .customer-order-progress-dot{border-color:#ed361f;background:#ed361f;color:#fff}
+.customer-order-progress-step.current .customer-order-progress-dot{border-color:#ed361f;box-shadow:0 0 0 4px #ffebe6;color:#ed361f}
+.customer-order-progress-step.completed,.customer-order-progress-step.current{color:#4a3026}
+.customer-order-progress-label{font-size:.64rem;line-height:1.3;font-weight:800;overflow-wrap:anywhere}
+.customer-order-progress-step.current .customer-order-progress-label{color:#e32e18}
+.customer-order-cancelled-banner{padding:11px 12px;margin:11px 0;border:1px solid #ecd1d1;border-radius:8px;background:#fff4f4;color:#8f2525;font-size:.78rem;line-height:1.5}
+.customer-order-timeline{margin:12px 0 0;padding:12px 0 0;border-top:1px dashed #e9ddd5}
+.customer-order-timeline h4{margin:0 0 10px;font-size:.76rem;color:#352821}
+.customer-order-timeline-list{display:flex;flex-direction:column;gap:9px}
+.customer-order-timeline-event{display:grid;grid-template-columns:11px minmax(0,1fr);gap:8px;align-items:start}
+.customer-order-timeline-marker{width:9px;height:9px;margin-top:4px;border-radius:50%;background:#ed361f;box-shadow:0 0 0 3px #fff0eb}
+.customer-order-timeline-title{font-size:.74rem;color:#342721;font-weight:850;line-height:1.4}
+.customer-order-timeline-note{font-size:.7rem;color:#7a6c64;line-height:1.4;margin-top:2px}
+.customer-order-timeline-date{font-size:.66rem;color:#9a8c84;margin-top:3px}
+.customer-order-items{margin-top:12px;padding-top:12px;border-top:1px solid #f0e7e2}
+.customer-order-items h4{margin:0 0 8px;font-size:.76rem;color:#352821}
+.customer-order-item{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #f5eeea}
+.customer-order-item:last-child{border-bottom:0}
+.customer-order-item-image{width:54px;height:58px;border:1px solid #eee2da;border-radius:7px;object-fit:contain;background:#fff}
+.customer-order-item-noimage{display:grid;place-items:center;font-size:1.4rem}
+.customer-order-item-info{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}
+.customer-order-item-info strong{font-size:.76rem;color:#291f19}
+.customer-order-item-info span{font-size:.68rem;color:#82756d}
+.customer-order-item-price{white-space:nowrap;text-align:right;font-size:.75rem;font-weight:900;color:#35251d}
+.customer-order-delivery-details{margin-top:11px;padding:10px 11px;border-radius:8px;background:#fff8f4;color:#695247;font-size:.72rem;line-height:1.6;overflow-wrap:anywhere}
+.customer-order-delivery-details strong{color:#392a22}
+.customer-order-payment-note{font-size:.7rem;color:#76695f;line-height:1.5;margin-top:9px}
+@media(max-width:650px){.customer-orders-overlay{padding:7px}.customer-orders-modal{max-height:95dvh;border-radius:12px}.customer-orders-head{padding:13px 14px}.customer-orders-content{padding:10px}.customer-my-orders-section,.customer-guest-track-section{padding:11px}.customer-guest-track-form{grid-template-columns:1fr}.customer-track-submit{width:100%}.customer-order-card{padding:11px}.customer-order-progress{margin:15px 0 10px}.customer-order-progress-label{font-size:.56rem}.customer-order-progress-dot{width:18px;height:18px}.customer-order-item{grid-template-columns:48px minmax(0,1fr) auto;gap:8px}.customer-order-item-image{width:48px;height:52px}.customer-order-item-price{font-size:.7rem}}
+
+
+.seller-order-actions{display:flex;flex-direction:column;gap:6px;min-width:118px}
+.seller-order-advance-button{min-height:30px;padding:7px 9px;font-size:.7rem;white-space:nowrap}
+@media(max-width:650px){.seller-order-actions{min-width:105px}}
+
 </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
@@ -2111,8 +2192,8 @@
             <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.5" r="4"></circle><path d="M4.5 21v-2.2a7.5 7.5 0 0 1 15 0V21"></path></svg></span>
             <small class="customer-account-label" id="customerAccountLabel">Account</small>
           </button>
-          <button class="header-action" type="button" onclick="showInfo('Orders')" aria-label="View orders">
-            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5.5" y="4" width="13" height="17" rx="1.8"></rect><path d="M9 4.5a3 3 0 0 1 6 0V7H9zM9 12h6M9 16h6"></path></svg></span>
+          <button class="header-action" id="openCustomerOrdersButton" type="button" onclick="openCustomerOrders()" aria-label="View and track your orders" title="My Orders — Track your delivery">
+            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5.5" y="4" width="13" height="17" rx="1.8"></rect><path d="M9 4.5a3 3 0 0 1 6 0V7H9zM9 12h6M9 16h6"></path></svg><span class="customer-orders-badge" id="customerOrdersBadge" hidden>0</span></span>
             <small>Orders</small>
           </button>
           <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
@@ -2455,6 +2536,33 @@
       <h2 id="noticeTitle">Checkout Not Available Yet</h2>
       <div id="noticeContent"></div>
       <button class="primary-btn" id="closeNoticeButton">Close</button>
+    </section>
+  </div>
+
+  <div class="customer-orders-overlay" id="customerOrdersOverlay" aria-hidden="true">
+    <section class="customer-orders-modal" role="dialog" aria-modal="true" aria-labelledby="customerOrdersTitle">
+      <div class="customer-orders-head">
+        <div><h2 id="customerOrdersTitle">My Orders <span class="customer-orders-head-tag">ORDER TRACKING</span></h2><p>Follow your GENMERCH order from confirmation through delivery.</p></div>
+        <button class="customer-orders-close" id="customerOrdersClose" type="button" aria-label="Close orders">×</button>
+      </div>
+      <div class="customer-orders-content">
+        <div class="customer-orders-account-banner" id="customerOrdersAccountBanner"></div>
+        <section class="customer-my-orders-section">
+          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Orders appear here when you checked out while signed in.</p></div><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div>
+          <div id="customerOrdersList"><div class="customer-orders-loading">Loading your orders…</div></div>
+        </section>
+        <section class="customer-guest-track-section">
+          <h3>Track a guest order</h3>
+          <p>Enter the order number from your confirmation and the mobile number used at checkout. Only order progress and item details are shown.</p>
+          <form id="customerGuestTrackForm" class="customer-guest-track-form">
+            <div class="customer-track-field"><label for="customerTrackOrderNumber">Order number</label><input id="customerTrackOrderNumber" name="orderNumber" type="text" maxlength="40" placeholder="e.g. GM-20261024-AB12CD34" autocomplete="off" required></div>
+            <div class="customer-track-field"><label for="customerTrackPhone">Checkout mobile number</label><input id="customerTrackPhone" name="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="09XXXXXXXXX" autocomplete="tel-national" required></div>
+            <button class="customer-track-submit" id="customerTrackSubmit" type="submit">Track my order</button>
+          </form>
+          <div class="customer-orders-message" id="customerGuestTrackMessage" role="status" aria-live="polite" hidden></div>
+          <div id="customerGuestTrackResult"></div>
+        </section>
+      </div>
     </section>
   </div>
 
@@ -3480,6 +3588,199 @@
         return '<article class="wishlist-item"><div class="wishlist-product-photo">'+image+'</div><div class="wishlist-item-info"><div class="wishlist-item-category">'+escapeHtml(product.cat||'GENMERCH')+'</div><strong>'+escapeHtml(product.name)+'</strong><div class="wishlist-item-price">'+money(product.price)+'</div>'+availability+'</div><div class="wishlist-item-actions"><button class="wishlist-view-button" type="button" data-wishlist-view="'+escapeHtml(product.id)+'">View product</button><button class="wishlist-remove-button" type="button" data-wishlist-remove="'+escapeHtml(product.id)+'">Remove</button></div></article>';
       }).join('');
     }
+    const CUSTOMER_ORDER_STATUS_META={
+      pending:{label:'Order placed',detail:'Your order was received and is waiting for the seller to confirm it.',step:0},
+      confirmed:{label:'Order confirmed',detail:'The seller confirmed your order.',step:1},
+      processing:{label:'Seller preparing to ship your order',detail:'The seller is preparing your items for dispatch.',step:2},
+      shipped:{label:'Already shipped',detail:'Your order has been shipped by the seller.',step:3},
+      out_for_delivery:{label:'Out for delivery',detail:'The courier is delivering your parcel to your address.',step:4},
+      delivered:{label:'Order received',detail:'Your order is marked as delivered.',step:4},
+      cancelled:{label:'Order cancelled',detail:'This order has been cancelled. Reserved stock is returned when applicable.',step:-1},
+      refunded:{label:'Refunded',detail:'This order is marked as refunded. Check the payment method for refund details.',step:-1}
+    };
+    let customerOrdersRefreshTimer=null;
+    let customerGuestTrackingLookup=null;
+    function customerOrderStatusMeta(status){
+      return CUSTOMER_ORDER_STATUS_META[String(status||'pending').toLowerCase()]||{label:String(status||'Order update').replace(/_/g,' '),detail:'Your order status has been updated.',step:0};
+    }
+    function customerOrderDate(value){
+      if(!value)return 'Waiting for update';
+      const date=new Date(value);
+      return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{timeZone:'Asia/Manila',dateStyle:'medium',timeStyle:'short'});
+    }
+    function customerOrderProgressMarkup(status){
+      const current=customerOrderStatusMeta(status),steps=[
+        {key:'pending',label:'Order placed'},
+        {key:'confirmed',label:'Confirmed'},
+        {key:'processing',label:'Preparing to ship'},
+        {key:'shipped',label:'Shipped'},
+        {key:'out_for_delivery',label:'Out for delivery'}
+      ];
+      if(current.step<0)return '<div class="customer-order-cancelled-banner"><strong>'+escapeHtml(current.label)+'.</strong> '+escapeHtml(current.detail)+'</div>';
+      return '<div class="customer-order-progress" aria-label="Order delivery progress">'+steps.map((step,index)=>{
+        const done=index<current.step||(String(status)==='delivered');
+        const active=index===current.step&&String(status)!=='delivered';
+        return '<div class="customer-order-progress-step'+(done?' completed':'')+(active?' current':'')+'"><span class="customer-order-progress-dot">'+(done?'✓':String(index+1))+'</span><span class="customer-order-progress-label">'+escapeHtml(step.label)+'</span></div>';
+      }).join('')+'</div>'+(String(status)==='delivered'?'<div class="customer-order-status-pill delivered">✓ Order received</div>':'');
+    }
+    function customerOrderTimelineMarkup(history,status,order){
+      const entries=Array.isArray(history)?history.slice():[];
+      if(!entries.length)entries.push({from_status:null,to_status:status,note:customerOrderStatusMeta(status).detail,created_at:order.created_at});
+      const latestStatus=String(status||'pending').toLowerCase();
+      if(!entries.some(entry=>String(entry.to_status).toLowerCase()===latestStatus)){
+        entries.push({from_status:null,to_status:latestStatus,note:customerOrderStatusMeta(latestStatus).detail,created_at:order.updated_at||order.created_at});
+      }
+      entries.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+      return '<div class="customer-order-timeline"><h4>Order activity</h4><div class="customer-order-timeline-list">'+entries.map(entry=>{
+        const meta=customerOrderStatusMeta(entry.to_status);
+        return '<div class="customer-order-timeline-event"><span class="customer-order-timeline-marker"></span><div><div class="customer-order-timeline-title">'+escapeHtml(meta.label)+'</div><div class="customer-order-timeline-note">'+escapeHtml(entry.note||meta.detail)+'</div><div class="customer-order-timeline-date">'+escapeHtml(customerOrderDate(entry.created_at))+'</div></div></div>';
+      }).join('')+'</div></div>';
+    }
+    function customerOrderItemsMarkup(items){
+      if(!Array.isArray(items)||!items.length)return '<div class="customer-order-items"><h4>Items</h4><p class="customer-orders-empty">Item details are not available for this order.</p></div>';
+      return '<div class="customer-order-items"><h4>Items ordered ('+items.reduce((sum,item)=>sum+(Number(item.quantity)||0),0)+' unit(s))</h4>'+items.map(item=>{
+        const imageUrl=safeCatalogImageUrl(item.image_url_snapshot||item.image_url||'');
+        const image=imageUrl?'<img class="customer-order-item-image" src="'+escapeHtml(imageUrl)+'" alt="'+escapeHtml(item.product_name||'Product')+'" loading="lazy">':'<div class="customer-order-item-image customer-order-item-noimage">👕</div>';
+        return '<article class="customer-order-item">'+image+'<div class="customer-order-item-info"><strong>'+escapeHtml(item.product_name||'GENMERCH product')+'</strong><span>SKU: '+escapeHtml(item.sku||'—')+'</span><span>Size: '+escapeHtml(item.size_label||'—')+(item.color_label?' · Color: '+escapeHtml(item.color_label):'')+'</span><span>Qty: '+escapeHtml(item.quantity)+'</span></div><div class="customer-order-item-price">'+escapeHtml(money(item.line_total))+'</div></article>';
+      }).join('')+'</div>';
+    }
+    function customerOrderCardMarkup(order,items=[],history=[]){
+      const status=String(order.status||'pending').toLowerCase(),meta=customerOrderStatusMeta(status);
+      const pillClass=status==='delivered'?' delivered':(['cancelled','refunded'].includes(status)?' '+status:'');
+      const location=[order.shipping_city_municipality,order.shipping_province,order.shipping_postal_code].filter(Boolean).join(', ');
+      const delivery=order.shipping_street_address
+        ?'<div class="customer-order-delivery-details"><strong>Delivery to:</strong> '+escapeHtml(order.shipping_street_address)+(order.shipping_barangay?', '+escapeHtml(order.shipping_barangay):'')+(location?', '+escapeHtml(location):'')+(order.shipping_landmark?'<br><strong>Landmark:</strong> '+escapeHtml(order.shipping_landmark):'')+(order.delivery_instructions?'<br><strong>Instructions:</strong> '+escapeHtml(order.delivery_instructions):'')+'</div>'
+        :'';
+      const payment=order.payment_method==='COD'
+        ?'Cash on Delivery — payment remains pending until received.'
+        :(String(order.payment_status||'pending')==='paid'?'Payment marked paid.':String(order.payment_method||'Selected payment method')+' selected. Payment is '+String(order.payment_status||'pending')+'; no automatic online payment was processed.');
+      return '<article class="customer-order-card"><div class="customer-order-card-head"><div><div class="customer-order-number">'+escapeHtml(order.order_number||'GENMERCH order')+'</div><div class="customer-order-date">Placed '+escapeHtml(customerOrderDate(order.created_at))+'</div><div class="customer-order-total">Total '+escapeHtml(money(order.total_amount))+'</div></div><div class="customer-order-status-pill'+pillClass+'">'+escapeHtml(meta.label)+'</div></div>'+
+        customerOrderProgressMarkup(status)+
+        '<div class="customer-order-timeline-note">'+escapeHtml(meta.detail)+'</div>'+
+        customerOrderTimelineMarkup(history,status,order)+customerOrderItemsMarkup(items)+delivery+
+        '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
+    }
+    function renderCustomerAccountOrders(orders,itemRows=[],histories=[]){
+      const container=$('customerOrdersList');
+      if(!container)return;
+      if(!orders.length){
+        container.innerHTML='<div class="customer-orders-empty"><strong>No account orders yet</strong>Orders placed while signed in will appear here. Guest orders can be found below using your order number and checkout mobile number.</div>';
+        $('customerOrdersBadge').hidden=true;
+        return;
+      }
+      const itemMap=new Map(),historyMap=new Map();
+      itemRows.forEach(item=>{const key=String(item.order_id);if(!itemMap.has(key))itemMap.set(key,[]);itemMap.get(key).push(item);});
+      histories.forEach(entry=>{const key=String(entry.order_id);if(!historyMap.has(key))historyMap.set(key,[]);historyMap.get(key).push(entry);});
+      container.innerHTML=orders.map(order=>customerOrderCardMarkup(order,itemMap.get(String(order.id))||[],historyMap.get(String(order.id))||[])).join('');
+      const badge=$('customerOrdersBadge');
+      badge.textContent=orders.length>99?'99+':String(orders.length);
+      badge.hidden=orders.length===0;
+    }
+    async function loadCustomerAccountOrders(silent=false){
+      const container=$('customerOrdersList');
+      if(!container)return;
+      try{
+        const client=getCustomerAuthClient();
+        const sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session;
+        customerAuthCurrentSession=session&&session.user?session:null;
+        const banner=$('customerOrdersAccountBanner');
+        if(!session||!session.user){
+          if(banner)banner.innerHTML='You are browsing as a guest. Sign in to see orders linked to your account, or use <strong>Track a guest order</strong> below.';
+          renderCustomerAccountOrders([]);
+          return;
+        }
+        const userId=String(session.user.id);
+        if(banner)banner.innerHTML='Signed in as <strong>'+escapeHtml(getCustomerAuthIdentity(session.user))+'</strong>. Only orders linked to this account are shown here.';
+        if(!silent)container.innerHTML='<div class="customer-orders-loading">Fetching your orders from Supabase…</div>';
+        const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,created_at,updated_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
+        if(ordersResult.error)throw ordersResult.error;
+        const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
+        if(!orders.length){renderCustomerAccountOrders([]);return;}
+        const orderIds=orders.map(order=>order.id);
+        const [itemsResult,historyResult]=await Promise.all([
+          client.from('order_items').select('id,order_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
+          client.from('order_status_history').select('id,order_id,from_status,to_status,note,created_at').in('order_id',orderIds).order('created_at',{ascending:true})
+        ]);
+        if(itemsResult.error)throw itemsResult.error;
+        if(historyResult.error)throw historyResult.error;
+        renderCustomerAccountOrders(orders,Array.isArray(itemsResult.data)?itemsResult.data:[],Array.isArray(historyResult.data)?historyResult.data:[]);
+      }catch(error){
+        if(!silent)container.innerHTML='<div class="customer-orders-empty"><strong>Orders could not be loaded</strong>'+escapeHtml(error.message||'Refresh the page and try again.')+'</div>';
+      }
+    }
+    function setGuestTrackMessage(message,type=''){
+      const node=$('customerGuestTrackMessage');
+      node.textContent=message||'';
+      node.className='customer-orders-message'+(type?' '+type:'');
+      node.hidden=!message;
+    }
+    async function trackGuestOrder(orderNumber,phone,silent=false){
+      const client=getCustomerAuthClient();
+      const result=await client.rpc('track_genmerch_guest_order',{p_order_number:String(orderNumber||'').trim(),p_customer_phone:String(phone||'').trim()});
+      if(result.error)throw result.error;
+      const order=Array.isArray(result.data)?result.data[0]:result.data;
+      if(!order||!order.order_number)throw new Error('Order details not found. Check the order number and mobile number.');
+      customerGuestTrackingLookup={orderNumber:String(orderNumber||'').trim(),phone:String(phone||'').trim()};
+      $('customerGuestTrackResult').innerHTML=customerOrderCardMarkup(order,order.items||[],order.timeline||[]);
+      setGuestTrackMessage('Order found. The status and item details below were loaded from Supabase.','success');
+    }
+    async function openCustomerOrders(){
+      $('customerOrdersOverlay').classList.add('open');
+      $('customerOrdersOverlay').setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      await loadCustomerAccountOrders();
+      if(customerGuestTrackingLookup){
+        $('customerTrackOrderNumber').value=customerGuestTrackingLookup.orderNumber;
+        $('customerTrackPhone').value=customerGuestTrackingLookup.phone;
+        try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);}catch(_){}
+      }
+      startCustomerOrdersRefresh();
+    }
+    function closeCustomerOrders(){
+      const overlay=$('customerOrdersOverlay');
+      if(!overlay)return;
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      stopCustomerOrdersRefresh();
+      if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+    }
+    function startCustomerOrdersRefresh(){
+      if(customerOrdersRefreshTimer!==null)return;
+      customerOrdersRefreshTimer=window.setInterval(async()=>{
+        if(!document.hidden&&$('customerOrdersOverlay').classList.contains('open')){
+          await loadCustomerAccountOrders(true);
+          if(customerGuestTrackingLookup){
+            try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);}catch(_){}
+          }
+        }
+      },20000);
+    }
+    function stopCustomerOrdersRefresh(){if(customerOrdersRefreshTimer!==null){window.clearInterval(customerOrdersRefreshTimer);customerOrdersRefreshTimer=null;}}
+    $('customerOrdersClose').addEventListener('click',closeCustomerOrders);
+    $('customerOrdersOverlay').addEventListener('click',event=>{if(event.target===$('customerOrdersOverlay'))closeCustomerOrders();});
+    $('customerOrdersRefresh').addEventListener('click',async()=>{
+      $('customerOrdersRefresh').disabled=true;
+      await loadCustomerAccountOrders();
+      if(customerGuestTrackingLookup){try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone);}catch(error){setGuestTrackMessage(error.message||'Unable to refresh this order.','error');}}
+      $('customerOrdersRefresh').disabled=false;
+    });
+    $('customerGuestTrackForm').addEventListener('submit',async event=>{
+      event.preventDefault();
+      const orderNumber=$('customerTrackOrderNumber').value.trim(),phone=$('customerTrackPhone').value.trim(),button=$('customerTrackSubmit');
+      if(!/^GM-[0-9]{8}-[A-F0-9]{8}$/i.test(orderNumber)){
+        setGuestTrackMessage('Enter the full GENMERCH order number shown in your confirmation.','error');$('customerTrackOrderNumber').focus();return;
+      }
+      if(!/^09[0-9]{9}$/.test(phone)){
+        setGuestTrackMessage('Enter the 11-digit mobile number used at checkout.','error');$('customerTrackPhone').focus();return;
+      }
+      button.disabled=true;button.textContent='Searching…';setGuestTrackMessage('Checking your order details securely…');$('customerGuestTrackResult').innerHTML='';
+      try{await trackGuestOrder(orderNumber,phone);}
+      catch(error){customerGuestTrackingLookup=null;setGuestTrackMessage(error.message||'Order details not found. Check the order number and mobile number.','error');$('customerGuestTrackResult').innerHTML='';}
+      finally{button.disabled=false;button.textContent='Track my order';}
+    });
+
     function openWishlist(){
       syncWishlistForCustomerSession(customerAuthCurrentSession,false);
       renderWishlist();
@@ -4246,7 +4547,7 @@
     $('openCartButton').addEventListener('click',openCart);
     $('closeCartButton').addEventListener('click',closeCart);
     $('cartOverlay').addEventListener('click',closeCart);
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();closeWishlist();}});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();closeWishlist();closeCustomerOrders();}});
 
     document.querySelectorAll('[data-payment]').forEach(button=>button.addEventListener('click',()=>{
       selectedPayment=button.dataset.payment;
@@ -4447,6 +4748,7 @@
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
           syncWishlistForCustomerSession(session,true);
+          if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open'))loadCustomerAccountOrders(true);
           if(event==='SIGNED_IN'&&session&&session.user&&isCustomerAuthCallbackUrl()){
             const identity=getCustomerAuthIdentity(session.user);
             const overlay=$('customerAuthOverlay');
@@ -5164,6 +5466,33 @@
       else await loadSellerProducts();
     }
     function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
+    const SELLER_ORDER_NEXT_STEP={
+      pending:{next:'confirmed',label:'Confirm order'},
+      confirmed:{next:'processing',label:'Start preparing'},
+      processing:{next:'shipped',label:'Mark shipped'},
+      shipped:{next:'out_for_delivery',label:'Out for delivery'},
+      out_for_delivery:{next:'delivered',label:'Mark received'}
+    };
+    function sellerOrderStatusLabel(status){
+      return (CUSTOMER_ORDER_STATUS_META[String(status||'pending').toLowerCase()]||{label:String(status||'Pending').replace(/_/g,' ')}).label;
+    }
+    async function advanceSellerOrderStatus(orderId,orderNumber,nextStatus,button){
+      const step=SELLER_ORDER_NEXT_STEP[String(nextStatus||'').toLowerCase()];
+      if(!step)return;
+      if(!window.confirm('Update '+(orderNumber||'this order')+' to "'+sellerOrderStatusLabel(nextStatus)+'"? The customer will see this status in My Orders.'))return;
+      if(button){button.disabled=true;button.textContent='Updating…';}
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('update_genmerch_order_status',{p_order_id:orderId,p_new_status:nextStatus,p_note:''});
+        if(result.error)throw result.error;
+        sellerOrdersLoaded=false;
+        await loadSellerOrders(true);
+        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' updated: '+sellerOrderStatusLabel(nextStatus)+'. The customer order timeline has been updated.','success');
+      }catch(error){
+        sellerFeedback('sellerOrdersFeedback',error.message||'Could not update this order status.','error');
+        if(button){button.disabled=false;button.textContent=step.label;}
+      }
+    }
     function renderSellerOrders(rows,itemRows=[]){
       const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
       const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Items','__items'],['Action','__action']];
@@ -5177,10 +5506,14 @@
         const mainRow='<tr data-seller-order-row="'+sellerEscape(row.id)+'">'+columns.map(col=>{
           if(col[1]==='__items')return '<td><button class="seller-secondary-button seller-order-items-toggle" type="button" data-seller-order-items="'+sellerEscape(row.id)+'" aria-expanded="false">View '+items.length+' item(s)</button><div class="seller-muted">'+itemUnits+' unit(s)</div></td>';
           if(col[1]==='__action'){
-            const status=String(row.status||'').toLowerCase(),blocked=['cancelled','refunded','shipped','delivered'].includes(status)||Boolean(row.inventory_released);
-            return '<td>'+(blocked?'<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Not cancellable'))+'</span>':'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>')+'</td>';
+            const status=String(row.status||'').toLowerCase(),step=SELLER_ORDER_NEXT_STEP[status];
+            const canCancel=['pending','confirmed','processing'].includes(status)&&!Boolean(row.inventory_released);
+            const advance=step?'<button class="seller-primary-button seller-order-advance-button" type="button" data-seller-advance-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'" data-next-status="'+sellerEscape(step.next)+'">'+sellerEscape(step.label)+'</button>':'<span class="seller-muted">'+sellerEscape(status==='delivered'?'Order received':(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Complete')))+'</span>';
+            const cancel=canCancel?'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>':'';
+            return '<td><div class="seller-order-actions">'+advance+cancel+'</div></td>';
           }
           let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
+          if(col[1]==='status')display=sellerOrderStatusLabel(value);
           if(col[1]==='total_amount')display=money(value);
           if(col[1]==='created_at')display=sellerDate(value);
           if(col[1]==='payment_status'&&display==='pending')display='Pending';
@@ -5203,6 +5536,7 @@
         button.textContent=(detail.hidden?'View ':'Hide ')+rowItems.length+' item(s)';
       }));
       body.querySelectorAll('[data-seller-cancel-order]').forEach(button=>button.addEventListener('click',()=>cancelSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
+      body.querySelectorAll('[data-seller-advance-order]').forEach(button=>button.addEventListener('click',()=>advanceSellerOrderStatus(button.dataset.orderId,button.dataset.orderNumber,button.dataset.nextStatus,button)));
     }
     async function loadSellerOrders(silent=false){
       if(!sellerCentreIsUnlocked)return;
