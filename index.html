@@ -2262,6 +2262,26 @@
   .checkout-review-item-cost{font-size:.72rem}
 }
 
+
+/* Customer-facing delivery progress: all six real order stages are visible. */
+.customer-order-progress{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}
+.customer-order-progress-label{font-size:.61rem;line-height:1.25}
+.customer-order-progress-step.delivered-current .customer-order-progress-dot{box-shadow:0 0 0 4px #dff4e3}
+.customer-order-current-status{margin:10px 0 13px;padding:11px 12px;border:1px solid #f2d2c8;border-radius:9px;background:linear-gradient(135deg,#fff9f6,#fff1eb)}
+.customer-order-current-status-kicker{margin-bottom:4px;color:#a23a24;font-size:.62rem;font-weight:950;letter-spacing:.08em}
+.customer-order-current-status p{margin:0;color:#3a2c26;font-size:.78rem;line-height:1.5;font-weight:700}
+.customer-order-current-status-date{margin-top:6px;color:#85766f;font-size:.67rem;line-height:1.4}
+@media(max-width:520px){
+  .customer-order-progress{gap:1px;margin:14px -3px 11px}
+  .customer-order-progress-step{gap:5px}
+  .customer-order-progress-dot{width:17px;height:17px;font-size:.56rem;border-width:1.5px}
+  .customer-order-progress-label{font-size:.54rem;line-height:1.2;letter-spacing:-.01em}
+  .customer-order-progress-step.current .customer-order-progress-dot{box-shadow:0 0 0 2px #ffebe6}
+  .customer-order-progress-step.delivered-current .customer-order-progress-dot{box-shadow:0 0 0 2px #dff4e3}
+  .customer-order-current-status{padding:10px}
+  .customer-order-current-status p{font-size:.75rem}
+}
+
 </style>
 
 </head>
@@ -4083,7 +4103,7 @@
       processing:{label:'Seller preparing to ship your order',detail:'The seller is preparing your items for dispatch.',step:2},
       shipped:{label:'Already shipped',detail:'Your order has been shipped by the seller.',step:3},
       out_for_delivery:{label:'Out for delivery',detail:'The courier is delivering your parcel to your address.',step:4},
-      delivered:{label:'Order received',detail:'Your order is marked as delivered.',step:4},
+      delivered:{label:'Order received',detail:'Your order is marked as delivered. Thank you for shopping with GENMERCH.',step:5},
       cancelled:{label:'Order cancelled',detail:'This order has been cancelled. Reserved stock is returned when applicable.',step:-1},
       refunded:{label:'Refunded',detail:'This order is marked as refunded. Check the payment method for refund details.',step:-1}
     };
@@ -4098,19 +4118,26 @@
       return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{timeZone:'Asia/Manila',dateStyle:'medium',timeStyle:'short'});
     }
     function customerOrderProgressMarkup(status){
-      const current=customerOrderStatusMeta(status),steps=[
+      const normalizedStatus=String(status||'pending').toLowerCase();
+      const current=customerOrderStatusMeta(normalizedStatus),steps=[
         {key:'pending',label:'Order placed'},
         {key:'confirmed',label:'Confirmed'},
         {key:'processing',label:'Preparing to ship'},
         {key:'shipped',label:'Shipped'},
-        {key:'out_for_delivery',label:'Out for delivery'}
+        {key:'out_for_delivery',label:'Out for delivery'},
+        {key:'delivered',label:'Order received'}
       ];
       if(current.step<0)return '<div class="customer-order-cancelled-banner"><strong>'+escapeHtml(current.label)+'.</strong> '+escapeHtml(current.detail)+'</div>';
-      return '<div class="customer-order-progress" aria-label="Order delivery progress">'+steps.map((step,index)=>{
-        const done=index<current.step||(String(status)==='delivered');
-        const active=index===current.step&&String(status)!=='delivered';
-        return '<div class="customer-order-progress-step'+(done?' completed':'')+(active?' current':'')+'"><span class="customer-order-progress-dot">'+(done?'✓':String(index+1))+'</span><span class="customer-order-progress-label">'+escapeHtml(step.label)+'</span></div>';
-      }).join('')+'</div>'+(String(status)==='delivered'?'<div class="customer-order-status-pill delivered">✓ Order received</div>':'');
+      return '<div class="customer-order-progress" role="list" aria-label="Order progress: '+escapeHtml(current.label)+'">'+steps.map((step,index)=>{
+        const finished=index<current.step;
+        const finalDelivered=normalizedStatus==='delivered'&&step.key==='delivered';
+        const active=index===current.step&&normalizedStatus!=='delivered';
+        const isCurrent=active||finalDelivered;
+        const done=finished||finalDelivered;
+        const stateClass=(done?' completed':'')+(active?' current':'')+(finalDelivered?' delivered-current':'');
+        const marker=done?'✓':String(index+1);
+        return '<div class="customer-order-progress-step'+stateClass+'" role="listitem"'+(isCurrent?' aria-current="step"':'')+'><span class="customer-order-progress-dot">'+marker+'</span><span class="customer-order-progress-label">'+escapeHtml(step.label)+'</span></div>';
+      }).join('')+'</div>';
     }
     function customerOrderTimelineMarkup(history,status,order){
       const entries=Array.isArray(history)?history.slice():[];
@@ -4145,7 +4172,7 @@
         :(String(order.payment_status||'pending')==='paid'?'Payment marked paid.':String(order.payment_method||'Selected payment method')+' selected. Payment is '+String(order.payment_status||'pending')+'; no automatic online payment was processed.');
       return '<article class="customer-order-card"><div class="customer-order-card-head"><div><div class="customer-order-number">'+escapeHtml(order.order_number||'GENMERCH order')+'</div><div class="customer-order-date">Placed '+escapeHtml(customerOrderDate(order.created_at))+'</div><div class="customer-order-total">Total '+escapeHtml(money(order.total_amount))+'</div></div><div class="customer-order-status-pill'+pillClass+'">'+escapeHtml(meta.label)+'</div></div>'+
         customerOrderProgressMarkup(status)+
-        '<div class="customer-order-timeline-note">'+escapeHtml(meta.detail)+'</div>'+
+        '<section class="customer-order-current-status" aria-label="Latest order status"><div class="customer-order-current-status-kicker">LATEST ORDER UPDATE</div><p>'+escapeHtml(meta.detail)+'</p><div class="customer-order-current-status-date">Last updated: '+escapeHtml(customerOrderDate(order.updated_at||order.created_at))+'</div></section>'+
         customerOrderTimelineMarkup(history,status,order)+customerOrderItemsMarkup(items)+delivery+
         '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
     }
