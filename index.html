@@ -4526,7 +4526,7 @@
     async function submitSellerProduct(event){
       event.preventDefault();if(!sellerCentreIsUnlocked)return;
       const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
-      const editingId=sellerEditingProductId,uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,preserveEditUploads=false;
+      const editingId=sellerEditingProductId,uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false;
       try{
         const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
@@ -4553,25 +4553,37 @@
           productCreatedId=null;resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product saved to Supabase with '+files.length+' gallery photo(s) and default size variants. Stock starts at 0; set verified inventory before accepting purchases.','success');
         }else{
           const newImageRows=await sellerUploadFiles(client,productId,files,retained.length,uploadedPaths);
-          if(newImageRows.length){const imageInsert=await client.from('product_images').insert(newImageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;}
           const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location:location||null}).eq('id',productId);if(updated.error)throw updated.error;
           if(removedIds.size){
-            const removedImages=existing.filter(image=>removedIds.has(String(image.id)));
+            removedImagesToRestore=existing.filter(image=>removedIds.has(String(image.id)));
             const removeDb=await client.from('product_images').delete().eq('product_id',productId).in('id',Array.from(removedIds));if(removeDb.error)throw removeDb.error;
-            preserveEditUploads=true;
-            const paths=removedImages.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean);
-            if(paths.length){const removeObjects=await client.storage.from(SELLER_IMAGE_BUCKET).remove(paths);if(removeObjects.error)console.warn('Some removed image files could not be deleted from Storage:',removeObjects.error.message);}
+            removedDbImages=true;
           }
-          await sellerNormalizeGallery(client,productId);resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
+          if(newImageRows.length){const imageInsert=await client.from('product_images').insert(newImageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;}
+          await sellerNormalizeGallery(client,productId);
+          editGalleryCommitComplete=true;
+          const oldPaths=removedImagesToRestore.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean);
+          if(oldPaths.length){const removeObjects=await client.storage.from(SELLER_IMAGE_BUCKET).remove(oldPaths);if(removeObjects.error)console.warn('Some replaced gallery files could not be deleted from Storage:',removeObjects.error.message);}
+          resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
         }
         await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
       }catch(error){
-        if(uploadedPaths.length&&!preserveEditUploads){
+        if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
             const client=await getSellerAdminClient(false);
             if(insertedImageRows&&editingId)await client.from('product_images').delete().eq('product_id',editingId).in('image_url',uploadedPaths.map(path=>client.storage.from(SELLER_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl));
-            await client.storage.from(SELLER_IMAGE_BUCKET).remove(uploadedPaths);
-          }catch(cleanupError){console.warn('Seller Centre upload rollback was incomplete:',cleanupError);}
+            if(uploadedPaths.length)await client.storage.from(SELLER_IMAGE_BUCKET).remove(uploadedPaths);
+            if(editingId&&removedDbImages&&removedImagesToRestore.length){
+              const restored=await client.from('product_images').insert(removedImagesToRestore);
+              if(restored.error)console.warn('Removed gallery records could not be fully restored:',restored.error.message);
+            }
+            if(editingId){
+              for(const image of sellerEditingImages){
+                const restoreImage=await client.from('product_images').update({sort_order:image.sort_order,is_primary:image.is_primary}).eq('id',image.id).eq('product_id',editingId);
+                if(restoreImage.error)console.warn('Gallery order rollback was incomplete:',restoreImage.error.message);
+              }
+            }
+          }catch(cleanupError){console.warn('Seller Centre gallery rollback was incomplete:',cleanupError);}
         }
         if(productCreatedId){
           try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',productCreatedId);await client.from('product_variants').delete().eq('product_id',productCreatedId);await client.from('products').delete().eq('id',productCreatedId);}catch(_){}
@@ -4581,27 +4593,161 @@
     }
 
     function switchSellerTab(tab){
-      sellerCurrentTab=tab==='orders'?'orders':'products';const productsSelected=sellerCurrentTab==='products';
-      $('sellerProductsPanel').hidden=!productsSelected;$('sellerOrdersPanel').hidden=productsSelected;
-      $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerOrdersTab').classList.toggle('active',!productsSelected);
-      $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(!productsSelected));
-      if(!productsSelected&&!sellerOrdersLoaded)loadSellerOrders();
+      sellerCurrentTab=tab==='orders'?'orders':(tab==='inventory'?'inventory':'products');
+      const productsSelected=sellerCurrentTab==='products',ordersSelected=sellerCurrentTab==='orders',inventorySelected=sellerCurrentTab==='inventory';
+      $('sellerProductsPanel').hidden=!productsSelected;$('sellerOrdersPanel').hidden=!ordersSelected;$('sellerInventoryPanel').hidden=!inventorySelected;
+      $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerOrdersTab').classList.toggle('active',ordersSelected);$('sellerInventoryTab').classList.toggle('active',inventorySelected);
+      $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(ordersSelected));$('sellerInventoryTab').setAttribute('aria-selected',String(inventorySelected));
+      if(ordersSelected&&!sellerOrdersLoaded)loadSellerOrders();
+      if(inventorySelected&&!sellerInventoryLoaded)loadSellerInventoryAnalytics();
     }
-    async function refreshSellerTab(){if(sellerCurrentTab==='orders')await loadSellerOrders();else await loadSellerProducts();}
+    async function refreshSellerTab(){
+      if(sellerCurrentTab==='orders')await loadSellerOrders();
+      else if(sellerCurrentTab==='inventory')await loadSellerInventoryAnalytics();
+      else await loadSellerProducts();
+    }
     function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
     function renderSellerOrders(rows){
       const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
-      const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at']];
+      const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Action','__action']];
       head.innerHTML='<tr>'+columns.map(col=>'<th>'+sellerEscape(col[0])+'</th>').join('')+'</tr>';
       if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders currently exist. Checkout is not yet connected to order creation.</td></tr>';return;}
-      body.innerHTML=rows.map(row=>'<tr>'+columns.map(col=>{let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);if(col[1]==='total_amount')display=money(value);if(col[1]==='created_at')display=sellerDate(value);return '<td><div class="seller-order-value">'+sellerEscape(display)+'</div></td>';}).join('')+'</tr>').join('');
+      body.innerHTML=rows.map(row=>'<tr>'+columns.map(col=>{
+        if(col[1]==='__action'){
+          const status=String(row.status||'').toLowerCase(),blocked=['cancelled','refunded','shipped','delivered'].includes(status)||Boolean(row.inventory_released);
+          return '<td>'+(blocked?'<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Not cancellable'))+'</span>':'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>')+'</td>';
+        }
+        let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
+        if(col[1]==='total_amount')display=money(value);if(col[1]==='created_at')display=sellerDate(value);
+        return '<td><div class="seller-order-value">'+sellerEscape(display)+'</div></td>';
+      }).join('')+'</tr>').join('');
+      body.querySelectorAll('[data-seller-cancel-order]').forEach(button=>button.addEventListener('click',()=>cancelSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
     }
     async function loadSellerOrders(){
-      if(!sellerCentreIsUnlocked)return;sellerSetLoadingRow('sellerOrdersTableBody',12,'Loading orders from Supabase…');sellerFeedback('sellerOrdersFeedback','','');
-      try{const client=await getSellerAdminClient(false),result=await client.from('orders').select('order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,shipping_street_address,shipping_city_municipality,shipping_province,created_at').order('created_at',{ascending:false}).limit(200);if(result.error)throw result.error;renderSellerOrders(Array.isArray(result.data)?result.data:[]);sellerOrdersLoaded=true;}
-      catch(error){sellerSetLoadingRow('sellerOrdersTableBody',12,'Orders could not be loaded.');sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders. Check admin SELECT permission.','error');sellerOrdersLoaded=false;}
+      if(!sellerCentreIsUnlocked)return;
+      sellerSetLoadingRow('sellerOrdersTableBody',13,'Loading orders from Supabase…');sellerFeedback('sellerOrdersFeedback','','');
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.from('orders').select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,shipping_street_address,shipping_city_municipality,shipping_province,created_at,inventory_reserved,inventory_released,cancellation_reason').order('created_at',{ascending:false}).limit(200);
+        if(result.error)throw result.error;
+        renderSellerOrders(Array.isArray(result.data)?result.data:[]);sellerOrdersLoaded=true;
+      }catch(error){sellerSetLoadingRow('sellerOrdersTableBody',13,'Orders could not be loaded.');sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders. Check admin SELECT permission.','error');sellerOrdersLoaded=false;}
     }
+    async function cancelSellerOrder(orderId,orderNumber,button){
+      const displayNumber=orderNumber||orderId;
+      if(!window.confirm('Cancel order '+displayNumber+'? If stock was reserved, the database will return it once and record the movement. Shipped/delivered orders must use a returns workflow.'))return;
+      if(button){button.disabled=true;button.textContent='Cancelling…';}
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('cancel_genmerch_order',{p_order_id:orderId,p_reason:'Cancelled by Seller Centre administrator'});
+        if(result.error)throw result.error;
+        sellerOrdersLoaded=false;sellerInventoryLoaded=false;
+        await loadSellerOrders();
+        await loadSellerInventoryAnalytics();
+        await loadSellerProducts();
+        await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+        sellerFeedback('sellerOrdersFeedback','Order '+displayNumber+' cancelled. Reserved stock has been returned by the database trigger, if applicable.','success');
+      }catch(error){
+        sellerFeedback('sellerOrdersFeedback',error.message||'Could not cancel this order.','error');
+        if(button){button.disabled=false;button.textContent='Cancel order';}
+      }
+    }
+
+    function sellerInventoryMoney(value){return money(Number(value)||0);}
+    function sellerRenderInventoryMetrics(products,variants,orders){
+      const productMap=new Map(products.map(product=>[String(product.id),product]));
+      const activeProducts=products.filter(product=>product.is_active!==false);
+      const activeVariants=variants.filter(variant=>variant.is_active!==false&&productMap.has(String(variant.product_id))&&productMap.get(String(variant.product_id)).is_active!==false);
+      const totalUnits=activeVariants.reduce((sum,variant)=>sum+Math.max(0,Number(variant.stock_quantity)||0),0);
+      const lowStock=activeVariants.filter(variant=>Number(variant.stock_quantity)>0&&Number(variant.stock_quantity)<=5).length;
+      const outOfStock=activeVariants.filter(variant=>Number(variant.stock_quantity)<=0).length;
+      const stockValue=activeVariants.reduce((sum,variant)=>{const product=productMap.get(String(variant.product_id));return sum+Math.max(0,Number(variant.stock_quantity)||0)*Math.max(0,Number(variant.price_override==null?product.base_price:variant.price_override)||0);},0);
+      const validPaidOrders=orders.filter(order=>order.payment_status==='paid'&&!['cancelled','refunded'].includes(String(order.status||'').toLowerCase()));
+      const paidSales=validPaidOrders.reduce((sum,order)=>sum+Math.max(0,Number(order.total_amount)||0),0);
+      const cards=[
+        ['Active products',activeProducts.length,'Currently active products'],
+        ['Sellable variants',activeVariants.length,'Active size/color variants'],
+        ['Units on hand',totalUnits.toLocaleString('en-PH'),'Units across active variants'],
+        ['Low stock',lowStock,'1–5 units remaining'],
+        ['Out of stock',outOfStock,'Active variants with zero stock'],
+        ['Stock value (retail)',sellerInventoryMoney(stockValue),'Retail price × on-hand quantity'],
+        ['Orders received',orders.length,'All recorded orders'],
+        ['Paid sales',sellerInventoryMoney(paidSales),'Paid, non-cancelled/refunded orders']
+      ];
+      $('sellerInventoryMetrics').innerHTML=cards.map(card=>'<div class="seller-metric-card"><span class="seller-metric-label">'+sellerEscape(card[0])+'</span><strong class="seller-metric-value">'+sellerEscape(card[1])+'</strong><span class="seller-metric-detail">'+sellerEscape(card[2])+'</span></div>').join('');
+    }
+    function sellerRenderInventoryRows(){
+      const query=String($('sellerInventorySearch').value||'').trim().toLowerCase(),tbody=$('sellerInventoryTableBody');
+      const rows=sellerInventoryRows.filter(item=>{
+        const product=item.product||{},variant=item.variant||{};
+        return !query||[product.name,variant.sku,variant.size_label,variant.color_label].some(value=>String(value||'').toLowerCase().includes(query));
+      });
+      if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">'+(query?'No matching product variants.':'No product variants were found.')+'</td></tr>';return;}
+      tbody.innerHTML=rows.map(item=>{
+        const product=item.product||{},variant=item.variant||{},stock=Math.max(0,Number(variant.stock_quantity)||0);
+        const sellable=product.is_active!==false&&variant.is_active!==false;
+        const status=!sellable?'<span class="seller-status-pill inactive">Inactive</span>':stock===0?'<span class="seller-status-pill inactive">Out of stock</span>':stock<=5?'<span class="seller-status-pill" style="background:#fff5d8;color:#805c00">Low stock</span>':'<span class="seller-status-pill">In stock</span>';
+        const unitPrice=variant.price_override==null?product.base_price:variant.price_override;
+        return '<tr data-stock-row="'+sellerEscape(variant.id)+'"><td><div class="seller-product-name">'+sellerEscape(product.name||'Unknown product')+'</div><div class="seller-muted">'+(product.is_active===false?'Inactive product':'')+'</div></td><td><strong>'+sellerEscape(variant.size_label||'Variant')+(variant.color_label?' / '+sellerEscape(variant.color_label):'')+'</strong><div class="seller-muted">SKU: '+sellerEscape(variant.sku||'—')+'</div></td><td>'+sellerEscape(money(unitPrice))+'</td><td><span class="seller-stock-count">'+stock+'</span> unit(s)</td><td>'+status+'</td><td><div class="seller-stock-actions"><input class="seller-stock-input" type="number" min="1" max="1000000" step="1" value="1" aria-label="Stock quantity adjustment" data-stock-quantity><button class="seller-primary-button" type="button" data-stock-adjust="add" data-variant-id="'+sellerEscape(variant.id)+'">＋ Add</button><button class="seller-secondary-button" type="button" data-stock-adjust="remove" data-variant-id="'+sellerEscape(variant.id)+'" '+(stock===0?'disabled':'')+'>− Remove</button></div></td></tr>';
+      }).join('');
+      tbody.querySelectorAll('[data-stock-adjust]').forEach(button=>button.addEventListener('click',()=>handleSellerStockAdjustment(button)));
+    }
+    function sellerRenderMovements(movements,variants,products,orders){
+      const tbody=$('sellerMovementTableBody'),variantMap=new Map(variants.map(item=>[String(item.id),item])),productMap=new Map(products.map(item=>[String(item.id),item])),orderMap=new Map(orders.map(item=>[String(item.id),item]));
+      if(!movements.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No stock movements yet. Manual adjustments, order deductions, and cancellation returns will appear here.</td></tr>';return;}
+      tbody.innerHTML=movements.map(movement=>{
+        const variant=variantMap.get(String(movement.variant_id))||{},product=productMap.get(String(variant.product_id))||{},order=orderMap.get(String(movement.order_id))||{};
+        const kind=String(movement.movement_type||'adjustment'),delta=Number(movement.quantity_delta)||0,change=(delta>0?'+':'')+delta;
+        const reference=[movement.reason,order.order_number?'Order '+order.order_number:''].filter(Boolean).join(' · ');
+        return '<tr><td>'+sellerEscape(sellerDate(movement.created_at))+'</td><td><strong>'+sellerEscape(product.name||'Unknown product')+'</strong><div class="seller-muted">'+sellerEscape(variant.size_label||'Variant')+(variant.color_label?' / '+sellerEscape(variant.color_label):'')+'</div></td><td><span class="seller-movement-kind '+sellerEscape(kind)+'">'+sellerEscape(kind.replace(/_/g,' '))+'</span></td><td><strong>'+sellerEscape(change)+'</strong></td><td>'+sellerEscape(movement.stock_before)+' → '+sellerEscape(movement.stock_after)+'</td><td><div class="seller-order-value">'+sellerEscape(reference)+'</div></td></tr>';
+      }).join('');
+    }
+    async function loadSellerInventoryAnalytics(){
+      if(!sellerCentreIsUnlocked)return;
+      sellerFeedback('sellerInventoryFeedback','','');
+      sellerSetLoadingRow('sellerInventoryTableBody',6,'Loading inventory from Supabase…');
+      try{
+        const client=await getSellerAdminClient(false);
+        const results=await Promise.all([
+          client.from('products').select('id,name,base_price,is_active'),
+          client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active,updated_at').order('updated_at',{ascending:false}),
+          client.from('orders').select('id,order_number,status,payment_status,total_amount,created_at').order('created_at',{ascending:false}).limit(1000),
+          client.from('inventory_movements').select('id,variant_id,order_id,movement_type,quantity_delta,stock_before,stock_after,reason,actor_id,created_at').order('created_at',{ascending:false}).limit(50)
+        ]);
+        for(const result of results)if(result.error)throw result.error;
+        const products=results[0].data||[],variants=results[1].data||[],orders=results[2].data||[],movements=results[3].data||[];
+        const productMap=new Map(products.map(item=>[String(item.id),item]));
+        sellerInventoryRows=variants.map(variant=>({variant,product:productMap.get(String(variant.product_id))||{name:'Unknown product',base_price:0,is_active:false}}));
+        sellerMovementRows=movements;
+        sellerRenderInventoryMetrics(products,variants,orders);
+        sellerRenderInventoryRows();sellerRenderMovements(movements,variants,products,orders);
+        sellerInventoryLoaded=true;
+      }catch(error){
+        sellerSetLoadingRow('sellerInventoryTableBody',6,'Inventory could not be loaded.');
+        sellerSetLoadingRow('sellerMovementTableBody',6,'Inventory movement history could not be loaded.');
+        sellerFeedback('sellerInventoryFeedback',error.message||'Could not load inventory analytics. Check Supabase permissions.','error');
+        sellerInventoryLoaded=false;
+      }
+    }
+    async function handleSellerStockAdjustment(button){
+      if(!sellerCentreIsUnlocked)return;
+      const row=button.closest('tr'),input=row?row.querySelector('[data-stock-quantity]'):null,quantity=Number(input&&input.value),direction=button.dataset.stockAdjust==='remove'?-1:1,variantId=button.dataset.variantId;
+      if(!Number.isInteger(quantity)||quantity<1||quantity>1000000){sellerFeedback('sellerInventoryFeedback','Enter a whole-number quantity from 1 to 1,000,000.','error');return;}
+      if(!variantId){sellerFeedback('sellerInventoryFeedback','Could not identify this product variant. Refresh inventory and try again.','error');return;}
+      button.disabled=true;const priorLabel=button.textContent;button.textContent='Saving…';
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('adjust_genmerch_stock',{p_variant_id:variantId,p_adjustment:direction*quantity,p_reason:String($('sellerStockReason').value||'').trim()||null});
+        if(result.error)throw result.error;
+        sellerInventoryLoaded=false;
+        await loadSellerInventoryAnalytics();await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+        sellerFeedback('sellerInventoryFeedback','Stock updated successfully. The movement has been recorded in the inventory history.','success');
+      }catch(error){sellerFeedback('sellerInventoryFeedback',error.message||'Stock adjustment failed. Stock was not changed.','error');}
+      finally{button.disabled=false;button.textContent=priorLabel;}
+    }
+
     $('sellerPasscodeForm').addEventListener('submit',verifySellerPasscode);
+    $('sellerInventorySearch').addEventListener('input',sellerRenderInventoryRows);
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
     $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
