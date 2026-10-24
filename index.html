@@ -2282,6 +2282,36 @@
   .customer-order-current-status p{font-size:.75rem}
 }
 
+
+/* Courier shipping workflow in Seller Centre */
+.seller-order-actions-shipping{min-width:180px;align-items:stretch;gap:7px}
+.seller-shipping-setup{display:flex;flex-direction:column;gap:7px;min-width:190px;max-width:245px;padding:9px;border:1px solid #f0d8ce;border-radius:9px;background:#fff9f6}
+.seller-shipping-setup label{display:flex;flex-direction:column;gap:4px;color:#5c443a;font-size:.68rem;font-weight:850;text-align:left}
+.seller-shipping-setup select,.seller-shipping-setup input{width:100%;min-width:0;min-height:34px;border:1px solid #dfd1ca;border-radius:6px;padding:7px 8px;background:#fff;color:#222;font:inherit;font-size:.75rem}
+.seller-shipping-setup button{width:100%;white-space:normal;line-height:1.3}
+.seller-shipment-summary{display:flex;flex-direction:column;gap:4px;margin:0 0 3px;color:#5b4e48;font-size:.68rem;line-height:1.4;overflow-wrap:anywhere}
+.seller-shipment-summary strong{color:#33251f}
+.seller-order-actions-shipping>.seller-primary-button,.seller-order-actions-shipping>.seller-secondary-button{width:100%;white-space:normal;font-size:.72rem;line-height:1.3}
+.customer-shipment-details{margin:12px 0;padding:12px;border:1px solid #dce8f4;border-radius:10px;background:#f7fbff}
+.customer-shipment-details h4{margin:0 0 8px;color:#193b5c;font-size:.78rem;font-weight:900}
+.customer-shipment-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid #e6edf5;font-size:.73rem}
+.customer-shipment-row:last-of-type{border-bottom:0}
+.customer-shipment-row>span{color:#6e7d8c}
+.customer-shipment-row>strong{color:#273b4c;text-align:right;overflow-wrap:anywhere}
+.customer-shipment-reference{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.02em}
+.customer-shipment-timestamp{margin-top:7px;color:#738293;font-size:.66rem}
+.customer-receipt-action{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0;padding:12px;border:1px solid #bde2c5;border-radius:10px;background:#f1fbf3}
+.customer-receipt-action p{margin:0;flex:1 1 200px;color:#335d3b;font-size:.73rem;line-height:1.45}
+.customer-confirm-received-button{flex:0 0 auto;min-height:38px;padding:9px 13px;border:0;border-radius:8px;background:#18833d;color:#fff;font-size:.76rem;font-weight:900}
+.customer-confirm-received-button:hover{background:#126b31}
+.customer-confirm-received-button:disabled{opacity:.65;cursor:wait}
+@media(max-width:600px){
+  .seller-shipping-setup{min-width:170px;max-width:220px}
+  .customer-shipment-row{align-items:flex-start;gap:8px}
+  .customer-receipt-action{align-items:stretch;flex-direction:column}
+  .customer-confirm-received-button{width:100%}
+}
+
 </style>
 
 </head>
@@ -4101,7 +4131,7 @@
       pending:{label:'Order placed',detail:'Your order was received and is waiting for the seller to confirm it.',step:0},
       confirmed:{label:'Order confirmed',detail:'The seller confirmed your order.',step:1},
       processing:{label:'Seller preparing to ship your order',detail:'The seller is preparing your items for dispatch.',step:2},
-      shipped:{label:'Already shipped',detail:'Your order has been shipped by the seller.',step:3},
+      shipped:{label:'In Transit',detail:'Your order is in transit with the courier selected by GENMERCH.',step:3},
       out_for_delivery:{label:'Out for delivery',detail:'The courier is delivering your parcel to your address.',step:4},
       delivered:{label:'Order received',detail:'Your order is marked as delivered. Thank you for shopping with GENMERCH.',step:5},
       cancelled:{label:'Order cancelled',detail:'This order has been cancelled. Reserved stock is returned when applicable.',step:-1},
@@ -4160,8 +4190,20 @@
         return '<article class="customer-order-item">'+image+'<div class="customer-order-item-info"><strong>'+escapeHtml(item.product_name||'GENMERCH product')+'</strong><span>SKU: '+escapeHtml(item.sku||'—')+'</span><span>Size: '+escapeHtml(item.size_label||'—')+(item.color_label?' · Color: '+escapeHtml(item.color_label):'')+'</span><span>Qty: '+escapeHtml(item.quantity)+'</span></div><div class="customer-order-item-price">'+escapeHtml(money(item.line_total))+'</div></article>';
       }).join('')+'</div>';
     }
-    function customerOrderCardMarkup(order,items=[],history=[]){
+    function customerShipmentMarkup(shipment,orderStatus){
+      if(!shipment||!shipment.courier_name)return '';
+      const status=String(orderStatus||'').toLowerCase();
+      const deliveryState=status==='delivered'?'Delivered':(status==='out_for_delivery'?'Out for delivery':'In Transit');
+      return '<section class="customer-shipment-details" aria-label="Shipment details"><h4>🚚 Shipping Details</h4>'+
+        '<div class="customer-shipment-row"><span>Courier</span><strong>'+escapeHtml(shipment.courier_name)+'</strong></div>'+
+        '<div class="customer-shipment-row"><span>Delivery Reference #</span><strong class="customer-shipment-reference">'+escapeHtml(shipment.tracking_number||'—')+'</strong></div>'+
+        '<div class="customer-shipment-row"><span>Shipment Status</span><strong>'+escapeHtml(deliveryState)+'</strong></div>'+
+        (shipment.shipped_at?'<div class="customer-shipment-timestamp">Shipped: '+escapeHtml(customerOrderDate(shipment.shipped_at))+'</div>':'')+
+        '</section>';
+    }
+    function customerOrderCardMarkup(order,items=[],history=[],shipment=null,guestMode=false){
       const status=String(order.status||'pending').toLowerCase(),meta=customerOrderStatusMeta(status);
+      const shipmentData=shipment||order.shipment||null;
       const pillClass=status==='delivered'?' delivered':(['cancelled','refunded'].includes(status)?' '+status:'');
       const location=[order.shipping_city_municipality,order.shipping_province,order.shipping_postal_code].filter(Boolean).join(', ');
       const delivery=order.shipping_street_address
@@ -4170,13 +4212,20 @@
       const payment=order.payment_method==='COD'
         ?'Cash on Delivery — payment remains pending until received.'
         :(String(order.payment_status||'pending')==='paid'?'Payment marked paid.':String(order.payment_method||'Selected payment method')+' selected. Payment is '+String(order.payment_status||'pending')+'; no automatic online payment was processed.');
+      const canConfirmReceipt=['shipped','out_for_delivery'].includes(status);
+      const confirmReceipt=canConfirmReceipt
+        ?(guestMode
+          ?'<div class="customer-receipt-action"><p>If you have received the parcel, confirm delivery below.</p><button type="button" class="customer-confirm-received-button" data-confirm-guest-received data-order-number="'+escapeHtml(order.order_number||'')+'">✓ Confirm Received</button></div>'
+          :'<div class="customer-receipt-action"><p>If you have received the parcel, confirm delivery below.</p><button type="button" class="customer-confirm-received-button" data-confirm-account-received data-order-id="'+escapeHtml(order.id||'')+'" data-order-number="'+escapeHtml(order.order_number||'')+'">✓ Confirm Received</button></div>')
+        :'';
       return '<article class="customer-order-card"><div class="customer-order-card-head"><div><div class="customer-order-number">'+escapeHtml(order.order_number||'GENMERCH order')+'</div><div class="customer-order-date">Placed '+escapeHtml(customerOrderDate(order.created_at))+'</div><div class="customer-order-total">Total '+escapeHtml(money(order.total_amount))+'</div></div><div class="customer-order-status-pill'+pillClass+'">'+escapeHtml(meta.label)+'</div></div>'+
         customerOrderProgressMarkup(status)+
         '<section class="customer-order-current-status" aria-label="Latest order status"><div class="customer-order-current-status-kicker">LATEST ORDER UPDATE</div><p>'+escapeHtml(meta.detail)+'</p><div class="customer-order-current-status-date">Last updated: '+escapeHtml(customerOrderDate(order.updated_at||order.created_at))+'</div></section>'+
+        customerShipmentMarkup(shipmentData,status)+confirmReceipt+
         customerOrderTimelineMarkup(history,status,order)+customerOrderItemsMarkup(items)+delivery+
         '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
     }
-    function renderCustomerAccountOrders(orders,itemRows=[],histories=[]){
+        function renderCustomerAccountOrders(orders,itemRows=[],histories=[],shipmentRows=[]){
       const container=$('customerOrdersList');
       if(!container)return;
       if(!orders.length){
@@ -4184,15 +4233,16 @@
         $('customerOrdersBadge').hidden=true;
         return;
       }
-      const itemMap=new Map(),historyMap=new Map();
+      const itemMap=new Map(),historyMap=new Map(),shipmentMap=new Map();
       itemRows.forEach(item=>{const key=String(item.order_id);if(!itemMap.has(key))itemMap.set(key,[]);itemMap.get(key).push(item);});
       histories.forEach(entry=>{const key=String(entry.order_id);if(!historyMap.has(key))historyMap.set(key,[]);historyMap.get(key).push(entry);});
-      container.innerHTML=orders.map(order=>customerOrderCardMarkup(order,itemMap.get(String(order.id))||[],historyMap.get(String(order.id))||[])).join('');
+      shipmentRows.forEach(shipment=>{if(!shipmentMap.has(String(shipment.order_id)))shipmentMap.set(String(shipment.order_id),shipment);});
+      container.innerHTML=orders.map(order=>customerOrderCardMarkup(order,itemMap.get(String(order.id))||[],historyMap.get(String(order.id))||[],shipmentMap.get(String(order.id))||null,false)).join('');
       const badge=$('customerOrdersBadge');
       badge.textContent=orders.length>99?'99+':String(orders.length);
       badge.hidden=orders.length===0;
     }
-    async function loadCustomerAccountOrders(silent=false){
+        async function loadCustomerAccountOrders(silent=false){
       const container=$('customerOrdersList');
       if(!container)return;
       try{
@@ -4215,13 +4265,15 @@
         const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
         if(!orders.length){renderCustomerAccountOrders([]);return;}
         const orderIds=orders.map(order=>order.id);
-        const [itemsResult,historyResult]=await Promise.all([
+        const [itemsResult,historyResult,shipmentsResult]=await Promise.all([
           client.from('order_items').select('id,order_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
-          client.from('order_status_history').select('id,order_id,from_status,to_status,note,created_at').in('order_id',orderIds).order('created_at',{ascending:true})
+          client.from('order_status_history').select('id,order_id,from_status,to_status,note,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
+          client.from('shipments').select('id,order_id,courier_name,tracking_number,tracking_url,status,shipped_at,delivered_at,updated_at').in('order_id',orderIds).order('updated_at',{ascending:false})
         ]);
         if(itemsResult.error)throw itemsResult.error;
         if(historyResult.error)throw historyResult.error;
-        renderCustomerAccountOrders(orders,Array.isArray(itemsResult.data)?itemsResult.data:[],Array.isArray(historyResult.data)?historyResult.data:[]);
+        if(shipmentsResult.error)throw shipmentsResult.error;
+        renderCustomerAccountOrders(orders,Array.isArray(itemsResult.data)?itemsResult.data:[],Array.isArray(historyResult.data)?historyResult.data:[],Array.isArray(shipmentsResult.data)?shipmentsResult.data:[]);
       }catch(error){
         if(!silent)container.innerHTML='<div class="customer-orders-empty"><strong>Orders could not be loaded</strong>'+escapeHtml(error.message||'Refresh the page and try again.')+'</div>';
       }
@@ -4239,8 +4291,40 @@
       const order=Array.isArray(result.data)?result.data[0]:result.data;
       if(!order||!order.order_number)throw new Error('Order details not found. Check the order number and mobile number.');
       customerGuestTrackingLookup={orderNumber:String(orderNumber||'').trim(),phone:String(phone||'').trim()};
-      $('customerGuestTrackResult').innerHTML=customerOrderCardMarkup(order,order.items||[],order.timeline||[]);
+      $('customerGuestTrackResult').innerHTML=customerOrderCardMarkup(order,order.items||[],order.timeline||[],order.shipment||null,true);
       setGuestTrackMessage('Order found. The status and item details below were loaded from Supabase.','success');
+    }
+    async function confirmAccountOrderReceived(orderId,orderNumber,button){
+      if(!orderId)return;
+      if(!window.confirm('Confirm that order '+(orderNumber||'this order')+' has been received? This will mark the delivery as complete.'))return;
+      if(button){button.disabled=true;button.textContent='Confirming…';}
+      try{
+        const client=getCustomerAuthClient();
+        const result=await client.rpc('confirm_genmerch_order_received',{p_order_id:orderId});
+        if(result.error)throw result.error;
+        await loadCustomerAccountOrders(true);
+        showToast('Thank you! Order '+(orderNumber||'')+' is marked as received.');
+      }catch(error){
+        setGuestTrackMessage(error.message||'Could not confirm receipt. Please refresh your orders and try again.','error');
+        if(button){button.disabled=false;button.textContent='✓ Confirm Received';}
+      }
+    }
+    async function confirmGuestOrderReceived(orderNumber,button){
+      const phone=customerGuestTrackingLookup&&customerGuestTrackingLookup.orderNumber.toUpperCase()===String(orderNumber||'').toUpperCase()
+        ?customerGuestTrackingLookup.phone:$('customerTrackPhone').value.trim();
+      if(!phone){setGuestTrackMessage('Enter the checkout mobile number used for this order.','error');return;}
+      if(!window.confirm('Confirm that order '+(orderNumber||'this order')+' has been received? This will mark the delivery as complete.'))return;
+      if(button){button.disabled=true;button.textContent='Confirming…';}
+      try{
+        const client=getCustomerAuthClient();
+        const result=await client.rpc('confirm_genmerch_guest_order_received',{p_order_number:orderNumber,p_customer_phone:phone});
+        if(result.error)throw result.error;
+        await trackGuestOrder(orderNumber,phone,true);
+        setGuestTrackMessage('Thank you! Receipt confirmed and your order is now marked as received.','success');
+      }catch(error){
+        setGuestTrackMessage(error.message||'Could not confirm receipt. Please refresh your order and try again.','error');
+        if(button){button.disabled=false;button.textContent='✓ Confirm Received';}
+      }
     }
     async function openCustomerOrders(){
       $('customerOrdersOverlay').classList.add('open');
@@ -4275,7 +4359,13 @@
     }
     function stopCustomerOrdersRefresh(){if(customerOrdersRefreshTimer!==null){window.clearInterval(customerOrdersRefreshTimer);customerOrdersRefreshTimer=null;}}
     $('customerOrdersClose').addEventListener('click',closeCustomerOrders);
-    $('customerOrdersOverlay').addEventListener('click',event=>{if(event.target===$('customerOrdersOverlay'))closeCustomerOrders();});
+    $('customerOrdersOverlay').addEventListener('click',event=>{
+      if(event.target===$('customerOrdersOverlay')){closeCustomerOrders();return;}
+      const accountButton=event.target.closest('[data-confirm-account-received]');
+      if(accountButton){confirmAccountOrderReceived(accountButton.dataset.orderId,accountButton.dataset.orderNumber,accountButton);return;}
+      const guestButton=event.target.closest('[data-confirm-guest-received]');
+      if(guestButton)confirmGuestOrderReceived(guestButton.dataset.orderNumber,guestButton);
+    });
     $('customerOrdersRefresh').addEventListener('click',async()=>{
       $('customerOrdersRefresh').disabled=true;
       await loadCustomerAccountOrders();
@@ -6058,12 +6148,11 @@
     }
     function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
     const SELLER_ORDER_NEXT_STEP={
-      pending:{next:'confirmed',label:'Confirm order'},
-      confirmed:{next:'processing',label:'Start preparing'},
-      processing:{next:'shipped',label:'Mark shipped'},
-      shipped:{next:'out_for_delivery',label:'Out for delivery'},
-      out_for_delivery:{next:'delivered',label:'Mark received'}
+      pending:{next:'confirmed',label:'Confirm Order'},
+      confirmed:{next:'processing',label:'Prepare Order'},
+      shipped:{next:'out_for_delivery',label:'Mark Out for Delivery'}
     };
+    const GENMERCH_SHIPPING_COURIERS=['LBC','JRS','Lalamove','Grab','J&T','In-House Delivery (GenMerch)'];
     function sellerOrderStatusLabel(status){
       return (CUSTOMER_ORDER_STATUS_META[String(status||'pending').toLowerCase()]||{label:String(status||'Pending').replace(/_/g,' ')}).label;
     }
@@ -6084,13 +6173,55 @@
         if(button){button.disabled=false;button.textContent=step.label;}
       }
     }
-    function renderSellerOrders(rows,itemRows=[]){
+    async function markSellerOrderShipped(orderId,orderNumber,button){
+      const panel=button.closest('.seller-shipping-setup');
+      const courierInput=panel&&panel.querySelector('[data-seller-courier]');
+      const referenceInput=panel&&panel.querySelector('[data-seller-reference]');
+      const courier=courierInput?courierInput.value:'';
+      const reference=referenceInput?referenceInput.value.trim():'';
+      if(!courier){sellerFeedback('sellerOrdersFeedback','Select a courier before marking the order as shipped.','error');if(courierInput)courierInput.focus();return;}
+      if(!reference){sellerFeedback('sellerOrdersFeedback','Enter the delivery reference number before marking the order as shipped.','error');if(referenceInput)referenceInput.focus();return;}
+      if(!window.confirm('Mark '+(orderNumber||'this order')+' as shipped with '+courier+' and reference '+reference+'? The customer will see these shipping details.'))return;
+      if(button){button.disabled=true;button.textContent='Saving shipment…';}
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('mark_genmerch_order_shipped',{p_order_id:orderId,p_courier_name:courier,p_tracking_number:reference});
+        if(result.error)throw result.error;
+        sellerOrdersLoaded=false;
+        await loadSellerOrders(true);
+        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' marked In Transit via '+courier+'. Delivery reference saved.','success');
+      }catch(error){
+        sellerFeedback('sellerOrdersFeedback',error.message||'Could not save shipping details. The order status was not advanced.','error');
+        if(button){button.disabled=false;button.textContent='Mark as Shipped';}
+      }
+    }
+    async function completeSellerOrderDelivery(orderId,orderNumber,button){
+      if(!window.confirm('Mark '+(orderNumber||'this order')+' as completed? This is a manual delivery override and the customer will see Order Received.'))return;
+      if(button){button.disabled=true;button.textContent='Completing…';}
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('complete_genmerch_order_delivery',{p_order_id:orderId});
+        if(result.error)throw result.error;
+        sellerOrdersLoaded=false;
+        await loadSellerOrders(true);
+        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' marked as completed.','success');
+      }catch(error){
+        sellerFeedback('sellerOrdersFeedback',error.message||'Could not complete delivery.','error');
+        if(button){button.disabled=false;button.textContent='Mark as Completed';}
+      }
+    }
+    function sellerShipmentSummaryMarkup(shipment){
+      if(!shipment||!shipment.courier_name)return '<div class="seller-muted">Courier/reference not recorded.</div>';
+      return '<div class="seller-shipment-summary"><span><strong>Courier:</strong> '+sellerEscape(shipment.courier_name)+'</span><span><strong>Ref #:</strong> '+sellerEscape(shipment.tracking_number||'—')+'</span></div>';
+    }
+    function renderSellerOrders(rows,itemRows=[],shipmentRows=[]){
       const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
       const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Items','__items'],['Action','__action']];
       head.innerHTML='<tr>'+columns.map(col=>'<th>'+sellerEscape(col[0])+'</th>').join('')+'</tr>';
       if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders have been placed yet. Customer checkout orders will appear here automatically.</td></tr>';return;}
-      const itemsByOrder=new Map();
+      const itemsByOrder=new Map(),shipmentsByOrder=new Map();
       (itemRows||[]).forEach(item=>{const key=String(item.order_id);if(!itemsByOrder.has(key))itemsByOrder.set(key,[]);itemsByOrder.get(key).push(item);});
+      (shipmentRows||[]).forEach(shipment=>{if(!shipmentsByOrder.has(String(shipment.order_id)))shipmentsByOrder.set(String(shipment.order_id),shipment);});
       body.innerHTML=rows.map(row=>{
         const items=itemsByOrder.get(String(row.id))||[];
         const itemUnits=items.reduce((sum,item)=>sum+Math.max(0,Number(item.quantity)||0),0);
@@ -6098,10 +6229,30 @@
           if(col[1]==='__items')return '<td><button class="seller-secondary-button seller-order-items-toggle" type="button" data-seller-order-items="'+sellerEscape(row.id)+'" aria-expanded="false">View '+items.length+' item(s)</button><div class="seller-muted">'+itemUnits+' unit(s)</div></td>';
           if(col[1]==='__action'){
             const status=String(row.status||'').toLowerCase(),step=SELLER_ORDER_NEXT_STEP[status];
+            const shipment=shipmentsByOrder.get(String(row.id))||null;
+            const orderId=sellerEscape(row.id),orderNumber=sellerEscape(row.order_number||'');
             const canCancel=['pending','confirmed','processing'].includes(status)&&!Boolean(row.inventory_released);
-            const advance=step?'<button class="seller-primary-button seller-order-advance-button" type="button" data-seller-advance-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'" data-next-status="'+sellerEscape(step.next)+'">'+sellerEscape(step.label)+'</button>':'<span class="seller-muted">'+sellerEscape(status==='delivered'?'Order received':(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Complete')))+'</span>';
-            const cancel=canCancel?'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>':'';
-            return '<td><div class="seller-order-actions">'+advance+cancel+'</div></td>';
+            const cancel=canCancel?'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Cancel order</button>':'';
+            let action='';
+            if(status==='processing'){
+              const courierOptions=GENMERCH_SHIPPING_COURIERS.map(courier=>'<option value="'+sellerEscape(courier)+'"'+(shipment&&shipment.courier_name===courier?' selected':'')+'>'+sellerEscape(courier)+'</option>').join('');
+              action='<div class="seller-shipping-setup" data-shipping-order="'+orderId+'">'+
+                '<label>Courier<select data-seller-courier aria-label="Select courier for '+orderNumber+'"><option value="">Select courier</option>'+courierOptions+'</select></label>'+
+                '<label>Delivery Reference #<input type="text" data-seller-reference maxlength="100" placeholder="Enter reference #" value="'+sellerEscape(shipment&&shipment.tracking_number||'')+'" aria-label="Delivery reference for '+orderNumber+'"></label>'+
+                '<button class="seller-primary-button" type="button" data-seller-mark-shipped data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Mark as Shipped</button></div>';
+            }else if(status==='shipped'){
+              action=sellerShipmentSummaryMarkup(shipment)+
+                '<button class="seller-secondary-button" type="button" data-seller-advance-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'" data-next-status="out_for_delivery">Mark Out for Delivery</button>'+
+                '<button class="seller-primary-button" type="button" data-seller-complete-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Mark as Completed</button>';
+            }else if(status==='out_for_delivery'){
+              action=sellerShipmentSummaryMarkup(shipment)+
+                '<button class="seller-primary-button" type="button" data-seller-complete-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Mark as Completed</button>';
+            }else if(step){
+              action='<button class="seller-primary-button seller-order-advance-button" type="button" data-seller-advance-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'" data-next-status="'+sellerEscape(step.next)+'">'+sellerEscape(step.label)+'</button>';
+            }else{
+              action='<span class="seller-muted">'+sellerEscape(status==='delivered'?'Order received':(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Complete')))+'</span>';
+            }
+            return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+cancel+'</div></td>';
           }
           let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
           if(col[1]==='status')display=sellerOrderStatusLabel(value);
@@ -6115,7 +6266,9 @@
           const image=imageUrl?'<img class="seller-order-item-image" src="'+sellerEscape(imageUrl)+'" alt="'+sellerEscape(item.product_name||'Product image')+'" loading="lazy">':'<div class="seller-order-item-image seller-order-item-placeholder">👕</div>';
           return '<article class="seller-order-item-card">'+image+'<div class="seller-order-item-info"><strong>'+sellerEscape(item.product_name||'Deleted product')+'</strong><span>SKU: '+sellerEscape(item.sku||'—')+'</span><span>Size: '+sellerEscape(item.size_label||'—')+(item.color_label?' · Color: '+sellerEscape(item.color_label):'')+'</span><span>Qty: '+sellerEscape(item.quantity)+'</span></div><div class="seller-order-item-price"><strong>'+sellerEscape(money(item.line_total))+'</strong><span>'+sellerEscape(money(item.unit_price))+' each</span></div></article>';
         }).join(''):'<p class="seller-muted">No order item lines were returned for this order.</p>';
-        const detailRow='<tr class="seller-order-detail-row" data-seller-order-detail="'+sellerEscape(row.id)+'" hidden><td colspan="'+columns.length+'"><div class="seller-order-items-panel">'+itemsMarkup+'<div class="seller-order-address"><strong>Full delivery address:</strong> '+sellerEscape([row.shipping_street_address,row.shipping_barangay,row.shipping_city_municipality,row.shipping_province,row.shipping_postal_code].filter(Boolean).join(', '))+(row.shipping_landmark?'<br><strong>Landmark:</strong> '+sellerEscape(row.shipping_landmark):'')+(row.delivery_instructions?'<br><strong>Instructions:</strong> '+sellerEscape(row.delivery_instructions):'')+'<br><strong>Subtotal:</strong> '+sellerEscape(money(row.subtotal))+' · <strong>Delivery:</strong> '+sellerEscape(money(row.shipping_fee))+' '+(row.delivery_zone?'('+sellerEscape(row.delivery_zone)+')':'')+'</div></div></td></tr>';
+        const shipment=shipmentsByOrder.get(String(row.id))||null;
+        const shipmentDetails=shipment&&shipment.courier_name?'<div class="seller-order-address"><strong>Courier:</strong> '+sellerEscape(shipment.courier_name)+' · <strong>Delivery Reference #:</strong> '+sellerEscape(shipment.tracking_number||'—')+' · <strong>Shipment status:</strong> '+sellerEscape(shipment.status||'—')+'</div>':'';
+        const detailRow='<tr class="seller-order-detail-row" data-seller-order-detail="'+sellerEscape(row.id)+'" hidden><td colspan="'+columns.length+'"><div class="seller-order-items-panel">'+itemsMarkup+'<div class="seller-order-address"><strong>Full delivery address:</strong> '+sellerEscape([row.shipping_street_address,row.shipping_barangay,row.shipping_city_municipality,row.shipping_province,row.shipping_postal_code].filter(Boolean).join(', '))+(row.shipping_landmark?'<br><strong>Landmark:</strong> '+sellerEscape(row.shipping_landmark):'')+(row.delivery_instructions?'<br><strong>Instructions:</strong> '+sellerEscape(row.delivery_instructions):'')+'<br><strong>Subtotal:</strong> '+sellerEscape(money(row.subtotal))+' · <strong>Delivery:</strong> '+sellerEscape(money(row.shipping_fee))+' '+(row.delivery_zone?'('+sellerEscape(row.delivery_zone)+')':'')+'</div>'+shipmentDetails+'</div></td></tr>';
         return mainRow+detailRow;
       }).join('');
       body.querySelectorAll('[data-seller-order-items]').forEach(button=>button.addEventListener('click',()=>{
@@ -6128,6 +6281,8 @@
       }));
       body.querySelectorAll('[data-seller-cancel-order]').forEach(button=>button.addEventListener('click',()=>cancelSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
       body.querySelectorAll('[data-seller-advance-order]').forEach(button=>button.addEventListener('click',()=>advanceSellerOrderStatus(button.dataset.orderId,button.dataset.orderNumber,button.dataset.nextStatus,button)));
+      body.querySelectorAll('[data-seller-mark-shipped]').forEach(button=>button.addEventListener('click',()=>markSellerOrderShipped(button.dataset.orderId,button.dataset.orderNumber,button)));
+      body.querySelectorAll('[data-seller-complete-order]').forEach(button=>button.addEventListener('click',()=>completeSellerOrderDelivery(button.dataset.orderId,button.dataset.orderNumber,button)));
     }
     async function loadSellerOrders(silent=false){
       if(!sellerCentreIsUnlocked)return;
@@ -6138,13 +6293,19 @@
         const result=await client.from('orders').select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,subtotal,shipping_fee,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,delivery_zone,created_at,inventory_reserved,inventory_released,cancellation_reason').order('created_at',{ascending:false}).limit(200);
         if(result.error)throw result.error;
         const rows=Array.isArray(result.data)?result.data:[];
-        let itemRows=[];
+        let itemRows=[],shipmentRows=[];
         if(rows.length){
-          const itemResult=await client.from('order_items').select('id,order_id,product_id,variant_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',rows.map(row=>row.id)).order('created_at',{ascending:true});
+          const orderIds=rows.map(row=>row.id);
+          const [itemResult,shipmentResult]=await Promise.all([
+            client.from('order_items').select('id,order_id,product_id,variant_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
+            client.from('shipments').select('id,order_id,courier_name,tracking_number,tracking_url,status,shipped_at,delivered_at,updated_at').in('order_id',orderIds).order('updated_at',{ascending:false})
+          ]);
           if(itemResult.error)throw itemResult.error;
+          if(shipmentResult.error)throw shipmentResult.error;
           itemRows=Array.isArray(itemResult.data)?itemResult.data:[];
+          shipmentRows=Array.isArray(shipmentResult.data)?shipmentResult.data:[];
         }
-        renderSellerOrders(rows,itemRows);sellerOrdersLoaded=true;
+        renderSellerOrders(rows,itemRows,shipmentRows);sellerOrdersLoaded=true;
       }catch(error){
         if(!silent)sellerSetLoadingRow('sellerOrdersTableBody',14,'Orders could not be loaded.');
         sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders and items. Check order_items admin SELECT permission.','error');sellerOrdersLoaded=false;
