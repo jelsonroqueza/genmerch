@@ -2159,8 +2159,9 @@
 .checkout-step-bar strong{font-size:.9rem;font-weight:900}
 .checkout-step-bar small{color:#777;font-size:.74rem;font-weight:500;line-height:1.35}
 .checkout-step-number{flex:0 0 auto;color:#a13a27;font-size:.73rem;font-weight:850;white-space:nowrap}
-.checkout-order-items{flex:1 1 auto;min-height:110px;max-height:none;overflow-y:auto;overscroll-behavior:contain;padding:8px 20px;border-bottom:0}
-.checkout-step-summary{flex:0 1 auto;min-height:0;max-height:clamp(130px,24dvh,205px);overflow-y:auto;overscroll-behavior:contain;padding:0 18px 10px}
+.checkout-order-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.checkout-order-items{flex:0 0 auto;min-height:0;max-height:none;overflow:visible;padding:8px 20px;border-bottom:1px solid #eee}
+.checkout-step-summary{max-height:none;overflow:visible;padding:0 18px 12px}
 .checkout-step-summary .summary{margin:0}
 .checkout-step-actions{flex:0 0 auto;padding:11px 18px calc(11px + env(safe-area-inset-bottom));border-top:1px solid #eee;background:#fff}
 .checkout-step-actions .checkout-btn{width:100%;margin:0}
@@ -2192,7 +2193,7 @@
   .checkout-step-bar small{font-size:.7rem}
   .checkout-step-number{font-size:.66rem}
   .checkout-order-items{padding:6px 12px}
-  .checkout-step-summary{padding:0 10px 8px;max-height:clamp(122px,25dvh,190px)}
+  .checkout-step-summary{padding:0 10px 8px}
   .checkout-step-actions{padding:9px 12px calc(9px + env(safe-area-inset-bottom))}
   .checkout-mini-summary{padding:9px 12px;gap:7px}
   .checkout-mini-summary strong{font-size:.94rem}
@@ -2205,7 +2206,6 @@
 }
 @media(max-height:650px){
   .cart-modal{height:calc(100dvh - 24px);max-height:calc(100dvh - 24px)}
-  .checkout-step-summary{max-height:24dvh}
   .checkout-step-bar{padding-top:8px;padding-bottom:8px}
 }
 
@@ -2499,14 +2499,18 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <section class="cart-modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
     <div class="cart-head">
-      <span id="cartTitle" class="cart-title-wrap"><span id="cartTitleText">Shopping Cart</span> <span id="drawerCountWrap">(<span id="drawerCount">0</span>)</span><small class="checkout-st    <div class="cart-content" id="cartContent">
+      <span id="cartTitle" class="cart-title-wrap"><span id="cartTitleText">Shopping Cart</span> <span id="drawerCountWrap">(<span id="drawerCount">0</span>)</span><small class="checkout-step-indicator" id="checkoutStepIndicator">STEP 1 OF 2</small></span>
+      <button class="icon-btn" id="closeCartButton" aria-label="Close shopping cart">×</button>
+    </div>
+    <div class="cart-content" id="cartContent">
       <section class="checkout-step checkout-step-order" id="checkoutStepOrder" aria-labelledby="cartTitleText">
         <div class="checkout-step-bar">
           <span><strong>Your Order</strong><small>Review products, sizes, and quantities.</small></span>
           <span class="checkout-step-number">Step 1 of 2</span>
         </div>
-        <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
-        <div class="checkout-step-summary">
+        <div class="checkout-order-scroll" id="checkoutOrderScroll">
+          <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
+          <div class="checkout-step-summary">
       <div class="summary" id="summaryBox" style="display:none">
         <div class="summary-row"><span>Subtotal:</span><span id="subtotalText">₱0</span></div>
         <div class="summary-row"><span>Delivery Fee:</span><span id="shippingText">Enter address</span></div>
@@ -2514,6 +2518,7 @@
         <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
         <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
       </div>
+          </div>
         </div>
         <div class="checkout-step-actions">
           <button type="button" class="checkout-btn" id="checkoutContinueButton" disabled>Continue to Delivery <span aria-hidden="true">→</span></button>
@@ -2616,9 +2621,6 @@
       
       </form>
       </section>
-    </div>storage-actions"><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
-        </div>
-      </form>
     </div>
   </section>
 
@@ -4827,7 +4829,7 @@
       if(deliveryStep){
         $('checkoutDeliveryScroll').scrollTop=0;
       }else{
-        $('cartItemsContainer').scrollTop=0;
+        $('checkoutOrderScroll').scrollTop=0;
       }
     }
     $('checkoutContinueButton').addEventListener('click',()=>{
