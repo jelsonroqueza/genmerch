@@ -1191,10 +1191,8 @@
     .wishlist-header-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .wishlist-badge{position:absolute;right:-9px;top:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#f22a12;color:#fff;font-size:.62rem;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1}
     .wishlist-badge[hidden]{display:none!important}
-    .wishlist-card-button{position:absolute;left:8px;top:8px;z-index:4;display:grid;place-items:center;width:35px;height:35px;border:1px solid #f0d9d2;border-radius:50%;background:#fff;color:#e52b18;font-size:1.65rem;line-height:1;box-shadow:0 2px 8px #00000018;transition:transform .15s,background .15s,color .15s}
-    .wishlist-card-button:hover{transform:scale(1.06);background:#fff2ed}
-    .wishlist-card-button.active{background:#f22a12;color:#fff;border-color:#f22a12}
-    .wishlist-card-button:focus-visible,.wishlist-detail-button:focus-visible,.wishlist-view-button:focus-visible,.wishlist-remove-button:focus-visible{outline:2px solid #f22a12;outline-offset:2px}
+
+    .wishlist-detail-button:focus-visible,.wishlist-view-button:focus-visible,.wishlist-remove-button:focus-visible{outline:2px solid #f22a12;outline-offset:2px}
     .wishlist-detail-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:-4px auto 14px;padding:9px 14px;border:1px solid #f0c8be;border-radius:999px;background:#fff;color:#cb2815;font-size:.82rem;font-weight:850}
     .wishlist-detail-button.active{background:#fff0eb;border-color:#f22a12}
     .wishlist-overlay{position:fixed;inset:0;z-index:850;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(12,12,12,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -1232,7 +1230,7 @@
     .wishlist-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid #eee5df;background:#fffdfb;color:#756b65;font-size:.71rem;line-height:1.4;flex-shrink:0}
     .wishlist-continue-button{flex:0 0 auto;border:1px solid #f22a12;border-radius:8px;background:#fff;color:#ce2b16;padding:9px 12px;font-size:.75rem;font-weight:850}
     .wishlist-continue-button:hover{background:#fff0eb}
-    @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:flex-start;flex-direction:column;padding:11px 13px}.wishlist-continue-button{align-self:flex-end}.wishlist-card-button{width:32px;height:32px;font-size:1.5rem}}
+    @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:flex-start;flex-direction:column;padding:11px 13px}.wishlist-continue-button{align-self:flex-end}}
 
 </style>
   <style id="genmerch-final-visual-refinement">
@@ -3535,9 +3533,7 @@
         const visual=product.image?'<img class="catalog-card-image" src="'+escapeHtml(product.image)+'" alt="'+escapeHtml(product.imageAlt||product.name)+'" loading="lazy">':'<span class="catalog-card-placeholder" aria-hidden="true">'+escapeHtml(product.icon||'🛍️')+'</span>';
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
-        const isWishlisted=isProductWishlisted(product.id);
-        const wishlistButton='<button class="wishlist-card-button'+(isWishlisted?' active':'')+'" type="button" data-wishlist-id="'+escapeHtml(product.id)+'" aria-pressed="'+String(isWishlisted)+'" aria-label="'+(isWishlisted?'Remove '+escapeHtml(product.name)+' from wishlist':'Add '+escapeHtml(product.name)+' to wishlist')+'" title="'+(isWishlisted?'Remove from Wishlist':'Add to Wishlist')+'">'+(isWishlisted?'♥':'♡')+'</button>';
-        return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+wishlistButton+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
+        return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
           '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+money(product.price)+'</div><div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
@@ -3559,8 +3555,6 @@
     $('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
 
     $('productGrid').addEventListener('click',event=>{
-      const wishlistButton=event.target.closest('[data-wishlist-id]');
-      if(wishlistButton){event.preventDefault();event.stopPropagation();toggleProductWishlist(wishlistButton.dataset.wishlistId);return;}
       const addButton=event.target.closest('[data-add-id]');
       if(addButton){event.stopPropagation();openSizeSelector(addButton.dataset.addId);return;}
       const card=event.target.closest('[data-product-id]');
