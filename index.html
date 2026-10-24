@@ -1186,6 +1186,54 @@
 @media(max-width:900px){.seller-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seller-tabs{gap:2px}.seller-tab-button{padding-left:10px;padding-right:10px}}
 @media(max-width:600px){.seller-inventory-tools{grid-template-columns:1fr;gap:9px;padding:10px}.seller-metrics-grid{gap:7px;margin:11px 0 16px}.seller-metric-card{padding:11px 10px;gap:5px}.seller-metric-label{font-size:.68rem}.seller-metric-detail{font-size:.63rem}.seller-stock-actions{gap:4px}.seller-stock-actions .seller-primary-button,.seller-stock-actions .seller-secondary-button{padding:7px 8px}}
 
+
+    .wishlist-header-icon{position:relative;display:inline-flex;align-items:center;justify-content:center}
+    .wishlist-header-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .wishlist-badge{position:absolute;right:-9px;top:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#f22a12;color:#fff;font-size:.62rem;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1}
+    .wishlist-badge[hidden]{display:none!important}
+    .wishlist-card-button{position:absolute;left:8px;top:8px;z-index:4;display:grid;place-items:center;width:35px;height:35px;border:1px solid #f0d9d2;border-radius:50%;background:#fff;color:#e52b18;font-size:1.65rem;line-height:1;box-shadow:0 2px 8px #00000018;transition:transform .15s,background .15s,color .15s}
+    .wishlist-card-button:hover{transform:scale(1.06);background:#fff2ed}
+    .wishlist-card-button.active{background:#f22a12;color:#fff;border-color:#f22a12}
+    .wishlist-card-button:focus-visible,.wishlist-detail-button:focus-visible,.wishlist-view-button:focus-visible,.wishlist-remove-button:focus-visible{outline:2px solid #f22a12;outline-offset:2px}
+    .wishlist-detail-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:-4px auto 14px;padding:9px 14px;border:1px solid #f0c8be;border-radius:999px;background:#fff;color:#cb2815;font-size:.82rem;font-weight:850}
+    .wishlist-detail-button.active{background:#fff0eb;border-color:#f22a12}
+    .wishlist-overlay{position:fixed;inset:0;z-index:850;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(12,12,12,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+    .wishlist-overlay.open{display:flex}
+    .wishlist-modal{width:min(760px,100%);max-height:min(90dvh,850px);display:flex;flex-direction:column;overflow:hidden;background:#fff;border-radius:15px;border:1px solid #eee1da;box-shadow:0 24px 80px #0005}
+    .wishlist-modal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 20px;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff;flex-shrink:0}
+    .wishlist-modal-head h2{margin:0;font-size:1.08rem;font-weight:900;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .wishlist-modal-head h2 span{border-radius:999px;background:#ffffff25;padding:4px 8px;font-size:.68rem;font-weight:800}
+    .wishlist-modal-head p{margin:5px 0 0;font-size:.78rem;opacity:.94;line-height:1.4}
+    .wishlist-close-button{width:36px;height:36px;flex:0 0 auto;border:0;border-radius:50%;background:#ffffff22;color:#fff;font-size:1.65rem;line-height:1}
+    .wishlist-close-button:hover{background:#ffffff3b}
+    .wishlist-modal-body{padding:12px 18px;overflow:auto;overscroll-behavior:contain;flex:1;min-height:100px}
+    .wishlist-empty{padding:38px 15px;text-align:center;color:#766c66}
+    .wishlist-empty>span{display:block;font-size:3rem;color:#e52b18;line-height:1.1;margin-bottom:8px}
+    .wishlist-empty h3{margin:0;color:#28211e;font-size:1rem}
+    .wishlist-empty p{margin:7px 0 0;font-size:.82rem;line-height:1.5}
+    .wishlist-item{display:grid;grid-template-columns:82px minmax(0,1fr) auto;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid #eee8e4}
+    .wishlist-item:last-child{border-bottom:0}
+    .wishlist-product-photo{width:82px;height:88px;display:grid;place-items:center;overflow:hidden;border-radius:9px;border:1px solid #eee3dc;background:#fff8f4;font-size:2rem}
+    .wishlist-product-photo img{width:100%;height:100%;object-fit:contain;background:#fff}
+    .wishlist-product-placeholder{width:82px;height:88px;display:grid;place-items:center;border:1px solid #eee3dc;border-radius:9px;background:#fff8f4;font-size:2rem}
+    .wishlist-item-info{min-width:0;overflow-wrap:anywhere}
+    .wishlist-item-category{margin-bottom:4px;color:#b82a17;font-size:.68rem;font-weight:850;text-transform:uppercase;letter-spacing:.02em}
+    .wishlist-item-info>strong{display:block;color:#211a16;font-size:.9rem;line-height:1.35}
+    .wishlist-item-price{margin-top:5px;color:#e82b15;font-size:.96rem;font-weight:900}
+    .wishlist-availability{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:999px;font-size:.66rem;font-weight:850}
+    .wishlist-availability.available{background:#edf8ef;color:#27683a}
+    .wishlist-availability.unavailable{background:#fff0ef;color:#a61b1b}
+    .wishlist-item-actions{display:flex;flex-direction:column;gap:7px;min-width:104px}
+    .wishlist-view-button,.wishlist-remove-button{min-height:34px;padding:8px 10px;border-radius:7px;font-size:.73rem;font-weight:850}
+    .wishlist-view-button{border:1px solid #f22a12;background:#f22a12;color:#fff}
+    .wishlist-view-button:hover{background:#d92510}
+    .wishlist-remove-button{border:1px solid #e5d7d0;background:#fff;color:#6a5147}
+    .wishlist-remove-button:hover{background:#fff3ed;border-color:#f1b2a4;color:#b42318}
+    .wishlist-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid #eee5df;background:#fffdfb;color:#756b65;font-size:.71rem;line-height:1.4;flex-shrink:0}
+    .wishlist-continue-button{flex:0 0 auto;border:1px solid #f22a12;border-radius:8px;background:#fff;color:#ce2b16;padding:9px 12px;font-size:.75rem;font-weight:850}
+    .wishlist-continue-button:hover{background:#fff0eb}
+    @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:flex-start;flex-direction:column;padding:11px 13px}.wishlist-continue-button{align-self:flex-end}.wishlist-card-button{width:32px;height:32px;font-size:1.5rem}}
+
 </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
@@ -2033,8 +2081,8 @@
           <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
         </div>
         <div class="header-actions">
-          <button class="header-action" type="button" onclick="showInfo('Wishlist')" aria-label="Open wishlist">
-            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 8.8c0 5.1-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.8a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"></path></svg></span>
+          <button class="header-action wishlist-header-button" type="button" onclick="openWishlist()" aria-label="Open wishlist" title="View saved products">
+            <span class="header-icon wishlist-header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 8.8c0 5.1-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.8a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"></path></svg><span class="wishlist-badge" id="wishlistBadge" aria-live="polite" hidden>0</span></span>
             <small>Wishlist</small>
           </button>
           <button class="header-action" type="button" id="customerAccountButton" onclick="openCustomerAuth()" aria-label="Open account">
@@ -2223,6 +2271,7 @@
         </div>
         <h2 id="productModalName"></h2>
         <div class="product-modal-price" id="productModalPrice"></div>
+        <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
         <p class="product-description" id="productModalDescription"></p>
         <div class="product-modal-colors" id="productModalColorSelector" hidden>
           <span class="product-color-heading">Color: <strong id="productModalSelectedColor">—</strong></span>
@@ -2383,6 +2432,17 @@
       <h2 id="noticeTitle">Checkout Not Available Yet</h2>
       <div id="noticeContent"></div>
       <button class="primary-btn" id="closeNoticeButton">Close</button>
+    </section>
+  </div>
+
+  <div class="wishlist-overlay" id="wishlistOverlay" aria-hidden="true">
+    <section class="wishlist-modal" role="dialog" aria-modal="true" aria-labelledby="wishlistModalTitle">
+      <div class="wishlist-modal-head">
+        <div><h2 id="wishlistModalTitle">♡ My Wishlist <span id="wishlistCountLabel">0 items</span></h2><p>Your saved GENMERCH products in one place.</p></div>
+        <button class="wishlist-close-button" id="wishlistCloseButton" type="button" aria-label="Close wishlist">×</button>
+      </div>
+      <div class="wishlist-modal-body" id="wishlistItemsContainer"><div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p></div></div>
+      <div class="wishlist-modal-footer"><span>Saved products stay on this browser and are kept separate for each signed-in customer.</span><button class="wishlist-continue-button" id="wishlistContinueButton" type="button">Continue shopping</button></div>
     </section>
   </div>
 
@@ -3295,6 +3355,132 @@
       return products.filter(product => Boolean(product.image || (Array.isArray(product.images) && product.images.some(image => image && image.url))));
     }
 
+    const WISHLIST_GUEST_STORAGE_KEY = 'genmerch:wishlist:guest:v1';
+    let wishlistProductIds = [];
+    function getWishlistStorageKey(session=customerAuthCurrentSession){
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      return userId?'genmerch:wishlist:user:'+encodeURIComponent(userId):WISHLIST_GUEST_STORAGE_KEY;
+    }
+    function readWishlistIds(key){
+      try{
+        const parsed=JSON.parse(localStorage.getItem(key)||'[]');
+        return Array.isArray(parsed)?[...new Set(parsed.map(id=>String(id)).filter(Boolean))]:[];
+      }catch(_){return [];}
+    }
+    function writeWishlistIds(key,ids){
+      try{localStorage.setItem(key,JSON.stringify([...new Set((ids||[]).map(id=>String(id)).filter(Boolean))]));return true;}
+      catch(error){console.warn('GENMERCH wishlist could not be saved in browser storage.',error);showToast('Unable to save wishlist on this browser.');return false;}
+    }
+    function syncWishlistForCustomerSession(session=customerAuthCurrentSession,refreshUI=true){
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      const key=getWishlistStorageKey(session);
+      if(userId){
+        const guestIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
+        if(guestIds.length){
+          const merged=[...new Set([...readWishlistIds(key),...guestIds])];
+          writeWishlistIds(key,merged);
+          try{localStorage.removeItem(WISHLIST_GUEST_STORAGE_KEY);}catch(_){}
+        }
+      }
+      wishlistProductIds=readWishlistIds(key);
+      updateWishlistBadge();
+      if(refreshUI){
+        renderProducts();
+        updateWishlistDetailButton();
+        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+      }
+      return wishlistProductIds;
+    }
+    function isProductWishlisted(productId){
+      return wishlistProductIds.includes(String(productId));
+    }
+    function updateWishlistBadge(){
+      const badge=$('wishlistBadge');
+      if(!badge)return;
+      const count=wishlistProductIds.length;
+      badge.textContent=count>99?'99+':String(count);
+      badge.hidden=count===0;
+      const button=badge.closest('button');
+      if(button)button.setAttribute('aria-label',count?'Open wishlist, '+count+' saved product'+(count===1?'':'s'):'Open wishlist');
+    }
+    function updateWishlistDetailButton(productId=openProductDetailId){
+      const button=$('productModalWishlistButton');
+      if(!button)return;
+      const hasProduct=productId!==null&&productId!==undefined&&String(productId)!=='';
+      const saved=hasProduct&&isProductWishlisted(productId);
+      button.textContent=saved?'♥ Saved to Wishlist':'♡ Add to Wishlist';
+      button.classList.toggle('active',Boolean(saved));
+      button.setAttribute('aria-pressed',String(Boolean(saved)));
+    }
+    function toggleProductWishlist(productId){
+      if(productId===null||productId===undefined||String(productId)==='')return;
+      syncWishlistForCustomerSession(customerAuthCurrentSession,false);
+      const id=String(productId),key=getWishlistStorageKey();
+      const exists=wishlistProductIds.includes(id);
+      const next=exists?wishlistProductIds.filter(value=>value!==id):[...wishlistProductIds,id];
+      if(!writeWishlistIds(key,next))return;
+      wishlistProductIds=next;
+      updateWishlistBadge();
+      renderProducts();
+      updateWishlistDetailButton();
+      if($('wishlistOverlay').classList.contains('open'))renderWishlist();
+      const product=products.find(item=>String(item.id)===id);
+      showToast(exists?'Removed from Wishlist':(product?product.name+' added to Wishlist':'Added to Wishlist'));
+    }
+    function removeWishlistProduct(productId){
+      const id=String(productId),key=getWishlistStorageKey();
+      wishlistProductIds=wishlistProductIds.filter(value=>value!==id);
+      writeWishlistIds(key,wishlistProductIds);
+      updateWishlistBadge();
+      renderProducts();
+      updateWishlistDetailButton();
+      renderWishlist();
+    }
+    function renderWishlist(){
+      const container=$('wishlistItemsContainer');
+      if(!container)return;
+      $('wishlistCountLabel').textContent=wishlistProductIds.length+' item'+(wishlistProductIds.length===1?'':'s');
+      if(!wishlistProductIds.length){
+        container.innerHTML='<div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p></div>';
+        return;
+      }
+      container.innerHTML=wishlistProductIds.map(id=>{
+        const product=products.find(item=>String(item.id)===String(id));
+        if(!product){
+          return '<article class="wishlist-item wishlist-item-missing"><div class="wishlist-product-placeholder">🛍️</div><div class="wishlist-item-info"><strong>Product no longer available</strong><p>This item may have been removed from the store.</p></div><button class="wishlist-remove-button" type="button" data-wishlist-remove="'+escapeHtml(id)+'" aria-label="Remove unavailable product from Wishlist">Remove</button></article>';
+        }
+        const imageUrl=safeCatalogImageUrl(product.image||(Array.isArray(product.images)?(product.images.find(image=>image&&image.url)||{}).url:''))||'';
+        const image=imageUrl?'<img src="'+escapeHtml(imageUrl)+'" alt="'+escapeHtml(product.name)+'" loading="lazy">':'<span aria-hidden="true">'+escapeHtml(product.icon||'🛍️')+'</span>';
+        const tracked=Array.isArray(product.variants);
+        const inStock=!tracked||product.variants.some(variant=>Number(variant.stock)>0);
+        const availability=tracked?(inStock?'<span class="wishlist-availability available">In stock</span>':'<span class="wishlist-availability unavailable">Out of stock</span>'):'';
+        return '<article class="wishlist-item"><div class="wishlist-product-photo">'+image+'</div><div class="wishlist-item-info"><div class="wishlist-item-category">'+escapeHtml(product.cat||'GENMERCH')+'</div><strong>'+escapeHtml(product.name)+'</strong><div class="wishlist-item-price">'+money(product.price)+'</div>'+availability+'</div><div class="wishlist-item-actions"><button class="wishlist-view-button" type="button" data-wishlist-view="'+escapeHtml(product.id)+'">View product</button><button class="wishlist-remove-button" type="button" data-wishlist-remove="'+escapeHtml(product.id)+'">Remove</button></div></article>';
+      }).join('');
+    }
+    function openWishlist(){
+      syncWishlistForCustomerSession(customerAuthCurrentSession,false);
+      renderWishlist();
+      $('wishlistOverlay').classList.add('open');
+      $('wishlistOverlay').setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    }
+    function closeWishlist(){
+      const overlay=$('wishlistOverlay');
+      if(!overlay)return;
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      if(!document.querySelector('.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+    }
+    $('wishlistCloseButton').addEventListener('click',closeWishlist);
+    $('wishlistContinueButton').addEventListener('click',closeWishlist);
+    $('wishlistOverlay').addEventListener('click',event=>{if(event.target===$('wishlistOverlay'))closeWishlist();});
+    $('wishlistItemsContainer').addEventListener('click',event=>{
+      const remove=event.target.closest('[data-wishlist-remove]');
+      if(remove){event.preventDefault();event.stopPropagation();removeWishlistProduct(remove.dataset.wishlistRemove);return;}
+      const view=event.target.closest('[data-wishlist-view]');
+      if(view){const id=view.dataset.wishlistView;closeWishlist();openProduct(id);}
+    });
+
     function renderCategoryFilters(){
       const visibleProducts = getProductsWithImages();
       const uniqueCategories = [...new Set(visibleProducts.map(product => product.cat).filter(Boolean))];
@@ -3349,7 +3535,9 @@
         const visual=product.image?'<img class="catalog-card-image" src="'+escapeHtml(product.image)+'" alt="'+escapeHtml(product.imageAlt||product.name)+'" loading="lazy">':'<span class="catalog-card-placeholder" aria-hidden="true">'+escapeHtml(product.icon||'🛍️')+'</span>';
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
-        return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
+        const isWishlisted=isProductWishlisted(product.id);
+        const wishlistButton='<button class="wishlist-card-button'+(isWishlisted?' active':'')+'" type="button" data-wishlist-id="'+escapeHtml(product.id)+'" aria-pressed="'+String(isWishlisted)+'" aria-label="'+(isWishlisted?'Remove '+escapeHtml(product.name)+' from wishlist':'Add '+escapeHtml(product.name)+' to wishlist')+'" title="'+(isWishlisted?'Remove from Wishlist':'Add to Wishlist')+'">'+(isWishlisted?'♥':'♡')+'</button>';
+        return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+wishlistButton+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
           '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+money(product.price)+'</div><div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
@@ -3371,6 +3559,8 @@
     $('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
 
     $('productGrid').addEventListener('click',event=>{
+      const wishlistButton=event.target.closest('[data-wishlist-id]');
+      if(wishlistButton){event.preventDefault();event.stopPropagation();toggleProductWishlist(wishlistButton.dataset.wishlistId);return;}
       const addButton=event.target.closest('[data-add-id]');
       if(addButton){event.stopPropagation();openSizeSelector(addButton.dataset.addId);return;}
       const card=event.target.closest('[data-product-id]');
@@ -3462,6 +3652,7 @@
       catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showToast('Unable to refresh live stock. Please try again.');return; }
       const p=products.find(item=>String(item.id)===String(id));if(!p)return;
       openProductDetailId=p.id;
+      updateWishlistDetailButton(p.id);
       productDetailSelectedSize='';
       productDetailSelectedVariantId=null;
       productDetailSelectedColor='';
@@ -4036,7 +4227,7 @@
     $('openCartButton').addEventListener('click',openCart);
     $('closeCartButton').addEventListener('click',closeCart);
     $('cartOverlay').addEventListener('click',closeCart);
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();}});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();closeWishlist();}});
 
     document.querySelectorAll('[data-payment]').forEach(button=>button.addEventListener('click',()=>{
       selectedPayment=button.dataset.payment;
@@ -4133,6 +4324,7 @@
       if(!customerAuthSubscription){
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
+          syncWishlistForCustomerSession(session,true);
           if(event==='SIGNED_IN'&&session&&session.user&&isCustomerAuthCallbackUrl()){
             const identity=getCustomerAuthIdentity(session.user);
             const overlay=$('customerAuthOverlay');
@@ -5171,7 +5363,7 @@
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
-      restoreDraftState();renderCategoryFilters();renderProducts();updateCart();
+      restoreDraftState();syncWishlistForCustomerSession(customerAuthCurrentSession,false);renderCategoryFilters();renderProducts();updateCart();
       await restoreAddressReferenceContext();
     }
     initializeStorefront();
