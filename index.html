@@ -1141,6 +1141,11 @@
 @media(max-width:760px){.seller-centre-trigger{padding:4px 2px!important;border:0!important;background:transparent!important;min-width:30px!important}.seller-centre-trigger .seller-trigger-icon{font-size:1.2rem}.seller-centre-trigger small{font-size:.52rem!important;max-width:48px;white-space:normal;text-align:center}.seller-modal-overlay{padding:8px}.seller-modal,.seller-dashboard-modal{max-height:96dvh;border-radius:13px}.seller-modal-head{padding:13px 14px}.seller-modal-head h2{font-size:1rem}.seller-passcode-body{padding:18px 15px}.seller-dashboard-modal{width:100%}.seller-tabs{top:60px;padding:9px 10px 0;gap:0;flex-wrap:wrap}.seller-tab-button{padding:10px 11px;font-size:.8rem}.seller-tab-tools{margin-left:auto;padding:0 0 7px}.seller-tab-tools button{padding:8px 9px;font-size:.72rem}.seller-panel{padding:13px 11px}.seller-product-form{padding:12px}.seller-form-grid{grid-template-columns:1fr;gap:10px}.seller-field.full{grid-column:auto}.seller-product-form .seller-form-actions{justify-content:stretch}.seller-product-form .seller-form-actions button{flex:1}.seller-security-note{margin:10px 11px}.seller-dashboard-foot{padding:11px}}
 @media(max-width:380px){.seller-centre-trigger small{display:none}.seller-centre-trigger{min-width:28px!important}}@media(prefers-reduced-motion:reduce){.seller-primary-button,.seller-secondary-button,.seller-danger-button{transition:none}}
 
+.seller-row-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:70px}.seller-edit-button{border:1px solid #ffb49f;background:#fff6f1;color:#bd2813}.seller-edit-button:hover{background:#ffe5dc;border-color:#ff8f72}
+.seller-gallery-upload-help{color:#766c66;font-size:.73rem;line-height:1.5;margin-top:2px}.seller-gallery-count{font-size:.76rem;font-weight:850;color:#5a3429;margin-top:5px}.seller-gallery-count.error{color:#b42318}
+.seller-gallery-previews{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.seller-gallery-previews[hidden]{display:none!important}.seller-gallery-item{display:flex;flex-direction:column;align-items:center;gap:6px;width:104px;padding:7px;border:1px solid #e9dfd8;border-radius:9px;background:#fff}.seller-gallery-item img{width:88px;height:86px;object-fit:cover;border:1px solid #eee4dd;border-radius:6px;background:#faf6f2}.seller-gallery-item .seller-gallery-file-name{max-width:100%;font-size:.65rem;line-height:1.3;color:#5f554e;overflow-wrap:anywhere;text-align:center}.seller-gallery-item .seller-gallery-remove{display:flex;align-items:center;gap:4px;color:#b42318;font-size:.68rem;font-weight:800;cursor:pointer}.seller-gallery-item .seller-gallery-remove input{width:14px;height:14px;accent-color:#d92d20}.seller-gallery-empty{font-size:.76rem;color:#887d76;padding:8px 0}.seller-product-form.editing{border-color:#ffb8a5;background:#fffaf7;box-shadow:0 0 0 2px #ff32180d}
+@media(max-width:760px){.seller-row-actions{min-width:64px}.seller-gallery-item{width:91px;padding:6px}.seller-gallery-item img{width:77px;height:76px}.seller-gallery-previews{gap:7px}}
+
 </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
@@ -2039,7 +2044,7 @@
         <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
       </div>
       <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
-        <h3 class="seller-panel-title">Add a product</h3><p class="seller-panel-subtitle">New products save to Supabase. Default size variants start at zero stock until verified inventory is entered.</p>
+        <h3 class="seller-panel-title" id="sellerProductFormTitle">Add a product</h3><p class="seller-panel-subtitle" id="sellerProductFormSubtitle">New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.</p>
         <form class="seller-product-form" id="sellerProductForm">
           <div class="seller-form-grid">
             <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
@@ -2047,10 +2052,17 @@
             <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
             <div class="seller-field"><label for="sellerSellingPrice">Selling price (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
             <div class="seller-field"><label for="sellerOriginalPrice">Original price (₱)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional"></div>
-            <div class="seller-field full"><label for="sellerImageUrl">Primary image URL *</label><input id="sellerImageUrl" name="image_url" type="url" maxlength="1500" placeholder="https://…" required></div>
+            <div class="seller-field full">
+              <label for="sellerImageFiles">Product gallery photos (1–5 total)</label>
+              <input id="sellerImageFiles" name="image_files" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+              <div class="seller-gallery-upload-help">Upload JPEG, PNG, or WebP images. Maximum 2 MB per photo and 5 photos per product. You can upload additional photos while editing.</div>
+              <div class="seller-gallery-count" id="sellerGalleryCount">New product: select 1–5 photos.</div>
+              <div class="seller-gallery-previews" id="sellerUploadPreview" aria-live="polite"></div>
+              <div class="seller-gallery-previews seller-existing-gallery" id="sellerExistingGallery" hidden></div>
+            </div>
             <div class="seller-field full"><label for="sellerProductDescription">Description</label><textarea id="sellerProductDescription" name="description" maxlength="4000" placeholder="Describe the product"></textarea></div>
           </div>
-          <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="reset">Clear form</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Save product to Supabase</button></div>
+          <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="button">Clear form</button><button class="seller-secondary-button" id="sellerCancelEditButton" type="button" hidden>Cancel edit</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Add product to Supabase</button></div>
           <div class="seller-feedback" id="sellerProductFeedback" role="status" aria-live="polite" hidden></div>
         </form>
         <h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p>
@@ -4277,6 +4289,15 @@
     let sellerCurrentTab = 'products';
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
+    let sellerEditingProductId = null;
+    let sellerEditingImages = [];
+    let sellerProductRowsById = new Map();
+    let sellerImageRowsByProductId = new Map();
+    let sellerPreviewObjectUrls = [];
+    const SELLER_IMAGE_BUCKET = 'product-images';
+    const SELLER_IMAGE_MAX_BYTES = 2 * 1024 * 1024;
+    const SELLER_IMAGE_MAX_COUNT = 5;
+    const SELLER_IMAGE_TYPES = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
     function sellerEscape(value){return String(value===null||value===undefined?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
     function sellerFeedback(id,message,type){const node=$(id);if(!node)return;node.textContent=message||'';node.className='seller-feedback'+(type?' '+type:'');node.hidden=!message;}
     function sellerShowOverlay(id){const node=$(id);if(!node)return;node.classList.add('open');node.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
@@ -4309,66 +4330,198 @@
     function sellerSetCategoryOptions(categories){const select=$('sellerProductCategory'),previous=select.value;select.innerHTML='<option value="">Choose a category</option>'+categories.map(item=>'<option value="'+sellerEscape(item.id)+'">'+sellerEscape(item.name||'Unnamed category')+'</option>').join('');if(categories.some(item=>String(item.id)===previous))select.value=previous;}
 
     async function loadSellerProducts(){
-      if(!sellerCentreIsUnlocked)return;sellerSetLoadingRow('sellerProductsTableBody',6,'Loading products from Supabase…');sellerFeedback('sellerProductsFeedback','','');
+      if(!sellerCentreIsUnlocked)return;
+      sellerSetLoadingRow('sellerProductsTableBody',6,'Loading products from Supabase…');
+      sellerFeedback('sellerProductsFeedback','','');
       try{
         const client=await getSellerAdminClient(false);
         const results=await Promise.all([
           client.from('categories').select('id,name,slug,is_active,sort_order').eq('is_active',true).order('sort_order',{ascending:true}),
           client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,is_active,is_demo,is_featured,location,created_at').order('created_at',{ascending:false}).limit(300),
-          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').order('sort_order',{ascending:true}),
+          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary,created_at').order('sort_order',{ascending:true}),
           client.from('product_variants').select('id,product_id,size_label,color_label,stock_quantity,is_active')
         ]);
         for(const item of results)if(item.error)throw item.error;
         sellerCategories=results[0].data||[];sellerSetCategoryOptions(sellerCategories);
-        const categoryMap=new Map(sellerCategories.map(item=>[String(item.id),item.name||'Other'])),imageMap=new Map(),variantMap=new Map();
-        (results[2].data||[]).forEach(item=>{const key=String(item.product_id);if(!imageMap.has(key))imageMap.set(key,[]);imageMap.get(key).push(item);});
+        const productRows=results[1].data||[],imageRows=results[2].data||[];
+        const categoryMap=new Map(sellerCategories.map(item=>[String(item.id),item.name||'Other']));
+        const imageMap=new Map(),variantMap=new Map();
+        sellerProductRowsById=new Map(productRows.map(item=>[String(item.id),item]));
+        sellerImageRowsByProductId=new Map();
+        imageRows.forEach(item=>{const key=String(item.product_id);if(!imageMap.has(key))imageMap.set(key,[]);imageMap.get(key).push(item);});
+        imageMap.forEach((rows,key)=>sellerImageRowsByProductId.set(key,rows.slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0))));
         (results[3].data||[]).forEach(item=>{const key=String(item.product_id);if(!variantMap.has(key))variantMap.set(key,[]);variantMap.get(key).push(item);});
-        renderSellerProducts(results[1].data||[],categoryMap,imageMap,variantMap);
+        renderSellerProducts(productRows,categoryMap,imageMap,variantMap);
         if(!sellerCategories.length)sellerFeedback('sellerProductsFeedback','No active categories were returned. Activate a category in Supabase before adding products.','error');
-      }catch(error){sellerSetLoadingRow('sellerProductsTableBody',6,'Product data could not be loaded.');sellerFeedback('sellerProductsFeedback',error.message||'Could not load products. Check the Supabase admin policies.','error');}
+      }catch(error){
+        sellerSetLoadingRow('sellerProductsTableBody',6,'Product data could not be loaded.');
+        sellerFeedback('sellerProductsFeedback',error.message||'Could not load products. Check the Supabase admin policies.','error');
+      }
     }
     function renderSellerProducts(rows,categoryMap,imageMap,variantMap){
-      const tbody=$('sellerProductsTableBody');if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No products found in cloud inventory.</td></tr>';return;}
+      const tbody=$('sellerProductsTableBody');
+      if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No products found in cloud inventory.</td></tr>';return;}
       tbody.innerHTML=rows.map(product=>{
         const id=String(product.id),images=(imageMap.get(id)||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
         const image=images[0]?safeCatalogImageUrl(images[0].image_url):'',variants=variantMap.get(id)||[],activeVariants=variants.filter(row=>row.is_active!==false);
         const stock=activeVariants.reduce((total,row)=>total+Math.max(0,Math.floor(Number(row.stock_quantity)||0)),0),category=categoryMap.get(String(product.category_id))||'Other';
         const status=product.is_active?'<span class="seller-status-pill">Active</span>':'<span class="seller-status-pill inactive">Inactive</span>';
-        const action=product.is_active?'<button class="seller-danger-button" type="button" data-seller-product-action="deactivate" data-product-id="'+sellerEscape(id)+'">Delete</button>':'<button class="seller-secondary-button" type="button" data-seller-product-action="restore" data-product-id="'+sellerEscape(id)+'">Restore</button>';
         const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
-        return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong>'+(Number(product.compare_at_price)>0?'<div class="seller-muted">Original: '+sellerEscape(money(product.compare_at_price))+'</div>':'')+'</td><td>'+activeVariants.length+' active size(s)<div class="seller-muted">Stock total: '+stock+'</div></td><td>'+status+(product.is_demo?'<div class="seller-muted">Demo product</div>':'')+'</td><td>'+action+'</td></tr>';
+        const edit='<button class="seller-secondary-button seller-edit-button" type="button" data-seller-product-action="edit" data-product-id="'+sellerEscape(id)+'">✎ Edit</button>';
+        const toggle=product.is_active?'<button class="seller-danger-button" type="button" data-seller-product-action="deactivate" data-product-id="'+sellerEscape(id)+'">Delete</button>':'<button class="seller-secondary-button" type="button" data-seller-product-action="restore" data-product-id="'+sellerEscape(id)+'">Restore</button>';
+        return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div><div class="seller-muted">'+images.length+'/5 photos</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong>'+(Number(product.compare_at_price)>0?'<div class="seller-muted">Original: '+sellerEscape(money(product.compare_at_price))+'</div>':'')+'</td><td>'+activeVariants.length+' active size(s)<div class="seller-muted">Stock total: '+stock+'</div></td><td>'+status+(product.is_demo?'<div class="seller-muted">Demo product</div>':'')+'</td><td><div class="seller-row-actions">'+edit+toggle+'</div></td></tr>';
       }).join('');
-      tbody.querySelectorAll('[data-seller-product-action]').forEach(button=>button.addEventListener('click',()=>handleSellerProductAction(button.dataset.productId,button.dataset.sellerProductAction)));
+      tbody.querySelectorAll('[data-seller-product-action]').forEach(button=>button.addEventListener('click',()=>{
+        const id=button.dataset.productId,action=button.dataset.sellerProductAction;
+        if(action==='edit')openSellerProductEditor(id);else handleSellerProductAction(id,action);
+      }));
     }
     async function handleSellerProductAction(productId,action){
-      const activate=action==='restore';if(!window.confirm(activate?'Restore this product to the active storefront?':'Delete this product from the active storefront? This deactivates it and preserves related records.'))return;
+      const activate=action==='restore';
+      if(!window.confirm(activate?'Restore this product to the active storefront?':'Delete this product from the active storefront? This deactivates it and preserves related records.'))return;
       try{const client=await getSellerAdminClient(false),result=await client.from('products').update({is_active:activate}).eq('id',productId);if(result.error)throw result.error;sellerFeedback('sellerProductsFeedback',activate?'Product restored.':'Product deactivated. Related records are preserved.','success');await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();}
       catch(error){sellerFeedback('sellerProductsFeedback',error.message||'Could not update this product.','error');}
     }
+    function sellerClearPreviewUrls(){sellerPreviewObjectUrls.forEach(url=>URL.revokeObjectURL(url));sellerPreviewObjectUrls=[];}
+    function sellerGetSelectedFiles(){return Array.from($('sellerImageFiles').files||[]);}
+    function sellerGetImageRemovalIds(){return new Set(Array.from($('sellerExistingGallery').querySelectorAll('[data-seller-remove-image]:checked')).map(input=>input.value));}
+    function sellerUpdateGalleryCount(){
+      const files=sellerGetSelectedFiles(),removed=sellerGetImageRemovalIds(),retained=sellerEditingProductId?sellerEditingImages.filter(image=>!removed.has(String(image.id))).length:0,total=retained+files.length,count=$('sellerGalleryCount');
+      count.classList.toggle('error',total>SELLER_IMAGE_MAX_COUNT);
+      count.textContent=sellerEditingProductId?'Gallery total after save: '+total+'/5 photos ('+retained+' kept + '+files.length+' new).':'Selected: '+files.length+'/5 photos. At least 1 photo is required.';
+      return {files,retained,total,removed};
+    }
+    function sellerRenderUploadPreviews(){
+      sellerClearPreviewUrls();const container=$('sellerUploadPreview'),files=sellerGetSelectedFiles();
+      if(!files.length){container.innerHTML='';container.hidden=true;sellerUpdateGalleryCount();return;}
+      container.hidden=false;
+      container.innerHTML=files.map(file=>{const url=URL.createObjectURL(file);sellerPreviewObjectUrls.push(url);return '<div class="seller-gallery-item"><img src="'+url+'" alt="'+sellerEscape(file.name)+'"><div class="seller-gallery-file-name">'+sellerEscape(file.name)+'</div><div class="seller-gallery-file-name">'+(file.size/1024/1024).toFixed(2)+' MB</div></div>';}).join('');
+      sellerUpdateGalleryCount();
+    }
+    function sellerRenderExistingGallery(){
+      const container=$('sellerExistingGallery');
+      if(!sellerEditingProductId){container.innerHTML='';container.hidden=true;sellerUpdateGalleryCount();return;}
+      container.hidden=false;
+      if(!sellerEditingImages.length){container.innerHTML='<div class="seller-gallery-empty">No current photos. Upload at least one image before saving.</div>';sellerUpdateGalleryCount();return;}
+      container.innerHTML=sellerEditingImages.map(image=>{
+        const url=safeCatalogImageUrl(image.image_url),thumb=url?'<img src="'+sellerEscape(url)+'" alt="'+sellerEscape(image.alt_text||'Product gallery photo')+'" loading="lazy">':'<div class="seller-product-thumb">Image</div>';
+        return '<label class="seller-gallery-item">'+thumb+'<span class="seller-gallery-file-name">'+sellerEscape(image.is_primary?'Main photo':'Gallery photo')+'</span><span class="seller-gallery-remove"><input type="checkbox" data-seller-remove-image value="'+sellerEscape(image.id)+'"> Remove</span></label>';
+      }).join('');
+      sellerUpdateGalleryCount();
+    }
+    function sellerSetFormMode(mode){
+      const editing=mode==='edit';$('sellerProductFormTitle').textContent=editing?'Edit product':'Add a product';
+      $('sellerProductFormSubtitle').textContent=editing?'Update product details and manage its gallery. Keep 1–5 photos total; each new upload must be 2 MB or smaller.':'New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.';
+      $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);
+    }
+    function resetSellerProductForm(){
+      sellerEditingProductId=null;sellerEditingImages=[];$('sellerProductForm').reset();$('sellerImageFiles').value='';sellerClearPreviewUrls();
+      $('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;$('sellerExistingGallery').innerHTML='';$('sellerExistingGallery').hidden=true;
+      sellerSetFormMode('create');sellerFeedback('sellerProductFeedback','','');sellerUpdateGalleryCount();
+    }
+    async function openSellerProductEditor(productId){
+      if(!sellerCentreIsUnlocked)return;sellerFeedback('sellerProductFeedback','','');
+      try{
+        const client=await getSellerAdminClient(false),results=await Promise.all([
+          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,location,is_active').eq('id',productId).single(),
+          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true})
+        ]);
+        for(const result of results)if(result.error)throw result.error;
+        const product=results[0].data;sellerEditingProductId=String(product.id);sellerEditingImages=results[1].data||[];
+        $('sellerProductName').value=product.name||'';$('sellerProductCategory').value=product.category_id||'';
+        $('sellerProductLocation').value=product.location||'';$('sellerSellingPrice').value=product.base_price===null?'':String(product.base_price);
+        $('sellerOriginalPrice').value=product.compare_at_price===null||product.compare_at_price===undefined?'':String(product.compare_at_price);
+        $('sellerProductDescription').value=product.description||'';$('sellerImageFiles').value='';sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
+        sellerSetFormMode('edit');sellerRenderExistingGallery();$('sellerProductForm').scrollIntoView({behavior:'smooth',block:'start'});$('sellerProductName').focus({preventScroll:true});
+      }catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not load this product for editing.','error');}
+    }
+    function sellerValidateFiles(files){
+      if(files.length>SELLER_IMAGE_MAX_COUNT)return 'Select no more than 5 new photos at once.';
+      for(const file of files){if(!Object.prototype.hasOwnProperty.call(SELLER_IMAGE_TYPES,file.type))return 'Only JPEG, PNG, and WebP images are supported.';if(file.size>SELLER_IMAGE_MAX_BYTES)return '“'+file.name+'” exceeds the 2 MB limit. Choose a smaller image.';if(file.size===0)return '“'+file.name+'” is empty. Choose another image.';}
+      return '';
+    }
+    function handleSellerImageSelection(){
+      sellerFeedback('sellerProductFeedback','','');const files=sellerGetSelectedFiles(),validation=sellerValidateFiles(files);
+      if(validation){$('sellerImageFiles').value='';sellerRenderUploadPreviews();sellerFeedback('sellerProductFeedback',validation,'error');return;}
+      sellerRenderUploadPreviews();const current=sellerUpdateGalleryCount();
+      if(current.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');
+    }
+    function sellerStoragePathFromPublicUrl(value){
+      try{const url=new URL(String(value||'')),marker='/storage/v1/object/public/'+SELLER_IMAGE_BUCKET+'/',index=url.pathname.indexOf(marker);if(index<0)return '';const path=decodeURIComponent(url.pathname.slice(index+marker.length));return path.startsWith('products/')?path:'';}catch(_){return '';}
+    }
+    async function sellerUploadFiles(client,productId,files,startOrder,uploadedPaths){
+      const rows=[];
+      for(let i=0;i<files.length;i++){
+        const file=files[i],extension=SELLER_IMAGE_TYPES[file.type],validation=sellerValidateFiles([file]);if(validation)throw new Error(validation);
+        const path='products/'+productId+'/'+Date.now()+'_'+sellerRandomSuffix()+'.'+extension;
+        const upload=await client.storage.from(SELLER_IMAGE_BUCKET).upload(path,file,{cacheControl:'3600',contentType:file.type,upsert:false});if(upload.error)throw upload.error;
+        uploadedPaths.push(path);const publicUrl=client.storage.from(SELLER_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
+        rows.push({product_id:productId,image_url:publicUrl,alt_text:file.name.slice(0,250),sort_order:startOrder+i,is_primary:false});
+      }
+      return rows;
+    }
+    async function sellerNormalizeGallery(client,productId){
+      const loaded=await client.from('product_images').select('id,sort_order,is_primary').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true});
+      if(loaded.error)throw loaded.error;const rows=loaded.data||[];if(!rows.length)throw new Error('Each product must retain at least one gallery photo.');
+      const clear=await client.from('product_images').update({is_primary:false}).eq('product_id',productId);if(clear.error)throw clear.error;
+      for(let i=0;i<rows.length;i++){const result=await client.from('product_images').update({sort_order:i,is_primary:i===0}).eq('id',rows[i].id).eq('product_id',productId);if(result.error)throw result.error;}
+    }
     async function submitSellerProduct(event){
-      event.preventDefault();if(!sellerCentreIsUnlocked)return;const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent='Saving…';sellerFeedback('sellerProductFeedback','','');let insertedId=null;
+      event.preventDefault();if(!sellerCentreIsUnlocked)return;
+      const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
+      const editingId=sellerEditingProductId,uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,preserveEditUploads=false;
       try{
         const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
-        const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw),image=safeCatalogImageUrl($('sellerImageUrl').value);
+        const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw);
+        const selection=sellerUpdateGalleryCount(),files=selection.files,validation=sellerValidateFiles(files);
         if(!name||!categoryId||!location)throw new Error('Complete product name, category, and location.');
         if(!Number.isFinite(price)||price<=0)throw new Error('Selling price must be greater than zero.');
         if(original!==null&&(!Number.isFinite(original)||original<price))throw new Error('Original price must be blank or greater than or equal to the selling price.');
-        if(!image)throw new Error('Enter a valid http:// or https:// image URL.');
-        const suffix=sellerRandomSuffix(),slug=sellerSlugify(name)+'-'+suffix.toLowerCase(),sku=sellerMakeSku(name,suffix);
-        const created=await client.from('products').insert({name,category_id:categoryId,slug,sku,description:description||null,base_price:price,compare_at_price:original,location,is_active:false,is_demo:false,is_featured:false}).select('id,name,sku').single();
-        if(created.error)throw created.error;insertedId=created.data.id;
-        const imageResult=await client.from('product_images').insert({product_id:insertedId,image_url:image,alt_text:name,sort_order:0,is_primary:true});if(imageResult.error)throw imageResult.error;
-        const variantResult=await client.from('product_variants').insert(sellerVariantRows(insertedId,sku,categoryName));if(variantResult.error)throw variantResult.error;
-        const activeResult=await client.from('products').update({is_active:true}).eq('id',insertedId);if(activeResult.error)throw activeResult.error;
-        insertedId=null; // Save is complete; later refresh errors must not delete the newly created product.
-        form.reset();sellerFeedback('sellerProductFeedback','Saved "'+name+'" to Supabase with its primary image and default size variants. Stock starts at 0; set verified stock before accepting purchases.','success');
+        if(validation)throw new Error(validation);
+        const existing=editingId?sellerEditingImages.slice():[],removedIds=editingId?sellerGetImageRemovalIds():new Set();
+        const retained=existing.filter(image=>!removedIds.has(String(image.id))),finalCount=retained.length+files.length;
+        if(finalCount<1)throw new Error('Each product needs at least one photo in its gallery.');
+        if(finalCount>SELLER_IMAGE_MAX_COUNT)throw new Error('A product can have no more than 5 gallery photos total. Remove an existing photo or select fewer new images.');
+        let productId=editingId;
+        if(!editingId){
+          const suffix=sellerRandomSuffix(),slug=sellerSlugify(name)+'-'+suffix.toLowerCase(),sku=sellerMakeSku(name,suffix);
+          const created=await client.from('products').insert({name,category_id:categoryId,slug,sku,description:description||null,base_price:price,compare_at_price:original,location,is_active:false,is_demo:false,is_featured:false}).select('id,name,sku').single();
+          if(created.error)throw created.error;productId=created.data.id;productCreatedId=productId;
+          const imageRows=await sellerUploadFiles(client,productId,files,0,uploadedPaths);
+          const imageInsert=await client.from('product_images').insert(imageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;
+          const variantInsert=await client.from('product_variants').insert(sellerVariantRows(productId,sku,categoryName));if(variantInsert.error)throw variantInsert.error;
+          const activate=await client.from('products').update({is_active:true}).eq('id',productId);if(activate.error)throw activate.error;
+          productCreatedId=null;resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product saved to Supabase with '+files.length+' gallery photo(s) and default size variants. Stock starts at 0; set verified inventory before accepting purchases.','success');
+        }else{
+          const newImageRows=await sellerUploadFiles(client,productId,files,retained.length,uploadedPaths);
+          if(newImageRows.length){const imageInsert=await client.from('product_images').insert(newImageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;}
+          const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location}).eq('id',productId);if(updated.error)throw updated.error;
+          if(removedIds.size){
+            const removedImages=existing.filter(image=>removedIds.has(String(image.id)));
+            const removeDb=await client.from('product_images').delete().eq('product_id',productId).in('id',Array.from(removedIds));if(removeDb.error)throw removeDb.error;
+            preserveEditUploads=true;
+            const paths=removedImages.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean);
+            if(paths.length){const removeObjects=await client.storage.from(SELLER_IMAGE_BUCKET).remove(paths);if(removeObjects.error)console.warn('Some removed image files could not be deleted from Storage:',removeObjects.error.message);}
+          }
+          await sellerNormalizeGallery(client,productId);resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
+        }
         await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
       }catch(error){
-        if(insertedId){try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',insertedId);await client.from('product_variants').delete().eq('product_id',insertedId);await client.from('products').delete().eq('id',insertedId);}catch(_){}}
-        sellerFeedback('sellerProductFeedback',(error.message||'Could not save the product.')+(insertedId?' The page attempted cleanup; verify cloud inventory before retrying.':''),'error');
-      }finally{button.disabled=false;button.textContent='＋ Save product to Supabase';}
+        if(uploadedPaths.length&&!preserveEditUploads){
+          try{
+            const client=await getSellerAdminClient(false);
+            if(insertedImageRows&&editingId)await client.from('product_images').delete().eq('product_id',editingId).in('image_url',uploadedPaths.map(path=>client.storage.from(SELLER_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl));
+            await client.storage.from(SELLER_IMAGE_BUCKET).remove(uploadedPaths);
+          }catch(cleanupError){console.warn('Seller Centre upload rollback was incomplete:',cleanupError);}
+        }
+        if(productCreatedId){
+          try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',productCreatedId);await client.from('product_variants').delete().eq('product_id',productCreatedId);await client.from('products').delete().eq('id',productCreatedId);}catch(_){}
+        }
+        sellerFeedback('sellerProductFeedback',(error.message||'Could not save the product or gallery. Check Storage and database permissions.'),'error');
+      }finally{button.disabled=false;button.textContent=sellerEditingProductId?'Save product changes':'＋ Add product to Supabase';}
     }
+
     function switchSellerTab(tab){
       sellerCurrentTab=tab==='orders'?'orders':'products';const productsSelected=sellerCurrentTab==='products';
       $('sellerProductsPanel').hidden=!productsSelected;$('sellerOrdersPanel').hidden=productsSelected;
@@ -4392,7 +4545,10 @@
     }
     $('sellerPasscodeForm').addEventListener('submit',verifySellerPasscode);
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
-    $('sellerProductResetButton').addEventListener('click',()=>sellerFeedback('sellerProductFeedback','',''));
+    $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
+    $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
+    $('sellerImageFiles').addEventListener('change',handleSellerImageSelection);
+    $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
