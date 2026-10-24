@@ -4085,12 +4085,19 @@
           data=result.data;error=result.error;
           if(error)throw error;
 
-          // If Supabase created the user but did not return a session, immediately
-          // try signing in with the exact same credentials entered in this form.
-          // This supports projects that confirm the user as part of signup via a
-          // database trigger or other server-side configuration.
+          // Supabase can return a user-shaped response for an email that is already
+          // registered, with an empty identities array, to limit account enumeration.
+          // This is not a newly created account: do not announce success or retry login.
+          if(data&&data.user&&!data.session&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
+            setCustomerAuthMessage('We could not complete account creation with these details. If you already have a GENMERCH account, switch to Sign In. If you are creating a new account, verify the email address and try again.','error');
+            return;
+          }
+
+          // If a new user was returned without a session, immediately try to sign
+          // in using the same credentials. This supports projects that confirm new
+          // users as part of signup via a database trigger or server-side setting.
           if(data&&data.user&&!data.session){
-            setCustomerAuthMessage('Account created. Signing you in…','success');
+            setCustomerAuthMessage('Account request received. Signing you in…','success');
             submit.textContent='Signing you in…';
             const loginResult=await client.auth.signInWithPassword({email,password});
             if(loginResult.error)throw loginResult.error;
