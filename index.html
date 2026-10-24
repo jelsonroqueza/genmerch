@@ -2417,6 +2417,19 @@
   .customer-orders-filter-summary{font-size:.65rem}
 }
 
+
+/* Checkout email destination and order confirmation email state. */
+.checkout-email-section{margin:14px 0 17px;padding:14px;border:1px solid #f0d7cc;border-radius:10px;background:#fffaf7}
+.checkout-email-heading{font-size:.91rem;font-weight:950;color:#2c211b}
+.checkout-email-description{margin:6px 0 12px;color:#75645b;font-size:.75rem;line-height:1.5}
+.checkout-email-section .field{margin:0}
+.checkout-email-hint{display:block;margin-top:7px;color:#817168;font-size:.7rem;line-height:1.5}
+.order-email-result{margin:17px 0 12px;padding:14px 15px;border:1px solid;border-radius:10px;font-size:.88rem;line-height:1.55}
+.order-email-result strong{display:block;font-weight:900;margin-bottom:5px}
+.order-email-result p{margin:5px 0 0;font-size:.84rem}
+.order-email-result-sent{border-color:#b7dfc1;background:#f0faf2;color:#225e33}
+.order-email-result-pending{border-color:#f0d199;background:#fff8e8;color:#785300}
+
 </style>
 
 </head>
@@ -2805,6 +2818,17 @@
           </div>
         </div>
         <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
+
+        <section class="checkout-email-section" aria-labelledby="receiptEmailSectionTitle">
+          <div class="checkout-email-heading" id="receiptEmailSectionTitle">✉️ Order Confirmation Email</div>
+          <p class="checkout-email-description">We'll send your order number, item details, delivery address, order total, and payment instructions to this email.</p>
+          <div class="field full">
+            <label for="receiptEmail">Email address for order details *</label>
+            <input id="receiptEmail" name="receiptEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
+            <span class="field-error" id="receiptEmailError">Enter a valid email address where you want to receive the order details.</span>
+            <small class="checkout-email-hint" id="receiptEmailHint">When you are signed in, we'll use your GENMERCH sign-in email by default. You can change it to another email address.</small>
+          </div>
+        </section>
 
         <div class="payment-section">
           <div class="payment-title">💳 Preferred Payment Method</div>
@@ -5388,6 +5412,17 @@
     }
 
     let checkoutCurrentStep='order';
+    let checkoutReceiptEmailTouched=false;
+    function syncCheckoutReceiptEmailDefault(){
+      const input=$('receiptEmail');
+      if(!input||checkoutReceiptEmailTouched)return;
+      const signedInEmail=customerAuthCurrentSession&&customerAuthCurrentSession.user
+        ?String(customerAuthCurrentSession.user.email||'').trim().toLowerCase():'';
+      input.value=signedInEmail;
+      $('receiptEmailHint').textContent=signedInEmail
+        ?'Pre-filled with your GENMERCH sign-in email. You can change it to another address for this order.'
+        :'Sign in to use your GENMERCH email automatically, or enter the email address where you want to receive the order details.';
+    }
     function setCheckoutStep(step){
       checkoutCurrentStep=step==='delivery'?'delivery':'order';
       const deliveryStep=checkoutCurrentStep==='delivery';
@@ -5405,6 +5440,7 @@
       (deliveryStep ? $('checkoutProgressDelivery') : $('checkoutProgressOrder')).setAttribute('aria-current','step');
       $('checkoutContinueButton').disabled=!cart.length;
       if(deliveryStep){
+        syncCheckoutReceiptEmailDefault();
         $('checkoutDeliveryScroll').scrollTop=0;
       }else{
         $('checkoutOrderScroll').scrollTop=0;
@@ -5508,11 +5544,17 @@
       {id:'barangay',error:'barangayError',valid:value=>value.length>0},
       {id:'city',error:'cityError',valid:value=>value.length>0},
       {id:'province',error:'provinceError',valid:value=>value.length>0},
-      {id:'postalCode',error:'postalError',valid:value=>/^\d{4}$/.test(value)}
+      {id:'postalCode',error:'postalError',valid:value=>/^\d{4}$/.test(value)},
+      {id:'receiptEmail',error:'receiptEmailError',valid:value=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)}
     ];
     requiredFields.forEach(field=>$(field.id).addEventListener('input',()=>{
       const valid=field.valid($(field.id).value.trim());$(field.error).classList.toggle('show',!valid);
     }));
+    $('receiptEmail').addEventListener('input',()=>{
+      checkoutReceiptEmailTouched=true;
+      const valid=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('receiptEmail').value.trim());
+      $('receiptEmailError').classList.toggle('show',!valid);
+    });
 
     // Autosave all delivery fields on input/change; refresh delivery estimate on location fields.
     GENMERCH_DRAFT_FIELD_IDS.forEach(id=>{
@@ -5574,6 +5616,7 @@
         customer_name:$('custName').value.trim(),
         customer_phone:$('custPhone').value.trim(),
         customer_email:(customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.email)||null,
+        receipt_email:$('receiptEmail').value.trim().toLowerCase(),
         shipping_street_address:$('streetAddress').value.trim(),
         shipping_barangay:$('barangay').value.trim(),
         shipping_city_municipality:$('city').value.trim(),
@@ -5618,6 +5661,24 @@
         if(result.error)throw result.error;
         const order=Array.isArray(result.data)?result.data[0]:result.data;
         if(!order||!order.order_number||!order.order_id)throw new Error('Supabase did not return a confirmed order number. Your cart has been kept. Please check Seller Centre or retry using the same checkout details.');
+        let receiptEmailResult={ok:false,recipient_email:requestPayload.receipt_email,message:'Automatic email confirmation could not be sent right now.'};
+        try{
+          const emailResponse=await client.functions.invoke('send-genmerch-order-confirmation',{
+            body:{
+              order_id:order.order_id,
+              order_number:order.order_number,
+              customer_phone:requestPayload.customer_phone,
+              recipient_email:requestPayload.receipt_email
+            }
+          });
+          if(emailResponse.error)throw emailResponse.error;
+          const emailData=emailResponse.data||{};
+          if(!emailData.ok)throw new Error(emailData.message||'The email provider did not confirm sending the order email.');
+          receiptEmailResult={ok:true,recipient_email:emailData.recipient_email||requestPayload.receipt_email,already_sent:Boolean(emailData.already_sent)};
+        }catch(emailError){
+          console.warn('GENMERCH order was saved, but the confirmation email was not sent.',emailError);
+          receiptEmailResult={ok:false,recipient_email:requestPayload.receipt_email,message:emailError&&emailError.message?emailError.message:'Automatic email confirmation could not be sent right now.'};
+        }
         try{await refreshCatalogForLiveStock();}catch(stockRefreshError){console.warn('The order is saved, but the catalog stock refresh will retry on the next product view.',stockRefreshError);}
         try{sessionStorage.removeItem(GENMERCH_PENDING_CHECKOUT_KEY);}catch(_){}
         checkoutFeedback('');
@@ -5629,12 +5690,16 @@
         const paymentNote=isCod
           ?'<p><strong>Payment:</strong> Cash on Delivery. Payment status is pending until payment is received.</p>'
           :'<p><strong>Payment:</strong> '+escapeHtml(order.payment_method||'Selected method')+' recorded as your preference. Payment status is pending. No GCash/Maya/bank transfer was processed automatically; the seller will coordinate payment instructions.</p>';
+        const emailConfirmationNote=receiptEmailResult.ok
+          ?'<div class="order-email-result order-email-result-sent"><strong>✉️ Order details emailed</strong><p>We sent your order details to <strong>'+escapeHtml(receiptEmailResult.recipient_email)+'</strong>. Check your inbox and spam/junk folder for your GENMERCH - Suot Apparel email.</p><p>Please take a screenshot of this order confirmation too, and keep your order number for reference.</p></div>'
+          :'<div class="order-email-result order-email-result-pending"><strong>📸 Please save this order confirmation</strong><p>Your order was placed successfully, but the email confirmation could not be sent automatically right now. Please take a screenshot of this screen and keep your order number.</p><p>Requested recipient email: <strong>'+escapeHtml(receiptEmailResult.recipient_email||requestPayload.receipt_email)+'</strong>. Once email delivery is available, check that inbox for your order details.</p></div>';
         const message='<p>Your order has been saved to GENMERCH and the seller can now see it in Seller Centre.</p>'+
           '<div class="order-success-number"><span>Order number</span><strong>'+escapeHtml(order.order_number)+'</strong></div>'+
           '<p><strong>Items subtotal:</strong> '+money(order.subtotal)+'</p>'+
           '<p><strong>Delivery fee:</strong> '+money(order.shipping_fee)+' ('+escapeHtml(order.delivery_zone||delivery.region)+')</p>'+
           '<p class="order-success-total"><strong>Total order amount:</strong> '+money(order.total_amount)+'</p>'+
           paymentNote+
+          emailConfirmationNote+
           '<p>Stock has been reserved for this order. Keep your order number for reference.</p>';
         showNotice('Order placed successfully',message);
       }catch(error){
