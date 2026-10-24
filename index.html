@@ -4372,6 +4372,7 @@
         if(result.error)throw result.error;
         const order=Array.isArray(result.data)?result.data[0]:result.data;
         if(!order||!order.order_number||!order.order_id)throw new Error('Supabase did not return a confirmed order number. Your cart has been kept. Please check Seller Centre or retry using the same checkout details.');
+        try{await refreshCatalogForLiveStock();}catch(stockRefreshError){console.warn('The order is saved, but the catalog stock refresh will retry on the next product view.',stockRefreshError);}
         try{sessionStorage.removeItem(GENMERCH_PENDING_CHECKOUT_KEY);}catch(_){}
         checkoutFeedback('');
         resetDraftInMemory();
