@@ -49,7 +49,7 @@
     .cart-modal{position:fixed;z-index:501;top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(820px,calc(100vw - 28px));max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);height:auto;display:none;flex-direction:column;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 22px 70px #0004}
     .cart-modal.open{display:flex;animation:modalIn .16s ease-out}@keyframes modalIn{from{opacity:.75;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
     .cart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;color:#fff;background:var(--primary);font-size:1.08rem;font-weight:850;flex-shrink:0}.cart-head .icon-btn{padding:0 2px}
-    .cart-items{padding:10px 18px;overflow-y:auto;overscroll-behavior:contain;flex:0 0 auto;min-height:96px;max-height:clamp(96px,18dvh,155px);border-bottom:1px solid var(--line)}.cart-empty{text-align:center;color:#777;padding:16px 4px}.cart-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}.cart-item:last-child{border-bottom:0}.item-icon{font-size:1.9rem;text-align:center}.item-name{font-size:.9rem;font-weight:700;line-height:1.35}.item-price{font-size:.9rem;font-weight:850;color:var(--primary);margin-top:3px}.qty-row{display:flex;align-items:center;gap:9px;margin-top:7px}.qty-btn{width:28px;height:28px;border:0;border-radius:5px;background:#eee;font-weight:900}.qty-number{font-size:.85rem;font-weight:800;min-width:14px;text-align:center}.remove-btn{border:0;background:transparent;color:#c21b2a;font-size:1.15rem;padding:8px}
+    .cart-items{padding:10px 18px;overflow-y:auto;overscroll-behavior:contain;flex:0 0 auto;min-height:96px;max-height:clamp(96px,18dvh,155px);border-bottom:1px solid var(--line)}.cart-empty{text-align:center;color:#777;padding:16px 4px}.cart-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}.cart-item:last-child{border-bottom:0}.item-icon{font-size:1.9rem;text-align:center;width:44px;height:54px;display:grid;place-items:center;overflow:hidden;border-radius:7px;background:#fff8f4}.cart-product-photo{display:block;width:44px;height:54px;object-fit:contain;border:1px solid var(--line);border-radius:7px;background:#fff}.item-stock{font-size:.7rem;color:#237b3d;margin-top:3px;font-weight:700;line-height:1.35}.item-stock.unavailable{color:#b42318}.qty-btn:disabled{opacity:.35;cursor:not-allowed}.item-name{font-size:.9rem;font-weight:700;line-height:1.35}.item-price{font-size:.9rem;font-weight:850;color:var(--primary);margin-top:3px}.qty-row{display:flex;align-items:center;gap:9px;margin-top:7px}.qty-btn{width:28px;height:28px;border:0;border-radius:5px;background:#eee;font-weight:900}.qty-number{font-size:.85rem;font-weight:800;min-width:14px;text-align:center}.remove-btn{border:0;background:transparent;color:#c21b2a;font-size:1.15rem;padding:8px}
     .cart-content{padding:14px 18px 18px;overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}.summary{border:1px solid #ddd;border-radius:7px;padding:11px 13px;margin-bottom:14px;background:#fff;font-size:.9rem}.summary-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:5px 0;color:#555}.summary-row.total{border-top:1px dashed #bbb;padding-top:9px;margin-top:9px;font-size:1.07rem;font-weight:900;color:#111}.summary-row.total span:last-child{color:var(--primary)}.shipping-estimate{margin-top:10px;padding:9px 10px;border-radius:7px;background:#fff3ed;border:1px solid #ffd2c4;color:#7a2c18;font-size:.8rem;line-height:1.45}.shipping-disclosure{margin-top:8px;color:#666;font-size:.73rem;line-height:1.5}.shipping-estimate strong{font-weight:900}
     .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.field{display:flex;flex-direction:column;min-width:0;gap:5px;overflow:visible}.field.full{grid-column:1/-1}.field label{font-size:.8rem;font-weight:800;color:#333}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid #cfcfcf;border-radius:6px;padding:10px 11px;background:#fff;color:#222;font-size:.9rem}.field textarea{resize:vertical;min-height:66px}.field input:focus,.field textarea:focus{border-color:var(--primary);outline:2px solid #ee4d2d26}.field-error{display:none;font-size:.75rem;color:#c00;font-weight:700}.field-error.show{display:block}.form-section-title{grid-column:1/-1;font-size:.94rem;font-weight:900;margin:2px 0 0;padding-bottom:7px;border-bottom:1px solid #eee}
     .autocomplete-wrap{position:relative;width:100%;min-width:0}.autocomplete-wrap input{width:100%}.address-suggestions{position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:950;display:none;max-height:230px;overflow-y:auto;overscroll-behavior:contain;background:#fff;border:1px solid #d8d8d8;border-radius:8px;box-shadow:0 10px 28px #0002}.address-suggestions.open{display:block}.address-suggestion{display:flex;flex-direction:column;align-items:flex-start;width:100%;border:0;border-bottom:1px solid #f0f0f0;background:#fff;color:#222;text-align:left;padding:10px 12px;font-size:.85rem;line-height:1.35;cursor:pointer}.address-suggestion:last-child{border-bottom:0}.address-suggestion:hover,.address-suggestion:focus-visible{background:#fff2ed;color:#a93218}.address-suggestion small{color:#686868;font-size:.73rem;font-weight:500;margin-top:3px}.address-suggestion-message{padding:11px 12px;color:#666;font-size:.82rem;line-height:1.4}.address-data-credit{font-size:.7rem;color:#777;line-height:1.45;margin-top:9px}.address-data-credit a{color:#9f3a25;text-decoration:underline}
@@ -2531,6 +2531,20 @@
       return mapped.length;
     }
 
+    // Refresh cloud inventory before customers view a product or commit a cart action.
+    let liveCatalogRefreshPromise = null;
+    async function refreshCatalogForLiveStock() {
+      if (liveCatalogRefreshPromise) return liveCatalogRefreshPromise;
+      liveCatalogRefreshPromise = (async () => {
+        await loadSupabaseCatalog();
+        renderCategoryFilters();
+        renderProducts();
+        return true;
+      })();
+      try { return await liveCatalogRefreshPromise; }
+      finally { liveCatalogRefreshPromise = null; }
+    }
+
     // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
     const GENMERCH_DRAFT_FIELD_IDS = [
@@ -3436,7 +3450,9 @@
         }
       }
     }
-    function openProduct(id){
+    async function openProduct(id){
+      try { await refreshCatalogForLiveStock(); }
+      catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showToast('Unable to refresh live stock. Please try again.');return; }
       const p=products.find(item=>String(item.id)===String(id));if(!p)return;
       openProductDetailId=p.id;
       productDetailSelectedSize='';
@@ -3512,6 +3528,7 @@
         button.classList.toggle('active',Boolean(isSelected));
         button.setAttribute('aria-pressed',String(Boolean(isSelected)));
         const soldOut=variant.stock!==null&&variant.stock!==undefined&&Number(variant.stock)<1;
+        button.disabled=Boolean(soldOut);
         if(soldOut){
           button.setAttribute('aria-label',displaySizeLabel(variant.size)+(variant.color?' '+variant.color:'')+' size, out of stock');
           button.title='Out of stock';
@@ -3585,42 +3602,42 @@
       addButton.disabled=!canPurchase;
       buyButton.disabled=!canPurchase;
     }
-    function handleProductDetailPurchase(action){
-      const currentProduct=products.find(item=>String(item.id)===String(openProductDetailId));
-      if(!currentProduct)return;
-      if(!productDetailSelectedSize){
-        showToast('Please select a size first.');
-        return;
-      }
-      if(Array.isArray(currentProduct.variants)){
-        const selectedVariant=currentProduct.variants.find(item=>String(item.id)===String(productDetailSelectedVariantId||''));
-        if(!selectedVariant||Number(selectedVariant.stock)<1){
-          showToast('This size is currently out of stock.');
-          updateProductModalAddButton(currentProduct);
-          return;
-        }
-      }
-      const chosenSize=productDetailSelectedSize;
-      const chosenVariantId=productDetailSelectedVariantId;
-      const chosenQuantity=productDetailQuantity;
-      const added=addToCart(currentProduct.id,chosenSize,chosenVariantId,chosenQuantity);
-      if(!added){
+    async function handleProductDetailPurchase(action){
+      const addButton=$('productModalAdd'),buyButton=$('productModalBuyNow');
+      if(!productDetailSelectedSize){showToast('Please select a size first.');return;}
+      addButton.disabled=true;buyButton.disabled=true;
+      try{
+        await refreshCatalogForLiveStock();
+        const currentProduct=products.find(item=>String(item.id)===String(openProductDetailId));
+        if(!currentProduct){showToast('This product is no longer available.');closeProduct();return;}
+        renderProductModalSizes(currentProduct);
         updateProductModalAddButton(currentProduct);
-        return;
-      }
-      closeProduct();
-      if(action==='buy-now'){
-        openCart();
-        const nameField=$('custName');
-        if(nameField){
-          nameField.scrollIntoView({behavior:'smooth',block:'center'});
-          nameField.focus({preventScroll:true});
+        if(!productDetailSelectedSize){showToast('Please select a size first.');return;}
+        if(Array.isArray(currentProduct.variants)){
+          const selectedVariant=currentProduct.variants.find(item=>String(item.id)===String(productDetailSelectedVariantId||''));
+          if(!selectedVariant||Number(selectedVariant.stock)<1){
+            $('productModalSizeHint').textContent='This size is out of stock. Please choose an available size.';
+            showToast('This size is currently out of stock.');return;
+          }
+          const existing=cart.find(item=>String(item.id)===String(currentProduct.id)&&String(item.variantId||'')===String(selectedVariant.id));
+          if((existing?Number(existing.qty)||0:0)+productDetailQuantity>Number(selectedVariant.stock)){showToast('The requested quantity exceeds current live stock.');return;}
         }
+        const added=addToCart(currentProduct.id,productDetailSelectedSize,productDetailSelectedVariantId,productDetailQuantity);
+        if(!added)return;
+        closeProduct();
+        if(action==='buy-now'){
+          openCart();const nameField=$('custName');
+          if(nameField){nameField.scrollIntoView({behavior:'smooth',block:'center'});nameField.focus({preventScroll:true});}
+        }
+      }catch(error){console.error('GENMERCH could not verify live stock before purchase.',error);showToast('Unable to verify live stock. Please try again.');}
+      finally{
+        const product=products.find(item=>String(item.id)===String(openProductDetailId));
+        if($('productOverlay').classList.contains('open')&&product)updateProductModalAddButton(product);
       }
     }
     $('productModalSizeOptions').addEventListener('click',event=>{
       const button=event.target.closest('[data-size]');
-      if(!button)return;
+      if(!button||button.disabled)return;
       const product=products.find(item=>String(item.id)===String(openProductDetailId));
       if(!product)return;
       productDetailSelectedSize=button.dataset.size||'';
@@ -3670,7 +3687,9 @@
       $('sizeSelectionHint').textContent=Array.isArray(product.variants)?(inStock?'Select an available size before adding this product to your cart.':'All sizes for '+(colorForHint?colorForHint+' ':'')+'are currently out of stock.'):'No size selected yet.';
       $('confirmSizeButton').disabled=true;
     }
-    function openSizeSelector(id){
+    async function openSizeSelector(id){
+      try { await refreshCatalogForLiveStock(); }
+      catch(error) { console.error('GENMERCH could not refresh live stock before opening size selector.',error);showToast('Unable to refresh live stock. Please try again.');return; }
       const product=products.find(item=>String(item.id)===String(id));if(!product)return;
       pendingSizeProductId=product.id;pendingSelectedSize='';pendingSelectedVariantId=null;
       $('sizeProductName').textContent=product.name;
@@ -3716,7 +3735,25 @@
       $('sizeSelectionHint').textContent=stock===null?'Selected size: '+displaySizeLabel(pendingSelectedSize):stock<1?'Selected size is out of stock.':'Selected size: '+displaySizeLabel(pendingSelectedSize)+' · '+stock+' in stock';
       $('confirmSizeButton').disabled=false;
     });
-    function confirmSizeSelection(){if(pendingSizeProductId===null||!pendingSelectedSize)return;const id=pendingSizeProductId,size=pendingSelectedSize,variantId=pendingSelectedVariantId;closeSizeSelector();addToCart(id,size,variantId);}
+    async function confirmSizeSelection(){
+      if(pendingSizeProductId===null||!pendingSelectedSize)return;
+      const button=$('confirmSizeButton'),id=pendingSizeProductId,size=pendingSelectedSize,variantId=pendingSelectedVariantId;
+      button.disabled=true;
+      try{
+        await refreshCatalogForLiveStock();
+        const product=products.find(item=>String(item.id)===String(id));
+        if(!product){showToast('This product is no longer available.');closeSizeSelector();return;}
+        if(Array.isArray(product.variants)){
+          const variant=product.variants.find(item=>String(item.id)===String(variantId||''));
+          if(!variant||Number(variant.stock)<1){renderSizeVariants(product);showToast('This size has no available stock now. Please select another size.');return;}
+          const existing=cart.find(item=>String(item.id)===String(id)&&String(item.variantId||'')===String(variant.id));
+          if((existing?Number(existing.qty)||0:0)+1>Number(variant.stock)){renderSizeVariants(product);showToast('Your cart already has the maximum available stock for this size.');return;}
+        }
+        closeSizeSelector();
+        addToCart(id,size,variantId);
+      }catch(error){console.error('GENMERCH could not verify stock before adding to cart.',error);showToast('Unable to verify live stock. Please try again.');}
+      finally{if($('sizeOverlay').classList.contains('open'))button.disabled=true;}
+    }
     $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
     $('closeSizeModal').addEventListener('click',closeSizeSelector);
     $('cancelSizeButton').addEventListener('click',closeSizeSelector);
@@ -3741,8 +3778,20 @@
       updateCart();showToast(p.name+' ('+[variant&&variant.color,displaySizeLabel(size)].filter(Boolean).join(' · ')+') added to your cart');
       return true;
     }
-    function changeQuantity(key,delta){
+    async function changeQuantity(key,delta){
       const item=cart.find(product=>cartLineKey(product)===key);if(!item)return;
+      if(delta>0){
+        try{
+          await refreshCatalogForLiveStock();
+          const product=products.find(row=>String(row.id)===String(item.id));
+          if(!product||!Array.isArray(product.variants)){showToast('Unable to verify this item’s current stock.');return;}
+          const variant=product.variants.find(row=>String(row.id)===String(item.variantId||''));
+          if(!variant||Number(variant.stock)<1){item.availableStock=0;updateCart();showToast('This size is no longer available. Remove it or choose another size.');return;}
+          item.availableStock=Number(variant.stock);
+          if(item.qty+delta>Number(variant.stock)){updateCart();showToast('Only '+variant.stock+' unit(s) remain for this size.');return;}
+          item.image=product.image;item.images=product.images;item.name=product.name;item.price=variant.price!==null?variant.price:product.price;
+        }catch(error){console.error('GENMERCH could not refresh cart stock.',error);showToast('Unable to verify live stock. Please try again.');return;}
+      }
       if(delta>0&&Number.isFinite(item.availableStock)&&item.qty>=item.availableStock){showToast('No more stock is available for this size.');return;}
       item.qty+=delta;
       if(item.qty<1)cart=cart.filter(product=>cartLineKey(product)!==key);
@@ -3924,8 +3973,17 @@
       $('cartBadge').textContent=count;$('drawerCount').textContent=count;
       if(!cart.length){$('cartItemsContainer').innerHTML='<p class="cart-empty">Your cart is empty.</p>';}
       else{
-        $('cartItemsContainer').innerHTML=cart.map(item=>`
-          <div class="cart-item"><div class="item-icon">${item.icon}</div><div><div class="item-name">${escapeHtml(item.name)}</div>${item.color?'<div class="item-size">Color: '+escapeHtml(item.color)+'</div>':''}<div class="item-size">Size: ${escapeHtml(displaySizeLabel(item.size))}</div><div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">🗑</button></div>`).join('');
+        $('cartItemsContainer').innerHTML=cart.map(item=>{
+          const liveProduct=products.find(product=>String(product.id)===String(item.id));
+          const liveVariant=liveProduct&&Array.isArray(liveProduct.variants)?liveProduct.variants.find(variant=>String(variant.id)===String(item.variantId||'')):null;
+          const currentStock=liveProduct&&Array.isArray(liveProduct.variants)?(liveVariant?Number(liveVariant.stock)||0:0):item.availableStock;
+          const photoUrl=safeCatalogImageUrl((liveProduct&&liveProduct.image)||item.image);
+          const photoMarkup=photoUrl?'<img class="cart-product-photo" src="'+escapeHtml(photoUrl)+'" alt="'+escapeHtml(item.name)+'" loading="lazy">':escapeHtml(item.icon||'🛍️');
+          const stockMarkup=Number.isFinite(currentStock)?(currentStock>0?'<div class="item-stock">'+currentStock+' available</div>':'<div class="item-stock unavailable">Currently unavailable — remove this item or choose another size.</div>'):'';
+          const plusDisabled=Number.isFinite(currentStock)&&(currentStock<1||item.qty>=currentStock);
+          return `
+          <div class="cart-item"><div class="item-icon">${photoMarkup}</div><div><div class="item-name">${escapeHtml(item.name)}</div>${item.color?'<div class="item-size">Color: '+escapeHtml(item.color)+'</div>':''}<div class="item-size">Size: ${escapeHtml(displaySizeLabel(item.size))}</div>${stockMarkup}<div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}" ${plusDisabled?'disabled':''}>+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">🗑</button></div>`;
+        }).join('');
       }
       const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
       const delivery=detectDeliveryRegion();
