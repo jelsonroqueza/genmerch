@@ -3868,6 +3868,17 @@
     let customerAuthResendSeconds = 0;
     let customerAuthBusy = false;
 
+    function isCustomerAuthCallbackUrl(){
+      const url=new URL(window.location.href);
+      return url.searchParams.has('code') ||
+        url.searchParams.has('error') ||
+        url.searchParams.has('error_description') ||
+        url.hash.includes('access_token=') ||
+        url.hash.includes('error_description=');
+    }
+    function getCustomerAuthRedirectUrl(){
+      return 'https://jelsonroqueza.github.io/genmerch/';
+    }
     function getCustomerAuthClient(){
       if(customerAuthClient)return customerAuthClient;
       if(!window.supabase||typeof window.supabase.createClient!=='function'){
@@ -3879,9 +3890,11 @@
       if(!customerAuthSubscription){
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
-          if(event==='SIGNED_IN'&&window.location.hash.includes('access_token')){
+          if(event==='SIGNED_IN'&&isCustomerAuthCallbackUrl()){
             const overlay=$('customerAuthOverlay');
             if(overlay&&!overlay.classList.contains('open'))openCustomerAuth();
+            // Remove one-time auth material from the address bar after the SDK processes it.
+            try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }
         });
         customerAuthSubscription=result.data&&result.data.subscription?result.data.subscription:null;
@@ -3983,7 +3996,7 @@
       try{
         const result=target.method==='phone'
           ? await client.auth.signInWithOtp({phone:target.phone,options:{shouldCreateUser:true}})
-          : await client.auth.signInWithOtp({email:target.email,options:{shouldCreateUser:true}});
+          : await client.auth.signInWithOtp({email:target.email,options:{shouldCreateUser:true,emailRedirectTo:getCustomerAuthRedirectUrl()}});
         if(result.error)throw result.error;
         customerAuthOtpTarget=target;
         $('customerAuthMethods').hidden=true;
@@ -4062,7 +4075,7 @@
       const button=$('customerGoogleButton');button.disabled=true;
       setCustomerAuthMessage('Opening Google sign-in…');
       try{
-        const redirectTo=window.location.origin+window.location.pathname;
+        const redirectTo=getCustomerAuthRedirectUrl();
         const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo}});
         if(error)throw error;
       }catch(error){
@@ -4135,7 +4148,14 @@
         client.auth.getSession().then(({data,error})=>{
           if(error)throw error;
           updateCustomerAuthScreen(data.session);
-          if(window.location.hash.includes('access_token')&&data.session)openCustomerAuth();
+          if(isCustomerAuthCallbackUrl()&&data.session){
+            openCustomerAuth();
+            try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
+          }else if(new URLSearchParams(window.location.search).has('error_description')){
+            const params=new URLSearchParams(window.location.search);
+            setCustomerAuthMessage(params.get('error_description')||'Sign-in was cancelled or could not be completed.','error');
+            openCustomerAuth();
+          }
         }).catch(error=>console.warn('Customer authentication session could not be restored.',error));
       }catch(error){
         console.warn('Supabase Auth SDK is not available until sign-in is requested.',error);
