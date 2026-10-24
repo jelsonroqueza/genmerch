@@ -1142,6 +1142,20 @@
 @media(max-width:380px){.seller-centre-trigger small{display:none}.seller-centre-trigger{min-width:28px!important}}@media(prefers-reduced-motion:reduce){.seller-primary-button,.seller-secondary-button,.seller-danger-button{transition:none}}
 
 .seller-row-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:70px}.seller-edit-button{border:1px solid #ffb49f;background:#fff6f1;color:#bd2813}.seller-edit-button:hover{background:#ffe5dc;border-color:#ff8f72}
+
+.seller-field-hint{margin:0;color:#766c66;font-size:.73rem;line-height:1.5}
+.seller-size-options{display:flex;flex-wrap:wrap;gap:8px}
+.seller-size-choice{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #e7d8cf;border-radius:9px;background:#fff;color:#3b2d26;font-size:.8rem;font-weight:800;cursor:pointer}
+.seller-size-choice:has(input:checked){border-color:#ff6548;background:#fff0eb;color:#b72612;box-shadow:0 0 0 1px #ff654825}
+.seller-size-choice input{width:16px;height:16px;margin:0;accent-color:#f52a12}
+.seller-file-picker-stack{display:flex;flex-direction:column;gap:9px}
+.seller-file-picker{display:grid;grid-template-columns:140px minmax(0,1fr);align-items:center;gap:10px;padding:9px 11px;border:1px solid #e9dfd8;border-radius:8px;background:#fff}
+.seller-file-picker>label{font-size:.76rem;font-weight:850;color:#40342e;line-height:1.35}
+.seller-file-picker>label span{display:block;margin-top:2px;font-size:.66rem;font-weight:700;color:#8a7b72}
+.seller-file-picker input[type=file]{width:100%;min-width:0;font-size:.75rem;color:#655950}
+.seller-size-count-error{color:#b42318!important}
+@media(max-width:600px){.seller-file-picker{grid-template-columns:1fr;gap:6px;padding:9px}.seller-file-picker input[type=file]{font-size:.72rem}.seller-size-choice{padding:8px 10px}}
+
 .seller-gallery-upload-help{color:#766c66;font-size:.73rem;line-height:1.5;margin-top:2px}.seller-gallery-count{font-size:.76rem;font-weight:850;color:#5a3429;margin-top:5px}.seller-gallery-count.error{color:#b42318}
 .seller-gallery-previews{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.seller-gallery-previews[hidden]{display:none!important}.seller-gallery-item{display:flex;flex-direction:column;align-items:center;gap:6px;width:104px;padding:7px;border:1px solid #e9dfd8;border-radius:9px;background:#fff}.seller-gallery-item img{width:88px;height:86px;object-fit:cover;border:1px solid #eee4dd;border-radius:6px;background:#faf6f2}.seller-gallery-item .seller-gallery-file-name{max-width:100%;font-size:.65rem;line-height:1.3;color:#5f554e;overflow-wrap:anywhere;text-align:center}.seller-gallery-item .seller-gallery-remove{display:flex;align-items:center;gap:4px;color:#b42318;font-size:.68rem;font-weight:800;cursor:pointer}.seller-gallery-item .seller-gallery-remove input{width:14px;height:14px;accent-color:#d92d20}.seller-gallery-empty{font-size:.76rem;color:#887d76;padding:8px 0}.seller-product-form.editing{border-color:#ffb8a5;background:#fffaf7;box-shadow:0 0 0 2px #ff32180d}
 @media(max-width:760px){.seller-row-actions{min-width:64px}.seller-gallery-item{width:91px;padding:6px}.seller-gallery-item img{width:77px;height:76px}.seller-gallery-previews{gap:7px}}
@@ -2073,13 +2087,25 @@
             <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
             <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select></div>
             <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
+            <div class="seller-field full seller-size-field">
+              <label>Available clothing sizes *</label>
+              <p class="seller-field-hint">Check only the sizes you actually sell. Unchecked sizes will not appear on the live product page. Stock quantity is managed separately in Inventory &amp; Analytics.</p>
+              <div class="seller-size-options" id="sellerSizeOptions"><span class="seller-gallery-empty">Choose a category to select sizes.</span></div>
+              <div class="seller-gallery-count" id="sellerSizeCount">Choose at least one available size.</div>
+            </div>
             <div class="seller-field"><label for="sellerSellingPrice">Selling price (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
             <div class="seller-field"><label for="sellerOriginalPrice">Original price (₱)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional"></div>
             <div class="seller-field full">
-              <label for="sellerImageFiles">Product gallery photos (1–5 total)</label>
-              <input id="sellerImageFiles" name="image_files" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-              <div class="seller-gallery-upload-help">Upload JPEG, PNG, or WebP images. Maximum 2 MB per photo and 5 photos per product. You can upload additional photos while editing.</div>
-              <div class="seller-gallery-count" id="sellerGalleryCount">New product: select 1–5 photos.</div>
+              <label>Product gallery photos (1–5 total)</label>
+              <p class="seller-field-hint">Choose each photo separately as shown below. JPEG, PNG, and WebP only; each file has its own 2 MB limit.</p>
+              <div class="seller-file-picker-stack">
+                <div class="seller-file-picker"><label for="sellerImageFile1">Choose file 1 <span>2 MB max</span></label><input id="sellerImageFile1" name="image_file_1" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                <div class="seller-file-picker"><label for="sellerImageFile2">Choose file 2 <span>2 MB max</span></label><input id="sellerImageFile2" name="image_file_2" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                <div class="seller-file-picker"><label for="sellerImageFile3">Choose file 3 <span>2 MB max</span></label><input id="sellerImageFile3" name="image_file_3" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                <div class="seller-file-picker"><label for="sellerImageFile4">Choose file 4 <span>2 MB max</span></label><input id="sellerImageFile4" name="image_file_4" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                <div class="seller-file-picker"><label for="sellerImageFile5">Choose file 5 <span>2 MB max</span></label><input id="sellerImageFile5" name="image_file_5" type="file" accept="image/jpeg,image/png,image/webp"></div>
+              </div>
+              <div class="seller-gallery-count" id="sellerGalleryCount">New product: choose at least 1 photo, up to 5.</div>
               <div class="seller-gallery-previews" id="sellerUploadPreview" aria-live="polite"></div>
               <div class="seller-gallery-previews seller-existing-gallery" id="sellerExistingGallery" hidden></div>
             </div>
@@ -4347,10 +4373,14 @@
     let sellerInventoryRows = [];
     let sellerMovementRows = [];
     let sellerEditingProductId = null;
+    let sellerEditingProductSku = '';
+    let sellerEditingVariants = [];
+    let sellerSelectedSizes = new Set();
     let sellerEditingImages = [];
     let sellerProductRowsById = new Map();
     let sellerImageRowsByProductId = new Map();
     let sellerPreviewObjectUrls = [];
+    const SELLER_IMAGE_INPUT_IDS = ['sellerImageFile1','sellerImageFile2','sellerImageFile3','sellerImageFile4','sellerImageFile5'];
     const SELLER_IMAGE_BUCKET = 'product-images';
     const SELLER_IMAGE_MAX_BYTES = 2 * 1024 * 1024;
     const SELLER_IMAGE_MAX_COUNT = 5;
@@ -4383,7 +4413,51 @@
     function sellerSlugify(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70)||'product';}
     function sellerRandomSuffix(){return Math.random().toString(36).slice(2,7).toUpperCase()+Date.now().toString(36).slice(-3).toUpperCase();}
     function sellerMakeSku(name,suffix){const stem=sellerSlugify(name).replace(/-/g,'').slice(0,10).toUpperCase()||'ITEM';return 'GM-'+stem+'-'+suffix;}
-    function sellerVariantRows(productId,sku,categoryName){const category=String(categoryName||'').toLowerCase();const sizes=/\b(cap|caps|bag|bags)\b/.test(category)?['Free Size']:['Small','Medium','Large','Free Size','Extra Size'];return sizes.map(size=>({product_id:productId,sku:sku+'-'+size.replace(/[^A-Za-z0-9]+/g,'').toUpperCase().slice(0,8),size_label:size,color_label:null,price_override:null,stock_quantity:0,is_active:true}));}
+    const SELLER_SIZE_OPTIONS = ['Small','Medium','Large','Free Size','Extra Size'];
+    function sellerSizeOptionsForCategory(categoryName){return /\b(cap|caps|bag|bags)\b/i.test(String(categoryName||''))?['Free Size']:SELLER_SIZE_OPTIONS.slice();}
+    function sellerGetSelectedSizes(){return Array.from($('sellerSizeOptions').querySelectorAll('[data-seller-size]:checked')).map(input=>input.value);}
+    function sellerUpdateSizeCount(){const sizes=sellerGetSelectedSizes(),count=$('sellerSizeCount');count.textContent=sizes.length?sizes.length+' available size(s): '+sizes.join(', '):'Choose at least one available size.';count.classList.toggle('seller-size-count-error',sizes.length===0);return sizes;}
+    function sellerRenderSizeOptions(categoryName,selectedSizes){
+      const container=$('sellerSizeOptions'),options=sellerSizeOptionsForCategory(categoryName),selected=new Set(selectedSizes||[]);
+      if(!categoryName){container.innerHTML='<span class="seller-gallery-empty">Choose a category to select sizes.</span>';$('sellerSizeCount').textContent='Choose at least one available size.';return;}
+      container.innerHTML=options.map(size=>'<label class="seller-size-choice"><input type="checkbox" data-seller-size value="'+sellerEscape(size)+'" '+(selected.has(size)?'checked':'')+'><span>'+sellerEscape(size)+'</span></label>').join('');
+      container.querySelectorAll('[data-seller-size]').forEach(input=>input.addEventListener('change',sellerUpdateSizeCount));
+      sellerUpdateSizeCount();
+    }
+    function sellerHandleCategoryChange(){
+      const category=(sellerCategories.find(item=>String(item.id)===$('sellerProductCategory').value)||{}).name||'';
+      sellerSelectedSizes=new Set(sellerSizeOptionsForCategory(category));
+      sellerRenderSizeOptions(category,sellerSelectedSizes);
+    }
+    function sellerVariantRows(productId,sku,categoryName,selectedSizes){
+      const sizes=sellerSizeOptionsForCategory(categoryName).filter(size=>(selectedSizes||[]).includes(size));
+      return sizes.map(size=>({product_id:productId,sku:sku+'-'+size.replace(/[^A-Za-z0-9]+/g,'').toUpperCase().slice(0,8),size_label:size,color_label:null,price_override:null,stock_quantity:0,is_active:true}));
+    }
+    async function sellerApplySelectedSizes(client,productId,productSku,categoryName,selectedSizes){
+      const allowed=sellerSizeOptionsForCategory(categoryName),selected=new Set((selectedSizes||[]).filter(size=>allowed.includes(size)));
+      if(!selected.size)throw new Error('Select at least one available clothing size.');
+      const loaded=await client.from('product_variants').select('id,sku,size_label,color_label,price_override,stock_quantity,is_active').eq('product_id',productId);
+      if(loaded.error)throw loaded.error;
+      const variants=loaded.data||[];
+      for(const variant of variants){
+        const enable=allowed.includes(variant.size_label)&&selected.has(variant.size_label);
+        if(Boolean(variant.is_active)!==enable){const changed=await client.from('product_variants').update({is_active:enable}).eq('id',variant.id);if(changed.error)throw changed.error;}
+      }
+      const colors=[...new Set(variants.map(row=>String(row.color_label||'').trim()).filter(Boolean))];
+      const colorValues=colors.length?colors:[null],missingPairs=[];
+      selected.forEach(size=>colorValues.forEach(color=>{
+        const found=variants.some(row=>row.size_label===size&&String(row.color_label||'').trim()===String(color||'').trim());
+        if(!found)missingPairs.push({size,color});
+      }));
+      if(missingPairs.length){
+        const rows=missingPairs.map(({size,color})=>{
+          const colorCode=color?sellerSlugify(color).replace(/-/g,'').toUpperCase().slice(0,8):'';
+          const sizeCode=size.replace(/[^A-Za-z0-9]+/g,'').toUpperCase().slice(0,8);
+          return {product_id:productId,sku:String(productSku||sellerMakeSku('PRODUCT',sellerRandomSuffix()))+'-'+(colorCode?colorCode+'-':'')+sizeCode+'-'+sellerRandomSuffix(),size_label:size,color_label:color,price_override:null,stock_quantity:0,is_active:true};
+        });
+        const inserted=await client.from('product_variants').insert(rows);if(inserted.error)throw inserted.error;
+      }
+    }
     function sellerSetCategoryOptions(categories){const select=$('sellerProductCategory'),previous=select.value;select.innerHTML='<option value="">Choose a category</option>'+categories.map(item=>'<option value="'+sellerEscape(item.id)+'">'+sellerEscape(item.name||'Unnamed category')+'</option>').join('');if(categories.some(item=>String(item.id)===previous))select.value=previous;}
 
     async function loadSellerProducts(){
@@ -4440,7 +4514,7 @@
       catch(error){sellerFeedback('sellerProductsFeedback',error.message||'Could not update this product.','error');}
     }
     function sellerClearPreviewUrls(){sellerPreviewObjectUrls.forEach(url=>URL.revokeObjectURL(url));sellerPreviewObjectUrls=[];}
-    function sellerGetSelectedFiles(){return Array.from($('sellerImageFiles').files||[]);}
+    function sellerGetSelectedFiles(){return SELLER_IMAGE_INPUT_IDS.map(id=>$(id).files&&$(id).files[0]).filter(Boolean);}
     function sellerGetImageRemovalIds(){return new Set(Array.from($('sellerExistingGallery').querySelectorAll('[data-seller-remove-image]:checked')).map(input=>input.value));}
     function sellerUpdateGalleryCount(){
       const files=sellerGetSelectedFiles(),removed=sellerGetImageRemovalIds(),retained=sellerEditingProductId?sellerEditingImages.filter(image=>!removed.has(String(image.id))).length:0,total=retained+files.length,count=$('sellerGalleryCount');
@@ -4472,23 +4546,28 @@
       $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);$('sellerProductLocation').required=!editing;
     }
     function resetSellerProductForm(){
-      sellerEditingProductId=null;sellerEditingImages=[];$('sellerProductForm').reset();$('sellerImageFiles').value='';sellerClearPreviewUrls();
+      sellerEditingProductId=null;sellerEditingProductSku='';sellerEditingVariants=[];sellerSelectedSizes=new Set();sellerEditingImages=[];$('sellerProductForm').reset();SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).value='');sellerClearPreviewUrls();
       $('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;$('sellerExistingGallery').innerHTML='';$('sellerExistingGallery').hidden=true;
-      sellerSetFormMode('create');sellerFeedback('sellerProductFeedback','','');sellerUpdateGalleryCount();
+      sellerSetFormMode('create');sellerRenderSizeOptions('',[]);sellerFeedback('sellerProductFeedback','','');sellerUpdateGalleryCount();
     }
     async function openSellerProductEditor(productId){
       if(!sellerCentreIsUnlocked)return;sellerFeedback('sellerProductFeedback','','');
       try{
         const client=await getSellerAdminClient(false),results=await Promise.all([
           client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,location,is_active').eq('id',productId).single(),
-          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true})
+          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true}),
+          client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active').eq('product_id',productId)
         ]);
         for(const result of results)if(result.error)throw result.error;
-        const product=results[0].data;sellerEditingProductId=String(product.id);sellerEditingImages=results[1].data||[];
+        const product=results[0].data;sellerEditingProductId=String(product.id);sellerEditingProductSku=String(product.sku||'');sellerEditingImages=results[1].data||[];sellerEditingVariants=results[2].data||[];
         $('sellerProductName').value=product.name||'';$('sellerProductCategory').value=product.category_id||'';
         $('sellerProductLocation').value=product.location||'';$('sellerSellingPrice').value=product.base_price===null?'':String(product.base_price);
         $('sellerOriginalPrice').value=product.compare_at_price===null||product.compare_at_price===undefined?'':String(product.compare_at_price);
-        $('sellerProductDescription').value=product.description||'';$('sellerImageFiles').value='';sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
+        $('sellerProductDescription').value=product.description||'';SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).value='');sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
+        const categoryName=(sellerCategories.find(row=>String(row.id)===String(product.category_id))||{}).name||'';
+        const options=sellerSizeOptionsForCategory(categoryName);
+        sellerSelectedSizes=new Set(options.filter(size=>sellerEditingVariants.some(variant=>variant.size_label===size&&variant.is_active!==false)));
+        sellerRenderSizeOptions(categoryName,sellerSelectedSizes);
         sellerSetFormMode('edit');sellerRenderExistingGallery();$('sellerProductForm').scrollIntoView({behavior:'smooth',block:'start'});$('sellerProductName').focus({preventScroll:true});
       }catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not load this product for editing.','error');}
     }
@@ -4497,9 +4576,9 @@
       for(const file of files){if(!Object.prototype.hasOwnProperty.call(SELLER_IMAGE_TYPES,file.type))return 'Only JPEG, PNG, and WebP images are supported.';if(file.size>SELLER_IMAGE_MAX_BYTES)return '“'+file.name+'” exceeds the 2 MB limit. Choose a smaller image.';if(file.size===0)return '“'+file.name+'” is empty. Choose another image.';}
       return '';
     }
-    function handleSellerImageSelection(){
+    function handleSellerImageSelection(event){
       sellerFeedback('sellerProductFeedback','','');const files=sellerGetSelectedFiles(),validation=sellerValidateFiles(files);
-      if(validation){$('sellerImageFiles').value='';sellerRenderUploadPreviews();sellerFeedback('sellerProductFeedback',validation,'error');return;}
+      if(validation){if(event&&event.target&&event.target.matches('input[type="file"]'))event.target.value='';sellerRenderUploadPreviews();sellerFeedback('sellerProductFeedback',validation,'error');return;}
       sellerRenderUploadPreviews();const current=sellerUpdateGalleryCount();
       if(current.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');
     }
@@ -4532,7 +4611,9 @@
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
         const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw);
         const selection=sellerUpdateGalleryCount(),files=selection.files,validation=sellerValidateFiles(files);
+        const selectedSizes=sellerUpdateSizeCount();
         if(!name||!categoryId||(!editingId&&!location))throw new Error('Complete product name and category. A location is required for new products.');
+        if(!selectedSizes.length)throw new Error('Select at least one available clothing size.');
         if(!Number.isFinite(price)||price<=0)throw new Error('Selling price must be greater than zero.');
         if(original!==null&&(!Number.isFinite(original)||original<price))throw new Error('Original price must be blank or greater than or equal to the selling price.');
         if(validation)throw new Error(validation);
@@ -4548,12 +4629,13 @@
           const imageRows=await sellerUploadFiles(client,productId,files,0,uploadedPaths);
           const imageInsert=await client.from('product_images').insert(imageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;
           await sellerNormalizeGallery(client,productId);
-          const variantInsert=await client.from('product_variants').insert(sellerVariantRows(productId,sku,categoryName));if(variantInsert.error)throw variantInsert.error;
+          const variantInsert=await client.from('product_variants').insert(sellerVariantRows(productId,sku,categoryName,selectedSizes));if(variantInsert.error)throw variantInsert.error;
           const activate=await client.from('products').update({is_active:true}).eq('id',productId);if(activate.error)throw activate.error;
           productCreatedId=null;resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product saved to Supabase with '+files.length+' gallery photo(s) and default size variants. Stock starts at 0; set verified inventory before accepting purchases.','success');
         }else{
           const newImageRows=await sellerUploadFiles(client,productId,files,retained.length,uploadedPaths);
           const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location:location||null}).eq('id',productId);if(updated.error)throw updated.error;
+          await sellerApplySelectedSizes(client,productId,sellerEditingProductSku||'GM-'+sellerSlugify(name).toUpperCase(),categoryName,selectedSizes);
           if(removedIds.size){
             removedImagesToRestore=existing.filter(image=>removedIds.has(String(image.id)));
             const removeDb=await client.from('product_images').delete().eq('product_id',productId).in('id',Array.from(removedIds));if(removeDb.error)throw removeDb.error;
@@ -4751,7 +4833,8 @@
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
     $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
-    $('sellerImageFiles').addEventListener('change',handleSellerImageSelection);
+    SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).addEventListener('change',handleSellerImageSelection));
+    $('sellerProductCategory').addEventListener('change',sellerHandleCategoryChange);
     $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
