@@ -6611,9 +6611,33 @@
         const client=await getSellerAdminClient(false);
         const result=await client.rpc('mark_genmerch_order_shipped',{p_order_id:orderId,p_courier_name:courier,p_tracking_number:reference});
         if(result.error)throw result.error;
+        let shipmentEmailSent=false;
+        let shipmentEmailNotice='';
+        let shipmentRecipient='';
+        try{
+          const emailResponse=await client.functions.invoke('send-genmerch-shipment-notification',{
+            body:{order_id:orderId,order_number:orderNumber}
+          });
+          if(emailResponse.error)throw emailResponse.error;
+          const emailData=emailResponse.data||{};
+          if(!emailData.ok)throw new Error(emailData.message||'The email provider did not confirm the shipping notification.');
+          shipmentEmailSent=true;
+          shipmentRecipient=String(emailData.recipient_email||'');
+          shipmentEmailNotice=emailData.already_sent
+            ?' The shipping notification was already recorded as sent.'
+            :' A shipping email was sent to '+shipmentRecipient+'.';
+        }catch(emailError){
+          let detail=emailError&&emailError.message?String(emailError.message):'Email delivery is temporarily unavailable.';
+          if(emailError&&emailError.context&&typeof emailError.context.json==='function'){
+            try{const errorBody=await emailError.context.json();if(errorBody&&errorBody.message)detail=String(errorBody.message);}catch(_){}
+          }
+          shipmentEmailNotice=' The order was successfully marked as shipped, but the shipping email could not be sent: '+detail;
+          console.error('Shipment saved but customer shipping email failed.',emailError);
+        }
         sellerOrdersLoaded=false;
         await loadSellerOrders(true);
-        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' marked In Transit via '+courier+'. Delivery reference saved.','success');
+        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' marked In Transit via '+courier+'. Delivery reference saved.'+shipmentEmailNotice,shipmentEmailSent?'success':'error');
+        if(shipmentEmailSent)showToast('Shipping update email sent to '+shipmentRecipient+'.');
       }catch(error){
         sellerFeedback('sellerOrdersFeedback',error.message||'Could not save shipping details. The order status was not advanced.','error');
         if(button){button.disabled=false;button.textContent='Mark as Shipped';}
