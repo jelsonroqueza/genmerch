@@ -2430,6 +2430,17 @@
 .order-email-result-sent{border-color:#b7dfc1;background:#f0faf2;color:#225e33}
 .order-email-result-pending{border-color:#f0d199;background:#fff8e8;color:#785300}
 
+
+.customer-order-email-retry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 14px;align-items:center;margin-top:14px;padding:13px 14px;border:1px solid #e8d8cf;border-radius:9px;background:#fffaf7}
+.customer-order-email-retry>div:first-child strong{display:block;color:#3d2c24;font-size:.8rem;font-weight:900}
+.customer-order-email-retry>div:first-child p{margin:4px 0 0;color:#78685f;font-size:.72rem;line-height:1.45;overflow-wrap:anywhere}
+.customer-order-email-retry>button{padding:9px 12px;border:1px solid #f32c16;border-radius:8px;background:#f32c16;color:#fff;font-size:.73rem;font-weight:850;cursor:pointer}
+.customer-order-email-retry>button:disabled{opacity:.65;cursor:wait}
+.customer-order-email-retry-result{grid-column:1/-1;color:#8a6b00;font-size:.72rem;line-height:1.45;overflow-wrap:anywhere}
+.customer-order-email-retry-result.success{color:#176b37}
+.customer-order-email-retry-result.error{color:#b42318}
+@media(max-width:560px){.customer-order-email-retry{grid-template-columns:1fr}.customer-order-email-retry>button{width:100%}}
+
 </style>
 
 </head>
@@ -4381,6 +4392,13 @@
           ?'The seller marked delivery as completed, but payment is still Pending. The order will show Order Received after the seller confirms the payment has actually been received.'
           :'Please wait while the seller confirms that payment has actually been received. Confirm Received will become available only after payment is marked Paid.')+'</p><span>Payment status: '+escapeHtml(paymentStatus.replace(/_/g,' '))+'</span></section>'
         :'';
+      const createdAtMs=new Date(order.created_at||'').getTime();
+      const emailRetryAllowed=!guestMode&&Boolean(order.receipt_email&&order.customer_phone&&order.id&&order.order_number)
+        &&Number.isFinite(createdAtMs)&&Date.now()>=createdAtMs&&Date.now()-createdAtMs<48*60*60*1000
+        &&!['cancelled','refunded'].includes(status)&&!['cancelled','refunded'].includes(paymentStatus);
+      const emailRetryMarkup=emailRetryAllowed
+        ?'<section class="customer-order-email-retry"><div><strong>Order confirmation email</strong><p>Didn\'t receive the email? You can retry sending the details to '+escapeHtml(order.receipt_email)+'.</p></div><button type="button" data-resend-order-email data-order-id="'+escapeHtml(order.id)+'" data-order-number="'+escapeHtml(order.order_number)+'" data-order-phone="'+escapeHtml(order.customer_phone)+'" data-order-email="'+escapeHtml(order.receipt_email)+'">↻ Resend email</button><div class="customer-order-email-retry-result" aria-live="polite"></div></section>'
+        :'';
       const progressMarkup=deliveredButUnpaid
         ?'<div class="customer-order-payment-gated-progress">Delivery is recorded. Waiting for the seller to confirm payment before showing Order Received.</div>'
         :customerOrderProgressMarkup(status);
@@ -4393,7 +4411,7 @@
         '<section class="customer-order-current-status" aria-label="Latest order status"><div class="customer-order-current-status-kicker">LATEST ORDER UPDATE</div><p>'+escapeHtml(deliveredButUnpaid?'Delivery is recorded, but payment is pending. Please wait for the seller to confirm receipt of the payment.':meta.detail)+'</p><div class="customer-order-current-status-date">Last updated: '+escapeHtml(customerOrderDate(order.updated_at||order.created_at))+'</div></section>'+
         customerShipmentMarkup(shipmentData,status)+paymentGate+confirmReceipt+
         customerOrderTimelineMarkup(timelineHistory,timelineStatus,order)+customerOrderItemsMarkup(items)+delivery+
-        '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
+        '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div>'+emailRetryMarkup+'</article>';
     }
         const CUSTOMER_ORDER_FILTERS=[
       {key:'all',label:'All Orders',countId:'customerOrderCountAll'},
@@ -4539,7 +4557,7 @@
         const userId=String(session.user.id);
         if(banner)banner.innerHTML='Signed in as <strong>'+escapeHtml(getCustomerAuthIdentity(session.user))+'</strong>. Only orders linked to this account are shown here.';
         if(!silent)container.innerHTML='<div class="customer-orders-loading">Fetching your orders from Supabase…</div>';
-        const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,created_at,updated_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
+        const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,customer_phone,receipt_email,created_at,updated_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
         if(ordersResult.error)throw ordersResult.error;
         const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
         if(!orders.length){renderCustomerAccountOrders([]);return;}
@@ -4605,6 +4623,53 @@
         if(button){button.disabled=false;button.textContent='✓ Confirm Received';}
       }
     }
+    async function resendCustomerOrderEmail(button){
+      const card=button.closest('.customer-order-email-retry');
+      const resultNode=card?card.querySelector('.customer-order-email-retry-result'):null;
+      const orderId=String(button.dataset.orderId||'').trim();
+      const orderNumber=String(button.dataset.orderNumber||'').trim();
+      const phone=String(button.dataset.orderPhone||'').trim();
+      const recipient=String(button.dataset.orderEmail||'').trim().toLowerCase();
+      if(!orderId||!orderNumber||!phone||!recipient){
+        if(resultNode)resultNode.textContent='Missing order details. Refresh My Orders and try again.';
+        return;
+      }
+      const originalText=button.textContent;
+      button.disabled=true;
+      button.textContent='Sending…';
+      if(resultNode){resultNode.className='customer-order-email-retry-result';resultNode.textContent='Checking the saved order and sending the email…';}
+      try{
+        const client=getCustomerAuthClient();
+        const response=await client.functions.invoke('send-genmerch-order-confirmation',{
+          body:{order_id:orderId,order_number:orderNumber,customer_phone:phone,recipient_email:recipient}
+        });
+        if(response.error)throw response.error;
+        const data=response.data||{};
+        if(!data.ok)throw new Error(data.message||'The email provider did not confirm sending the order details.');
+        if(resultNode){
+          resultNode.classList.add('success');
+          resultNode.textContent=data.already_sent
+            ?'The system already records this email as sent to '+(data.recipient_email||recipient)+'. Check Inbox and Spam/Junk.'
+            :'Order details emailed to '+(data.recipient_email||recipient)+'. Check Inbox and Spam/Junk.';
+        }
+        button.textContent=data.already_sent?'Already sent':'Email sent';
+      }catch(error){
+        let message=error&&error.message?error.message:'The confirmation email could not be sent right now.';
+        if(error&&error.context&&typeof error.context.json==='function'){
+          try{const body=await error.context.json();if(body&&body.message)message=body.message;}catch(_){}
+        }
+        if(resultNode){
+          resultNode.classList.add('error');
+          resultNode.textContent='Email not sent: '+message+' Your order is still saved; keep the order number and retry after the issue is fixed.';
+        }
+        button.textContent='↻ Retry email';
+        button.disabled=false;
+        return;
+      }
+      button.disabled=false;
+      if(button.textContent==='Email sent'||button.textContent==='Already sent')button.disabled=true;
+      if(originalText==='Sending…')button.textContent='↻ Retry email';
+    }
     async function openCustomerOrders(){
       $('customerOrdersOverlay').classList.add('open');
       $('customerOrdersOverlay').setAttribute('aria-hidden','false');
@@ -4663,6 +4728,8 @@
     });
     $('customerOrdersOverlay').addEventListener('click',event=>{
       if(event.target===$('customerOrdersOverlay')){closeCustomerOrders();return;}
+      const resendEmailButton=event.target.closest('[data-resend-order-email]');
+      if(resendEmailButton){resendCustomerOrderEmail(resendEmailButton);return;}
       const accountButton=event.target.closest('[data-confirm-account-received]');
       if(accountButton){confirmAccountOrderReceived(accountButton.dataset.orderId,accountButton.dataset.orderNumber,accountButton);return;}
       const guestButton=event.target.closest('[data-confirm-guest-received]');
