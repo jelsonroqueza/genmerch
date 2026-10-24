@@ -4557,7 +4557,7 @@
         const status=product.is_active?'<span class="seller-status-pill">Active</span>':'<span class="seller-status-pill inactive">Inactive</span>';
         const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
         const edit='<button class="seller-secondary-button seller-edit-button" type="button" data-seller-product-action="edit" data-product-id="'+sellerEscape(id)+'">✎ Edit</button>';
-        const toggle=product.is_active?'<button class="seller-danger-button" type="button" data-seller-product-action="deactivate" data-product-id="'+sellerEscape(id)+'">Delete</button>':'<button class="seller-secondary-button" type="button" data-seller-product-action="restore" data-product-id="'+sellerEscape(id)+'">Restore</button>';
+        const toggle='<button class="seller-danger-button" type="button" data-seller-product-action="delete" data-product-id="'+sellerEscape(id)+'">Delete</button>';
         return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div><div class="seller-muted">'+images.length+'/5 photos</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong>'+(Number(product.compare_at_price)>0?'<div class="seller-muted">Original: '+sellerEscape(money(product.compare_at_price))+'</div>':'')+'</td><td>'+activeVariants.length+' active size(s)<div class="seller-muted">Stock total: '+stock+'</div></td><td>'+status+(product.is_demo?'<div class="seller-muted">Demo product</div>':'')+'</td><td><div class="seller-row-actions">'+edit+toggle+'</div></td></tr>';
       }).join('');
       tbody.querySelectorAll('[data-seller-product-action]').forEach(button=>button.addEventListener('click',()=>{
@@ -4566,10 +4566,44 @@
       }));
     }
     async function handleSellerProductAction(productId,action){
-      const activate=action==='restore';
-      if(!window.confirm(activate?'Restore this product to the active storefront?':'Delete this product from the active storefront? This deactivates it and preserves related records.'))return;
-      try{const client=await getSellerAdminClient(false),result=await client.from('products').update({is_active:activate}).eq('id',productId);if(result.error)throw result.error;sellerInventoryLoaded=false;sellerFeedback('sellerProductsFeedback',activate?'Product restored.':'Product deactivated. Related records are preserved.','success');await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();}
-      catch(error){sellerFeedback('sellerProductsFeedback',error.message||'Could not update this product.','error');}
+      if(action!=='delete')return;
+      const existingProduct=sellerProductRowsById.get(String(productId));
+      const productName=existingProduct&&existingProduct.name?existingProduct.name:'this product';
+      const confirmed=window.confirm(
+        'PERMANENTLY DELETE "'+productName+'"?\n\nThis removes the product, its size variants, and its gallery from the storefront and inventory report. Historical order lines and stock-movement records keep their saved text details. This action cannot be undone.'
+      );
+      if(!confirmed)return;
+      try{
+        const client=await getSellerAdminClient(false);
+        const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
+        if(imageResult.error)throw imageResult.error;
+        const storagePaths=(imageResult.data||[]).map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean);
+        const result=await client.rpc('delete_genmerch_product',{p_product_id:productId});
+        if(result.error)throw result.error;
+        let storageWarning='';
+        if(storagePaths.length){
+          const removed=await client.storage.from(SELLER_IMAGE_BUCKET).remove(storagePaths);
+          if(removed.error){
+            console.error('GENMERCH: database product was deleted, but some storage files may remain.',removed.error);
+            storageWarning=' The product is gone from the report, but one or more stored image files could not be removed.';
+          }
+        }
+        if(sellerEditingProductId&&String(sellerEditingProductId)===String(productId))resetSellerProductForm();
+        sellerInventoryLoaded=false;
+        await loadSellerProducts();
+        await loadSellerInventoryAnalytics();
+        await loadSupabaseCatalog();
+        renderCategoryFilters();renderProducts();
+        const payload=Array.isArray(result.data)?result.data[0]:result.data;
+        const preservedOrders=Number(payload&&payload.preserved_order_items)||0;
+        const preservedMovements=Number(payload&&payload.preserved_inventory_movements)||0;
+        const historyNote=(preservedOrders||preservedMovements)
+          ?' Historical records retained: '+preservedOrders+' order line(s), '+preservedMovements+' stock movement(s).'
+          :'';
+        sellerFeedback('sellerProductsFeedback','Permanently deleted "'+productName+'" from the product catalog and inventory report.'+historyNote+storageWarning,storageWarning?'error':'success');
+      }catch(error){
+        sellerFeedback('sellerProductsFeedback',error.message||'Could not permanently delete this product.','error');
+      }
     }
     function sellerClearPreviewUrls(){sellerPreviewObjectUrls.forEach(url=>URL.revokeObjectURL(url));sellerPreviewObjectUrls=[];}
     function sellerGetSelectedFiles(){return SELLER_IMAGE_INPUT_IDS.map(id=>$(id).files&&$(id).files[0]).filter(Boolean);}
@@ -4837,9 +4871,13 @@
       if(!movements.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No stock movements yet. Manual adjustments, order deductions, and cancellation returns will appear here.</td></tr>';return;}
       tbody.innerHTML=movements.map(movement=>{
         const variant=variantMap.get(String(movement.variant_id))||{},product=productMap.get(String(variant.product_id))||{},order=orderMap.get(String(movement.order_id))||{};
+        const productName=product.name||movement.product_name_snapshot||'Deleted product';
+        const sizeName=variant.size_label||movement.size_label_snapshot||'Variant';
+        const colorName=variant.color_label||movement.color_label_snapshot||'';
+        const sku=variant.sku||movement.variant_sku_snapshot||'';
         const kind=String(movement.movement_type||'adjustment'),delta=Number(movement.quantity_delta)||0,change=(delta>0?'+':'')+delta;
         const reference=[movement.reason,order.order_number?'Order '+order.order_number:''].filter(Boolean).join(' · ');
-        return '<tr><td>'+sellerEscape(sellerDate(movement.created_at))+'</td><td><strong>'+sellerEscape(product.name||'Unknown product')+'</strong><div class="seller-muted">'+sellerEscape(variant.size_label||'Variant')+(variant.color_label?' / '+sellerEscape(variant.color_label):'')+'</div></td><td><span class="seller-movement-kind '+sellerEscape(kind)+'">'+sellerEscape(kind.replace(/_/g,' '))+'</span></td><td><strong>'+sellerEscape(change)+'</strong></td><td>'+sellerEscape(movement.stock_before)+' → '+sellerEscape(movement.stock_after)+'</td><td><div class="seller-order-value">'+sellerEscape(reference)+'</div></td></tr>';
+        return '<tr><td>'+sellerEscape(sellerDate(movement.created_at))+'</td><td><strong>'+sellerEscape(productName)+'</strong><div class="seller-muted">'+sellerEscape(sizeName)+(colorName?' / '+sellerEscape(colorName):'')+(sku?'<br>SKU: '+sellerEscape(sku):'')+'</div></td><td><span class="seller-movement-kind '+sellerEscape(kind)+'">'+sellerEscape(kind.replace(/_/g,' '))+'</span></td><td><strong>'+sellerEscape(change)+'</strong></td><td>'+sellerEscape(movement.stock_before)+' → '+sellerEscape(movement.stock_after)+'</td><td><div class="seller-order-value">'+sellerEscape(reference)+'</div></td></tr>';
       }).join('');
     }
     async function loadSellerInventoryAnalytics(){
@@ -4852,7 +4890,7 @@
           client.from('products').select('id,name,base_price,is_active'),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active,updated_at').order('updated_at',{ascending:false}),
           client.from('orders').select('id,order_number,status,payment_status,total_amount,created_at').order('created_at',{ascending:false}).limit(1000),
-          client.from('inventory_movements').select('id,variant_id,order_id,movement_type,quantity_delta,stock_before,stock_after,reason,actor_id,created_at').order('created_at',{ascending:false}).limit(50)
+          client.from('inventory_movements').select('id,variant_id,order_id,movement_type,quantity_delta,stock_before,stock_after,reason,actor_id,created_at,product_name_snapshot,variant_sku_snapshot,size_label_snapshot,color_label_snapshot').order('created_at',{ascending:false}).limit(50)
         ]);
         for(const result of results)if(result.error)throw result.error;
         const products=results[0].data||[],variants=results[1].data||[],orders=results[2].data||[],movements=results[3].data||[];
