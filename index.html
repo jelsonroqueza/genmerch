@@ -4436,7 +4436,7 @@
     async function handleSellerProductAction(productId,action){
       const activate=action==='restore';
       if(!window.confirm(activate?'Restore this product to the active storefront?':'Delete this product from the active storefront? This deactivates it and preserves related records.'))return;
-      try{const client=await getSellerAdminClient(false),result=await client.from('products').update({is_active:activate}).eq('id',productId);if(result.error)throw result.error;sellerFeedback('sellerProductsFeedback',activate?'Product restored.':'Product deactivated. Related records are preserved.','success');await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();}
+      try{const client=await getSellerAdminClient(false),result=await client.from('products').update({is_active:activate}).eq('id',productId);if(result.error)throw result.error;sellerInventoryLoaded=false;sellerFeedback('sellerProductsFeedback',activate?'Product restored.':'Product deactivated. Related records are preserved.','success');await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();}
       catch(error){sellerFeedback('sellerProductsFeedback',error.message||'Could not update this product.','error');}
     }
     function sellerClearPreviewUrls(){sellerPreviewObjectUrls.forEach(url=>URL.revokeObjectURL(url));sellerPreviewObjectUrls=[];}
@@ -4566,7 +4566,7 @@
           if(oldPaths.length){const removeObjects=await client.storage.from(SELLER_IMAGE_BUCKET).remove(oldPaths);if(removeObjects.error)console.warn('Some replaced gallery files could not be deleted from Storage:',removeObjects.error.message);}
           resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
         }
-        await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+        sellerInventoryLoaded=false;await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
       }catch(error){
         if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
