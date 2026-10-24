@@ -3488,6 +3488,8 @@
 
     const WISHLIST_GUEST_STORAGE_KEY = 'genmerch:wishlist:guest:v1';
     let wishlistProductIds = [];
+    let wishlistCloudSyncError = '';
+    let wishlistCloudRefreshTimer = null;
     function getWishlistStorageKey(session=customerAuthCurrentSession){
       const userId=session&&session.user&&session.user.id?String(session.user.id):'';
       return userId?'genmerch:wishlist:user:'+encodeURIComponent(userId):WISHLIST_GUEST_STORAGE_KEY;
@@ -3502,18 +3504,51 @@
       try{localStorage.setItem(key,JSON.stringify([...new Set((ids||[]).map(id=>String(id)).filter(Boolean))]));return true;}
       catch(error){console.warn('GENMERCH wishlist could not be saved in browser storage.',error);showToast('Unable to save wishlist on this browser.');return false;}
     }
-    function syncWishlistForCustomerSession(session=customerAuthCurrentSession,refreshUI=true){
-      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
-      const key=getWishlistStorageKey(session);
-      if(userId){
-        const guestIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
-        if(guestIds.length){
-          const merged=[...new Set([...readWishlistIds(key),...guestIds])];
-          writeWishlistIds(key,merged);
+    async function syncWishlistForCustomerSession(session=customerAuthCurrentSession,refreshUI=true){
+      const resolveSession=arguments.length===0||arguments[0]===undefined;
+      let client=null;
+      wishlistCloudSyncError='';
+      try{
+        if(resolveSession){
+          client=getCustomerAuthClient();
+          const sessionResult=await client.auth.getSession();
+          if(sessionResult.error)throw sessionResult.error;
+          session=sessionResult.data&&sessionResult.data.session?sessionResult.data.session:null;
+          customerAuthCurrentSession=session&&session.user?session:null;
+        }
+        const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+        const key=getWishlistStorageKey(session);
+        if(!userId){
+          wishlistProductIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
+        }else{
+          client=client||getCustomerAuthClient();
+          const localAccountIds=readWishlistIds(key);
+          const guestIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
+          const remoteResult=await client.from('customer_wishlist').select('product_id,created_at').eq('user_id',userId).order('created_at',{ascending:true});
+          if(remoteResult.error)throw remoteResult.error;
+          const remoteIds=(remoteResult.data||[]).map(row=>String(row.product_id));
+          const remoteSet=new Set(remoteIds);
+          const legacyIds=[...new Set([...localAccountIds,...guestIds])].filter(id=>!remoteSet.has(id));
+          for(const productId of legacyIds){
+            const inserted=await client.from('customer_wishlist').upsert(
+              {user_id:userId,product_id:productId},
+              {onConflict:'user_id,product_id',ignoreDuplicates:true}
+            );
+            if(inserted.error&&inserted.error.code!=='23503')throw inserted.error;
+          }
+          const refreshed=await client.from('customer_wishlist').select('product_id,created_at').eq('user_id',userId).order('created_at',{ascending:true});
+          if(refreshed.error)throw refreshed.error;
+          wishlistProductIds=[...new Set((refreshed.data||[]).map(row=>String(row.product_id)))];
+          if(!writeWishlistIds(key,wishlistProductIds))throw new Error('Could not update the local wishlist cache.');
           try{localStorage.removeItem(WISHLIST_GUEST_STORAGE_KEY);}catch(_){}
         }
+      }catch(error){
+        wishlistCloudSyncError=error&&error.message?String(error.message):'Cloud wishlist sync failed.';
+        const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+        const fallbackKey=userId?getWishlistStorageKey(session):WISHLIST_GUEST_STORAGE_KEY;
+        wishlistProductIds=[...new Set([...readWishlistIds(fallbackKey),...readWishlistIds(WISHLIST_GUEST_STORAGE_KEY)])];
+        console.warn('GENMERCH wishlist cloud sync failed.',error);
       }
-      wishlistProductIds=readWishlistIds(key);
       updateWishlistBadge();
       if(refreshUI){
         renderProducts();
@@ -3543,29 +3578,53 @@
       button.classList.toggle('active',Boolean(saved));
       button.setAttribute('aria-pressed',String(Boolean(saved)));
     }
-    function toggleProductWishlist(productId){
+    async function toggleProductWishlist(productId){
       if(productId===null||productId===undefined||String(productId)==='')return;
-      syncWishlistForCustomerSession(customerAuthCurrentSession,false);
-      const id=String(productId),key=getWishlistStorageKey();
-      const exists=wishlistProductIds.includes(id);
+      await syncWishlistForCustomerSession(undefined,false);
+      if(wishlistCloudSyncError){showToast('Wishlist could not sync with your account. Check your internet connection and try again.');return;}
+      const id=String(productId),session=customerAuthCurrentSession,userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      const key=getWishlistStorageKey(session),exists=wishlistProductIds.includes(id);
       const next=exists?wishlistProductIds.filter(value=>value!==id):[...wishlistProductIds,id];
-      if(!writeWishlistIds(key,next))return;
-      wishlistProductIds=next;
-      updateWishlistBadge();
-      renderProducts();
-      updateWishlistDetailButton();
-      if($('wishlistOverlay').classList.contains('open'))renderWishlist();
-      const product=products.find(item=>String(item.id)===id);
-      showToast(exists?'Removed from Wishlist':(product?product.name+' added to Wishlist':'Added to Wishlist'));
+      try{
+        if(userId){
+          const client=getCustomerAuthClient();
+          const result=exists
+            ?await client.from('customer_wishlist').delete().eq('user_id',userId).eq('product_id',id)
+            :await client.from('customer_wishlist').upsert({user_id:userId,product_id:id},{onConflict:'user_id,product_id',ignoreDuplicates:true});
+          if(result.error)throw result.error;
+        }
+        if(!writeWishlistIds(key,next))throw new Error('Could not save wishlist to this browser.');
+        wishlistProductIds=next;
+        updateWishlistBadge();renderProducts();updateWishlistDetailButton();
+        if($('wishlistOverlay').classList.contains('open'))renderWishlist();
+        const product=products.find(item=>String(item.id)===id);
+        showToast(exists?'Removed from Wishlist':(product?product.name+' added to Wishlist':'Added to Wishlist'));
+      }catch(error){
+        console.error('GENMERCH could not save Wishlist change.',error);
+        showToast(userId?'Could not sync this Wishlist change to your account. Please retry.':'Could not save the Wishlist item on this browser.');
+        await syncWishlistForCustomerSession(undefined,true);
+      }
     }
-    function removeWishlistProduct(productId){
-      const id=String(productId),key=getWishlistStorageKey();
-      wishlistProductIds=wishlistProductIds.filter(value=>value!==id);
-      writeWishlistIds(key,wishlistProductIds);
-      updateWishlistBadge();
-      renderProducts();
-      updateWishlistDetailButton();
-      renderWishlist();
+    async function removeWishlistProduct(productId){
+      const id=String(productId);
+      await syncWishlistForCustomerSession(undefined,false);
+      if(wishlistCloudSyncError){showToast('Wishlist could not sync with your account. Check your internet connection and try again.');return;}
+      const session=customerAuthCurrentSession,userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      const key=getWishlistStorageKey(session),next=wishlistProductIds.filter(value=>value!==id);
+      try{
+        if(userId){
+          const client=getCustomerAuthClient();
+          const result=await client.from('customer_wishlist').delete().eq('user_id',userId).eq('product_id',id);
+          if(result.error)throw result.error;
+        }
+        if(!writeWishlistIds(key,next))throw new Error('Could not update the local wishlist cache.');
+        wishlistProductIds=next;
+        updateWishlistBadge();renderProducts();updateWishlistDetailButton();renderWishlist();
+      }catch(error){
+        console.error('GENMERCH could not remove Wishlist item.',error);
+        showToast(userId?'Could not sync the Wishlist removal to your account. Please retry.':'Could not remove this Wishlist item.');
+        await syncWishlistForCustomerSession(undefined,true);
+      }
     }
     function renderWishlist(){
       const container=$('wishlistItemsContainer');
@@ -3781,19 +3840,32 @@
       finally{button.disabled=false;button.textContent='Track my order';}
     });
 
-    function openWishlist(){
-      syncWishlistForCustomerSession(customerAuthCurrentSession,false);
-      renderWishlist();
+    function startWishlistCloudRefresh(){
+      if(wishlistCloudRefreshTimer!==null)return;
+      wishlistCloudRefreshTimer=window.setInterval(()=>{
+        if(!document.hidden&&$('wishlistOverlay').classList.contains('open'))syncWishlistForCustomerSession(undefined,true);
+      },20000);
+    }
+    function stopWishlistCloudRefresh(){
+      if(wishlistCloudRefreshTimer!==null){window.clearInterval(wishlistCloudRefreshTimer);wishlistCloudRefreshTimer=null;}
+    }
+    async function openWishlist(){
       $('wishlistOverlay').classList.add('open');
       $('wishlistOverlay').setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
+      $('wishlistItemsContainer').innerHTML='<div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Syncing your Wishlist…</h3><p>Loading saved products from your account.</p></div>';
+      await syncWishlistForCustomerSession(undefined,false);
+      renderWishlist();
+      if(wishlistCloudSyncError&&customerAuthCurrentSession&&customerAuthCurrentSession.user)showToast('Could not connect to your cloud Wishlist. Showing this device’s saved items for now.');
+      startWishlistCloudRefresh();
     }
     function closeWishlist(){
       const overlay=$('wishlistOverlay');
       if(!overlay)return;
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden','true');
-      if(!document.querySelector('.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+      stopWishlistCloudRefresh();
+      if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
     }
     $('wishlistCloseButton').addEventListener('click',closeWishlist);
     $('wishlistContinueButton').addEventListener('click',closeWishlist);
@@ -5863,7 +5935,7 @@
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
-      restoreDraftState();syncWishlistForCustomerSession(customerAuthCurrentSession,false);renderCategoryFilters();renderProducts();updateCart();
+      restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();
       await restoreAddressReferenceContext();
     }
     initializeStorefront();
@@ -5872,6 +5944,7 @@
     window.addEventListener('pagehide', saveDraftState);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') saveDraftState();
+      else syncWishlistForCustomerSession(undefined,true);
     });
   </script>
 </body>
