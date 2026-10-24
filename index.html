@@ -4130,7 +4130,7 @@
     const CUSTOMER_ORDER_STATUS_META={
       pending:{label:'Order placed',detail:'Your order was received and is waiting for the seller to confirm it.',step:0},
       confirmed:{label:'Order confirmed',detail:'The seller confirmed your order.',step:1},
-      processing:{label:'Seller preparing to ship your order',detail:'The seller is preparing your items for dispatch.',step:2},
+      processing:{label:'Preparing Order',detail:'The seller is preparing your order for dispatch.',step:2},
       shipped:{label:'In Transit',detail:'Your order is in transit with the courier selected by GENMERCH.',step:3},
       out_for_delivery:{label:'Out for delivery',detail:'The courier is delivering your parcel to your address.',step:4},
       delivered:{label:'Order received',detail:'Your order is marked as delivered. Thank you for shopping with GENMERCH.',step:5},
@@ -4152,7 +4152,7 @@
       const current=customerOrderStatusMeta(normalizedStatus),steps=[
         {key:'pending',label:'Order placed'},
         {key:'confirmed',label:'Confirmed'},
-        {key:'processing',label:'Preparing to ship'},
+        {key:'processing',label:'Preparing Order'},
         {key:'shipped',label:'Shipped'},
         {key:'out_for_delivery',label:'Out for delivery'},
         {key:'delivered',label:'Order received'}
