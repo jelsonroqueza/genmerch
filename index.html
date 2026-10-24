@@ -4490,6 +4490,7 @@
           if(created.error)throw created.error;productId=created.data.id;productCreatedId=productId;
           const imageRows=await sellerUploadFiles(client,productId,files,0,uploadedPaths);
           const imageInsert=await client.from('product_images').insert(imageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;
+          await sellerNormalizeGallery(client,productId);
           const variantInsert=await client.from('product_variants').insert(sellerVariantRows(productId,sku,categoryName));if(variantInsert.error)throw variantInsert.error;
           const activate=await client.from('products').update({is_active:true}).eq('id',productId);if(activate.error)throw activate.error;
           productCreatedId=null;resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product saved to Supabase with '+files.length+' gallery photo(s) and default size variants. Stock starts at 0; set verified inventory before accepting purchases.','success');
