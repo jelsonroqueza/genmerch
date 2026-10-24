@@ -2388,6 +2388,35 @@
 .customer-order-payment-gated-progress{margin:14px 0;padding:13px;border:1px dashed #e4bd61;border-radius:9px;background:#fffbef;color:#76510a;font-size:.77rem;font-weight:800;line-height:1.5}
 
 .seller-order-status-payment-pending{display:inline-flex;align-items:center;max-width:170px;padding:5px 8px;border:1px solid #f0ce7a;border-radius:7px;background:#fff6df;color:#855700;font-size:.7rem;font-weight:900;line-height:1.35;white-space:normal}
+
+/* Shopee-inspired customer order filters: GENMERCH styling, live Supabase data. */
+.customer-order-filter-sticky{position:sticky;top:-18px;z-index:8;margin:0 -14px 0;padding:0 14px;background:#fff;box-shadow:0 1px 0 #eee4de}
+.customer-orders-filter-tabs{display:flex;align-items:stretch;gap:3px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#e1c9bf transparent;overscroll-behavior-x:contain;padding:0 0 2px}
+.customer-order-filter-tab{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;min-height:44px;padding:10px 11px;border:0;border-bottom:3px solid transparent;background:#fff;color:#6b5c54;font-size:.73rem;font-weight:850;white-space:nowrap;cursor:pointer}
+.customer-order-filter-tab:hover{color:#d82b16;background:#fffaf7}
+.customer-order-filter-tab.active{border-bottom-color:#f22a12;color:#ed2d17}
+.customer-order-filter-tab b{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#f4eee9;color:#77665c;font-size:.65rem;font-weight:900}
+.customer-order-filter-tab.active b{background:#ffebe5;color:#c62b17}
+.customer-orders-search-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0 7px}
+.customer-orders-search-row>label{flex:0 0 auto;color:#4a3930;font-size:.72rem;font-weight:900}
+.customer-orders-search-box{display:flex;align-items:center;gap:8px;min-width:0;width:min(420px,100%);min-height:38px;padding:0 10px;border:1px solid #e5d8d0;border-radius:8px;background:#fff;color:#8b786d}
+.customer-orders-search-box:focus-within{border-color:#f22a12;box-shadow:0 0 0 3px #f22a1217}
+.customer-orders-search-box>span{font-size:1.15rem;line-height:1}
+.customer-orders-search-box input{width:100%;min-width:0;height:36px;border:0;outline:0;background:transparent;color:#31231d;font:inherit;font-size:.74rem}
+.customer-orders-search-box input::placeholder{color:#9b8e86}
+.customer-orders-search-box button{flex:0 0 auto;border:0;background:transparent;color:#c92d1b;font-size:.69rem;font-weight:850}
+.customer-orders-search-box button[hidden]{display:none}
+.customer-orders-filter-summary{margin:0 0 8px;color:#8a7970;font-size:.67rem;line-height:1.4}
+.customer-orders-filter-empty{margin-top:3px;border:1px dashed #e5d7cf;border-radius:9px;background:#fffaf7}
+@media(max-width:650px){
+  .customer-order-filter-sticky{top:-14px;margin:0 -10px;padding:0 10px}
+  .customer-orders-filter-tabs{gap:0}
+  .customer-order-filter-tab{min-height:42px;padding:9px 10px;font-size:.7rem}
+  .customer-orders-search-row{align-items:stretch;flex-direction:column;gap:6px;margin-top:10px}
+  .customer-orders-search-box{width:100%}
+  .customer-orders-filter-summary{font-size:.65rem}
+}
+
 </style>
 
 </head>
@@ -2833,7 +2862,27 @@
       <div class="customer-orders-content">
         <div class="customer-orders-account-banner" id="customerOrdersAccountBanner"></div>
         <section class="customer-my-orders-section">
-          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Orders appear here when you checked out while signed in.</p></div><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div>
+          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Use the status tabs to find an order quickly. Payment and delivery statuses are tracked separately.</p></div><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div>
+          <div class="customer-orders-filter-sticky">
+            <nav class="customer-orders-filter-tabs" id="customerOrdersFilterTabs" aria-label="Filter orders by status" role="tablist">
+              <button type="button" class="customer-order-filter-tab active" role="tab" aria-selected="true" data-customer-order-filter="all"><span>All Orders</span><b id="customerOrderCountAll">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="to-confirm"><span>To Confirm</span><b id="customerOrderCountToConfirm">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="to-ship"><span>To Ship</span><b id="customerOrderCountToShip">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="to-receive"><span>To Receive</span><b id="customerOrderCountToReceive">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="awaiting-payment"><span>Awaiting Payment</span><b id="customerOrderCountAwaitingPayment">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="completed"><span>Completed</span><b id="customerOrderCountCompleted">0</b></button>
+              <button type="button" class="customer-order-filter-tab" role="tab" aria-selected="false" data-customer-order-filter="cancelled"><span>Cancelled</span><b id="customerOrderCountCancelled">0</b></button>
+            </nav>
+          </div>
+          <div class="customer-orders-search-row">
+            <label for="customerOrdersSearch">Search your orders</label>
+            <div class="customer-orders-search-box">
+              <span aria-hidden="true">⌕</span>
+              <input id="customerOrdersSearch" type="search" placeholder="Order number, product, courier or reference #" autocomplete="off">
+              <button type="button" id="customerOrdersSearchClear" aria-label="Clear order search" hidden>Clear</button>
+            </div>
+          </div>
+          <div class="customer-orders-filter-summary" id="customerOrdersFilterSummary" aria-live="polite"></div>
           <div id="customerOrdersList"><div class="customer-orders-loading">Loading your orders…</div></div>
         </section>
         <section class="customer-guest-track-section">
@@ -4322,24 +4371,133 @@
         customerOrderTimelineMarkup(timelineHistory,timelineStatus,order)+customerOrderItemsMarkup(items)+delivery+
         '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
     }
-        function renderCustomerAccountOrders(orders,itemRows=[],histories=[],shipmentRows=[]){
+        const CUSTOMER_ORDER_FILTERS=[
+      {key:'all',label:'All Orders',countId:'customerOrderCountAll'},
+      {key:'to-confirm',label:'To Confirm',countId:'customerOrderCountToConfirm'},
+      {key:'to-ship',label:'To Ship',countId:'customerOrderCountToShip'},
+      {key:'to-receive',label:'To Receive',countId:'customerOrderCountToReceive'},
+      {key:'awaiting-payment',label:'Awaiting Payment',countId:'customerOrderCountAwaitingPayment'},
+      {key:'completed',label:'Completed',countId:'customerOrderCountCompleted'},
+      {key:'cancelled',label:'Cancelled',countId:'customerOrderCountCancelled'}
+    ];
+    let customerOrderFilterActive='all';
+    let customerAccountOrderRecords=[];
+
+    function customerOrderMatchesFilter(record,filterKey){
+      const status=String(record.order.status||'pending').toLowerCase();
+      const payment=String(record.order.payment_status||'pending').toLowerCase();
+      const cancelled=['cancelled','refunded'].includes(status);
+      if(filterKey==='all')return true;
+      if(filterKey==='to-confirm')return status==='pending';
+      if(filterKey==='to-ship')return ['confirmed','processing'].includes(status);
+      if(filterKey==='to-receive')return ['shipped','out_for_delivery'].includes(status);
+      if(filterKey==='awaiting-payment')return !cancelled&&!['cancelled','refunded'].includes(payment)&&payment!=='paid';
+      if(filterKey==='completed')return status==='delivered'&&payment==='paid';
+      if(filterKey==='cancelled')return cancelled;
+      return true;
+    }
+
+    function customerOrderSearchMatches(record,query){
+      if(!query)return true;
+      const order=record.order,shipment=record.shipment||{};
+      const itemText=record.items.map(item=>[
+        item.product_name,item.sku,item.size_label,item.color_label
+      ].filter(Boolean).join(' ')).join(' ');
+      const addressText=[
+        order.shipping_street_address,order.shipping_barangay,order.shipping_city_municipality,
+        order.shipping_province,order.shipping_postal_code,order.delivery_zone
+      ].filter(Boolean).join(' ');
+      const searchable=[
+        order.order_number,order.status,order.payment_status,order.payment_method,
+        shipment.courier_name,shipment.tracking_number,addressText,itemText
+      ].filter(Boolean).join(' ').toLowerCase();
+      return searchable.includes(query.toLowerCase());
+    }
+
+    function updateCustomerOrderFilterCounts(){
+      CUSTOMER_ORDER_FILTERS.forEach(filter=>{
+        const count=filter.key==='all'
+          ?customerAccountOrderRecords.length
+          :customerAccountOrderRecords.filter(record=>customerOrderMatchesFilter(record,filter.key)).length;
+        const countNode=$(filter.countId);
+        if(countNode)countNode.textContent=String(count);
+      });
+      const tabs=$('customerOrdersFilterTabs');
+      if(tabs){
+        tabs.querySelectorAll('[data-customer-order-filter]').forEach(button=>{
+          const active=button.dataset.customerOrderFilter===customerOrderFilterActive;
+          button.classList.toggle('active',active);
+          button.setAttribute('aria-selected',active?'true':'false');
+          button.tabIndex=active?0:-1;
+        });
+      }
+    }
+
+    function renderCustomerOrderFilterResults(){
       const container=$('customerOrdersList');
       if(!container)return;
-      if(!orders.length){
+      const searchNode=$('customerOrdersSearch');
+      const query=searchNode?searchNode.value.trim():'';
+      const clearButton=$('customerOrdersSearchClear');
+      if(clearButton)clearButton.hidden=!query;
+      updateCustomerOrderFilterCounts();
+      const currentFilter=CUSTOMER_ORDER_FILTERS.find(filter=>filter.key===customerOrderFilterActive)||CUSTOMER_ORDER_FILTERS[0];
+      const matches=customerAccountOrderRecords.filter(record=>
+        customerOrderMatchesFilter(record,customerOrderFilterActive)&&customerOrderSearchMatches(record,query)
+      );
+      const summary=$('customerOrdersFilterSummary');
+      if(summary){
+        const detail=query?'Matching orders: '+matches.length:
+          (customerOrderFilterActive==='all'?'Showing all orders':('Showing '+currentFilter.label.toLowerCase()));
+        summary.textContent=detail+(customerOrderFilterActive==='awaiting-payment'?' · Includes delivered orders awaiting seller payment confirmation.':'');
+      }
+      if(!customerAccountOrderRecords.length){
         container.innerHTML='<div class="customer-orders-empty"><strong>No account orders yet</strong>Orders placed while signed in will appear here. Guest orders can be found below using your order number and checkout mobile number.</div>';
-        $('customerOrdersBadge').hidden=true;
         return;
       }
-      const itemMap=new Map(),historyMap=new Map(),shipmentMap=new Map();
-      itemRows.forEach(item=>{const key=String(item.order_id);if(!itemMap.has(key))itemMap.set(key,[]);itemMap.get(key).push(item);});
-      histories.forEach(entry=>{const key=String(entry.order_id);if(!historyMap.has(key))historyMap.set(key,[]);historyMap.get(key).push(entry);});
-      shipmentRows.forEach(shipment=>{if(!shipmentMap.has(String(shipment.order_id)))shipmentMap.set(String(shipment.order_id),shipment);});
-      container.innerHTML=orders.map(order=>customerOrderCardMarkup(order,itemMap.get(String(order.id))||[],historyMap.get(String(order.id))||[],shipmentMap.get(String(order.id))||null,false)).join('');
-      const badge=$('customerOrdersBadge');
-      badge.textContent=orders.length>99?'99+':String(orders.length);
-      badge.hidden=orders.length===0;
+      if(!matches.length){
+        const emptyTitle=query?'No matching orders found':'No orders in this category yet';
+        const emptyDetail=query?'Try another order number, product name, courier or reference number.':'Choose another status tab to see more of your orders.';
+        container.innerHTML='<div class="customer-orders-empty customer-orders-filter-empty"><strong>'+escapeHtml(emptyTitle)+'</strong>'+escapeHtml(emptyDetail)+(customerOrderFilterActive!=='all'?'<button type="button" data-customer-show-all-orders>View all orders</button>':'')+'</div>';
+        return;
+      }
+      container.innerHTML=matches.map(record=>customerOrderCardMarkup(
+        record.order,record.items,record.history,record.shipment,false
+      )).join('');
     }
-        async function loadCustomerAccountOrders(silent=false){
+
+    function renderCustomerAccountOrders(orders,itemRows=[],histories=[],shipmentRows=[]){
+      const container=$('customerOrdersList');
+      if(!container)return;
+      const itemMap=new Map(),historyMap=new Map(),shipmentMap=new Map();
+      itemRows.forEach(item=>{
+        const key=String(item.order_id);
+        if(!itemMap.has(key))itemMap.set(key,[]);
+        itemMap.get(key).push(item);
+      });
+      histories.forEach(entry=>{
+        const key=String(entry.order_id);
+        if(!historyMap.has(key))historyMap.set(key,[]);
+        historyMap.get(key).push(entry);
+      });
+      shipmentRows.forEach(shipment=>{
+        const key=String(shipment.order_id);
+        if(!shipmentMap.has(key))shipmentMap.set(key,shipment);
+      });
+      customerAccountOrderRecords=(Array.isArray(orders)?orders:[]).map(order=>({
+        order,
+        items:itemMap.get(String(order.id))||[],
+        history:historyMap.get(String(order.id))||[],
+        shipment:shipmentMap.get(String(order.id))||null
+      }));
+      const badge=$('customerOrdersBadge');
+      if(badge){
+        badge.textContent=customerAccountOrderRecords.length>99?'99+':String(customerAccountOrderRecords.length);
+        badge.hidden=customerAccountOrderRecords.length===0;
+      }
+      renderCustomerOrderFilterResults();
+    }
+    async function loadCustomerAccountOrders(silent=false){
       const container=$('customerOrdersList');
       if(!container)return;
       try{
@@ -4456,12 +4614,37 @@
     }
     function stopCustomerOrdersRefresh(){if(customerOrdersRefreshTimer!==null){window.clearInterval(customerOrdersRefreshTimer);customerOrdersRefreshTimer=null;}}
     $('customerOrdersClose').addEventListener('click',closeCustomerOrders);
+    $('customerOrdersFilterTabs').addEventListener('click',event=>{
+      const button=event.target.closest('[data-customer-order-filter]');
+      if(!button)return;
+      customerOrderFilterActive=button.dataset.customerOrderFilter||'all';
+      renderCustomerOrderFilterResults();
+    });
+    $('customerOrdersFilterTabs').addEventListener('keydown',event=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+      const tabs=Array.from($('customerOrdersFilterTabs').querySelectorAll('[data-customer-order-filter]'));
+      if(!tabs.length)return;
+      event.preventDefault();
+      const current=Math.max(0,tabs.findIndex(button=>button.dataset.customerOrderFilter===customerOrderFilterActive));
+      const next=event.key==='Home'?0:(event.key==='End'?tabs.length-1:(current+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length);
+      customerOrderFilterActive=tabs[next].dataset.customerOrderFilter;
+      renderCustomerOrderFilterResults();
+      tabs[next].focus();
+    });
+    $('customerOrdersSearch').addEventListener('input',renderCustomerOrderFilterResults);
+    $('customerOrdersSearchClear').addEventListener('click',()=>{
+      $('customerOrdersSearch').value='';
+      renderCustomerOrderFilterResults();
+      $('customerOrdersSearch').focus();
+    });
     $('customerOrdersOverlay').addEventListener('click',event=>{
       if(event.target===$('customerOrdersOverlay')){closeCustomerOrders();return;}
       const accountButton=event.target.closest('[data-confirm-account-received]');
       if(accountButton){confirmAccountOrderReceived(accountButton.dataset.orderId,accountButton.dataset.orderNumber,accountButton);return;}
       const guestButton=event.target.closest('[data-confirm-guest-received]');
-      if(guestButton)confirmGuestOrderReceived(guestButton.dataset.orderNumber,guestButton);
+      if(guestButton){confirmGuestOrderReceived(guestButton.dataset.orderNumber,guestButton);return;}
+      const showAllButton=event.target.closest('[data-customer-show-all-orders]');
+      if(showAllButton){customerOrderFilterActive='all';renderCustomerOrderFilterResults();}
     });
     $('customerOrdersRefresh').addEventListener('click',async()=>{
       $('customerOrdersRefresh').disabled=true;
