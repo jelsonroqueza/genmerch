@@ -1228,9 +1228,17 @@
     .wishlist-remove-button{border:1px solid #e5d7d0;background:#fff;color:#6a5147}
     .wishlist-remove-button:hover{background:#fff3ed;border-color:#f1b2a4;color:#b42318}
     .wishlist-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid #eee5df;background:#fffdfb;color:#756b65;font-size:.71rem;line-height:1.4;flex-shrink:0}
+    .wishlist-sync-block{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+    .wishlist-sync-status{max-width:440px;font-size:.72rem;font-weight:750;line-height:1.45;color:#69594f}
+    .wishlist-sync-status.success{color:#23743a}.wishlist-sync-status.warning{color:#8a5b00}.wishlist-sync-status.error{color:#ad2a1e}.wishlist-sync-status.local{color:#756b64}
+    .wishlist-sync-now-button,.draft-sync-now-btn{flex:0 0 auto;border:1px solid #f22a12;border-radius:8px;background:#fff;color:#ce2b16;padding:9px 11px;font-size:.73rem;font-weight:900;white-space:nowrap}
+    .wishlist-sync-now-button:hover,.draft-sync-now-btn:hover{background:#fff0eb}
+    .wishlist-sync-now-button:disabled,.draft-sync-now-btn:disabled{opacity:.6;cursor:wait}
+    .draft-storage-description{display:block;margin-top:4px;line-height:1.55}
+    .draft-storage-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .wishlist-continue-button{flex:0 0 auto;border:1px solid #f22a12;border-radius:8px;background:#fff;color:#ce2b16;padding:9px 12px;font-size:.75rem;font-weight:850}
     .wishlist-continue-button:hover{background:#fff0eb}
-    @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:flex-start;flex-direction:column;padding:11px 13px}.wishlist-continue-button{align-self:flex-end}}
+    @media(max-width:560px){.wishlist-overlay{padding:8px}.wishlist-modal{max-height:94dvh;border-radius:12px}.wishlist-modal-head{padding:13px 14px}.wishlist-modal-body{padding:8px 12px}.wishlist-item{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:11px 0}.wishlist-product-photo,.wishlist-product-placeholder{width:64px;height:70px}.wishlist-item-actions{grid-column:2;flex-direction:row;min-width:0}.wishlist-view-button,.wishlist-remove-button{flex:1}.wishlist-modal-footer{align-items:stretch;flex-direction:column;padding:11px 13px}.wishlist-sync-block{align-items:stretch;flex-direction:column}.wishlist-sync-status{max-width:none}.wishlist-sync-now-button{align-self:flex-start}.wishlist-continue-button{align-self:flex-end}}
 
 
 .customer-orders-badge{position:absolute;right:-9px;top:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#f22a12;color:#fff;font-size:.62rem;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -2610,8 +2618,8 @@
         <div class="checkout-submit-feedback" id="checkoutSubmitFeedback" role="status" aria-live="polite" hidden></div>
         <div class="draft-storage-panel" aria-label="Saved cart and delivery information">
           <span class="draft-storage-status" id="draftSaveStatus" role="status" aria-live="polite">Preparing automatic save…</span>
-          Your cart and delivery details are autosaved in this browser on this device. They are not synced to other devices. Because this includes personal information, avoid using a shared/public device.
-          <div class="draft-storage-actions"><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
+          <span class="draft-storage-description" id="customerDraftSyncDescription">When signed in, your cart and checkout details can sync to your GENMERCH account across devices. Guest drafts remain on this browser only. Avoid syncing personal details on a shared/public device.</span>
+          <div class="draft-storage-actions"><button class="draft-sync-now-btn" id="syncCustomerDataButton" type="button">↻ Sync account data</button><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
         </div>
           </div>
           <div class="checkout-delivery-actions">
@@ -2666,7 +2674,7 @@
         <button class="wishlist-close-button" id="wishlistCloseButton" type="button" aria-label="Close wishlist">×</button>
       </div>
       <div class="wishlist-modal-body" id="wishlistItemsContainer"><div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p></div></div>
-      <div class="wishlist-modal-footer"><span>Saved products stay on this browser and are kept separate for each signed-in customer.</span><button class="wishlist-continue-button" id="wishlistContinueButton" type="button">Continue shopping</button></div>
+      <div class="wishlist-modal-footer"><div class="wishlist-sync-block"><span class="wishlist-sync-status" id="wishlistSyncStatus" role="status" aria-live="polite">Checking account sync…</span><button class="wishlist-sync-now-button" id="wishlistSyncNowButton" type="button">↻ Sync across devices</button></div><button class="wishlist-continue-button" id="wishlistContinueButton" type="button">Continue shopping</button></div>
     </section>
   </div>
 
@@ -3002,6 +3010,38 @@
         });
       },650);
     }
+    function mergeCustomerDraftSnapshots(localSnapshot,cloudSnapshot,preferLocal){
+      const local=localSnapshot&&typeof localSnapshot==='object'?localSnapshot:{};
+      const cloud=cloudSnapshot&&typeof cloudSnapshot==='object'?cloudSnapshot:{};
+      const localForm=local.form&&typeof local.form==='object'?local.form:{};
+      const cloudForm=cloud.form&&typeof cloud.form==='object'?cloud.form:{};
+      const form={};
+      GENMERCH_DRAFT_FIELD_IDS.forEach(id=>{
+        const lv=String(localForm[id]||''),cv=String(cloudForm[id]||'');
+        form[id]=preferLocal?(lv.trim()?lv:cv):(cv.trim()?cv:lv);
+      });
+      const localAddress=local.addressReference&&typeof local.addressReference==='object'?local.addressReference:{};
+      const cloudAddress=cloud.addressReference&&typeof cloud.addressReference==='object'?cloud.addressReference:{};
+      const addressReference={};
+      ['province','city','barangay'].forEach(key=>{addressReference[key]=preferLocal?(localAddress[key]||cloudAddress[key]||null):(cloudAddress[key]||localAddress[key]||null);});
+      const localCart=Array.isArray(local.cart)?local.cart:[];
+      const cloudCart=Array.isArray(cloud.cart)?cloud.cart:[];
+      const first=preferLocal?localCart:cloudCart,second=preferLocal?cloudCart:localCart;
+      const mergedCart=[],seen=new Set();
+      const addLines=items=>items.forEach(item=>{
+        if(!item||!item.id)return;
+        const id=String(item.id),size=String(item.size||''),variantId=String(item.variantId||'');
+        const key=variantId?'variant:'+variantId:'product:'+id+':'+size;
+        if(seen.has(key))return;
+        seen.add(key);
+        mergedCart.push({id,variantId:variantId||null,size,qty:Math.max(1,Math.min(999,Math.floor(Number(item.qty)||1)))});
+      });
+      addLines(first);addLines(second);
+      const localPayment=['COD','GCash','Maya','Bank Transfer'].includes(local.selectedPayment)?local.selectedPayment:'COD';
+      const cloudPayment=['COD','GCash','Maya','Bank Transfer'].includes(cloud.selectedPayment)?cloud.selectedPayment:'COD';
+      const selectedPayment=preferLocal?(localPayment!=='COD'?localPayment:cloudPayment):(cloudPayment!=='COD'?cloudPayment:localPayment);
+      return {schemaVersion:1,cart:mergedCart.slice(0,100),form,addressReference,selectedPayment};
+    }
     async function syncCustomerDraftForSession(session,applyToUI=false){
       const resolveSession=arguments.length===0||arguments[0]===undefined;
       if(resolveSession){
@@ -3044,14 +3084,22 @@
         if(cloudResult.error)throw cloudResult.error;
         const cloudRow=cloudResult.data||null;
         const cloudUpdatedAt=cloudRow&&cloudRow.updated_at?new Date(cloudRow.updated_at).getTime():0;
-        if(cloudRow&&localSnapshot&&localBelongsToUser&&localUpdatedAt>cloudUpdatedAt&&(owner===userId||hasMeaningfulCustomerDraft(localSnapshot))){
+        if(cloudRow&&localSnapshot&&owner===userId&&localUpdatedAt>cloudUpdatedAt){
           await upsertCustomerDraftCloud(userId,localSnapshot);
         }else if(cloudRow){
           const cloudSnapshot=parseCustomerDraftSnapshot(JSON.stringify(cloudRow.draft_state));
           if(!cloudSnapshot)throw new Error('The saved cloud checkout draft is invalid. Your local draft has been preserved.');
-          localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(cloudSnapshot));
-          localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
-          localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(cloudUpdatedAt||Date.now()));
+          if(localSnapshot&&localBelongsToUser&&!owner&&hasMeaningfulCustomerDraft(localSnapshot)){
+            const mergedSnapshot=mergeCustomerDraftSnapshots(localSnapshot,cloudSnapshot,localUpdatedAt>cloudUpdatedAt);
+            localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(mergedSnapshot));
+            localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
+            localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(Date.now()));
+            await upsertCustomerDraftCloud(userId,mergedSnapshot);
+          }else{
+            localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(cloudSnapshot));
+            localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
+            localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(cloudUpdatedAt||Date.now()));
+          }
         }else if(localSnapshot&&localBelongsToUser&&(owner===userId||hasMeaningfulCustomerDraft(localSnapshot))){
           await upsertCustomerDraftCloud(userId,localSnapshot);
         }else{
@@ -3208,6 +3256,47 @@
       updateCart();
     }
 
+    async function syncCustomerDataNow(){
+      const buttons=[$('wishlistSyncNowButton'),$('syncCustomerDataButton')].filter(Boolean);
+      buttons.forEach(button=>{button.disabled=true;button.dataset.originalText=button.textContent;button.textContent='Syncing…';});
+      try{
+        const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session?sessionResult.data.session:null;
+        if(!session||!session.user){
+          updateWishlistSyncStatus('Sign in to your GENMERCH customer account before syncing across devices.','warning');
+          setDraftSaveStatus('Sign in to sync your Wishlist, cart, and checkout details across devices.',true);
+          showToast('Please sign in to your GENMERCH customer account first.');
+          return;
+        }
+        customerAuthCurrentSession=session;
+        await syncWishlistForCustomerSession(session,true);
+        const wishlistError=wishlistCloudSyncError;
+        const draftOk=await syncCustomerDraftForSession(session,true);
+        const errors=[];
+        if(wishlistError)errors.push('Wishlist: '+wishlistError);
+        if(!draftOk)errors.push('Cart/checkout details could not be synced. Your current local copy has been preserved.');
+        if(errors.length){
+          const message=errors.join(' ');
+          updateWishlistSyncStatus(message,'error');
+          setDraftSaveStatus(message,true);
+          showToast('Some account data did not sync. Check the status message and retry.');
+          return;
+        }
+        updateWishlistSyncStatus('✓ Synced to your account · '+wishlistProductIds.length+' Wishlist product(s).','success');
+        setDraftSaveStatus('✓ Wishlist, cart, and checkout details are synced to your GENMERCH account. You can now open the same account on another device.');
+        showToast('GENMERCH account data synced.');
+        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+      }catch(error){
+        console.error('GENMERCH account data sync failed.',error);
+        const message=error&&error.message?String(error.message):'Account sync failed. Please retry.';
+        updateWishlistSyncStatus(message,'error');
+        setDraftSaveStatus('Account sync failed. Your local data has been preserved. '+message,true);
+        showToast('Account sync failed. Your local data was kept.');
+      }finally{
+        buttons.forEach(button=>{button.disabled=false;button.textContent=button.dataset.originalText||'↻ Sync account data';delete button.dataset.originalText;});
+      }
+    }
     function clearSavedDraft() {
       const confirmed = window.confirm('Clear the saved cart and all delivery details from this browser? This cannot be undone.');
       if (!confirmed) return;
@@ -3747,6 +3836,8 @@
     const WISHLIST_GUEST_STORAGE_KEY = 'genmerch:wishlist:guest:v1';
     let wishlistProductIds = [];
     let wishlistCloudSyncError = '';
+    let wishlistCloudSyncWarning = '';
+    let wishlistLastLoadedStorageKey = '';
     let wishlistCloudRefreshTimer = null;
     function getWishlistStorageKey(session=customerAuthCurrentSession){
       const userId=session&&session.user&&session.user.id?String(session.user.id):'';
@@ -3762,10 +3853,17 @@
       try{localStorage.setItem(key,JSON.stringify([...new Set((ids||[]).map(id=>String(id)).filter(Boolean))]));return true;}
       catch(error){console.warn('GENMERCH wishlist could not be saved in browser storage.',error);showToast('Unable to save wishlist on this browser.');return false;}
     }
+    function updateWishlistSyncStatus(message,type=''){
+      const node=$('wishlistSyncStatus');
+      if(!node)return;
+      node.textContent=message||'';
+      node.className='wishlist-sync-status'+(type?' '+type:'');
+    }
     async function syncWishlistForCustomerSession(session=customerAuthCurrentSession,refreshUI=true){
       const resolveSession=arguments.length===0||arguments[0]===undefined;
-      let client=null;
+      let client=null,unavailableLegacyCount=0;
       wishlistCloudSyncError='';
+      wishlistCloudSyncWarning='';
       try{
         if(resolveSession){
           client=getCustomerAuthClient();
@@ -3778,34 +3876,46 @@
         const key=getWishlistStorageKey(session);
         if(!userId){
           wishlistProductIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
+          wishlistLastLoadedStorageKey=WISHLIST_GUEST_STORAGE_KEY;
+          updateWishlistSyncStatus('Saved on this device only. Sign in to sync your Wishlist across devices.','local');
         }else{
           client=client||getCustomerAuthClient();
           const localAccountIds=readWishlistIds(key);
           const guestIds=readWishlistIds(WISHLIST_GUEST_STORAGE_KEY);
+          const memoryIds=(wishlistLastLoadedStorageKey===key||wishlistLastLoadedStorageKey===WISHLIST_GUEST_STORAGE_KEY)?wishlistProductIds.slice():[];
           const remoteResult=await client.from('customer_wishlist').select('product_id,created_at').eq('user_id',userId).order('created_at',{ascending:true});
           if(remoteResult.error)throw remoteResult.error;
           const remoteIds=(remoteResult.data||[]).map(row=>String(row.product_id));
           const remoteSet=new Set(remoteIds);
-          const legacyIds=[...new Set([...localAccountIds,...guestIds])].filter(id=>!remoteSet.has(id));
+          const legacyIds=[...new Set([...localAccountIds,...guestIds,...memoryIds])].filter(id=>!remoteSet.has(id));
           for(const productId of legacyIds){
-            const inserted=await client.from('customer_wishlist').upsert(
-              {user_id:userId,product_id:productId},
-              {onConflict:'user_id,product_id',ignoreDuplicates:true}
-            );
-            if(inserted.error&&inserted.error.code!=='23503')throw inserted.error;
+            const inserted=await client.from('customer_wishlist').upsert({user_id:userId,product_id:productId},{onConflict:'user_id,product_id',ignoreDuplicates:true});
+            if(inserted.error){
+              if(inserted.error.code==='23503'){unavailableLegacyCount++;continue;}
+              throw inserted.error;
+            }
           }
           const refreshed=await client.from('customer_wishlist').select('product_id,created_at').eq('user_id',userId).order('created_at',{ascending:true});
           if(refreshed.error)throw refreshed.error;
           wishlistProductIds=[...new Set((refreshed.data||[]).map(row=>String(row.product_id)))];
-          if(!writeWishlistIds(key,wishlistProductIds))throw new Error('Could not update the local wishlist cache.');
+          if(!writeWishlistIds(key,wishlistProductIds))throw new Error('Could not update the local Wishlist cache.');
           try{localStorage.removeItem(WISHLIST_GUEST_STORAGE_KEY);}catch(_){}
+          wishlistLastLoadedStorageKey=key;
+          if(unavailableLegacyCount){
+            wishlistCloudSyncWarning=unavailableLegacyCount+' saved item(s) could not be synced because the product no longer exists in the live catalog.';
+            updateWishlistSyncStatus('Synced '+wishlistProductIds.length+' product(s). '+wishlistCloudSyncWarning,'warning');
+          }else{
+            updateWishlistSyncStatus('✓ Synced to your GENMERCH account · '+wishlistProductIds.length+' saved product(s).','success');
+          }
         }
       }catch(error){
-        wishlistCloudSyncError=error&&error.message?String(error.message):'Cloud wishlist sync failed.';
+        wishlistCloudSyncError=error&&error.message?String(error.message):'Cloud Wishlist sync failed.';
         const userId=session&&session.user&&session.user.id?String(session.user.id):'';
         const fallbackKey=userId?getWishlistStorageKey(session):WISHLIST_GUEST_STORAGE_KEY;
         wishlistProductIds=[...new Set([...readWishlistIds(fallbackKey),...readWishlistIds(WISHLIST_GUEST_STORAGE_KEY)])];
-        console.warn('GENMERCH wishlist cloud sync failed.',error);
+        wishlistLastLoadedStorageKey=fallbackKey;
+        updateWishlistSyncStatus(userId?'Cloud sync failed: '+wishlistCloudSyncError+' Your device copy was kept.':'Saved on this device only. Sign in to sync across devices.','error');
+        console.warn('GENMERCH Wishlist cloud sync failed.',error);
       }
       updateWishlistBadge();
       if(refreshUI){
@@ -3853,6 +3963,8 @@
         }
         if(!writeWishlistIds(key,next))throw new Error('Could not save wishlist to this browser.');
         wishlistProductIds=next;
+        wishlistLastLoadedStorageKey=key;
+        updateWishlistSyncStatus(userId?'✓ Saved to your GENMERCH account · '+next.length+' product(s).':'Saved on this device only. Sign in to sync across devices.','success');
         updateWishlistBadge();renderProducts();updateWishlistDetailButton();
         if($('wishlistOverlay').classList.contains('open'))renderWishlist();
         const product=products.find(item=>String(item.id)===id);
@@ -3877,6 +3989,8 @@
         }
         if(!writeWishlistIds(key,next))throw new Error('Could not update the local wishlist cache.');
         wishlistProductIds=next;
+        wishlistLastLoadedStorageKey=key;
+        updateWishlistSyncStatus(userId?'✓ Saved to your GENMERCH account · '+next.length+' product(s).':'Saved on this device only. Sign in to sync across devices.','success');
         updateWishlistBadge();renderProducts();updateWishlistDetailButton();renderWishlist();
       }catch(error){
         console.error('GENMERCH could not remove Wishlist item.',error);
@@ -4127,6 +4241,8 @@
     }
     $('wishlistCloseButton').addEventListener('click',closeWishlist);
     $('wishlistContinueButton').addEventListener('click',closeWishlist);
+    $('wishlistSyncNowButton').addEventListener('click',syncCustomerDataNow);
+    $('syncCustomerDataButton').addEventListener('click',syncCustomerDataNow);
     $('wishlistOverlay').addEventListener('click',event=>{if(event.target===$('wishlistOverlay'))closeWishlist();});
     $('wishlistItemsContainer').addEventListener('click',event=>{
       const remove=event.target.closest('[data-wishlist-remove]');
