@@ -1130,7 +1130,7 @@
 .seller-modal-overlay{position:fixed;inset:0;z-index:2400;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(12,12,12,.68);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.seller-modal-overlay.open{display:flex}
 .seller-modal{width:min(560px,100%);max-height:min(94dvh,920px);overflow:auto;background:#fff;color:#171717;border:1px solid #f0e5df;border-radius:17px;box-shadow:0 28px 90px rgba(0,0,0,.35)}.seller-dashboard-modal{width:min(1180px,100%);max-height:min(95dvh,980px)}
 .seller-modal-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff}.seller-modal-head h2{font-size:1.08rem;font-weight:900;line-height:1.25;margin:0}.seller-modal-head p{font-size:.77rem;opacity:.92;margin:4px 0 0;line-height:1.4}
-.seller-modal-close{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:1.65rem;line-height:1}.seller-modal-close:hover{background:#ffffff35}.seller-passcode-body{padding:22px}.seller-passcode-body>p{font-size:.9rem;line-height:1.55;color:#555;margin-bottom:15px}
+.seller-dashboard-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}.seller-logout-button{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #ffffff48;border-radius:50%;background:#ffffff16;color:#fff;font-size:1.45rem;font-weight:900;line-height:1;cursor:pointer}.seller-logout-button:hover{background:#ffffff35;border-color:#ffffff8a}.seller-logout-button:focus-visible,.seller-modal-close:focus-visible{outline:2px solid #fff;outline-offset:2px}.seller-modal-close{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:1.65rem;line-height:1}.seller-modal-close:hover{background:#ffffff35}.seller-passcode-body{padding:22px}.seller-passcode-body>p{font-size:.9rem;line-height:1.55;color:#555;margin-bottom:15px}
 .seller-field{display:flex;flex-direction:column;gap:6px;min-width:0}.seller-field label{font-size:.8rem;font-weight:850;color:#333}.seller-field input,.seller-field textarea,.seller-field select{width:100%;min-width:0;border:1px solid #d8d1cc;border-radius:8px;padding:11px 12px;background:#fff;color:#191919;font-size:.92rem;outline:none}.seller-field input:focus,.seller-field textarea:focus,.seller-field select:focus{border-color:#ff3218;box-shadow:0 0 0 3px #ff32181c}.seller-field textarea{min-height:82px;resize:vertical}.seller-passcode-input{font-size:1.35rem!important;letter-spacing:.32em;text-align:center;font-weight:900}
 .seller-primary-button,.seller-secondary-button,.seller-danger-button{min-height:40px;border-radius:8px;padding:10px 13px;font-size:.82rem;font-weight:850;transition:background .15s,border-color .15s;white-space:nowrap}.seller-primary-button{border:1px solid #f52a12;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff}.seller-primary-button:hover{background:linear-gradient(110deg,#e8240e,#d91e0d)}.seller-primary-button:disabled{opacity:.55;cursor:not-allowed}.seller-secondary-button{border:1px solid #ddd3cd;background:#fff;color:#3b332e}.seller-secondary-button:hover{background:#fff3ed;border-color:#ffb7a5}.seller-danger-button{border:1px solid #f1b6af;background:#fff5f3;color:#b42318}.seller-danger-button:hover{background:#ffe7e2}
 .seller-passcode-actions{display:flex;gap:9px;margin-top:15px}.seller-passcode-actions button{flex:1}.seller-feedback{margin-top:11px;border-radius:8px;padding:10px 12px;font-size:.8rem;line-height:1.45;background:#f5f5f5;color:#444;overflow-wrap:anywhere}.seller-feedback[hidden]{display:none}.seller-feedback.error{background:#fff0ef;color:#a61b1b;border:1px solid #f4ceca}.seller-feedback.success{background:#edf9f1;color:#176b36;border:1px solid #c8ead3}
@@ -2073,7 +2073,7 @@
   </div>
   <div class="seller-modal-overlay" id="sellerDashboardOverlay" aria-hidden="true">
     <section class="seller-modal seller-dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="sellerDashboardTitle">
-      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre">×</button></div>
+      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><div class="seller-dashboard-actions"><button class="seller-logout-button" id="sellerCentreLogoutButton" type="button" onclick="logoutSellerCentre()" aria-label="Log out of Seller Centre" title="Log out of Seller Centre">↪</button><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre" title="Close dashboard">×</button></div></div>
       <div class="seller-tabs" role="tablist" aria-label="Seller Centre sections">
         <button class="seller-tab-button active" type="button" role="tab" id="sellerProductsTab" aria-selected="true" aria-controls="sellerProductsPanel" onclick="switchSellerTab('products')">Products</button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerOrdersTab" aria-selected="false" aria-controls="sellerOrdersPanel" onclick="switchSellerTab('orders')">Orders</button>
@@ -4424,6 +4424,7 @@
     // GENMERCH Seller Centre. Passcode is a convenience gate; Supabase RLS is the security boundary.
     const GENMERCH_SELLER_PASSCODE = '121793';
     let sellerCentreIsUnlocked = false;
+    const SELLER_CENTRE_SESSION_KEY = 'genmerchSellerCentreAdminUserId';
     let sellerCurrentTab = 'products';
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
@@ -4447,9 +4448,51 @@
     function sellerFeedback(id,message,type){const node=$(id);if(!node)return;node.textContent=message||'';node.className='seller-feedback'+(type?' '+type:'');node.hidden=!message;}
     function sellerShowOverlay(id){const node=$(id);if(!node)return;node.classList.add('open');node.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
     function sellerHideOverlay(id){const node=$(id);if(!node)return;node.classList.remove('open');node.setAttribute('aria-hidden','true');if(!document.querySelector('.seller-modal-overlay.open')&&!$('cartModal').classList.contains('open')&&!$('productOverlay').classList.contains('open')&&!$('noticeOverlay').classList.contains('open')&&!$('customerAuthOverlay').classList.contains('open'))document.body.style.overflow='';}
-    function openSellerCentre(){sellerFeedback('sellerPasscodeFeedback','','');$('sellerPasscodeInput').value='';sellerShowOverlay('sellerPasscodeOverlay');window.setTimeout(()=>$('sellerPasscodeInput').focus(),30);}
+    function sellerGetRememberedAdminId(){
+      try{return localStorage.getItem(SELLER_CENTRE_SESSION_KEY)||'';}catch(_){return '';}
+    }
+    function sellerRememberAdminId(userId){
+      try{if(userId)localStorage.setItem(SELLER_CENTRE_SESSION_KEY,String(userId));else localStorage.removeItem(SELLER_CENTRE_SESSION_KEY);}catch(error){console.warn('Seller Centre sign-in could not be persisted in this browser.',error);}
+    }
+    async function openSellerCentre(){
+      sellerFeedback('sellerPasscodeFeedback','','');
+      $('sellerPasscodeInput').value='';
+      const rememberedId=sellerGetRememberedAdminId();
+      if(rememberedId){
+        try{
+          const client=await getSellerAdminClient(false);
+          const {data,error}=await client.auth.getUser();
+          if(error)throw error;
+          const user=data&&data.user;
+          if(user&&user.id===rememberedId&&(user.app_metadata||{}).role==='admin'){
+            sellerCentreIsUnlocked=true;
+            sellerOrdersLoaded=false;
+            sellerInventoryLoaded=false;
+            sellerShowOverlay('sellerDashboardOverlay');
+            switchSellerTab('products');
+            await loadSellerProducts();
+            return;
+          }
+          sellerRememberAdminId('');
+        }catch(error){
+          sellerRememberAdminId('');
+          console.warn('Seller Centre remembered session requires fresh verification.',error);
+        }
+      }
+      sellerShowOverlay('sellerPasscodeOverlay');
+      window.setTimeout(()=>$('sellerPasscodeInput').focus(),30);
+    }
     function closeSellerPasscode(){sellerHideOverlay('sellerPasscodeOverlay');$('sellerPasscodeInput').value='';}
     function closeSellerDashboard(){sellerCentreIsUnlocked=false;sellerHideOverlay('sellerDashboardOverlay');}
+    function logoutSellerCentre(){
+      sellerRememberAdminId('');
+      sellerCentreIsUnlocked=false;
+      sellerOrdersLoaded=false;
+      sellerInventoryLoaded=false;
+      closeSellerDashboard();
+      sellerFeedback('sellerPasscodeFeedback','','');
+      showToast('You have logged out of Seller Centre. Enter the passcode again next time.');
+    }
 
     async function getSellerAdminClient(refreshSession){
       const client=getCustomerAuthClient();let result=await client.auth.getSession();if(result.error)throw result.error;
@@ -4463,7 +4506,16 @@
       event.preventDefault();const input=$('sellerPasscodeInput'),submit=$('sellerPasscodeSubmit');
       if(String(input.value||'').trim()!==GENMERCH_SELLER_PASSCODE){sellerFeedback('sellerPasscodeFeedback','Incorrect passcode. Please try again.','error');input.value='';input.focus();return;}
       submit.disabled=true;submit.textContent='Verifying…';sellerFeedback('sellerPasscodeFeedback','Checking your Supabase admin session…','');
-      try{await getSellerAdminClient(true);sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();}
+      try{
+        const client=await getSellerAdminClient(true);
+        const {data,error}=await client.auth.getUser();
+        if(error)throw error;
+        const user=data&&data.user;
+        if(!user||(user.app_metadata||{}).role!=='admin')throw new Error('This Supabase account is not authorized as a Seller Centre admin.');
+        sellerRememberAdminId(user.id);
+        sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;sellerInventoryLoaded=false;
+        closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();
+      }
       catch(error){const message=error&&error.message?error.message:'Could not verify Seller Centre access.';if(/sign in first/i.test(message)){closeSellerPasscode();openCustomerAuth();showToast('Please sign in using the authorized Seller Centre admin account.');}else{sellerFeedback('sellerPasscodeFeedback',message,'error');input.value='';input.focus();}}
       finally{submit.disabled=false;submit.textContent='Unlock Seller Centre';}
     }
