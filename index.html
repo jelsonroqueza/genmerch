@@ -2835,16 +2835,35 @@
       const images=Array.isArray(product.images)?product.images:[];
       const ordered=[];
       images.forEach(image=>{
-        const alt=String(image.alt||'').toLowerCase();
-        const match=unique.find(color=>alt.includes(' - '+color.toLowerCase()+' - ')||alt.endsWith(' - '+color.toLowerCase()));
+        const match=getColorForImage(image,unique);
         if(match&&!ordered.includes(match))ordered.push(match);
       });
       unique.forEach(color=>{if(!ordered.includes(color))ordered.push(color);});
       return ordered;
     }
+    // Match explicit image metadata, including labels separated by punctuation or an em dash.
     function getColorForImage(image,colors){
-      const alt=String(image&&image.alt||'').toLowerCase();
-      return (colors||[]).find(color=>alt.includes(' - '+String(color).toLowerCase()+' - ')||alt.endsWith(' - '+String(color).toLowerCase()))||'';
+      const alt=' '+String(image&&image.alt||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()+' ';
+      return (colors||[]).find(color=>{
+        const normalized=String(color).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+        return normalized && alt.includes(' '+normalized+' ');
+      })||'';
+    }
+    // Show color buttons only when every color has a distinct, explicit gallery-image match.
+    // Incomplete or ambiguous mappings fall back to the gallery-only layout.
+    function getProductColorMapping(product,imageList=null){
+      const colors=getProductColors(product);
+      if(colors.length<2)return null;
+      const images=Array.isArray(imageList)?imageList:(Array.isArray(product&&product.images)?product.images:[]);
+      const matched=new Map();
+      images.forEach((image,index)=>{
+        const color=getColorForImage(image,colors);
+        if(color&&!matched.has(color))matched.set(color,index);
+      });
+      if(colors.some(color=>!matched.has(color)))return null;
+      const mappedIndexes=[...matched.values()];
+      if(new Set(mappedIndexes).size!==colors.length)return null;
+      return {colors:[...matched.keys()],imageIndexByColor:matched};
     }
     function updateColorChoices(containerId,labelId,colors,selectedColor){
       const container=$(containerId),label=$(labelId);
@@ -2868,11 +2887,13 @@
           thumb.setAttribute('aria-pressed',String(active));
         });
       }
-      const colors=getProductColors(product);
-      const imageColor=getColorForImage(selected,colors);
-      if(colors.length>1&&imageColor){
-        openProductSelectedColor=imageColor;
-        updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
+      const colorMapping=getProductColorMapping(product,images);
+      if(colorMapping){
+        const imageColor=getColorForImage(selected,colorMapping.colors);
+        if(imageColor){
+          openProductSelectedColor=imageColor;
+          updateColorChoices('productModalColorChoices','productModalSelectedColor',colorMapping.colors,openProductSelectedColor);
+        }
       }
     }
     function openProduct(id){
@@ -2880,9 +2901,10 @@
       $('productModalTitle').textContent='Product Details';
       const images=(Array.isArray(p.images)?p.images:[]).filter(image=>image&&image.url);
       if(!images.length&&p.image)images.push({url:p.image,alt:p.imageAlt||p.name});
-      const colors=getProductColors(p);
+      const colorMapping=getProductColorMapping(p,images);
+      const colors=colorMapping?colorMapping.colors:[];
       const mainImage=images[0]||null;
-      openProductSelectedColor=colors.length>1?(getColorForImage(mainImage,colors)||colors[0]):(colors[0]||'');
+      openProductSelectedColor=colorMapping?(getColorForImage(mainImage,colors)||colors[0]):'';
       $('productModalIcon').innerHTML=mainImage?'<img id="productGalleryMainImage" src="'+escapeHtml(mainImage.url)+'" alt="'+escapeHtml(mainImage.alt||p.name)+'">':escapeHtml(p.icon||'🛍️');
       const gallery=$('productModalGallery'), thumbnails=$('productGalleryThumbnails');
       if(images.length>1){
@@ -2894,15 +2916,15 @@
         };
       }else{gallery.hidden=true;thumbnails.replaceChildren();thumbnails.onclick=null;}
       const colorSelector=$('productModalColorSelector');
-      colorSelector.hidden=colors.length<2;
+      colorSelector.hidden=!colorMapping;
       updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
       $('productModalColorChoices').onclick=event=>{
-        const button=event.target.closest('[data-color]');if(!button)return;
+        const button=event.target.closest('[data-color]');if(!button||!colorMapping)return;
         const color=button.dataset.color;
         openProductSelectedColor=color;
         updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,color);
-        const index=images.findIndex(image=>getColorForImage(image,colors)===color);
-        if(index>=0)showProductGalleryImage(p,images,index,thumbnails);
+        const index=colorMapping.imageIndexByColor.get(color);
+        if(Number.isInteger(index))showProductGalleryImage(p,images,index,thumbnails);
       };
       $('productModalName').textContent=p.name;$('productModalPrice').textContent=money(p.price);$('productModalDescription').textContent=p.desc;
       const noStock=Array.isArray(p.variants)&&!p.variants.some(variant=>variant.stock>0);
@@ -2920,39 +2942,44 @@
 
     function renderSizeVariants(product){
       const options=$('sizeOptions');options.replaceChildren();
-      const colors=getProductColors(product);
+      const colorMapping=getProductColorMapping(product);
+      const variantColors=getProductColors(product);
       const allVariants=Array.isArray(product.variants)?product.variants:GENMERCH_ALLOWED_SIZES.map(size=>({id:null,size,color:'',price:null,stock:null,sku:''}));
-      const variants=colors.length>1?allVariants.filter(variant=>variant.color===openProductSelectedColor):allVariants;
+      const variants=colorMapping?allVariants.filter(variant=>variant.color===openProductSelectedColor):allVariants;
       let inStock=0;
       variants.forEach(variant=>{
         const button=document.createElement('button');button.type='button';button.className='size-option';button.dataset.size=variant.size;
         if(variant.id)button.dataset.variantId=variant.id;
         button.dataset.stock=variant.stock===null?'':String(variant.stock);
         const soldOut=variant.stock!==null&&variant.stock<1;button.disabled=soldOut;button.setAttribute('aria-pressed','false');
-        button.textContent=variant.size+(soldOut?' — Out of stock':(variant.price!==null&&variant.price!==product.price?' · '+money(variant.price):''));
+        const showColorOnSize=!colorMapping&&variantColors.length>1&&variant.color;
+        button.textContent=variant.size+(showColorOnSize?' · '+variant.color:'')+(soldOut?' — Out of stock':(variant.price!==null&&variant.price!==product.price?' · '+money(variant.price):''));
         options.appendChild(button);if(!soldOut)inStock++;
       });
-      $('sizeSelectionHint').textContent=Array.isArray(product.variants)?(inStock?'Select an available size before adding this product to your cart.':'All sizes for '+(openProductSelectedColor?openProductSelectedColor+' ':'')+'are currently out of stock.'):'No size selected yet.';
+      const colorForHint=colorMapping?openProductSelectedColor:'';
+      $('sizeSelectionHint').textContent=Array.isArray(product.variants)?(inStock?'Select an available size before adding this product to your cart.':'All sizes for '+(colorForHint?colorForHint+' ':'')+'are currently out of stock.'):'No size selected yet.';
       $('confirmSizeButton').disabled=true;
     }
     function openSizeSelector(id){
       const product=products.find(item=>String(item.id)===String(id));if(!product)return;
       pendingSizeProductId=product.id;pendingSelectedSize='';pendingSelectedVariantId=null;
       $('sizeProductName').textContent=product.name;
-      const colors=getProductColors(product);
-      if(colors.length>1&&!colors.includes(openProductSelectedColor))openProductSelectedColor=colors[0];
+      const colorMapping=getProductColorMapping(product);
+      const colors=colorMapping?colorMapping.colors:[];
+      if(colorMapping&&!colors.includes(openProductSelectedColor))openProductSelectedColor=colors[0];
+      if(!colorMapping)openProductSelectedColor='';
       const colorSelector=$('sizeColorSelector');
-      colorSelector.hidden=colors.length<2;
+      colorSelector.hidden=!colorMapping;
       updateColorChoices('sizeColorChoices','sizeSelectedColor',colors,openProductSelectedColor);
       $('sizeColorChoices').onclick=event=>{
-        const button=event.target.closest('[data-color]');if(!button)return;
+        const button=event.target.closest('[data-color]');if(!button||!colorMapping)return;
         openProductSelectedColor=button.dataset.color;
         pendingSelectedSize='';pendingSelectedVariantId=null;
         updateColorChoices('sizeColorChoices','sizeSelectedColor',colors,openProductSelectedColor);
         $('sizeInstruction').textContent='Selected color: '+openProductSelectedColor+'. Select a size before adding this product to your cart.';
         renderSizeVariants(product);
       };
-      $('sizeInstruction').textContent=colors.length>1
+      $('sizeInstruction').textContent=colorMapping
         ?'Selected color: '+openProductSelectedColor+'. Select a size before adding this product to your cart.'
         :'Select a size before adding this product to your cart.';
       renderSizeVariants(product);
