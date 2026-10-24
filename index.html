@@ -1705,6 +1705,171 @@
 .product-detail-action.buy-now:hover:not(:disabled){filter:brightness(.95)}
 .product-detail-action:disabled{background:#d0d0d0!important;border-color:#d0d0d0!important;color:#686868!important;cursor:not-allowed;opacity:1}
 @media(max-width:420px){.product-detail-actions{gap:8px}.product-detail-action{min-height:43px;padding:10px 7px;font-size:.82rem}}
+/* GENMERCH compact header refresh: matching the requested logo/search/actions row. */
+.site-header{background:#f7f7f7!important;box-shadow:none!important}
+.announcement-bar{display:none!important}
+.main-header{max-width:1600px!important;width:100%!important;margin:0 auto!important;padding:10px clamp(12px,2.5vw,28px) 0!important;box-sizing:border-box}
+.main-header .nav{
+  min-height:76px!important;
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  gap:clamp(10px,2vw,30px)!important;
+  width:100%!important;
+  padding:7px clamp(12px,1.8vw,24px)!important;
+  box-sizing:border-box!important;
+  background:#fff!important;
+  border:4px solid #ff252b!important;
+  border-radius:17px!important;
+}
+.brand-lockup{flex:0 0 auto!important;min-width:0!important;gap:0!important}
+.brand-cart,.brand-sub{display:none!important}
+.brand-type{display:block!important}
+.brand-word{
+  display:block!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-style:normal!important;
+  font-weight:1000!important;
+  font-size:clamp(1.55rem,2.3vw,2.2rem)!important;
+  letter-spacing:-1.7px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+.brand-word span{color:#111!important}
+.brand-word b{color:#e9272d!important}
+.search{
+  flex:1 1 auto!important;
+  order:initial!important;
+  min-width:0!important;
+  min-height:52px!important;
+  height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:30px!important;
+  padding:0 12px 0 6px!important;
+  background:#f0f0f2!important;
+  box-shadow:none!important;
+}
+.search:focus-within{box-shadow:0 0 0 2px #ff252b30!important;background:#f4f4f5!important}
+.search button{
+  flex:0 0 44px!important;
+  display:grid!important;
+  place-items:center!important;
+  min-width:44px!important;
+  width:44px!important;
+  height:44px!important;
+  padding:0!important;
+  color:#181818!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:50%!important;
+  font-size:0!important;
+}
+.search button:hover{background:#e7e7e9!important}
+.search button svg{
+  display:block!important;
+  width:24px!important;
+  height:24px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2.15!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.search input{
+  flex:1 1 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  height:100%!important;
+  border:0!important;
+  outline:0!important;
+  padding:0 10px!important;
+  background:transparent!important;
+  color:#222!important;
+  font-size:clamp(.82rem,1.15vw,1rem)!important;
+}
+.search input::placeholder{color:#777!important;opacity:1}
+.header-actions{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:clamp(12px,2.05vw,30px)!important;
+}
+.header-action{
+  flex:0 0 auto!important;
+  min-width:48px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  padding:2px 0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#242424!important;
+  text-decoration:none!important;
+  line-height:1.1!important;
+}
+.header-action:hover{color:#e9272d!important}
+.header-action .header-icon{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:30px!important;
+  height:32px!important;
+  font-size:0!important;
+  line-height:1!important;
+}
+.header-action .header-icon svg{
+  display:block!important;
+  width:27px!important;
+  height:27px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.header-action small{font-size:.68rem!important;font-weight:600!important;color:inherit!important;white-space:nowrap!important}
+.cart-icon .badge{right:-9px!important;top:-5px!important;min-width:18px!important;height:18px!important;padding:0 4px!important;background:#f1262b!important;color:#fff!important;font-size:.62rem!important;box-shadow:none!important}
+.cart-top{margin-left:0!important;padding:2px 0!important}
+.desktop-links{max-width:none!important;width:100%!important;padding-top:1px!important}
+@media(max-width:760px){
+  .main-header{padding:8px 10px 0!important}
+  .main-header .nav{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-rows:auto auto!important;
+    gap:8px 8px!important;
+    min-height:0!important;
+    padding:8px 9px!important;
+    border-width:3px!important;
+    border-radius:13px!important;
+  }
+  .brand-lockup{grid-column:1!important;grid-row:1!important;min-width:0!important}
+  .brand-word{font-size:clamp(1.26rem,4.8vw,1.72rem)!important;letter-spacing:-1.1px!important}
+  .header-actions{grid-column:2!important;grid-row:1!important;gap:clamp(5px,1.7vw,11px)!important}
+  .header-action{min-width:clamp(27px,7vw,39px)!important;gap:2px!important}
+  .header-action .header-icon{width:25px!important;height:26px!important}
+  .header-action .header-icon svg{width:23px!important;height:23px!important;stroke-width:1.8!important}
+  .header-action small{font-size:clamp(.49rem,1.9vw,.62rem)!important}
+  .cart-icon .badge{right:-6px!important;top:-4px!important;min-width:15px!important;height:15px!important;font-size:.55rem!important}
+  .search{grid-column:1/-1!important;grid-row:2!important;width:100%!important;min-width:0!important;height:42px!important;min-height:42px!important}
+  .search button{flex-basis:37px!important;width:37px!important;min-width:37px!important;height:37px!important}
+  .search button svg{width:22px!important;height:22px!important}
+  .search input{font-size:.83rem!important;padding:0 7px!important}
+  .desktop-links{padding-left:2px!important;padding-right:2px!important}
+}
+@media(max-width:390px){
+  .main-header .nav{padding:7px 7px!important;gap:7px 5px!important}
+  .brand-word{font-size:1.2rem!important;letter-spacing:-1px!important}
+  .header-actions{gap:4px!important}
+  .header-action{min-width:26px!important}
+  .header-action small{font-size:.48rem!important}
+}
 </style>
 </head>
 <body>
@@ -1733,17 +1898,31 @@
     <div class="main-header">
       <div class="nav">
         <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH Home">
-          <span class="brand-cart" aria-hidden="true">🛒</span>
-          <span class="brand-type"><span class="brand-word"><span>GEN</span><b>MERCH</b></span><span class="brand-sub">— Suot Apparel —</span></span>
+          <span class="brand-type"><span class="brand-word"><span>GEN</span><b>MERCH</b></span></span>
         </button>
         <div class="search" role="search">
-          <input id="searchInput" type="search" placeholder="Search for t-shirts, shorts, hoodies, caps..." aria-label="Search products">
-          <button id="searchButton" aria-label="Search">⌕</button>
+          <button id="searchButton" type="button" aria-label="Search products" title="Search products">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.9"></circle><path d="m16 16 5 5"></path></svg>
+          </button>
+          <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
         </div>
         <div class="header-actions">
-          <button class="header-action" type="button" onclick="showInfo('Account')"><span>♙</span><small>Account</small></button>
-          <button class="header-action" type="button" onclick="showInfo('Orders')"><span>▤</span><small>Orders</small></button>
-          <button class="cart-top header-action" id="openCartButton" aria-label="Open shopping cart"><span class="cart-icon">🛒<span class="badge" id="cartBadge">0</span></span><small>Cart</small></button>
+          <button class="header-action" type="button" onclick="showInfo('Wishlist')" aria-label="Open wishlist">
+            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 8.8c0 5.1-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.8a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"></path></svg></span>
+            <small>Wishlist</small>
+          </button>
+          <button class="header-action" type="button" onclick="showInfo('Account')" aria-label="Open account">
+            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.5" r="4"></circle><path d="M4.5 21v-2.2a7.5 7.5 0 0 1 15 0V21"></path></svg></span>
+            <small>Account</small>
+          </button>
+          <button class="header-action" type="button" onclick="showInfo('Orders')" aria-label="View orders">
+            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5.5" y="4" width="13" height="17" rx="1.8"></rect><path d="M9 4.5a3 3 0 0 1 6 0V7H9zM9 12h6M9 16h6"></path></svg></span>
+            <small>Orders</small>
+          </button>
+          <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
+            <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
+            <small>Cart</small>
+          </button>
         </div>
       </div>
       <nav class="desktop-links" aria-label="Main navigation">
