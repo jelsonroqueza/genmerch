@@ -1913,6 +1913,26 @@
 .customer-auth-message.success{background:#eefaf0;color:#176b30;border:1px solid #cdeed4}
 .customer-auth-privacy{margin:16px 0 0;color:#888;font-size:.71rem;line-height:1.5;text-align:center}
 @media(max-width:520px){.customer-auth-overlay{padding:12px}.customer-auth-head{padding:18px 17px 15px}.customer-auth-body{padding:18px 17px}.customer-auth-input-row{flex-direction:column}.customer-auth-input-row .customer-auth-send{width:100%}.customer-auth-head h2{font-size:1.08rem}.customer-auth-otp-actions{justify-content:center}}
+
+    /* GENMERCH email + password customer authentication */
+    .customer-auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 18px;background:#f4f4f4;border-radius:10px}
+    .customer-auth-tab{min-height:40px;padding:9px 12px;border:0;border-radius:7px;background:transparent;color:#686868;font-size:.86rem;font-weight:850}
+    .customer-auth-tab.active{background:#fff;color:#222;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+    .customer-auth-tab:focus-visible{outline:3px solid #0056b3;outline-offset:2px}
+    .customer-auth-field{margin:0 0 14px}
+    .customer-auth-field label{display:block;margin:0 0 7px;font-size:.85rem;font-weight:800;color:#2b2b2b}
+    .customer-auth-field input{display:block;width:100%;height:46px;padding:0 13px;border:1px solid #d5d5d5;border-radius:8px;background:#fff;color:#222;font:inherit;font-size:.9rem;outline:none}
+    .customer-auth-field input:focus{border-color:#f12b25;box-shadow:0 0 0 3px rgba(241,43,37,.1)}
+    .customer-auth-field input::placeholder{color:#aaa}
+    .customer-auth-password-wrap{position:relative}
+    .customer-auth-password-wrap input{padding-right:78px}
+    .customer-auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-width:58px;min-height:32px;padding:5px 8px;border:0;border-radius:6px;background:#f4f4f4;color:#333;font-size:.76rem;font-weight:850}
+    .customer-auth-password-toggle:hover{background:#e9e9e9}
+    .customer-auth-submit{width:100%;margin-top:2px}
+    .customer-auth-google:disabled{opacity:.55;cursor:not-allowed}
+    .customer-auth-signout{width:100%;margin-top:7px;background:#fff;color:#c92521}
+    @media(max-width:520px){.customer-auth-field input{font-size:16px}.customer-auth-tab{font-size:.82rem}}
+
 </style>
 </head>
 <body>
@@ -2208,13 +2228,32 @@
       </div>
       <div class="customer-auth-body">
         <div id="customerAuthMethods">
-          <form id="customerPhoneForm" novalidate>
-            <label for="customerPhone">Login using phone number</label>
-            <div class="customer-auth-input-row">
-              <input id="customerPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="09995197570" aria-describedby="customerPhoneHelp">
-              <button class="customer-auth-send" type="submit" id="customerPhoneSend">Send OTP</button>
+          <div class="customer-auth-tabs" role="tablist" aria-label="Customer account options">
+            <button class="customer-auth-tab active" type="button" id="customerAuthSignInTab" role="tab" aria-selected="true" aria-controls="customerPasswordForm">Sign In</button>
+            <button class="customer-auth-tab" type="button" id="customerAuthCreateTab" role="tab" aria-selected="false" aria-controls="customerPasswordForm">Create Account</button>
+          </div>
+
+          <form id="customerPasswordForm" class="customer-auth-form" novalidate>
+            <div class="customer-auth-field" id="customerFullNameField" hidden>
+              <label for="customerFullName">Full Name</label>
+              <input id="customerFullName" name="full_name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name">
             </div>
-            <p class="customer-auth-help" id="customerPhoneHelp">Enter your Philippine mobile number, for example 09995197570.</p>
+
+            <div class="customer-auth-field">
+              <label for="customerEmail">Email Address</label>
+              <input id="customerEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
+            </div>
+
+            <div class="customer-auth-field">
+              <label for="customerPassword">Password</label>
+              <div class="customer-auth-password-wrap">
+                <input id="customerPassword" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="128" placeholder="Enter your password" required>
+                <button class="customer-auth-password-toggle" type="button" id="customerPasswordToggle" aria-label="Show password" aria-pressed="false">Show</button>
+              </div>
+              <p class="customer-auth-help" id="customerPasswordHelp">Use at least 6 characters.</p>
+            </div>
+
+            <button class="customer-auth-send customer-auth-submit" type="submit" id="customerPasswordSubmit">Sign In</button>
           </form>
 
           <div class="customer-auth-divider"><span>OR</span></div>
@@ -2230,43 +2269,18 @@
             </span>
             <span>Continue using Google account</span>
           </button>
-
-          <div class="customer-auth-divider"><span>OR</span></div>
-
-          <form id="customerEmailForm" novalidate>
-            <label for="customerEmail">Login using email address</label>
-            <div class="customer-auth-input-row">
-              <input id="customerEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com">
-              <button class="customer-auth-send" type="submit" id="customerEmailSend">Send email OTP</button>
-            </div>
-            <p class="customer-auth-help">We will send a one-time verification code to your email.</p>
-          </form>
-        </div>
-
-        <div class="customer-auth-otp-panel" id="customerAuthOtpPanel" hidden>
-          <h3>Enter one-time code</h3>
-          <p id="customerAuthOtpDescription">Enter the six-digit code we sent you.</p>
-          <form id="customerOtpForm" novalidate>
-            <label for="customerOtpCode">6-digit OTP</label>
-            <input id="customerOtpCode" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="000000" aria-label="Six-digit one-time password">
-            <button class="customer-auth-send customer-auth-verify" type="submit" id="customerOtpVerify">Verify and sign in</button>
-          </form>
-          <div class="customer-auth-otp-actions">
-            <button class="customer-auth-link" type="button" id="customerOtpResend" disabled>Resend code in 60s</button>
-            <button class="customer-auth-link" type="button" id="customerOtpChangeMethod">Use another method</button>
-          </div>
         </div>
 
         <div class="customer-auth-signed-in" id="customerAuthSignedIn" hidden>
           <div class="customer-auth-success-mark" aria-hidden="true">✓</div>
           <h3>You are signed in</h3>
           <p id="customerAuthIdentity"></p>
-          <button class="customer-auth-send customer-auth-signout" type="button" id="customerAuthSignOut">Sign out</button>
+          <button class="customer-auth-send customer-auth-signout" type="button" id="customerAuthSignOut">Log Out</button>
         </div>
 
         <p class="customer-auth-message" id="customerAuthMessage" role="status" aria-live="polite" hidden></p>
-        <p class="customer-auth-privacy">Your sign-in is handled by Supabase Auth. Never share your one-time code with anyone.</p>
-      </div>
+        <p class="customer-auth-privacy">Your account is secured by Supabase Auth. Never share your password with anyone.</p>
+      </div>      </div>
     </section>
   </div>
 
@@ -3862,15 +3876,13 @@
     $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay'))closeNotice();});
     function showInfo(section){showNotice(section,'<p>This section is not connected yet.</p>');}
 
-    // Customer passwordless authentication using Supabase Auth.
+    // Customer email + password authentication using Supabase Auth v2.
     let customerAuthClient = null;
     let customerAuthSubscription = null;
-    let customerAuthOtpTarget = null;
     let customerAuthCurrentSession = null;
-    let customerAuthResendTimer = null;
-    let customerAuthResendSeconds = 0;
     let customerAuthSuccessCloseTimer = null;
     let customerAuthBusy = false;
+    let customerAuthMode = 'signin';
 
     function isCustomerAuthCallbackUrl(){
       const url=new URL(window.location.href);
@@ -3895,7 +3907,7 @@
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
           if(event==='SIGNED_IN'&&session&&session.user&&isCustomerAuthCallbackUrl()){
-            const identity=session.user.email||session.user.phone||'your GENMERCH account';
+            const identity=getCustomerAuthIdentity(session.user);
             const overlay=$('customerAuthOverlay');
             if(overlay&&overlay.classList.contains('open')){
               setCustomerAuthMessage('Successfully signed in.','success');
@@ -3903,17 +3915,20 @@
               customerAuthSuccessCloseTimer=setTimeout(()=>{
                 closeCustomerAuth();
                 showToast('Signed in as '+identity);
-              },850);
+              },800);
             }else{
               showToast('Signed in as '+identity);
             }
-            // Remove one-time auth material from the address bar after Supabase processes it.
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }
         });
         customerAuthSubscription=result.data&&result.data.subscription?result.data.subscription:null;
       }
       return customerAuthClient;
+    }
+    function getCustomerAuthIdentity(user){
+      const metadata=user&&user.user_metadata?user.user_metadata:{};
+      return String(metadata.full_name||metadata.name||(user&&user.email)||(user&&user.phone)||'Your GENMERCH account');
     }
     function setCustomerAuthMessage(message,type=''){
       const node=$('customerAuthMessage');
@@ -3922,144 +3937,59 @@
       node.className='customer-auth-message'+(type?' '+type:'');
       node.hidden=!message;
     }
-    function resetCustomerAuthOtpState(){
-      customerAuthOtpTarget=null;
-      if(customerAuthResendTimer){clearInterval(customerAuthResendTimer);customerAuthResendTimer=null;}
-      customerAuthResendSeconds=0;
-      $('customerAuthOtpPanel').hidden=true;
-      $('customerAuthMethods').hidden=false;
-      $('customerOtpCode').value='';
-      $('customerOtpResend').disabled=true;
-      $('customerOtpResend').textContent='Resend code in 60s';
+    function setCustomerAuthMode(mode){
+      customerAuthMode=mode==='signup'?'signup':'signin';
+      const signIn=$('customerAuthSignInTab');
+      const create=$('customerAuthCreateTab');
+      const nameField=$('customerFullNameField');
+      const nameInput=$('customerFullName');
+      const password=$('customerPassword');
+      const submit=$('customerPasswordSubmit');
+      signIn.classList.toggle('active',customerAuthMode==='signin');
+      create.classList.toggle('active',customerAuthMode==='signup');
+      signIn.setAttribute('aria-selected',String(customerAuthMode==='signin'));
+      create.setAttribute('aria-selected',String(customerAuthMode==='signup'));
+      nameField.hidden=customerAuthMode!=='signup';
+      nameInput.required=customerAuthMode==='signup';
+      password.autocomplete=customerAuthMode==='signup'?'new-password':'current-password';
+      submit.textContent=customerAuthMode==='signup'?'Create Account':'Sign In';
+      $('customerAuthTitle').textContent='Welcome to GENMERCH';
+      const subtitle=$('customerAuthSubtitle');
+      if(subtitle)subtitle.textContent=customerAuthMode==='signup'
+        ?'Create your account to shop with GENMERCH.'
+        :'Sign in to your GENMERCH customer account.';
+      setCustomerAuthMessage('');
     }
-    function normalizePhilippinePhoneNumber(value){
-      const compact=String(value||'').trim().replace(/[\s().-]/g,'');
-      if(/^09\d{9}$/.test(compact))return '+63'+compact.slice(1);
-      if(/^\+639\d{9}$/.test(compact))return compact;
-      if(/^639\d{9}$/.test(compact))return '+'+compact;
-      return '';
-    }
-    function startCustomerAuthResendCountdown(){
-      if(customerAuthResendTimer)clearInterval(customerAuthResendTimer);
-      customerAuthResendSeconds=60;
-      const button=$('customerOtpResend');
-      button.disabled=true;
-      button.textContent='Resend code in '+customerAuthResendSeconds+'s';
-      customerAuthResendTimer=setInterval(()=>{
-        customerAuthResendSeconds=Math.max(0,customerAuthResendSeconds-1);
-        if(customerAuthResendSeconds<=0){
-          clearInterval(customerAuthResendTimer);
-          customerAuthResendTimer=null;
-          button.disabled=false;
-          button.textContent='Resend code';
-        }else{
-          button.textContent='Resend code in '+customerAuthResendSeconds+'s';
-        }
-      },1000);
-    }
-    function customerAuthFriendlyError(error,method){
-      const raw=String(error&&error.message||'Could not send the one-time code.');
+    function customerAuthFriendlyError(error,mode){
+      const raw=String(error&&error.message||'Authentication could not be completed. Please try again.');
       const normalized=raw.toLowerCase();
-      if(method==='phone'&&(
-        normalized.includes('unsupported phone provider')||
-        normalized.includes('phone provider is not enabled')||
-        normalized.includes('phone provider not configured')
-      )){
-        return 'Supabase error: '+raw+'. Phone OTP is blocked because the SMS provider is not enabled. Enable Authentication → Sign In / Providers → Phone and configure an SMS provider such as Twilio, MessageBird, or Vonage. No SMS code was sent.';
+      if(normalized.includes('invalid login credentials')){
+        return 'Incorrect email or password. Check your details and try again.';
       }
-      if(method==='email'&&(
-        normalized.includes('email rate limit')||
-        normalized.includes('sending rate limit')||
-        normalized.includes('rate-limit')||
-        normalized.includes('too many requests')
-      )){
-        return 'Supabase temporarily blocked email delivery because the project reached its email sending limit. No OTP was sent. Avoid repeated retries. To enable customer email delivery reliably, configure a custom SMTP provider in Supabase → Authentication → SMTP Settings. Separately, confirm Email Templates → Magic Link contains {{ .Token }} if you want a six-digit code.';
+      if(normalized.includes('user already registered')||normalized.includes('user already exists')||normalized.includes('already been registered')){
+        return 'An account with this email may already exist. Switch to Sign In and try your password.';
       }
-      if(method==='email'&&normalized.includes('email address not authorized')){
-        return 'Supabase default email delivery only permits authorized project-team addresses. To send sign-in codes to customer email addresses, configure a custom SMTP provider in Supabase → Authentication → SMTP Settings. No OTP was sent.';
+      if(normalized.includes('password should be at least')||normalized.includes('password is too short')){
+        return 'Choose a password that meets the minimum length required by the account service.';
       }
-      if(method==='email'&&normalized.includes('custom smtp')){
-        return 'Supabase reported an email-delivery configuration issue: '+raw+'. Check the SMTP host, port, username, password, and sender address in Supabase → Authentication → SMTP Settings. Also confirm the Magic Link template contains {{ .Token }} for six-digit codes.';
+      if(normalized.includes('email rate limit')||normalized.includes('sending rate limit')){
+        return 'Supabase has temporarily limited email activity for this project. If this happened during account creation, check Supabase email confirmation settings and email-delivery limits.';
+      }
+      if(normalized.includes('email not confirmed')){
+        return 'This email still needs confirmation in Supabase before sign-in. Check your inbox or review the project email-confirmation setting.';
+      }
+      if(normalized.includes('provider is not enabled')||normalized.includes('unsupported provider')){
+        return mode==='google'
+          ?'Google sign-in is not configured in Supabase yet. Enable Google and configure its OAuth client ID, secret, and callback URL.'
+          :raw;
       }
       return raw;
-    }
-    async function requestCustomerAuthOtp(method,isResend=false){
-      if(customerAuthBusy)return;
-      let target;
-      if(isResend&&customerAuthOtpTarget){
-        target={...customerAuthOtpTarget};
-      }else if(method==='phone'){
-        const phone=normalizePhilippinePhoneNumber($('customerPhone').value);
-        if(!phone){
-          setCustomerAuthMessage('Enter a valid Philippine mobile number, such as 09995197570.','error');
-          $('customerPhone').focus();
-          return;
-        }
-        target={method:'phone',type:'sms',phone,display:$('customerPhone').value.trim()};
-      }else{
-        const email=$('customerEmail').value.trim();
-        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-          setCustomerAuthMessage('Enter a valid email address.','error');
-          $('customerEmail').focus();
-          return;
-        }
-        target={method:'email',type:'email',email,display:email};
-      }
-      let client;
-      try{client=getCustomerAuthClient();}
-      catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
-      customerAuthBusy=true;
-      const sendButton=$(target.method==='phone'?'customerPhoneSend':'customerEmailSend');
-      const sendButtonLabel=target.method==='phone'?'Send OTP':'Send email OTP';
-      if(sendButton){
-        sendButton.disabled=true;
-        sendButton.textContent=isResend?'Resending…':'Sending…';
-      }
-      if(isResend){
-        $('customerOtpResend').disabled=true;
-        $('customerOtpResend').textContent='Resending…';
-      }
-      setCustomerAuthMessage(isResend?'Sending a new code…':'Sending your one-time code…');
-      try{
-        const result=target.method==='phone'
-          ? await client.auth.signInWithOtp({phone:target.phone,options:{shouldCreateUser:true}})
-          : await client.auth.signInWithOtp({email:target.email,options:{shouldCreateUser:true,emailRedirectTo:getCustomerAuthRedirectUrl()}});
-        if(result.error)throw result.error;
-        customerAuthOtpTarget=target;
-        $('customerAuthMethods').hidden=true;
-        $('customerAuthOtpPanel').hidden=false;
-        $('customerAuthOtpDescription').textContent=target.method==='email'
-          ?'Enter the six-digit code if your email includes one. If you receive a sign-in link instead, open it in this same browser.'
-          :'Enter the six-digit SMS code sent to '+target.display+'.';
-        $('customerOtpCode').value='';
-        $('customerOtpCode').setAttribute('aria-label','Six-digit verification code for '+target.display);
-        $('customerOtpVerify').textContent=target.method==='email'?'Verify Email OTP':'Verify Phone OTP';
-        setCustomerAuthMessage(target.method==='email'
-          ?'Check your inbox and spam folder. If the email contains a six-digit code, enter it below. If it contains a sign-in link, open it in this same browser to complete sign-in.'
-          :'SMS code requested. Check your phone for the one-time password.','success');
-        startCustomerAuthResendCountdown();
-        $('customerOtpCode').focus();
-      }catch(error){
-        const message=customerAuthFriendlyError(error,target.method);
-        setCustomerAuthMessage(message,'error');
-      }finally{
-        customerAuthBusy=false;
-        if(sendButton){
-          sendButton.disabled=false;
-          sendButton.textContent=sendButtonLabel;
-        }
-        if(isResend&&customerAuthResendSeconds===0){
-          $('customerOtpResend').disabled=false;
-          $('customerOtpResend').textContent='Resend code';
-        }
-      }
     }
     function updateCustomerAuthScreen(session){
       customerAuthCurrentSession=session&&session.user?session:null;
       const signedIn=Boolean(customerAuthCurrentSession);
-      const identity=signedIn
-        ? String(customerAuthCurrentSession.user.email||customerAuthCurrentSession.user.phone||'Your GENMERCH account')
-        : '';
+      const user=signedIn?customerAuthCurrentSession.user:null;
+      const identity=signedIn?getCustomerAuthIdentity(user):'';
       const accountLabel=$('customerAccountLabel');
       const accountButton=$('customerAccountButton');
       if(accountLabel)accountLabel.textContent=signedIn?identity:'Account';
@@ -4069,14 +3999,12 @@
         accountButton.classList.toggle('customer-account-signed-in',signedIn);
       }
       $('customerAuthSignedIn').hidden=!signedIn;
-      $('customerAuthMethods').hidden=signedIn||Boolean(customerAuthOtpTarget);
-      $('customerAuthOtpPanel').hidden=signedIn||!customerAuthOtpTarget;
+      $('customerAuthMethods').hidden=signedIn;
       if(signedIn){
-        if(customerAuthResendTimer){clearInterval(customerAuthResendTimer);customerAuthResendTimer=null;}
         $('customerAuthIdentity').textContent=identity;
         $('customerAuthTitle').textContent='Your GENMERCH Account';
         $('customerAuthMessage').hidden=true;
-      }else{
+      }else if(!$('customerAuthOverlay').classList.contains('open')||!customerAuthBusy){
         $('customerAuthTitle').textContent='Welcome to GENMERCH';
       }
     }
@@ -4090,6 +4018,7 @@
         client.auth.getSession().then(({data,error})=>{
           if(error)throw error;
           updateCustomerAuthScreen(data.session);
+          if(!data.session)setCustomerAuthMode(customerAuthMode);
         }).catch(error=>setCustomerAuthMessage(error.message||'Could not load your sign-in session.','error'));
       }catch(error){
         setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');
@@ -4104,13 +4033,83 @@
     $('customerAuthOverlay').addEventListener('click',event=>{
       if(event.target===$('customerAuthOverlay'))closeCustomerAuth();
     });
-    $('customerPhoneForm').addEventListener('submit',event=>{
-      event.preventDefault();
-      requestCustomerAuthOtp('phone');
+    $('customerAuthSignInTab').addEventListener('click',()=>setCustomerAuthMode('signin'));
+    $('customerAuthCreateTab').addEventListener('click',()=>setCustomerAuthMode('signup'));
+    $('customerPasswordToggle').addEventListener('click',()=>{
+      const input=$('customerPassword');
+      const show=input.type==='password';
+      input.type=show?'text':'password';
+      $('customerPasswordToggle').textContent=show?'Hide':'Show';
+      $('customerPasswordToggle').setAttribute('aria-label',show?'Hide password':'Show password');
+      $('customerPasswordToggle').setAttribute('aria-pressed',String(show));
     });
-    $('customerEmailForm').addEventListener('submit',event=>{
+    $('customerPasswordForm').addEventListener('submit',async event=>{
       event.preventDefault();
-      requestCustomerAuthOtp('email');
+      if(customerAuthBusy)return;
+      const email=$('customerEmail').value.trim();
+      const password=$('customerPassword').value;
+      const fullName=$('customerFullName').value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        setCustomerAuthMessage('Enter a valid email address.','error');
+        $('customerEmail').focus();
+        return;
+      }
+      if(password.length<6){
+        setCustomerAuthMessage('Password must be at least 6 characters.','error');
+        $('customerPassword').focus();
+        return;
+      }
+      if(customerAuthMode==='signup'&&fullName.length<2){
+        setCustomerAuthMessage('Enter your full name to create a customer account.','error');
+        $('customerFullName').focus();
+        return;
+      }
+      let client;
+      try{client=getCustomerAuthClient();}
+      catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
+      customerAuthBusy=true;
+      const submit=$('customerPasswordSubmit');
+      const originalLabel=customerAuthMode==='signup'?'Create Account':'Sign In';
+      submit.disabled=true;
+      submit.textContent=customerAuthMode==='signup'?'Creating account…':'Signing in…';
+      $('customerGoogleButton').disabled=true;
+      setCustomerAuthMessage(customerAuthMode==='signup'?'Creating your customer account…':'Signing you in…');
+      try{
+        let data,error;
+        if(customerAuthMode==='signup'){
+          const result=await client.auth.signUp({
+            email,
+            password,
+            options:{data:{full_name:fullName}}
+          });
+          data=result.data;error=result.error;
+        }else{
+          const result=await client.auth.signInWithPassword({email,password});
+          data=result.data;error=result.error;
+        }
+        if(error)throw error;
+        if(data&&data.session&&data.user){
+          updateCustomerAuthScreen(data.session);
+          setCustomerAuthMessage(customerAuthMode==='signup'?'Your GENMERCH account was created successfully.':'Welcome back! You are signed in.','success');
+          if(customerAuthSuccessCloseTimer)clearTimeout(customerAuthSuccessCloseTimer);
+          const identity=getCustomerAuthIdentity(data.user);
+          customerAuthSuccessCloseTimer=setTimeout(()=>{
+            closeCustomerAuth();
+            showToast((customerAuthMode==='signup'?'Account created. Signed in as ':'Signed in as ')+identity);
+          },800);
+        }else if(customerAuthMode==='signup'&&data&&data.user){
+          setCustomerAuthMessage('Supabase created the account request but did not return a login session. Email confirmation may still be enabled for this project. Check Supabase Authentication settings; no one has been signed in yet.','error');
+        }else{
+          setCustomerAuthMessage('Supabase did not return a signed-in session. Please check the account settings and try again.','error');
+        }
+      }catch(error){
+        setCustomerAuthMessage(customerAuthFriendlyError(error,customerAuthMode),'error');
+      }finally{
+        customerAuthBusy=false;
+        submit.disabled=false;
+        submit.textContent=originalLabel;
+        $('customerGoogleButton').disabled=false;
+      }
     });
     $('customerGoogleButton').addEventListener('click',async()=>{
       if(customerAuthBusy)return;
@@ -4118,85 +4117,44 @@
       try{client=getCustomerAuthClient();}
       catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
       customerAuthBusy=true;
-      const button=$('customerGoogleButton');button.disabled=true;
+      const button=$('customerGoogleButton');
+      button.disabled=true;
+      $('customerPasswordSubmit').disabled=true;
       setCustomerAuthMessage('Opening Google sign-in…');
       try{
         const redirectTo=getCustomerAuthRedirectUrl();
         const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo}});
         if(error)throw error;
       }catch(error){
-        const raw=String(error&&error.message||'Google sign-in could not start.');
-        const message=/unsupported provider|provider.*not enabled/i.test(raw)
-          ? 'Google sign-in is not configured in Supabase yet. Enable the Google provider and configure its OAuth client ID, client secret, and Supabase callback URL.'
-          : raw;
-        setCustomerAuthMessage(message,'error');
+        setCustomerAuthMessage(customerAuthFriendlyError(error,'google'),'error');
       }finally{
         customerAuthBusy=false;
         button.disabled=false;
+        $('customerPasswordSubmit').disabled=false;
       }
-    });
-    $('customerOtpForm').addEventListener('submit',async event=>{
-      event.preventDefault();
-      if(customerAuthBusy||!customerAuthOtpTarget)return;
-      const token=$('customerOtpCode').value.trim();
-      if(!/^[0-9]{6}$/.test(token)){
-        setCustomerAuthMessage('Enter the six-digit code we sent you.','error');
-        $('customerOtpCode').focus();
-        return;
-      }
-      let client;
-      try{client=getCustomerAuthClient();}
-      catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
-      customerAuthBusy=true;
-      const otpMethod=customerAuthOtpTarget.method;
-      const verifyButton=$('customerOtpVerify');
-      const verifyButtonLabel=otpMethod==='email'?'Verify Email OTP':'Verify Phone OTP';
-      verifyButton.disabled=true;
-      verifyButton.textContent='Verifying…';
-      setCustomerAuthMessage('Verifying your code…');
-      try{
-        const target=customerAuthOtpTarget;
-        const credentials=target.method==='phone'
-          ? {phone:target.phone,token,type:'sms'}
-          : {email:target.email,token,type:'email'};
-        const {data,error}=await client.auth.verifyOtp(credentials);
-        if(error)throw error;
-        resetCustomerAuthOtpState();
-        updateCustomerAuthScreen(data.session);
-        setCustomerAuthMessage('Successfully signed in.','success');
-        if(customerAuthSuccessCloseTimer)clearTimeout(customerAuthSuccessCloseTimer);
-        customerAuthSuccessCloseTimer=setTimeout(()=>{
-          closeCustomerAuth();
-          showToast('Signed in as '+(data.user&&(data.user.email||data.user.phone)||'your GENMERCH account'));
-        },850);
-      }catch(error){
-        setCustomerAuthMessage(error.message||'The code could not be verified. Check it and try again.','error');
-      }finally{
-        customerAuthBusy=false;
-        verifyButton.disabled=false;
-        verifyButton.textContent=verifyButtonLabel;
-      }
-    });
-    $('customerOtpResend').addEventListener('click',()=>{
-      if(customerAuthResendSeconds>0)return;
-      requestCustomerAuthOtp(customerAuthOtpTarget&&customerAuthOtpTarget.method||'phone',true);
-    });
-    $('customerOtpChangeMethod').addEventListener('click',()=>{
-      resetCustomerAuthOtpState();
-      setCustomerAuthMessage('');
-      $('customerPhone').focus();
     });
     $('customerAuthSignOut').addEventListener('click',async()=>{
+      const button=$('customerAuthSignOut');
+      if(customerAuthBusy)return;
+      customerAuthBusy=true;
+      button.disabled=true;
+      button.textContent='Logging out…';
+      setCustomerAuthMessage('Signing you out…');
       try{
         const client=getCustomerAuthClient();
         const {error}=await client.auth.signOut();
         if(error)throw error;
-        resetCustomerAuthOtpState();
         updateCustomerAuthScreen(null);
-        $('customerAuthTitle').textContent='Welcome to GENMERCH';
+        $('customerPassword').value='';
+        $('customerFullName').value='';
+        setCustomerAuthMode('signin');
         setCustomerAuthMessage('You have signed out.','success');
       }catch(error){
         setCustomerAuthMessage(error.message||'Could not sign out.','error');
+      }finally{
+        customerAuthBusy=false;
+        button.disabled=false;
+        button.textContent='Log Out';
       }
     });
     function initializeCustomerAuth(){
@@ -4206,7 +4164,7 @@
           if(error)throw error;
           updateCustomerAuthScreen(data.session);
           if(isCustomerAuthCallbackUrl()&&data.session){
-            showToast('Signed in as '+(data.session.user.email||data.session.user.phone||'your GENMERCH account'));
+            showToast('Signed in as '+getCustomerAuthIdentity(data.session.user));
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }else if(new URLSearchParams(window.location.search).has('error_description')){
             const params=new URLSearchParams(window.location.search);
@@ -4219,6 +4177,7 @@
         console.warn('Supabase Auth SDK is not available until sign-in is requested.',error);
       }
     }
+    setCustomerAuthMode('signin');
     initializeCustomerAuth();
 
     async function initializeStorefront(){
