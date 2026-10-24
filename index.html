@@ -4412,7 +4412,7 @@
     function sellerSetFormMode(mode){
       const editing=mode==='edit';$('sellerProductFormTitle').textContent=editing?'Edit product':'Add a product';
       $('sellerProductFormSubtitle').textContent=editing?'Update product details and manage its gallery. Keep 1–5 photos total; each new upload must be 2 MB or smaller.':'New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.';
-      $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);
+      $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);$('sellerProductLocation').required=!editing;
     }
     function resetSellerProductForm(){
       sellerEditingProductId=null;sellerEditingImages=[];$('sellerProductForm').reset();$('sellerImageFiles').value='';sellerClearPreviewUrls();
@@ -4475,7 +4475,7 @@
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
         const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw);
         const selection=sellerUpdateGalleryCount(),files=selection.files,validation=sellerValidateFiles(files);
-        if(!name||!categoryId||!location)throw new Error('Complete product name, category, and location.');
+        if(!name||!categoryId||(!editingId&&!location))throw new Error('Complete product name and category. A location is required for new products.');
         if(!Number.isFinite(price)||price<=0)throw new Error('Selling price must be greater than zero.');
         if(original!==null&&(!Number.isFinite(original)||original<price))throw new Error('Original price must be blank or greater than or equal to the selling price.');
         if(validation)throw new Error(validation);
@@ -4497,7 +4497,7 @@
         }else{
           const newImageRows=await sellerUploadFiles(client,productId,files,retained.length,uploadedPaths);
           if(newImageRows.length){const imageInsert=await client.from('product_images').insert(newImageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;}
-          const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location}).eq('id',productId);if(updated.error)throw updated.error;
+          const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location:location||null}).eq('id',productId);if(updated.error)throw updated.error;
           if(removedIds.size){
             const removedImages=existing.filter(image=>removedIds.has(String(image.id)));
             const removeDb=await client.from('product_images').delete().eq('product_id',productId).in('id',Array.from(removedIds));if(removeDb.error)throw removeDb.error;
