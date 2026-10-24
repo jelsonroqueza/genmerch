@@ -3988,11 +3988,13 @@
         customerAuthOtpTarget=target;
         $('customerAuthMethods').hidden=true;
         $('customerAuthOtpPanel').hidden=false;
-        $('customerAuthOtpDescription').textContent='Enter the six-digit code sent to '+target.display+'.';
+        $('customerAuthOtpDescription').textContent=target.method==='email'
+          ?'Enter the six-digit code if your email includes one. If you receive a sign-in link instead, open it in this same browser.'
+          :'Enter the six-digit SMS code sent to '+target.display+'.';
         $('customerOtpCode').value='';
-        $('customerOtpCode').setAttribute('aria-label','Six-digit OTP sent to '+target.display);
+        $('customerOtpCode').setAttribute('aria-label','Six-digit verification code for '+target.display);
         setCustomerAuthMessage(target.method==='email'
-          ?'Email code requested. Check your inbox and spam folder.'
+          ?'Check your inbox and spam folder. If the email contains a six-digit code, enter it below. If it contains a sign-in link, open it in this same browser to complete sign-in.'
           :'SMS code requested. Check your phone for the one-time password.','success');
         startCustomerAuthResendCountdown();
         $('customerOtpCode').focus();
