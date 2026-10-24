@@ -2387,6 +2387,7 @@
 .customer-order-status-pill.payment-waiting{background:#fff0cf;border:1px solid #f0ce7a;color:#805400}
 .customer-order-payment-gated-progress{margin:14px 0;padding:13px;border:1px dashed #e4bd61;border-radius:9px;background:#fffbef;color:#76510a;font-size:.77rem;font-weight:800;line-height:1.5}
 
+.seller-order-status-payment-pending{display:inline-flex;align-items:center;max-width:170px;padding:5px 8px;border:1px solid #f0ce7a;border-radius:7px;background:#fff6df;color:#855700;font-size:.7rem;font-weight:900;line-height:1.35;white-space:normal}
 </style>
 
 </head>
@@ -6397,7 +6398,14 @@
             return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+settlePayment+cancel+'</div></td>';
           }
           let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
-          if(col[1]==='status')display=sellerOrderStatusLabel(value);
+          if(col[1]==='status'){
+            const normalizedOrderStatus=String(value||'pending').toLowerCase();
+            const normalizedPaymentStatus=String(row.payment_status||'pending').toLowerCase();
+            if(normalizedOrderStatus==='delivered'&&normalizedPaymentStatus!=='paid'){
+              return '<td><span class="seller-order-status-payment-pending">Completed · Payment Pending</span></td>';
+            }
+            display=sellerOrderStatusLabel(value);
+          }
           if(col[1]==='total_amount')display=money(value);
           if(col[1]==='created_at')display=sellerDate(value);
           if(col[1]==='payment_status'){
