@@ -6142,6 +6142,16 @@
     const GENMERCH_SELLER_PASSCODE = '121793';
     let sellerCentreIsUnlocked = false;
     const SELLER_CENTRE_SESSION_KEY = 'genmerchSellerCentreAdminUserId';
+    // Explicit email allowlist: only these two addresses may use Seller Centre.
+    // Supabase app_metadata.role must also be "admin"; email alone never grants access.
+    const GENMERCH_SELLER_ADMIN_EMAILS = new Set([
+      'negosyongpinoy@gmail.com',
+      'jelsonroqueza@gmail.com'
+    ]);
+    function isAuthorizedSellerAdmin(user){
+      const email=String(user&&user.email||'').trim().toLowerCase();
+      return GENMERCH_SELLER_ADMIN_EMAILS.has(email)&&String(user&&user.app_metadata&&user.app_metadata.role||'').toLowerCase()==='admin';
+    }
     let sellerCurrentTab = 'products';
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
@@ -6183,7 +6193,7 @@
           const {data,error}=await client.auth.getUser();
           if(error)throw error;
           const user=data&&data.user;
-          if(user&&user.id===rememberedId&&(user.app_metadata||{}).role==='admin'){
+          if(user&&user.id===rememberedId&&isAuthorizedSellerAdmin(user)){
             sellerCentreIsUnlocked=true;
             sellerOrdersLoaded=false;
             sellerInventoryLoaded=false;
@@ -6218,7 +6228,7 @@
       let session=result.data&&result.data.session;
       if(!session||!session.user)throw new Error('Please sign in first using the Account button with the authorized Seller Centre admin account.');
       if(refreshSession){const refreshed=await client.auth.refreshSession();if(refreshed.error)throw refreshed.error;if(refreshed.data&&refreshed.data.session)session=refreshed.data.session;}
-      if((session.user.app_metadata||{}).role!=='admin')throw new Error('This Supabase account is not authorized as a Seller Centre admin. Sign in with the owner admin account and retry.');
+      if(!isAuthorizedSellerAdmin(session.user))throw new Error('This Supabase account is not one of the two authorized Seller Centre admin accounts.');
       return client;
     }
     async function verifySellerPasscode(event){
@@ -6230,7 +6240,7 @@
         const {data,error}=await client.auth.getUser();
         if(error)throw error;
         const user=data&&data.user;
-        if(!user||(user.app_metadata||{}).role!=='admin')throw new Error('This Supabase account is not authorized as a Seller Centre admin.');
+        if(!user||!isAuthorizedSellerAdmin(user))throw new Error('This Supabase account is not one of the two authorized Seller Centre admin accounts.');
         sellerRememberAdminId(user.id);
         sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;sellerInventoryLoaded=false;
         closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();
