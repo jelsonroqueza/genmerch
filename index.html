@@ -2312,6 +2312,64 @@
   .customer-confirm-received-button{width:100%}
 }
 
+
+/* Full-screen Seller Centre: keep the header and tabs visible while panels scroll. */
+#sellerDashboardOverlay{
+  padding:0!important;
+  align-items:stretch!important;
+  justify-content:stretch!important;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal{
+  box-sizing:border-box;
+  width:100vw!important;
+  max-width:100vw!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  min-height:0;
+  margin:0;
+  border:0;
+  border-radius:0!important;
+  box-shadow:none;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal > .seller-modal-head{
+  position:relative;
+  inset:auto;
+  flex:0 0 auto;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal > .seller-tabs{
+  position:relative;
+  top:auto!important;
+  flex:0 0 auto;
+  z-index:4;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal > .seller-panel:not([hidden]){
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal > .seller-dashboard-foot{
+  flex:0 0 auto;
+}
+#sellerDashboardOverlay .seller-table-wrap{
+  max-width:100%;
+}
+@media(max-width:760px){
+  #sellerDashboardOverlay > .seller-dashboard-modal > .seller-modal-head{
+    padding:12px 13px;
+  }
+  #sellerDashboardOverlay > .seller-dashboard-modal > .seller-tabs{
+    padding:7px 8px 0;
+    gap:0;
+  }
+  #sellerDashboardOverlay > .seller-dashboard-modal > .seller-panel:not([hidden]){
+    padding:12px 10px;
+  }
+}
+
 </style>
 
 </head>
@@ -6157,20 +6215,31 @@
       return (CUSTOMER_ORDER_STATUS_META[String(status||'pending').toLowerCase()]||{label:String(status||'Pending').replace(/_/g,' ')}).label;
     }
     async function advanceSellerOrderStatus(orderId,orderNumber,nextStatus,button){
-      const step=SELLER_ORDER_NEXT_STEP[String(nextStatus||'').toLowerCase()];
-      if(!step)return;
-      if(!window.confirm('Update '+(orderNumber||'this order')+' to "'+sellerOrderStatusLabel(nextStatus)+'"? The customer will see this status in My Orders.'))return;
+      const targetStatus=String(nextStatus||'').toLowerCase();
+      const targetLabel=({
+        confirmed:'Confirm Order',
+        processing:'Prepare Order',
+        out_for_delivery:'Mark Out for Delivery'
+      })[targetStatus];
+      // Do not resolve this label through SELLER_ORDER_NEXT_STEP:
+      // that map is keyed by the CURRENT status and no longer has a processing step,
+      // because processing now opens the dedicated courier setup form.
+      if(!targetLabel)return;
+      if(!window.confirm('Update '+(orderNumber||'this order')+' to "'+sellerOrderStatusLabel(targetStatus)+'"? The customer will see this status in My Orders.'))return;
       if(button){button.disabled=true;button.textContent='Updating…';}
       try{
         const client=await getSellerAdminClient(false);
-        const result=await client.rpc('update_genmerch_order_status',{p_order_id:orderId,p_new_status:nextStatus,p_note:''});
+        const result=await client.rpc('update_genmerch_order_status',{p_order_id:orderId,p_new_status:targetStatus,p_note:''});
         if(result.error)throw result.error;
         sellerOrdersLoaded=false;
         await loadSellerOrders(true);
-        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' updated: '+sellerOrderStatusLabel(nextStatus)+'. The customer order timeline has been updated.','success');
+        sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' updated: '+sellerOrderStatusLabel(targetStatus)+'. The customer order timeline has been updated.','success');
+        showToast((orderNumber||'Order')+' updated to '+sellerOrderStatusLabel(targetStatus)+'.');
       }catch(error){
-        sellerFeedback('sellerOrdersFeedback',error.message||'Could not update this order status.','error');
-        if(button){button.disabled=false;button.textContent=step.label;}
+        const message=error&&error.message?error.message:'Could not update this order status.';
+        sellerFeedback('sellerOrdersFeedback',message,'error');
+        showToast(message);
+        if(button){button.disabled=false;button.textContent=targetLabel;}
       }
     }
     async function markSellerOrderShipped(orderId,orderNumber,button){
