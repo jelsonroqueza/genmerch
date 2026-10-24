@@ -4361,6 +4361,7 @@
         const imageResult=await client.from('product_images').insert({product_id:insertedId,image_url:image,alt_text:name,sort_order:0,is_primary:true});if(imageResult.error)throw imageResult.error;
         const variantResult=await client.from('product_variants').insert(sellerVariantRows(insertedId,sku,categoryName));if(variantResult.error)throw variantResult.error;
         const activeResult=await client.from('products').update({is_active:true}).eq('id',insertedId);if(activeResult.error)throw activeResult.error;
+        insertedId=null; // Save is complete; later refresh errors must not delete the newly created product.
         form.reset();sellerFeedback('sellerProductFeedback','Saved "'+name+'" to Supabase with its primary image and default size variants. Stock starts at 0; set verified stock before accepting purchases.','success');
         await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
       }catch(error){
