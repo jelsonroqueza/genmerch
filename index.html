@@ -2146,6 +2146,69 @@
 .seller-order-item-price{display:flex;flex-direction:column;align-items:flex-end;gap:4px;white-space:nowrap}
 .seller-order-address{padding:10px 12px;border:1px dashed #e4cabe;border-radius:8px;background:#fffdfb;font-size:.75rem;line-height:1.65;color:#594940;overflow-wrap:anywhere}
 @media(max-width:560px){.seller-order-item-card{grid-template-columns:54px minmax(0,1fr);gap:9px}.seller-order-item-image{width:54px;height:58px}.seller-order-item-price{grid-column:2;align-items:flex-start}.order-success-number strong{font-size:1.05rem}}
+
+/* GENMERCH two-step checkout: one main scroll region per step with persistent actions. */
+.cart-modal{height:min(780px,calc(100dvh - 48px));}
+.cart-title-wrap{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.checkout-step-indicator{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid #ffffff65;border-radius:999px;color:#fff;font-size:.63rem;letter-spacing:.05em;font-weight:850;line-height:1.1}
+.cart-content{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden;padding:0}
+.checkout-step{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;width:100%;overflow:hidden}
+.checkout-step[hidden]{display:none!important}
+.checkout-step-bar{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid #eee;background:#fff;color:#242424}
+.checkout-step-bar>span:first-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.checkout-step-bar strong{font-size:.9rem;font-weight:900}
+.checkout-step-bar small{color:#777;font-size:.74rem;font-weight:500;line-height:1.35}
+.checkout-step-number{flex:0 0 auto;color:#a13a27;font-size:.73rem;font-weight:850;white-space:nowrap}
+.checkout-order-items{flex:1 1 auto;min-height:110px;max-height:none;overflow-y:auto;overscroll-behavior:contain;padding:8px 20px;border-bottom:0}
+.checkout-step-summary{flex:0 1 auto;min-height:0;max-height:clamp(130px,24dvh,205px);overflow-y:auto;overscroll-behavior:contain;padding:0 18px 10px}
+.checkout-step-summary .summary{margin:0}
+.checkout-step-actions{flex:0 0 auto;padding:11px 18px calc(11px + env(safe-area-inset-bottom));border-top:1px solid #eee;background:#fff}
+.checkout-step-actions .checkout-btn{width:100%;margin:0}
+.checkout-step-actions .checkout-btn:disabled{background:#c8c8c8;color:#666;cursor:not-allowed}
+.checkout-mini-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto;padding:10px 18px;background:#fff8f4;border-bottom:1px solid #f0e5df}
+.checkout-mini-summary>span:first-child{display:flex;flex-direction:column;gap:2px}
+.checkout-mini-summary small{font-size:.7rem;color:#777;font-weight:650}
+.checkout-mini-summary strong{font-size:1rem;font-weight:900;color:var(--primary)}
+.checkout-mini-hint{max-width:52%;text-align:right;font-size:.7rem;color:#765448;line-height:1.35}
+.checkout-step-delivery #checkoutForm{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden}
+.checkout-delivery-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:13px 18px 16px}
+.checkout-delivery-scroll .checkout-grid{gap:10px 12px}
+.checkout-delivery-scroll .form-section-title{margin-top:0}
+.checkout-delivery-scroll .address-data-credit{margin-bottom:4px}
+.checkout-delivery-scroll .draft-storage-panel{margin-bottom:2px}
+.checkout-delivery-actions{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:10px;flex:0 0 auto;padding:10px 18px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #eee;background:#fff}
+.checkout-delivery-actions .checkout-btn{width:100%;min-height:44px;margin:0}
+.checkout-back-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border:1px solid #d7d7d7;border-radius:7px;background:#fff;color:#333;font-size:.83rem;font-weight:850;white-space:nowrap}
+.checkout-back-button:hover{background:#fff5f1;border-color:#efb9ad}
+.checkout-delivery-topbar{padding:9px 18px}
+.checkout-delivery-topbar .checkout-back-button{min-height:34px;padding:6px 10px;font-size:.76rem}
+.checkout-delivery-topbar .checkout-step-number{font-size:.7rem}
+@media(max-width:600px){
+  .cart-modal{width:calc(100vw - 18px);height:calc(100dvh - 24px);max-height:calc(100dvh - 24px)}
+  .cart-title-wrap{gap:6px}
+  .checkout-step-indicator{font-size:.57rem;padding:3px 6px}
+  .checkout-step-bar{padding:10px 12px;gap:8px}
+  .checkout-step-bar strong{font-size:.84rem}
+  .checkout-step-bar small{font-size:.7rem}
+  .checkout-step-number{font-size:.66rem}
+  .checkout-order-items{padding:6px 12px}
+  .checkout-step-summary{padding:0 10px 8px;max-height:clamp(122px,25dvh,190px)}
+  .checkout-step-actions{padding:9px 12px calc(9px + env(safe-area-inset-bottom))}
+  .checkout-mini-summary{padding:9px 12px;gap:7px}
+  .checkout-mini-summary strong{font-size:.94rem}
+  .checkout-mini-hint{font-size:.66rem;max-width:54%}
+  .checkout-delivery-scroll{padding:11px 12px 14px}
+  .checkout-delivery-scroll .checkout-grid{gap:9px}
+  .checkout-delivery-actions{gap:8px;padding:9px 12px calc(9px + env(safe-area-inset-bottom));grid-template-columns:minmax(0,.95fr) minmax(0,1.25fr)}
+  .checkout-back-button{padding:9px 8px;font-size:.76rem}
+  .checkout-delivery-topbar{padding:8px 12px}
+}
+@media(max-height:650px){
+  .cart-modal{height:calc(100dvh - 24px);max-height:calc(100dvh - 24px)}
+  .checkout-step-summary{max-height:24dvh}
+  .checkout-step-bar{padding-top:8px;padding-bottom:8px}
+}
+
 </style>
 
 </head>
@@ -2436,11 +2499,14 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <section class="cart-modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
     <div class="cart-head">
-      <span id="cartTitle">Shopping Cart (<span id="drawerCount">0</span>)</span>
-      <button class="icon-btn" id="closeCartButton" aria-label="Close shopping cart">×</button>
-    </div>
-    <div class="cart-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
-    <div class="cart-content">
+      <span id="cartTitle" class="cart-title-wrap"><span id="cartTitleText">Shopping Cart</span> <span id="drawerCountWrap">(<span id="drawerCount">0</span>)</span><small class="checkout-st    <div class="cart-content" id="cartContent">
+      <section class="checkout-step checkout-step-order" id="checkoutStepOrder" aria-labelledby="cartTitleText">
+        <div class="checkout-step-bar">
+          <span><strong>Your Order</strong><small>Review products, sizes, and quantities.</small></span>
+          <span class="checkout-step-number">Step 1 of 2</span>
+        </div>
+        <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
+        <div class="checkout-step-summary">
       <div class="summary" id="summaryBox" style="display:none">
         <div class="summary-row"><span>Subtotal:</span><span id="subtotalText">₱0</span></div>
         <div class="summary-row"><span>Delivery Fee:</span><span id="shippingText">Enter address</span></div>
@@ -2448,8 +2514,24 @@
         <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
         <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
       </div>
+        </div>
+        <div class="checkout-step-actions">
+          <button type="button" class="checkout-btn" id="checkoutContinueButton" disabled>Continue to Delivery <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
 
+      <section class="checkout-step checkout-step-delivery" id="checkoutStepDelivery" aria-labelledby="cartTitleText" hidden>
+        <div class="checkout-step-bar checkout-delivery-topbar">
+          <button type="button" class="checkout-back-button" id="checkoutBackButton">← Back to order</button>
+          <span class="checkout-step-number">Step 2 of 2 · Delivery</span>
+        </div>
+        <div class="checkout-mini-summary">
+          <span><small>Current order total</small><strong id="checkoutMiniTotal">—</strong></span>
+          <span class="checkout-mini-hint">Shipping updates after you select your address.</span>
+        </div>
       <form id="checkoutForm" novalidate>
+
+        <div class="checkout-delivery-scroll" id="checkoutDeliveryScroll">
         <div class="checkout-grid">
           <div class="form-section-title">📦 Delivery Information</div>
           <div class="field full">
@@ -2519,13 +2601,22 @@
             <button type="button" class="pay-opt" data-payment="Bank Transfer">🏦 Bank</button>
           </div>
         </div>
-        <button type="submit" class="checkout-btn">Place Order</button>
         <p class="checkout-note" id="checkoutBackendNote">Live checkout is connected. Submitting creates a real order and reserves stock. COD is paid on delivery. GCash, Maya, and Bank Transfer are saved as your preferred method only; no online payment is charged automatically.</p>
         <div class="checkout-submit-feedback" id="checkoutSubmitFeedback" role="status" aria-live="polite" hidden></div>
         <div class="draft-storage-panel" aria-label="Saved cart and delivery information">
           <span class="draft-storage-status" id="draftSaveStatus" role="status" aria-live="polite">Preparing automatic save…</span>
           Your cart and delivery details are autosaved in this browser on this device. They are not synced to other devices. Because this includes personal information, avoid using a shared/public device.
           <div class="draft-storage-actions"><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
+        </div>
+          </div>
+          <div class="checkout-delivery-actions">
+            <button type="button" class="checkout-back-button" id="checkoutBackFooterButton">← Back to order</button>
+            <button type="submit" class="checkout-btn">Place Order</button>
+          </div>
+      
+      </form>
+      </section>
+    </div>storage-actions"><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
         </div>
       </form>
     </div>
@@ -4723,9 +4814,33 @@
       };
     }
 
+    let checkoutCurrentStep='order';
+    function setCheckoutStep(step){
+      checkoutCurrentStep=step==='delivery'?'delivery':'order';
+      const deliveryStep=checkoutCurrentStep==='delivery';
+      $('checkoutStepOrder').hidden=deliveryStep;
+      $('checkoutStepDelivery').hidden=!deliveryStep;
+      $('cartTitleText').textContent=deliveryStep?'Delivery Information':'Shopping Cart';
+      $('drawerCountWrap').hidden=deliveryStep;
+      $('checkoutStepIndicator').textContent=deliveryStep?'STEP 2 OF 2':'STEP 1 OF 2';
+      $('checkoutContinueButton').disabled=!cart.length;
+      if(deliveryStep){
+        $('checkoutDeliveryScroll').scrollTop=0;
+      }else{
+        $('cartItemsContainer').scrollTop=0;
+      }
+    }
+    $('checkoutContinueButton').addEventListener('click',()=>{
+      if(!cart.length){showToast('Your cart is empty. Add a product before continuing.');return;}
+      setCheckoutStep('delivery');
+    });
+    $('checkoutBackButton').addEventListener('click',()=>setCheckoutStep('order'));
+    $('checkoutBackFooterButton').addEventListener('click',()=>setCheckoutStep('order'));
+
     function updateCart(){
       const count=cart.reduce((sum,item)=>sum+item.qty,0);
       $('cartBadge').textContent=count;$('drawerCount').textContent=count;
+      $('checkoutContinueButton').disabled=!cart.length;
       if(!cart.length){$('cartItemsContainer').innerHTML='<p class="cart-empty">Your cart is empty.</p>';}
       else{
         $('cartItemsContainer').innerHTML=cart.map(item=>{
@@ -4764,6 +4879,7 @@
         $('finalTotalText').textContent='Complete address';
         $('shippingEstimate').textContent='Choose a city/municipality and province from the suggestions. The matched destination and shipping zone will appear here automatically.';
       }
+      $('checkoutMiniTotal').textContent=$('finalTotalText').textContent.trim()||'—';
       saveDraftState();
     }
     $('cartItemsContainer').addEventListener('click',event=>{
@@ -4774,6 +4890,7 @@
     });
 
     function openCart(){
+      setCheckoutStep('order');
       $('cartOverlay').classList.add('open');$('cartModal').classList.add('open');
       $('cartModal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     }
