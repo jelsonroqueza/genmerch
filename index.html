@@ -1123,7 +1123,25 @@
     }
     @media(prefers-reduced-motion:reduce){.social-link{transition:none}}
 
-  </style>
+  
+/* GENMERCH Seller Centre — isolated additions; existing storefront styles remain intact. */
+.seller-centre-trigger{border:1px solid #ff2b16!important;border-radius:999px!important;background:#fff7f3!important;color:#c91f0d!important;padding:7px 10px!important;min-width:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;white-space:nowrap!important}
+.seller-centre-trigger .seller-trigger-icon{font-size:1.25rem;line-height:1.05}.seller-centre-trigger small{font-size:.64rem!important;font-weight:850!important;line-height:1.1}.seller-centre-trigger:hover{background:#ffe9e1!important;border-color:#d91e0d!important}
+.seller-modal-overlay{position:fixed;inset:0;z-index:2400;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(12,12,12,.68);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.seller-modal-overlay.open{display:flex}
+.seller-modal{width:min(560px,100%);max-height:min(94dvh,920px);overflow:auto;background:#fff;color:#171717;border:1px solid #f0e5df;border-radius:17px;box-shadow:0 28px 90px rgba(0,0,0,.35)}.seller-dashboard-modal{width:min(1180px,100%);max-height:min(95dvh,980px)}
+.seller-modal-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff}.seller-modal-head h2{font-size:1.08rem;font-weight:900;line-height:1.25;margin:0}.seller-modal-head p{font-size:.77rem;opacity:.92;margin:4px 0 0;line-height:1.4}
+.seller-modal-close{flex:0 0 auto;width:36px;height:36px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:1.65rem;line-height:1}.seller-modal-close:hover{background:#ffffff35}.seller-passcode-body{padding:22px}.seller-passcode-body>p{font-size:.9rem;line-height:1.55;color:#555;margin-bottom:15px}
+.seller-field{display:flex;flex-direction:column;gap:6px;min-width:0}.seller-field label{font-size:.8rem;font-weight:850;color:#333}.seller-field input,.seller-field textarea,.seller-field select{width:100%;min-width:0;border:1px solid #d8d1cc;border-radius:8px;padding:11px 12px;background:#fff;color:#191919;font-size:.92rem;outline:none}.seller-field input:focus,.seller-field textarea:focus,.seller-field select:focus{border-color:#ff3218;box-shadow:0 0 0 3px #ff32181c}.seller-field textarea{min-height:82px;resize:vertical}.seller-passcode-input{font-size:1.35rem!important;letter-spacing:.32em;text-align:center;font-weight:900}
+.seller-primary-button,.seller-secondary-button,.seller-danger-button{min-height:40px;border-radius:8px;padding:10px 13px;font-size:.82rem;font-weight:850;transition:background .15s,border-color .15s;white-space:nowrap}.seller-primary-button{border:1px solid #f52a12;background:linear-gradient(110deg,#ff3218,#f52a12);color:#fff}.seller-primary-button:hover{background:linear-gradient(110deg,#e8240e,#d91e0d)}.seller-primary-button:disabled{opacity:.55;cursor:not-allowed}.seller-secondary-button{border:1px solid #ddd3cd;background:#fff;color:#3b332e}.seller-secondary-button:hover{background:#fff3ed;border-color:#ffb7a5}.seller-danger-button{border:1px solid #f1b6af;background:#fff5f3;color:#b42318}.seller-danger-button:hover{background:#ffe7e2}
+.seller-passcode-actions{display:flex;gap:9px;margin-top:15px}.seller-passcode-actions button{flex:1}.seller-feedback{margin-top:11px;border-radius:8px;padding:10px 12px;font-size:.8rem;line-height:1.45;background:#f5f5f5;color:#444;overflow-wrap:anywhere}.seller-feedback[hidden]{display:none}.seller-feedback.error{background:#fff0ef;color:#a61b1b;border:1px solid #f4ceca}.seller-feedback.success{background:#edf9f1;color:#176b36;border:1px solid #c8ead3}
+.seller-security-note{margin:14px 18px 0;padding:11px 13px;border:1px solid #f2d7a4;border-radius:9px;background:#fff9e9;color:#6a4a10;font-size:.76rem;line-height:1.5}
+.seller-tabs{display:flex;align-items:center;gap:7px;padding:13px 18px 0;border-bottom:1px solid #eee5df;background:#fff;position:sticky;top:67px;z-index:2}.seller-tab-button{border:0;border-bottom:3px solid transparent;background:transparent;color:#6b625d;padding:11px 15px 10px;font-size:.86rem;font-weight:850}.seller-tab-button.active{border-bottom-color:#ff3218;color:#d72712}.seller-tab-tools{margin-left:auto;display:flex;gap:8px;padding-bottom:8px}
+.seller-panel{padding:18px;min-width:0}.seller-panel[hidden]{display:none!important}.seller-panel-title{font-size:1.02rem;font-weight:900;margin:0 0 4px;color:#211a16}.seller-panel-subtitle{font-size:.78rem;color:#766c66;line-height:1.45;margin-bottom:15px}.seller-product-form{padding:15px;border:1px solid #eee2dc;border-radius:12px;background:#fffdfb;margin-bottom:19px}.seller-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.seller-field.full{grid-column:1/-1}.seller-product-form .seller-form-actions{display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.seller-table-wrap{width:100%;overflow:auto;border:1px solid #eee5df;border-radius:10px;background:#fff}.seller-table{width:100%;border-collapse:separate;border-spacing:0;min-width:700px;font-size:.8rem}.seller-table th,.seller-table td{padding:11px 12px;text-align:left;border-bottom:1px solid #f0eae5;vertical-align:middle;line-height:1.4}.seller-table th{position:sticky;top:0;background:#fff6f1;color:#5a3429;font-size:.72rem;letter-spacing:.025em;text-transform:uppercase;font-weight:900;white-space:nowrap}.seller-table tr:last-child td{border-bottom:0}.seller-table td{color:#39312c}.seller-product-cell{display:flex;align-items:center;gap:10px;min-width:190px}.seller-product-thumb{width:44px;height:48px;object-fit:cover;border-radius:7px;border:1px solid #eee4dd;background:#faf6f2;flex:0 0 auto}.seller-product-name{font-weight:850;color:#211a16;max-width:260px;overflow-wrap:anywhere}.seller-muted{font-size:.72rem;color:#7c716a;margin-top:3px}.seller-status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:.68rem;font-weight:850;white-space:nowrap;background:#edf8ef;color:#27683a}.seller-status-pill.inactive{background:#f1f1f1;color:#666}.seller-table-empty{padding:24px 16px;text-align:center;color:#766c66;font-size:.85rem;line-height:1.5}.seller-order-value{max-width:260px;overflow-wrap:anywhere;white-space:pre-wrap}.seller-dashboard-foot{padding:12px 18px;border-top:1px solid #eee5df;color:#756b65;font-size:.72rem;line-height:1.45;background:#fffdfb}
+@media(max-width:760px){.seller-centre-trigger{padding:4px 2px!important;border:0!important;background:transparent!important;min-width:30px!important}.seller-centre-trigger .seller-trigger-icon{font-size:1.2rem}.seller-centre-trigger small{font-size:.52rem!important;max-width:48px;white-space:normal;text-align:center}.seller-modal-overlay{padding:8px}.seller-modal,.seller-dashboard-modal{max-height:96dvh;border-radius:13px}.seller-modal-head{padding:13px 14px}.seller-modal-head h2{font-size:1rem}.seller-passcode-body{padding:18px 15px}.seller-dashboard-modal{width:100%}.seller-tabs{top:60px;padding:9px 10px 0;gap:0;flex-wrap:wrap}.seller-tab-button{padding:10px 11px;font-size:.8rem}.seller-tab-tools{margin-left:auto;padding:0 0 7px}.seller-tab-tools button{padding:8px 9px;font-size:.72rem}.seller-panel{padding:13px 11px}.seller-product-form{padding:12px}.seller-form-grid{grid-template-columns:1fr;gap:10px}.seller-field.full{grid-column:auto}.seller-product-form .seller-form-actions{justify-content:stretch}.seller-product-form .seller-form-actions button{flex:1}.seller-security-note{margin:10px 11px}.seller-dashboard-foot{padding:11px}}
+@media(max-width:380px){.seller-centre-trigger small{display:none}.seller-centre-trigger{min-width:28px!important}}@media(prefers-reduced-motion:reduce){.seller-primary-button,.seller-secondary-button,.seller-danger-button{transition:none}}
+
+</style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
     :root {
@@ -1986,6 +2004,9 @@
             <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
             <small>Cart</small>
           </button>
+          <button class="header-action seller-centre-trigger" id="openSellerCentreButton" type="button" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">
+            <span class="seller-trigger-icon" aria-hidden="true">🛍️</span><small>Seller Centre</small>
+          </button>
         </div>
       </div>
       <nav class="desktop-links" aria-label="Main navigation">
@@ -1995,6 +2016,55 @@
   </header>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><span id="toastText">Added to your cart</span></div>
+
+
+  <div class="seller-modal-overlay" id="sellerPasscodeOverlay" aria-hidden="true">
+    <section class="seller-modal" role="dialog" aria-modal="true" aria-labelledby="sellerPasscodeTitle">
+      <div class="seller-modal-head"><div><h2 id="sellerPasscodeTitle">🛍️ Seller Centre</h2><p>Admin access verification</p></div><button class="seller-modal-close" type="button" onclick="closeSellerPasscode()" aria-label="Close passcode dialog">×</button></div>
+      <form class="seller-passcode-body" id="sellerPasscodeForm">
+        <p>Enter the Seller Centre passcode. Cloud access is also checked against your authorized Supabase admin account.</p>
+        <div class="seller-field"><label for="sellerPasscodeInput">Seller Centre passcode</label><input class="seller-passcode-input" id="sellerPasscodeInput" type="password" inputmode="numeric" autocomplete="off" maxlength="6" minlength="6" pattern="[0-9]{6}" aria-describedby="sellerPasscodeFeedback" required></div>
+        <div class="seller-feedback" id="sellerPasscodeFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-passcode-actions"><button class="seller-secondary-button" type="button" onclick="closeSellerPasscode()">Cancel</button><button class="seller-primary-button" type="submit" id="sellerPasscodeSubmit">Unlock Seller Centre</button></div>
+      </form>
+      <div class="seller-security-note">The passcode is an extra interface gate, not a replacement for account permissions. Supabase Row Level Security protects cloud records.</div>
+    </section>
+  </div>
+  <div class="seller-modal-overlay" id="sellerDashboardOverlay" aria-hidden="true">
+    <section class="seller-modal seller-dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="sellerDashboardTitle">
+      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre">×</button></div>
+      <div class="seller-tabs" role="tablist" aria-label="Seller Centre sections">
+        <button class="seller-tab-button active" type="button" role="tab" id="sellerProductsTab" aria-selected="true" aria-controls="sellerProductsPanel" onclick="switchSellerTab('products')">Products</button>
+        <button class="seller-tab-button" type="button" role="tab" id="sellerOrdersTab" aria-selected="false" aria-controls="sellerOrdersPanel" onclick="switchSellerTab('orders')">Orders</button>
+        <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
+      </div>
+      <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
+        <h3 class="seller-panel-title">Add a product</h3><p class="seller-panel-subtitle">New products save to Supabase. Default size variants start at zero stock until verified inventory is entered.</p>
+        <form class="seller-product-form" id="sellerProductForm">
+          <div class="seller-form-grid">
+            <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
+            <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select></div>
+            <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
+            <div class="seller-field"><label for="sellerSellingPrice">Selling price (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
+            <div class="seller-field"><label for="sellerOriginalPrice">Original price (₱)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional"></div>
+            <div class="seller-field full"><label for="sellerImageUrl">Primary image URL *</label><input id="sellerImageUrl" name="image_url" type="url" maxlength="1500" placeholder="https://…" required></div>
+            <div class="seller-field full"><label for="sellerProductDescription">Description</label><textarea id="sellerProductDescription" name="description" maxlength="4000" placeholder="Describe the product"></textarea></div>
+          </div>
+          <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="reset">Clear form</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Save product to Supabase</button></div>
+          <div class="seller-feedback" id="sellerProductFeedback" role="status" aria-live="polite" hidden></div>
+        </form>
+        <h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p>
+        <div class="seller-feedback" id="sellerProductsFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
+      </section>
+      <section class="seller-panel" id="sellerOrdersPanel" role="tabpanel" aria-labelledby="sellerOrdersTab" hidden>
+        <h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Latest records from the Supabase orders table. The current storefront checkout is not yet connected to order creation.</p>
+        <div class="seller-feedback" id="sellerOrdersFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
+      </section>
+      <div class="seller-dashboard-foot">GENMERCH Seller Centre · Supabase admin-only cloud access · Inventory remains at zero until verified stock is entered.</div>
+    </section>
+  </div>
 
   <main class="container">
     <section class="hero">
@@ -4199,6 +4269,132 @@
     }
     setCustomerAuthMode('signin');
     initializeCustomerAuth();
+
+
+    // GENMERCH Seller Centre. Passcode is a convenience gate; Supabase RLS is the security boundary.
+    const GENMERCH_SELLER_PASSCODE = '121793';
+    let sellerCentreIsUnlocked = false;
+    let sellerCurrentTab = 'products';
+    let sellerCategories = [];
+    let sellerOrdersLoaded = false;
+    function sellerEscape(value){return String(value===null||value===undefined?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function sellerFeedback(id,message,type){const node=$(id);if(!node)return;node.textContent=message||'';node.className='seller-feedback'+(type?' '+type:'');node.hidden=!message;}
+    function sellerShowOverlay(id){const node=$(id);if(!node)return;node.classList.add('open');node.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+    function sellerHideOverlay(id){const node=$(id);if(!node)return;node.classList.remove('open');node.setAttribute('aria-hidden','true');if(!document.querySelector('.seller-modal-overlay.open')&&!$('cartModal').classList.contains('open')&&!$('productOverlay').classList.contains('open')&&!$('noticeOverlay').classList.contains('open')&&!$('customerAuthOverlay').classList.contains('open'))document.body.style.overflow='';}
+    function openSellerCentre(){sellerFeedback('sellerPasscodeFeedback','','');$('sellerPasscodeInput').value='';sellerShowOverlay('sellerPasscodeOverlay');window.setTimeout(()=>$('sellerPasscodeInput').focus(),30);}
+    function closeSellerPasscode(){sellerHideOverlay('sellerPasscodeOverlay');$('sellerPasscodeInput').value='';}
+    function closeSellerDashboard(){sellerCentreIsUnlocked=false;sellerHideOverlay('sellerDashboardOverlay');}
+
+    async function getSellerAdminClient(refreshSession){
+      const client=getCustomerAuthClient();let result=await client.auth.getSession();if(result.error)throw result.error;
+      let session=result.data&&result.data.session;
+      if(!session||!session.user)throw new Error('Please sign in first using the Account button with the authorized Seller Centre admin account.');
+      if(refreshSession){const refreshed=await client.auth.refreshSession();if(refreshed.error)throw refreshed.error;if(refreshed.data&&refreshed.data.session)session=refreshed.data.session;}
+      if((session.user.app_metadata||{}).role!=='admin')throw new Error('This Supabase account is not authorized as a Seller Centre admin. Sign in with the owner admin account and retry.');
+      return client;
+    }
+    async function verifySellerPasscode(event){
+      event.preventDefault();const input=$('sellerPasscodeInput'),submit=$('sellerPasscodeSubmit');
+      if(String(input.value||'').trim()!==GENMERCH_SELLER_PASSCODE){sellerFeedback('sellerPasscodeFeedback','Incorrect passcode. Please try again.','error');input.value='';input.focus();return;}
+      submit.disabled=true;submit.textContent='Verifying…';sellerFeedback('sellerPasscodeFeedback','Checking your Supabase admin session…','');
+      try{await getSellerAdminClient(true);sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();}
+      catch(error){const message=error&&error.message?error.message:'Could not verify Seller Centre access.';if(/sign in first/i.test(message)){closeSellerPasscode();openCustomerAuth();showToast('Please sign in using the authorized Seller Centre admin account.');}else{sellerFeedback('sellerPasscodeFeedback',message,'error');input.value='';input.focus();}}
+      finally{submit.disabled=false;submit.textContent='Unlock Seller Centre';}
+    }
+    function sellerSetLoadingRow(id,columns,message){const tbody=$(id);if(tbody)tbody.innerHTML='<tr><td colspan="'+columns+'" class="seller-table-empty">'+sellerEscape(message)+'</td></tr>';}
+    function sellerSlugify(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70)||'product';}
+    function sellerRandomSuffix(){return Math.random().toString(36).slice(2,7).toUpperCase()+Date.now().toString(36).slice(-3).toUpperCase();}
+    function sellerMakeSku(name,suffix){const stem=sellerSlugify(name).replace(/-/g,'').slice(0,10).toUpperCase()||'ITEM';return 'GM-'+stem+'-'+suffix;}
+    function sellerVariantRows(productId,sku,categoryName){const category=String(categoryName||'').toLowerCase();const sizes=/\b(cap|caps|bag|bags)\b/.test(category)?['Free Size']:['Small','Medium','Large','Free Size','Extra Size'];return sizes.map(size=>({product_id:productId,sku:sku+'-'+size.replace(/[^A-Za-z0-9]+/g,'').toUpperCase().slice(0,8),size_label:size,color_label:null,price_override:null,stock_quantity:0,is_active:true}));}
+    function sellerSetCategoryOptions(categories){const select=$('sellerProductCategory'),previous=select.value;select.innerHTML='<option value="">Choose a category</option>'+categories.map(item=>'<option value="'+sellerEscape(item.id)+'">'+sellerEscape(item.name||'Unnamed category')+'</option>').join('');if(categories.some(item=>String(item.id)===previous))select.value=previous;}
+
+    async function loadSellerProducts(){
+      if(!sellerCentreIsUnlocked)return;sellerSetLoadingRow('sellerProductsTableBody',6,'Loading products from Supabase…');sellerFeedback('sellerProductsFeedback','','');
+      try{
+        const client=await getSellerAdminClient(false);
+        const results=await Promise.all([
+          client.from('categories').select('id,name,slug,is_active,sort_order').eq('is_active',true).order('sort_order',{ascending:true}),
+          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,is_active,is_demo,is_featured,location,created_at').order('created_at',{ascending:false}).limit(300),
+          client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').order('sort_order',{ascending:true}),
+          client.from('product_variants').select('id,product_id,size_label,color_label,stock_quantity,is_active')
+        ]);
+        for(const item of results)if(item.error)throw item.error;
+        sellerCategories=results[0].data||[];sellerSetCategoryOptions(sellerCategories);
+        const categoryMap=new Map(sellerCategories.map(item=>[String(item.id),item.name||'Other'])),imageMap=new Map(),variantMap=new Map();
+        (results[2].data||[]).forEach(item=>{const key=String(item.product_id);if(!imageMap.has(key))imageMap.set(key,[]);imageMap.get(key).push(item);});
+        (results[3].data||[]).forEach(item=>{const key=String(item.product_id);if(!variantMap.has(key))variantMap.set(key,[]);variantMap.get(key).push(item);});
+        renderSellerProducts(results[1].data||[],categoryMap,imageMap,variantMap);
+        if(!sellerCategories.length)sellerFeedback('sellerProductsFeedback','No active categories were returned. Activate a category in Supabase before adding products.','error');
+      }catch(error){sellerSetLoadingRow('sellerProductsTableBody',6,'Product data could not be loaded.');sellerFeedback('sellerProductsFeedback',error.message||'Could not load products. Check the Supabase admin policies.','error');}
+    }
+    function renderSellerProducts(rows,categoryMap,imageMap,variantMap){
+      const tbody=$('sellerProductsTableBody');if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No products found in cloud inventory.</td></tr>';return;}
+      tbody.innerHTML=rows.map(product=>{
+        const id=String(product.id),images=(imageMap.get(id)||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+        const image=images[0]?safeCatalogImageUrl(images[0].image_url):'',variants=variantMap.get(id)||[],activeVariants=variants.filter(row=>row.is_active!==false);
+        const stock=activeVariants.reduce((total,row)=>total+Math.max(0,Math.floor(Number(row.stock_quantity)||0)),0),category=categoryMap.get(String(product.category_id))||'Other';
+        const status=product.is_active?'<span class="seller-status-pill">Active</span>':'<span class="seller-status-pill inactive">Inactive</span>';
+        const action=product.is_active?'<button class="seller-danger-button" type="button" data-seller-product-action="deactivate" data-product-id="'+sellerEscape(id)+'">Delete</button>':'<button class="seller-secondary-button" type="button" data-seller-product-action="restore" data-product-id="'+sellerEscape(id)+'">Restore</button>';
+        const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
+        return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong>'+(Number(product.compare_at_price)>0?'<div class="seller-muted">Original: '+sellerEscape(money(product.compare_at_price))+'</div>':'')+'</td><td>'+activeVariants.length+' active size(s)<div class="seller-muted">Stock total: '+stock+'</div></td><td>'+status+(product.is_demo?'<div class="seller-muted">Demo product</div>':'')+'</td><td>'+action+'</td></tr>';
+      }).join('');
+      tbody.querySelectorAll('[data-seller-product-action]').forEach(button=>button.addEventListener('click',()=>handleSellerProductAction(button.dataset.productId,button.dataset.sellerProductAction)));
+    }
+    async function handleSellerProductAction(productId,action){
+      const activate=action==='restore';if(!window.confirm(activate?'Restore this product to the active storefront?':'Delete this product from the active storefront? This deactivates it and preserves related records.'))return;
+      try{const client=await getSellerAdminClient(false),result=await client.from('products').update({is_active:activate}).eq('id',productId);if(result.error)throw result.error;sellerFeedback('sellerProductsFeedback',activate?'Product restored.':'Product deactivated. Related records are preserved.','success');await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();}
+      catch(error){sellerFeedback('sellerProductsFeedback',error.message||'Could not update this product.','error');}
+    }
+    async function submitSellerProduct(event){
+      event.preventDefault();if(!sellerCentreIsUnlocked)return;const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent='Saving…';sellerFeedback('sellerProductFeedback','','');let insertedId=null;
+      try{
+        const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
+        const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
+        const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw),image=safeCatalogImageUrl($('sellerImageUrl').value);
+        if(!name||!categoryId||!location)throw new Error('Complete product name, category, and location.');
+        if(!Number.isFinite(price)||price<=0)throw new Error('Selling price must be greater than zero.');
+        if(original!==null&&(!Number.isFinite(original)||original<price))throw new Error('Original price must be blank or greater than or equal to the selling price.');
+        if(!image)throw new Error('Enter a valid http:// or https:// image URL.');
+        const suffix=sellerRandomSuffix(),slug=sellerSlugify(name)+'-'+suffix.toLowerCase(),sku=sellerMakeSku(name,suffix);
+        const created=await client.from('products').insert({name,category_id:categoryId,slug,sku,description:description||null,base_price:price,compare_at_price:original,location,is_active:false,is_demo:false,is_featured:false}).select('id,name,sku').single();
+        if(created.error)throw created.error;insertedId=created.data.id;
+        const imageResult=await client.from('product_images').insert({product_id:insertedId,image_url:image,alt_text:name,sort_order:0,is_primary:true});if(imageResult.error)throw imageResult.error;
+        const variantResult=await client.from('product_variants').insert(sellerVariantRows(insertedId,sku,categoryName));if(variantResult.error)throw variantResult.error;
+        const activeResult=await client.from('products').update({is_active:true}).eq('id',insertedId);if(activeResult.error)throw activeResult.error;
+        form.reset();sellerFeedback('sellerProductFeedback','Saved "'+name+'" to Supabase with its primary image and default size variants. Stock starts at 0; set verified stock before accepting purchases.','success');
+        await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+      }catch(error){
+        if(insertedId){try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',insertedId);await client.from('product_variants').delete().eq('product_id',insertedId);await client.from('products').delete().eq('id',insertedId);}catch(_){}}
+        sellerFeedback('sellerProductFeedback',(error.message||'Could not save the product.')+(insertedId?' The page attempted cleanup; verify cloud inventory before retrying.':''),'error');
+      }finally{button.disabled=false;button.textContent='＋ Save product to Supabase';}
+    }
+    function switchSellerTab(tab){
+      sellerCurrentTab=tab==='orders'?'orders':'products';const productsSelected=sellerCurrentTab==='products';
+      $('sellerProductsPanel').hidden=!productsSelected;$('sellerOrdersPanel').hidden=productsSelected;
+      $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerOrdersTab').classList.toggle('active',!productsSelected);
+      $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(!productsSelected));
+      if(!productsSelected&&!sellerOrdersLoaded)loadSellerOrders();
+    }
+    async function refreshSellerTab(){if(sellerCurrentTab==='orders')await loadSellerOrders();else await loadSellerProducts();}
+    function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
+    function renderSellerOrders(rows){
+      const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
+      const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at']];
+      head.innerHTML='<tr>'+columns.map(col=>'<th>'+sellerEscape(col[0])+'</th>').join('')+'</tr>';
+      if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders currently exist. Checkout is not yet connected to order creation.</td></tr>';return;}
+      body.innerHTML=rows.map(row=>'<tr>'+columns.map(col=>{let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);if(col[1]==='total_amount')display=money(value);if(col[1]==='created_at')display=sellerDate(value);return '<td><div class="seller-order-value">'+sellerEscape(display)+'</div></td>';}).join('')+'</tr>').join('');
+    }
+    async function loadSellerOrders(){
+      if(!sellerCentreIsUnlocked)return;sellerSetLoadingRow('sellerOrdersTableBody',12,'Loading orders from Supabase…');sellerFeedback('sellerOrdersFeedback','','');
+      try{const client=await getSellerAdminClient(false),result=await client.from('orders').select('order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,shipping_street_address,shipping_city_municipality,shipping_province,created_at').order('created_at',{ascending:false}).limit(200);if(result.error)throw result.error;renderSellerOrders(Array.isArray(result.data)?result.data:[]);sellerOrdersLoaded=true;}
+      catch(error){sellerSetLoadingRow('sellerOrdersTableBody',12,'Orders could not be loaded.');sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders. Check admin SELECT permission.','error');sellerOrdersLoaded=false;}
+    }
+    $('sellerPasscodeForm').addEventListener('submit',verifySellerPasscode);
+    $('sellerProductForm').addEventListener('submit',submitSellerProduct);
+    $('sellerProductResetButton').addEventListener('click',()=>sellerFeedback('sellerProductFeedback','',''));
+    $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
+    $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
 
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
