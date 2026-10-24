@@ -199,6 +199,7 @@ Deno.serve(async (request: Request) => {
       .eq("id", orderId)
       .eq("order_number", orderNumber)
       .eq("customer_phone", phone)
+      .eq("receipt_email", recipient)
       .maybeSingle();
 
     if (orderError || !order) {
@@ -209,14 +210,13 @@ Deno.serve(async (request: Request) => {
       return jsonResponse(403, { ok: false, code: "confirmation_window_expired", message: "The automatic email confirmation window has expired." });
     }
 
-    // Store the customer's selected receipt destination even if the email provider still needs setup.
-    const { error: recipientSaveError } = await admin
-      .from("orders")
-      .update({ receipt_email: recipient })
-      .eq("id", orderId);
-    if (recipientSaveError) {
-      console.error("Could not save order receipt recipient.", recipientSaveError.message);
-      return jsonResponse(500, { ok: false, code: "recipient_save_failed", message: "Order saved, but the receipt email address could not be saved." });
+    // receipt_email is saved atomically during order creation and cannot be changed through this public endpoint.
+    if (String(order.receipt_email || "").trim().toLowerCase() !== recipient) {
+      return jsonResponse(409, {
+        ok: false,
+        code: "receipt_email_mismatch",
+        message: "This email does not match the receipt address selected during checkout. Contact the seller if you need help.",
+      });
     }
 
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
