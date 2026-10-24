@@ -2043,6 +2043,30 @@
     @media(max-width:520px){.customer-auth-field input{font-size:16px}.customer-auth-tab{font-size:.82rem}}
 
 </style>
+<style id="genmerch-live-checkout-styles">
+.checkout-submit-feedback{margin:10px 0;padding:11px 13px;border:1px solid #efc1b7;border-radius:8px;background:#fff7f4;color:#7f291c;font-size:.82rem;line-height:1.5}
+.checkout-submit-feedback[hidden]{display:none!important}
+.checkout-submit-feedback.error{border-color:#f2b6b0;background:#fff0ef;color:#a11c16}
+.checkout-submit-feedback.success{border-color:#b7e1c1;background:#effaf1;color:#205f32}
+.order-success-number{display:flex;flex-direction:column;gap:4px;margin:14px 0;padding:14px;border:1px solid #f2b9ac;border-radius:10px;background:#fff8f4}
+.order-success-number span{font-size:.75rem;color:#765b51;font-weight:700}
+.order-success-number strong{font-size:1.25rem;letter-spacing:.04em;color:#e92d17}
+.order-success-total{padding:10px 0;border-top:1px solid #eee1da;font-size:1.04rem}
+.seller-order-items-toggle{min-height:30px;padding:6px 8px;font-size:.7rem;white-space:nowrap}
+.seller-order-detail-row[hidden]{display:none!important}
+.seller-order-detail-row>td{padding:12px!important;background:#fffaf6}
+.seller-order-items-panel{display:flex;flex-direction:column;gap:10px}
+.seller-order-item-card{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px;border:1px solid #eee1d9;border-radius:9px;background:#fff}
+.seller-order-item-image{width:64px;height:68px;object-fit:contain;display:grid;place-items:center;border:1px solid #eee1d9;border-radius:7px;background:#fff8f4}
+.seller-order-item-placeholder{font-size:1.6rem}
+.seller-order-item-info{display:flex;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}
+.seller-order-item-info strong{font-size:.83rem;color:#261b16}
+.seller-order-item-info span,.seller-order-item-price span{font-size:.7rem;color:#78695f}
+.seller-order-item-price{display:flex;flex-direction:column;align-items:flex-end;gap:4px;white-space:nowrap}
+.seller-order-address{padding:10px 12px;border:1px dashed #e4cabe;border-radius:8px;background:#fffdfb;font-size:.75rem;line-height:1.65;color:#594940;overflow-wrap:anywhere}
+@media(max-width:560px){.seller-order-item-card{grid-template-columns:54px minmax(0,1fr);gap:9px}.seller-order-item-image{width:54px;height:58px}.seller-order-item-price{grid-column:2;align-items:flex-start}.order-success-number strong{font-size:1.05rem}}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -2169,7 +2193,7 @@
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
       </section>
       <section class="seller-panel" id="sellerOrdersPanel" role="tabpanel" aria-labelledby="sellerOrdersTab" hidden>
-        <h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Latest records from the Supabase orders table. The current storefront checkout is not yet connected to order creation.</p>
+        <h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Live customer orders saved by checkout. New orders and their item details refresh automatically while this tab is open.</p>
         <div class="seller-feedback" id="sellerOrdersFeedback" role="status" aria-live="polite" hidden></div>
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
       </section>
@@ -2414,8 +2438,9 @@
             <button type="button" class="pay-opt" data-payment="Bank Transfer">🏦 Bank</button>
           </div>
         </div>
-        <button type="submit" class="checkout-btn">Proceed to Checkout</button>
-        <p class="checkout-note">Checkout is not yet connected to a secure order backend. No order or payment will be submitted from this demo.</p>
+        <button type="submit" class="checkout-btn">Place Order</button>
+        <p class="checkout-note" id="checkoutBackendNote">Live checkout is connected. Submitting creates a real order and reserves stock. COD is paid on delivery. GCash, Maya, and Bank Transfer are saved as your preferred method only; no online payment is charged automatically.</p>
+        <div class="checkout-submit-feedback" id="checkoutSubmitFeedback" role="status" aria-live="polite" hidden></div>
         <div class="draft-storage-panel" aria-label="Saved cart and delivery information">
           <span class="draft-storage-status" id="draftSaveStatus" role="status" aria-live="polite">Preparing automatic save…</span>
           Your cart and delivery details are autosaved in this browser on this device. They are not synced to other devices. Because this includes personal information, avoid using a shared/public device.
@@ -4254,27 +4279,129 @@
       $(id).addEventListener('change',updateCart);
     });
 
-    $('checkoutForm').addEventListener('submit',event=>{
-      event.preventDefault();
-      if(!cart.length){showNotice('Your cart is empty.','Add at least one product before opening checkout.');return;}
-      let valid=true;let firstInvalid=null;
+    const GENMERCH_PENDING_CHECKOUT_KEY='genmerch.pendingCheckout.v1';
+    let checkoutSubmitting=false;
+    function checkoutFeedback(message,type=''){
+      const node=$('checkoutSubmitFeedback');
+      if(!node)return;
+      node.textContent=message||'';
+      node.className='checkout-submit-feedback'+(type?' '+type:'');
+      node.hidden=!message;
+    }
+    function checkoutRequestIdForPayload(payload){
+      const signature=JSON.stringify(payload);
+      try{
+        const old=JSON.parse(sessionStorage.getItem(GENMERCH_PENDING_CHECKOUT_KEY)||'null');
+        if(old&&old.signature===signature&&old.id)return old.id;
+      }catch(_){}
+      const id=(window.crypto&&typeof window.crypto.randomUUID==='function')
+        ?window.crypto.randomUUID()
+        :'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,ch=>{const r=Math.random()*16|0;return (ch==='x'?r:(r&3|8)).toString(16);});
+      try{sessionStorage.setItem(GENMERCH_PENDING_CHECKOUT_KEY,JSON.stringify({signature,id}));}catch(_){}
+      return id;
+    }
+    async function submitLiveGenmerchOrder(){
+      if(checkoutSubmitting)return;
+      if(!cart.length){checkoutFeedback('Your cart is empty. Add a product before placing an order.','error');return;}
+      let valid=true,firstInvalid=null;
       requiredFields.forEach(field=>{
-        const input=$(field.id);const fieldValid=field.valid(input.value.trim());
+        const input=$(field.id),fieldValid=field.valid(input.value.trim());
         $(field.error).classList.toggle('show',!fieldValid);
         if(!fieldValid){valid=false;if(!firstInvalid)firstInvalid=input;}
       });
       if(!valid){firstInvalid?.focus();return;}
-
-      // Addresses are separated into explicit fields for future backend submission.
-      // Do not show a fake successful order or clear the cart without server validation.
-      showCheckoutUnavailable();
-    });
-
-    function showCheckoutUnavailable(){
-      closeCart();
-      showNotice('Checkout Not Available Yet',
-        '<p><strong>No order has been placed.</strong></p><p>GENMERCH is not connected to a secure order-processing backend yet, so your order cannot be submitted or confirmed.</p><p>Your cart and the information you entered have not been submitted. No payment has been processed.</p>');
+      const delivery=detectDeliveryRegion();
+      if(!delivery){
+        checkoutFeedback('We could not confirm the delivery zone. Please select your province and city again from the address suggestions.','error');
+        $('province').focus();return;
+      }
+      const lines=cart.map(item=>({
+        product_id:String(item.id||''),
+        variant_id:String(item.variantId||''),
+        quantity:Math.max(1,Math.floor(Number(item.qty)||1))
+      }));
+      if(lines.some(item=>!item.product_id||!item.variant_id)){
+        checkoutFeedback('One or more cart items have no valid size variant. Remove the item, refresh the catalog, and add it again.','error');
+        return;
+      }
+      const requestPayload={
+        customer_name:$('custName').value.trim(),
+        customer_phone:$('custPhone').value.trim(),
+        customer_email:(customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.email)||null,
+        shipping_street_address:$('streetAddress').value.trim(),
+        shipping_barangay:$('barangay').value.trim(),
+        shipping_city_municipality:$('city').value.trim(),
+        shipping_province:$('province').value.trim(),
+        shipping_postal_code:$('postalCode').value.trim(),
+        shipping_landmark:$('landmark').value.trim(),
+        delivery_instructions:$('specialInstructions').value.trim(),
+        payment_method:selectedPayment,
+        items:lines
+      };
+      const button=$('checkoutForm').querySelector('button[type="submit"]');
+      checkoutSubmitting=true;
+      if(button){button.disabled=true;button.textContent='Submitting order…';}
+      checkoutFeedback('Checking current prices and stock, then submitting your order securely…');
+      try{
+        // Refresh visible stock first; the database function independently validates stock/prices atomically.
+        await refreshCatalogForLiveStock();
+        for(const line of lines){
+          const product=products.find(row=>String(row.id)===line.product_id);
+          const variant=product&&Array.isArray(product.variants)?product.variants.find(row=>String(row.id)===line.variant_id):null;
+          if(!product||!variant||Number(variant.stock)<line.quantity){
+            throw new Error('Stock changed for a cart item. Please review your cart, update the quantity, and try again.');
+          }
+        }
+        const client=getCustomerAuthClient();
+        const requestId=checkoutRequestIdForPayload(requestPayload);
+        const result=await client.rpc('create_genmerch_order',{
+          p_checkout_request_id:requestId,
+          p_customer_name:requestPayload.customer_name,
+          p_customer_phone:requestPayload.customer_phone,
+          p_customer_email:requestPayload.customer_email,
+          p_shipping_street_address:requestPayload.shipping_street_address,
+          p_shipping_barangay:requestPayload.shipping_barangay,
+          p_shipping_city_municipality:requestPayload.shipping_city_municipality,
+          p_shipping_province:requestPayload.shipping_province,
+          p_shipping_postal_code:requestPayload.shipping_postal_code,
+          p_shipping_landmark:requestPayload.shipping_landmark,
+          p_delivery_instructions:requestPayload.delivery_instructions,
+          p_payment_method:requestPayload.payment_method,
+          p_items:requestPayload.items
+        });
+        if(result.error)throw result.error;
+        const order=Array.isArray(result.data)?result.data[0]:result.data;
+        if(!order||!order.order_number||!order.order_id)throw new Error('Supabase did not return a confirmed order number. Your cart has been kept. Please check Seller Centre or retry using the same checkout details.');
+        try{sessionStorage.removeItem(GENMERCH_PENDING_CHECKOUT_KEY);}catch(_){}
+        checkoutFeedback('');
+        resetDraftInMemory();
+        try{localStorage.removeItem(GENMERCH_DRAFT_STORAGE_KEY);draftStorageAvailable=true;}catch(_){}
+        updateCart();
+        closeCart();
+        const isCod=order.payment_method==='COD';
+        const paymentNote=isCod
+          ?'<p><strong>Payment:</strong> Cash on Delivery. Payment status is pending until payment is received.</p>'
+          :'<p><strong>Payment:</strong> '+escapeHtml(order.payment_method||'Selected method')+' recorded as your preference. Payment status is pending. No GCash/Maya/bank transfer was processed automatically; the seller will coordinate payment instructions.</p>';
+        const message='<p>Your order has been saved to GENMERCH and the seller can now see it in Seller Centre.</p>'+
+          '<div class="order-success-number"><span>Order number</span><strong>'+escapeHtml(order.order_number)+'</strong></div>'+
+          '<p><strong>Items subtotal:</strong> '+money(order.subtotal)+'</p>'+
+          '<p><strong>Delivery fee:</strong> '+money(order.shipping_fee)+' ('+escapeHtml(order.delivery_zone||delivery.region)+')</p>'+
+          '<p class="order-success-total"><strong>Total order amount:</strong> '+money(order.total_amount)+'</p>'+
+          paymentNote+
+          '<p>Stock has been reserved for this order. Keep your order number for reference.</p>';
+        showNotice('Order placed successfully',message);
+      }catch(error){
+        console.error('GENMERCH checkout submission failed.',error);
+        checkoutFeedback(error.message||'Unable to submit this order. Your cart has been kept; please retry.','error');
+      }finally{
+        checkoutSubmitting=false;
+        if(button){button.disabled=false;button.textContent='Place Order';}
+      }
     }
+    $('checkoutForm').addEventListener('submit',event=>{
+      event.preventDefault();
+      submitLiveGenmerchOrder();
+    });
     function showNotice(title,html){
       $('noticeTitle').textContent=title;$('noticeContent').innerHTML=html;
       $('noticeOverlay').classList.add('open');$('noticeOverlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
@@ -4621,6 +4748,7 @@
     let sellerCurrentTab = 'products';
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
+    let sellerOrdersRefreshTimer = null;
     let sellerInventoryLoaded = false;
     let sellerInventoryRows = [];
     let sellerMovementRows = [];
@@ -4677,7 +4805,7 @@
       window.setTimeout(()=>$('sellerPasscodeInput').focus(),30);
     }
     function closeSellerPasscode(){sellerHideOverlay('sellerPasscodeOverlay');$('sellerPasscodeInput').value='';}
-    function closeSellerDashboard(){sellerCentreIsUnlocked=false;sellerHideOverlay('sellerDashboardOverlay');}
+    function closeSellerDashboard(){sellerCentreIsUnlocked=false;stopSellerOrdersAutoRefresh();sellerHideOverlay('sellerDashboardOverlay');}
     function logoutSellerCentre(){
       sellerRememberAdminId('');
       sellerCentreIsUnlocked=false;
@@ -5012,13 +5140,21 @@
       }finally{button.disabled=false;button.textContent=sellerEditingProductId?'Save product changes':'＋ Add product to Supabase';}
     }
 
+    function stopSellerOrdersAutoRefresh(){if(sellerOrdersRefreshTimer!==null){window.clearInterval(sellerOrdersRefreshTimer);sellerOrdersRefreshTimer=null;}}
+    function startSellerOrdersAutoRefresh(){
+      if(sellerOrdersRefreshTimer!==null)return;
+      sellerOrdersRefreshTimer=window.setInterval(()=>{
+        if(sellerCentreIsUnlocked&&sellerCurrentTab==='orders'&&!document.hidden)loadSellerOrders(true);
+      },20000);
+    }
     function switchSellerTab(tab){
       sellerCurrentTab=tab==='orders'?'orders':(tab==='inventory'?'inventory':'products');
       const productsSelected=sellerCurrentTab==='products',ordersSelected=sellerCurrentTab==='orders',inventorySelected=sellerCurrentTab==='inventory';
       $('sellerProductsPanel').hidden=!productsSelected;$('sellerOrdersPanel').hidden=!ordersSelected;$('sellerInventoryPanel').hidden=!inventorySelected;
       $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerOrdersTab').classList.toggle('active',ordersSelected);$('sellerInventoryTab').classList.toggle('active',inventorySelected);
       $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(ordersSelected));$('sellerInventoryTab').setAttribute('aria-selected',String(inventorySelected));
-      if(ordersSelected&&!sellerOrdersLoaded)loadSellerOrders();
+      if(ordersSelected){if(!sellerOrdersLoaded)loadSellerOrders();startSellerOrdersAutoRefresh();}
+      else stopSellerOrdersAutoRefresh();
       if(inventorySelected&&!sellerInventoryLoaded)loadSellerInventoryAnalytics();
     }
     async function refreshSellerTab(){
@@ -5027,31 +5163,66 @@
       else await loadSellerProducts();
     }
     function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
-    function renderSellerOrders(rows){
+    function renderSellerOrders(rows,itemRows=[]){
       const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
-      const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Action','__action']];
+      const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Items','__items'],['Action','__action']];
       head.innerHTML='<tr>'+columns.map(col=>'<th>'+sellerEscape(col[0])+'</th>').join('')+'</tr>';
-      if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders currently exist. Checkout is not yet connected to order creation.</td></tr>';return;}
-      body.innerHTML=rows.map(row=>'<tr>'+columns.map(col=>{
-        if(col[1]==='__action'){
-          const status=String(row.status||'').toLowerCase(),blocked=['cancelled','refunded','shipped','delivered'].includes(status)||Boolean(row.inventory_released);
-          return '<td>'+(blocked?'<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Not cancellable'))+'</span>':'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>')+'</td>';
-        }
-        let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
-        if(col[1]==='total_amount')display=money(value);if(col[1]==='created_at')display=sellerDate(value);
-        return '<td><div class="seller-order-value">'+sellerEscape(display)+'</div></td>';
-      }).join('')+'</tr>').join('');
+      if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders have been placed yet. Customer checkout orders will appear here automatically.</td></tr>';return;}
+      const itemsByOrder=new Map();
+      (itemRows||[]).forEach(item=>{const key=String(item.order_id);if(!itemsByOrder.has(key))itemsByOrder.set(key,[]);itemsByOrder.get(key).push(item);});
+      body.innerHTML=rows.map(row=>{
+        const items=itemsByOrder.get(String(row.id))||[];
+        const itemUnits=items.reduce((sum,item)=>sum+Math.max(0,Number(item.quantity)||0),0);
+        const mainRow='<tr data-seller-order-row="'+sellerEscape(row.id)+'">'+columns.map(col=>{
+          if(col[1]==='__items')return '<td><button class="seller-secondary-button seller-order-items-toggle" type="button" data-seller-order-items="'+sellerEscape(row.id)+'" aria-expanded="false">View '+items.length+' item(s)</button><div class="seller-muted">'+itemUnits+' unit(s)</div></td>';
+          if(col[1]==='__action'){
+            const status=String(row.status||'').toLowerCase(),blocked=['cancelled','refunded','shipped','delivered'].includes(status)||Boolean(row.inventory_released);
+            return '<td>'+(blocked?'<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Not cancellable'))+'</span>':'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+sellerEscape(row.id)+'" data-order-number="'+sellerEscape(row.order_number||'')+'">Cancel order</button>')+'</td>';
+          }
+          let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
+          if(col[1]==='total_amount')display=money(value);
+          if(col[1]==='created_at')display=sellerDate(value);
+          if(col[1]==='payment_status'&&display==='pending')display='Pending';
+          return '<td><div class="seller-order-value">'+sellerEscape(display)+'</div></td>';
+        }).join('')+'</tr>';
+        const itemsMarkup=items.length?items.map(item=>{
+          const imageUrl=safeCatalogImageUrl(item.image_url_snapshot);
+          const image=imageUrl?'<img class="seller-order-item-image" src="'+sellerEscape(imageUrl)+'" alt="'+sellerEscape(item.product_name||'Product image')+'" loading="lazy">':'<div class="seller-order-item-image seller-order-item-placeholder">👕</div>';
+          return '<article class="seller-order-item-card">'+image+'<div class="seller-order-item-info"><strong>'+sellerEscape(item.product_name||'Deleted product')+'</strong><span>SKU: '+sellerEscape(item.sku||'—')+'</span><span>Size: '+sellerEscape(item.size_label||'—')+(item.color_label?' · Color: '+sellerEscape(item.color_label):'')+'</span><span>Qty: '+sellerEscape(item.quantity)+'</span></div><div class="seller-order-item-price"><strong>'+sellerEscape(money(item.line_total))+'</strong><span>'+sellerEscape(money(item.unit_price))+' each</span></div></article>';
+        }).join(''):'<p class="seller-muted">No order item lines were returned for this order.</p>';
+        const detailRow='<tr class="seller-order-detail-row" data-seller-order-detail="'+sellerEscape(row.id)+'" hidden><td colspan="'+columns.length+'"><div class="seller-order-items-panel">'+itemsMarkup+'<div class="seller-order-address"><strong>Full delivery address:</strong> '+sellerEscape([row.shipping_street_address,row.shipping_barangay,row.shipping_city_municipality,row.shipping_province,row.shipping_postal_code].filter(Boolean).join(', '))+(row.shipping_landmark?'<br><strong>Landmark:</strong> '+sellerEscape(row.shipping_landmark):'')+(row.delivery_instructions?'<br><strong>Instructions:</strong> '+sellerEscape(row.delivery_instructions):'')+'<br><strong>Subtotal:</strong> '+sellerEscape(money(row.subtotal))+' · <strong>Delivery:</strong> '+sellerEscape(money(row.shipping_fee))+' '+(row.delivery_zone?'('+sellerEscape(row.delivery_zone)+')':'')+'</div></div></td></tr>';
+        return mainRow+detailRow;
+      }).join('');
+      body.querySelectorAll('[data-seller-order-items]').forEach(button=>button.addEventListener('click',()=>{
+        const detail=body.querySelector('[data-seller-order-detail="'+button.dataset.sellerOrderItems+'"]');
+        if(!detail)return;
+        detail.hidden=!detail.hidden;
+        button.setAttribute('aria-expanded',String(!detail.hidden));
+        const rowItems=itemsByOrder.get(String(button.dataset.sellerOrderItems))||[];
+        button.textContent=(detail.hidden?'View ':'Hide ')+rowItems.length+' item(s)';
+      }));
       body.querySelectorAll('[data-seller-cancel-order]').forEach(button=>button.addEventListener('click',()=>cancelSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
     }
-    async function loadSellerOrders(){
+    async function loadSellerOrders(silent=false){
       if(!sellerCentreIsUnlocked)return;
-      sellerSetLoadingRow('sellerOrdersTableBody',13,'Loading orders from Supabase…');sellerFeedback('sellerOrdersFeedback','','');
+      if(!silent)sellerSetLoadingRow('sellerOrdersTableBody',14,'Loading orders from Supabase…');
+      sellerFeedback('sellerOrdersFeedback','','');
       try{
         const client=await getSellerAdminClient(false);
-        const result=await client.from('orders').select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,shipping_street_address,shipping_city_municipality,shipping_province,created_at,inventory_reserved,inventory_released,cancellation_reason').order('created_at',{ascending:false}).limit(200);
+        const result=await client.from('orders').select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,subtotal,shipping_fee,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,delivery_zone,created_at,inventory_reserved,inventory_released,cancellation_reason').order('created_at',{ascending:false}).limit(200);
         if(result.error)throw result.error;
-        renderSellerOrders(Array.isArray(result.data)?result.data:[]);sellerOrdersLoaded=true;
-      }catch(error){sellerSetLoadingRow('sellerOrdersTableBody',13,'Orders could not be loaded.');sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders. Check admin SELECT permission.','error');sellerOrdersLoaded=false;}
+        const rows=Array.isArray(result.data)?result.data:[];
+        let itemRows=[];
+        if(rows.length){
+          const itemResult=await client.from('order_items').select('id,order_id,product_id,variant_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',rows.map(row=>row.id)).order('created_at',{ascending:true});
+          if(itemResult.error)throw itemResult.error;
+          itemRows=Array.isArray(itemResult.data)?itemResult.data:[];
+        }
+        renderSellerOrders(rows,itemRows);sellerOrdersLoaded=true;
+      }catch(error){
+        if(!silent)sellerSetLoadingRow('sellerOrdersTableBody',14,'Orders could not be loaded.');
+        sellerFeedback('sellerOrdersFeedback',error.message||'Could not load orders and items. Check order_items admin SELECT permission.','error');sellerOrdersLoaded=false;
+      }
     }
     async function cancelSellerOrder(orderId,orderNumber,button){
       const displayNumber=orderNumber||orderId;
