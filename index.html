@@ -2745,6 +2745,8 @@
 
     // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
+    const GENMERCH_DRAFT_OWNER_KEY = 'genmerch.customerDraft.ownerUserId.v1';
+    const GENMERCH_DRAFT_UPDATED_AT_KEY = 'genmerch.customerDraft.updatedAt.v1';
     const GENMERCH_DRAFT_FIELD_IDS = [
       'custName', 'custPhone', 'streetAddress', 'province', 'city', 'barangay',
       'postalCode', 'landmark', 'specialInstructions'
@@ -2752,6 +2754,11 @@
     const GENMERCH_ALLOWED_SIZES = ['Small', 'Medium', 'Large', 'Free Size', 'Extra Size'];
     let isRestoringDraft = false;
     let draftStorageAvailable = true;
+    let customerDraftCloudReadyUserId = '';
+    let customerDraftCloudSaveTimer = null;
+    let customerDraftCloudSaveInFlight = null;
+    let customerDraftCloudSyncPromise = null;
+    let customerDraftCloudSyncUserId = '';
 
     function setDraftSaveStatus(message, isError = false) {
       const status = $('draftSaveStatus');
@@ -2816,14 +2823,155 @@
       try {
         const serialized = JSON.stringify(buildDraftSnapshot());
         const previous = localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY);
-        if (previous !== serialized) localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY, serialized);
+        const changed = previous !== serialized;
+        if (changed) {
+          localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY, serialized);
+          localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY, String(Date.now()));
+        }
+        const userId=customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.id?String(customerAuthCurrentSession.user.id):'';
+        if(userId&&customerDraftCloudReadyUserId===userId){
+          try{localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);}catch(_){}
+          if(changed)scheduleCustomerDraftCloudSave();
+          setDraftSaveStatus('✓ Cart and checkout details saved; syncing to your account…');
+        }else{
+          setDraftSaveStatus('✓ Cart and details saved in this browser.');
+        }
         draftStorageAvailable = true;
-        setDraftSaveStatus('✓ Cart and details saved in this browser.');
         return true;
       } catch (error) {
         draftStorageAvailable = false;
         setDraftSaveStatus('Autosave is unavailable in this browser. Keep this page open or enable browser storage.', true);
         return false;
+      }
+    }
+
+    function parseCustomerDraftSnapshot(raw){
+      if(!raw)return null;
+      try{
+        const parsed=JSON.parse(raw);
+        return parsed&&typeof parsed==='object'&&parsed.schemaVersion===1?parsed:null;
+      }catch(_){return null;}
+    }
+    async function upsertCustomerDraftCloud(userId,snapshot){
+      const client=getCustomerAuthClient();
+      const updatedAt=new Date().toISOString();
+      const result=await client.from('customer_saved_state').upsert(
+        {user_id:userId,draft_state:snapshot,updated_at:updatedAt},
+        {onConflict:'user_id'}
+      );
+      if(result.error)throw result.error;
+      try{
+        localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
+        localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(new Date(updatedAt).getTime()));
+      }catch(_){}
+      setDraftSaveStatus('✓ Cart and checkout details synced to your account.');
+    }
+    async function saveCustomerDraftCloud(userId){
+      if(!userId||customerDraftCloudReadyUserId!==userId)return;
+      const currentUser=customerAuthCurrentSession&&customerAuthCurrentSession.user?String(customerAuthCurrentSession.user.id):'';
+      if(currentUser!==userId)return;
+      const owner=localStorage.getItem(GENMERCH_DRAFT_OWNER_KEY)||'';
+      if(owner&&owner!==userId)return;
+      const snapshot=parseCustomerDraftSnapshot(localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY));
+      if(!snapshot)return;
+      if(customerDraftCloudSaveInFlight){
+        await customerDraftCloudSaveInFlight;
+        if(customerDraftCloudReadyUserId!==userId)return;
+      }
+      const savePromise=upsertCustomerDraftCloud(userId,snapshot);
+      customerDraftCloudSaveInFlight=savePromise;
+      try{await savePromise;}
+      finally{if(customerDraftCloudSaveInFlight===savePromise)customerDraftCloudSaveInFlight=null;}
+    }
+    function scheduleCustomerDraftCloudSave(){
+      const userId=customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.id?String(customerAuthCurrentSession.user.id):'';
+      if(!userId||customerDraftCloudReadyUserId!==userId)return;
+      if(customerDraftCloudSaveTimer!==null)window.clearTimeout(customerDraftCloudSaveTimer);
+      customerDraftCloudSaveTimer=window.setTimeout(()=>{
+        customerDraftCloudSaveTimer=null;
+        saveCustomerDraftCloud(userId).catch(error=>{
+          console.warn('GENMERCH customer draft cloud sync failed.',error);
+          setDraftSaveStatus('Saved on this device, but cloud sync failed. Check your connection and try again.',true);
+        });
+      },650);
+    }
+    async function syncCustomerDraftForSession(session,applyToUI=false){
+      const resolveSession=arguments.length===0||arguments[0]===undefined;
+      if(resolveSession){
+        try{
+          const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession();
+          if(sessionResult.error)throw sessionResult.error;
+          session=sessionResult.data&&sessionResult.data.session?sessionResult.data.session:null;
+          customerAuthCurrentSession=session&&session.user?session:null;
+        }catch(error){
+          console.warn('GENMERCH could not resolve the current customer session for draft sync.',error);
+          return false;
+        }
+      }
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      if(!userId){customerDraftCloudReadyUserId='';return false;}
+      if(customerDraftCloudSyncPromise&&customerDraftCloudSyncUserId===userId){
+        try{await customerDraftCloudSyncPromise;}catch(_){}
+        if(applyToUI&&customerDraftCloudReadyUserId===userId){
+          restoreDraftState();
+          await restoreAddressReferenceContext();
+          updateCart();
+        }
+        return customerDraftCloudReadyUserId===userId;
+      }
+      customerDraftCloudSyncUserId=userId;
+      const syncPromise=(async()=>{
+        const client=getCustomerAuthClient();
+        let owner='';
+        let localRaw='';
+        let localSnapshot=null;
+        let localUpdatedAt=0;
+        try{
+          owner=localStorage.getItem(GENMERCH_DRAFT_OWNER_KEY)||'';
+          localRaw=localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY)||'';
+          localSnapshot=parseCustomerDraftSnapshot(localRaw);
+          localUpdatedAt=Number(localStorage.getItem(GENMERCH_DRAFT_UPDATED_AT_KEY))||0;
+        }catch(error){throw new Error('Browser draft storage is unavailable. Please enable browser storage before syncing.');}
+        const localBelongsToUser=!owner||owner===userId;
+        const cloudResult=await client.from('customer_saved_state').select('draft_state,updated_at').eq('user_id',userId).maybeSingle();
+        if(cloudResult.error)throw cloudResult.error;
+        const cloudRow=cloudResult.data||null;
+        const cloudUpdatedAt=cloudRow&&cloudRow.updated_at?new Date(cloudRow.updated_at).getTime():0;
+        if(cloudRow&&localSnapshot&&localBelongsToUser&&localUpdatedAt>cloudUpdatedAt){
+          await upsertCustomerDraftCloud(userId,localSnapshot);
+        }else if(cloudRow){
+          const cloudSnapshot=parseCustomerDraftSnapshot(JSON.stringify(cloudRow.draft_state));
+          if(!cloudSnapshot)throw new Error('The saved cloud checkout draft is invalid. Your local draft has been preserved.');
+          localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(cloudSnapshot));
+          localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
+          localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(cloudUpdatedAt||Date.now()));
+        }else if(localSnapshot&&localBelongsToUser){
+          await upsertCustomerDraftCloud(userId,localSnapshot);
+        }else{
+          const emptySnapshot={schemaVersion:1,cart:[],form:{},addressReference:{province:null,city:null,barangay:null},selectedPayment:'COD'};
+          localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(emptySnapshot));
+          localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
+          await upsertCustomerDraftCloud(userId,emptySnapshot);
+        }
+        customerDraftCloudReadyUserId=userId;
+        return true;
+      })();
+      customerDraftCloudSyncPromise=syncPromise;
+      try{
+        await syncPromise;
+        if(applyToUI){
+          restoreDraftState();
+          await restoreAddressReferenceContext();
+          updateCart();
+        }
+        return true;
+      }catch(error){
+        customerDraftCloudReadyUserId='';
+        console.warn('GENMERCH customer draft cloud sync failed.',error);
+        if(applyToUI)setDraftSaveStatus('Could not sync this account’s cart and checkout details. Your current browser data has been kept.',true);
+        return false;
+      }finally{
+        if(customerDraftCloudSyncPromise===syncPromise){customerDraftCloudSyncPromise=null;customerDraftCloudSyncUserId='';}
       }
     }
 
@@ -2963,7 +3111,7 @@
       }
       updateCart();
       // updateCart autosaves the empty draft so the cleared information cannot reappear on reload.
-      setDraftSaveStatus('✓ Saved cart and delivery details cleared. Autosave remains active for future changes.');
+      setDraftSaveStatus(customerDraftCloudReadyUserId?'✓ Saved cart and checkout details cleared; syncing the empty draft to your account.':'✓ Saved cart and delivery details cleared. Autosave remains active for future changes.');
     }
 
     // Keep open tabs on the same browser profile in sync. This does not sync across separate devices.
@@ -4820,6 +4968,22 @@
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
           syncWishlistForCustomerSession(session,true);
+          if(event==='SIGNED_OUT'){
+            if(customerDraftCloudSaveTimer!==null){window.clearTimeout(customerDraftCloudSaveTimer);customerDraftCloudSaveTimer=null;}
+            customerDraftCloudReadyUserId='';
+            try{
+              const draftOwner=localStorage.getItem(GENMERCH_DRAFT_OWNER_KEY)||'';
+              if(draftOwner){
+                localStorage.removeItem(GENMERCH_DRAFT_STORAGE_KEY);
+                localStorage.removeItem(GENMERCH_DRAFT_OWNER_KEY);
+                localStorage.removeItem(GENMERCH_DRAFT_UPDATED_AT_KEY);
+              }
+            }catch(_){}
+            resetDraftInMemory();
+            updateCart();
+          }else if(session&&session.user){
+            syncCustomerDraftForSession(session,true);
+          }
           if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open'))loadCustomerAccountOrders(true);
           if(event==='SIGNED_IN'&&session&&session.user&&isCustomerAuthCallbackUrl()){
             const identity=getCustomerAuthIdentity(session.user);
@@ -5935,7 +6099,7 @@
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
-      restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();
+      await syncCustomerDraftForSession(undefined,false);restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();
       await restoreAddressReferenceContext();
     }
     initializeStorefront();
