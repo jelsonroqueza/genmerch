@@ -2855,6 +2855,7 @@
     async function upsertCustomerDraftCloud(userId,snapshot){
       const client=getCustomerAuthClient();
       const updatedAt=new Date().toISOString();
+      const snapshotSerialized=JSON.stringify(snapshot);
       const result=await client.from('customer_saved_state').upsert(
         {user_id:userId,draft_state:snapshot,updated_at:updatedAt},
         {onConflict:'user_id'}
@@ -2862,9 +2863,13 @@
       if(result.error)throw result.error;
       try{
         localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
-        localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(new Date(updatedAt).getTime()));
+        if(localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY)===snapshotSerialized){
+          localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(new Date(updatedAt).getTime()));
+          setDraftSaveStatus('✓ Cart and checkout details synced to your account.');
+        }else{
+          scheduleCustomerDraftCloudSave();
+        }
       }catch(_){}
-      setDraftSaveStatus('✓ Cart and checkout details synced to your account.');
     }
     async function saveCustomerDraftCloud(userId){
       if(!userId||customerDraftCloudReadyUserId!==userId)return;
@@ -2872,12 +2877,12 @@
       if(currentUser!==userId)return;
       const owner=localStorage.getItem(GENMERCH_DRAFT_OWNER_KEY)||'';
       if(owner&&owner!==userId)return;
-      const snapshot=parseCustomerDraftSnapshot(localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY));
-      if(!snapshot)return;
       if(customerDraftCloudSaveInFlight){
         await customerDraftCloudSaveInFlight;
         if(customerDraftCloudReadyUserId!==userId)return;
       }
+      const snapshot=parseCustomerDraftSnapshot(localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY));
+      if(!snapshot)return;
       const savePromise=upsertCustomerDraftCloud(userId,snapshot);
       customerDraftCloudSaveInFlight=savePromise;
       try{await savePromise;}
@@ -2948,10 +2953,14 @@
         }else if(localSnapshot&&localBelongsToUser){
           await upsertCustomerDraftCloud(userId,localSnapshot);
         }else{
-          const emptySnapshot={schemaVersion:1,cart:[],form:{},addressReference:{province:null,city:null,barangay:null},selectedPayment:'COD'};
+          const emptyForm={};
+          GENMERCH_DRAFT_FIELD_IDS.forEach(id=>{emptyForm[id]='';});
+          const emptySnapshot={schemaVersion:1,cart:[],form:emptyForm,addressReference:{province:null,city:null,barangay:null},selectedPayment:'COD'};
           localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(emptySnapshot));
           localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
-          await upsertCustomerDraftCloud(userId,emptySnapshot);
+          // Do not create an empty cloud draft yet. This lets a laptop with legacy browser-only data
+          // upload that data first, even if another device signed in before the laptop was refreshed.
+          localStorage.removeItem(GENMERCH_DRAFT_UPDATED_AT_KEY);
         }
         customerDraftCloudReadyUserId=userId;
         return true;
@@ -6108,7 +6117,10 @@
     window.addEventListener('pagehide', saveDraftState);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') saveDraftState();
-      else syncWishlistForCustomerSession(undefined,true);
+      else{
+        syncWishlistForCustomerSession(undefined,true);
+        syncCustomerDraftForSession(undefined,true);
+      }
     });
   </script>
 </body>
