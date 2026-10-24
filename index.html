@@ -3965,15 +3965,21 @@
         normalized.includes('phone provider is not enabled')||
         normalized.includes('phone provider not configured')
       )){
-        return 'Supabase error: '+raw+'. Enable Authentication → Sign In / Providers → Phone and configure an SMS provider such as Twilio, MessageBird, or Vonage. No SMS code was sent.';
+        return 'Supabase error: '+raw+'. Phone OTP is blocked because the SMS provider is not enabled. Enable Authentication → Sign In / Providers → Phone and configure an SMS provider such as Twilio, MessageBird, or Vonage. No SMS code was sent.';
       }
       if(method==='email'&&(
-        normalized.includes('email address not authorized')||
-        normalized.includes('custom smtp')||
-        normalized.includes('sending rate limit exceeded')||
-        normalized.includes('email rate limit exceeded')
+        normalized.includes('email rate limit')||
+        normalized.includes('sending rate limit')||
+        normalized.includes('rate-limit')||
+        normalized.includes('too many requests')
       )){
-        return 'Supabase error: '+raw+'. Configure Custom SMTP and set Authentication → Email Templates → Magic Link to include {{ .Token }} for a six-digit OTP. No code was confirmed as sent.';
+        return 'Supabase temporarily blocked email delivery because the project reached its email sending limit. No OTP was sent. Avoid repeated retries. To enable customer email delivery reliably, configure a custom SMTP provider in Supabase → Authentication → SMTP Settings. Separately, confirm Email Templates → Magic Link contains {{ .Token }} if you want a six-digit code.';
+      }
+      if(method==='email'&&normalized.includes('email address not authorized')){
+        return 'Supabase default email delivery only permits authorized project-team addresses. To send sign-in codes to customer email addresses, configure a custom SMTP provider in Supabase → Authentication → SMTP Settings. No OTP was sent.';
+      }
+      if(method==='email'&&normalized.includes('custom smtp')){
+        return 'Supabase reported an email-delivery configuration issue: '+raw+'. Check the SMTP host, port, username, password, and sender address in Supabase → Authentication → SMTP Settings. Also confirm the Magic Link template contains {{ .Token }} for six-digit codes.';
       }
       return raw;
     }
