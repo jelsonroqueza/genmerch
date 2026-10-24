@@ -4083,6 +4083,19 @@
             options:{data:{full_name:fullName}}
           });
           data=result.data;error=result.error;
+          if(error)throw error;
+
+          // If Supabase created the user but did not return a session, immediately
+          // try signing in with the exact same credentials entered in this form.
+          // This supports projects that confirm the user as part of signup via a
+          // database trigger or other server-side configuration.
+          if(data&&data.user&&!data.session){
+            setCustomerAuthMessage('Account created. Signing you in…','success');
+            submit.textContent='Signing you in…';
+            const loginResult=await client.auth.signInWithPassword({email,password});
+            if(loginResult.error)throw loginResult.error;
+            data=loginResult.data;
+          }
         }else{
           const result=await client.auth.signInWithPassword({email,password});
           data=result.data;error=result.error;
@@ -4098,7 +4111,7 @@
             showToast((customerAuthMode==='signup'?'Account created. Signed in as ':'Signed in as ')+identity);
           },800);
         }else if(customerAuthMode==='signup'&&data&&data.user){
-          setCustomerAuthMessage('Supabase created the account request but did not return a login session. Email confirmation may still be enabled for this project. Check Supabase Authentication settings; no one has been signed in yet.','error');
+          setCustomerAuthMessage('Your account was created, but Supabase did not complete the login session. Please try signing in with your new account.','error');
         }else{
           setCustomerAuthMessage('Supabase did not return a signed-in session. Please check the account settings and try again.','error');
         }
