@@ -2852,6 +2852,15 @@
         return parsed&&typeof parsed==='object'&&parsed.schemaVersion===1?parsed:null;
       }catch(_){return null;}
     }
+    function hasMeaningfulCustomerDraft(snapshot){
+      if(!snapshot||typeof snapshot!=='object')return false;
+      if(Array.isArray(snapshot.cart)&&snapshot.cart.length>0)return true;
+      const form=snapshot.form&&typeof snapshot.form==='object'?snapshot.form:{};
+      if(Object.values(form).some(value=>String(value||'').trim()!==''))return true;
+      if(snapshot.selectedPayment&&snapshot.selectedPayment!=='COD')return true;
+      const refs=snapshot.addressReference&&typeof snapshot.addressReference==='object'?snapshot.addressReference:{};
+      return Boolean(refs.province||refs.city||refs.barangay);
+    }
     async function upsertCustomerDraftCloud(userId,snapshot){
       const client=getCustomerAuthClient();
       const updatedAt=new Date().toISOString();
@@ -2942,7 +2951,7 @@
         if(cloudResult.error)throw cloudResult.error;
         const cloudRow=cloudResult.data||null;
         const cloudUpdatedAt=cloudRow&&cloudRow.updated_at?new Date(cloudRow.updated_at).getTime():0;
-        if(cloudRow&&localSnapshot&&localBelongsToUser&&localUpdatedAt>cloudUpdatedAt){
+        if(cloudRow&&localSnapshot&&localBelongsToUser&&localUpdatedAt>cloudUpdatedAt&&(owner===userId||hasMeaningfulCustomerDraft(localSnapshot))){
           await upsertCustomerDraftCloud(userId,localSnapshot);
         }else if(cloudRow){
           const cloudSnapshot=parseCustomerDraftSnapshot(JSON.stringify(cloudRow.draft_state));
@@ -2950,7 +2959,7 @@
           localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(cloudSnapshot));
           localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
           localStorage.setItem(GENMERCH_DRAFT_UPDATED_AT_KEY,String(cloudUpdatedAt||Date.now()));
-        }else if(localSnapshot&&localBelongsToUser){
+        }else if(localSnapshot&&localBelongsToUser&&(owner===userId||hasMeaningfulCustomerDraft(localSnapshot))){
           await upsertCustomerDraftCloud(userId,localSnapshot);
         }else{
           const emptyForm={};
@@ -2958,8 +2967,7 @@
           const emptySnapshot={schemaVersion:1,cart:[],form:emptyForm,addressReference:{province:null,city:null,barangay:null},selectedPayment:'COD'};
           localStorage.setItem(GENMERCH_DRAFT_STORAGE_KEY,JSON.stringify(emptySnapshot));
           localStorage.setItem(GENMERCH_DRAFT_OWNER_KEY,userId);
-          // Do not create an empty cloud draft yet. This lets a laptop with legacy browser-only data
-          // upload that data first, even if another device signed in before the laptop was refreshed.
+          // Avoid uploading a blank guest draft: another device may still hold the legacy data to migrate.
           localStorage.removeItem(GENMERCH_DRAFT_UPDATED_AT_KEY);
         }
         customerDraftCloudReadyUserId=userId;
