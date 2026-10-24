@@ -4200,12 +4200,13 @@
           if(error)throw error;
           updateCustomerAuthScreen(data.session);
           if(isCustomerAuthCallbackUrl()&&data.session){
-            openCustomerAuth();
+            showToast('Signed in as '+(data.session.user.email||data.session.user.phone||'your GENMERCH account'));
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }else if(new URLSearchParams(window.location.search).has('error_description')){
             const params=new URLSearchParams(window.location.search);
             setCustomerAuthMessage(params.get('error_description')||'Sign-in was cancelled or could not be completed.','error');
             openCustomerAuth();
+            try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }
         }).catch(error=>console.warn('Customer authentication session could not be restored.',error));
       }catch(error){
