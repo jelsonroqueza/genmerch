@@ -3624,7 +3624,61 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     @media(prefers-reduced-motion:reduce){
       header .header-actions .genmerch-premium-heart,header .header-actions .genmerch-premium-star{transition:none!important}
     }
-  </style>
+  
+    /* Premium account silhouette and finely detailed shopping cart. */
+    header .header-actions #customerAccountButton .genmerch-premium-account-icon{
+      display:block!important;width:29px!important;height:29px!important;overflow:visible!important;
+      fill:none!important;stroke:none!important;filter:drop-shadow(0 1.1px 1px #10131824)!important;
+      transition:transform .16s ease,filter .16s ease!important;
+    }
+    header .header-actions #customerAccountButton .genmerch-premium-account-icon .genmerch-account-head,
+    header .header-actions #customerAccountButton .genmerch-premium-account-icon .genmerch-account-body{
+      fill:url(#genmerchAccountMetal)!important;stroke:#11151a!important;stroke-width:.45!important;
+      stroke-linejoin:round!important;
+    }
+    header .header-actions #customerAccountButton .genmerch-premium-account-icon .genmerch-account-glint{
+      fill:none!important;stroke:url(#genmerchAccountHighlight)!important;stroke-width:1.05!important;
+      stroke-linecap:round!important;opacity:.88!important;
+    }
+    header .header-actions #customerAccountButton:hover .genmerch-premium-account-icon{
+      transform:translateY(-1px)!important;filter:drop-shadow(0 2px 2px #10131835)!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon{
+      display:block!important;width:30px!important;height:30px!important;overflow:visible!important;
+      fill:none!important;stroke:none!important;filter:drop-shadow(0 1.1px 1px #10131825)!important;
+      transition:transform .16s ease,filter .16s ease!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-handle{
+      fill:none!important;stroke:#252a31!important;stroke-width:2.05!important;
+      stroke-linecap:round!important;stroke-linejoin:round!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-basket{
+      fill:url(#genmerchCartBasketGradient)!important;stroke:#12161c!important;stroke-width:.55!important;stroke-linejoin:round!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-rim{
+      fill:none!important;stroke:url(#genmerchCartRedAccent)!important;stroke-width:2.1!important;stroke-linecap:round!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-grid{
+      fill:none!important;stroke:#d8dce2!important;stroke-opacity:.8!important;stroke-width:1.05!important;stroke-linecap:round!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-wheel{
+      fill:url(#genmerchCartWheelGradient)!important;stroke:#11151a!important;stroke-width:.6!important;
+    }
+    header .header-actions #openCartButton .genmerch-premium-cart-icon .genmerch-cart-wheel-highlight{
+      fill:#edf0f4!important;stroke:none!important;opacity:.9!important;
+    }
+    header .header-actions #openCartButton:hover .genmerch-premium-cart-icon{
+      transform:translateY(-1px)!important;filter:drop-shadow(0 2px 2px #10131838)!important;
+    }
+    @media(max-width:900px){
+      header .header-actions #customerAccountButton .genmerch-premium-account-icon{width:clamp(25px,3.5vw,28px)!important;height:clamp(25px,3.5vw,28px)!important}
+      header .header-actions #openCartButton .genmerch-premium-cart-icon{width:clamp(26px,3.7vw,29px)!important;height:clamp(26px,3.7vw,29px)!important}
+    }
+    @media(max-width:480px){
+      header .header-actions #customerAccountButton .genmerch-premium-account-icon{width:25px!important;height:25px!important}
+      header .header-actions #openCartButton .genmerch-premium-cart-icon{width:26px!important;height:26px!important}
+    }
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -3666,7 +3720,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <small>Wishlist</small>
           </button>
           <button class="header-action" type="button" id="customerAccountButton" onclick="openCustomerAuth()" aria-label="Open account">
-            <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.5" r="4"></circle><path d="M4.5 21v-2.2a7.5 7.5 0 0 1 15 0V21"></path></svg></span>
+            <span class="header-icon"><svg class="genmerch-premium-account-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><defs><linearGradient id="genmerchAccountMetal" x1="5" y1="2" x2="27" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#555b63"/><stop offset=".42" stop-color="#22272e"/><stop offset="1" stop-color="#080a0d"/></linearGradient><linearGradient id="genmerchAccountHighlight" x1="8" y1="4" x2="22" y2="17" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><circle class="genmerch-account-head" cx="16" cy="9.4" r="5.15"/><path class="genmerch-account-body" d="M5.1 26.1c.55-5.9 4.65-9.55 10.9-9.55s10.35 3.65 10.9 9.55c.1 1.1-.78 1.95-1.9 1.95H7c-1.12 0-2-.85-1.9-1.95Z"/><path class="genmerch-account-glint" d="M12.1 5.1a4.2 4.2 0 0 1 4.1-1.05M7.4 25.8c.7-4.25 3.7-6.8 7.1-7.2" fill="none" stroke="url(#genmerchAccountHighlight)" stroke-width="1.05" stroke-linecap="round"/></svg></span>
             <small class="customer-account-label" id="customerAccountLabel">Account</small>
           </button>
           <button class="header-action" id="openCustomerOrdersButton" type="button" onclick="openCustomerOrders()" aria-label="View and track your orders" title="My Orders — Track your delivery">
@@ -3677,7 +3731,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <span class="header-icon genmerch-rate-icon" aria-hidden="true"><svg class="genmerch-rate-star genmerch-premium-star" viewBox="0 0 24 24" role="img" aria-label="Star"><defs><linearGradient id="genmerchHeaderStarGradient" x1="5" y1="2" x2="19" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff07a"/><stop offset=".48" stop-color="#ffd32a"/><stop offset="1" stop-color="#efa900"/></linearGradient></defs><path d="M12 2.15 15.02 8.3l6.79.99-4.91 4.79 1.16 6.76L12 17.65 5.94 20.84l1.16-6.76-4.91-4.79 6.79-.99L12 2.15Z" fill="url(#genmerchHeaderStarGradient)" stroke="#bb8100" stroke-width=".55" stroke-linejoin="round"/><path d="m12 4.15 2.37 4.8 5.3.77" fill="none" stroke="#fff9cf" stroke-width=".8" stroke-linecap="round" opacity=".78"/></svg><span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
           </button>
           <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
-            <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
+            <span class="cart-icon header-icon"><svg class="genmerch-premium-cart-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><defs><linearGradient id="genmerchCartBasketGradient" x1="8" y1="8" x2="24" y2="23" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#515861"/><stop offset=".5" stop-color="#252a31"/><stop offset="1" stop-color="#101318"/></linearGradient><linearGradient id="genmerchCartRedAccent" x1="11" y1="8" x2="26" y2="17" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5961"/><stop offset="1" stop-color="#e51e2b"/></linearGradient><radialGradient id="genmerchCartWheelGradient" cx="0" cy="0" r="1" gradientTransform="matrix(0 4 -4 0 0 0)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#626975"/><stop offset="1" stop-color="#171a20"/></radialGradient></defs><path class="genmerch-cart-handle" d="M3.4 5.1h3.3l2.55 14.1c.22 1.14 1.1 1.9 2.23 1.9h11.7" fill="none" stroke="#262b32" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"/><path class="genmerch-cart-basket" d="M8.1 9.1h19.1l-2.35 9.25a1.7 1.7 0 0 1-1.65 1.27H10.2L8.1 9.1Z"/><path class="genmerch-cart-rim" d="M8.1 9.1h19.1" fill="none" stroke="url(#genmerchCartRedAccent)" stroke-width="2.1" stroke-linecap="round"/><path class="genmerch-cart-grid" d="m14.25 9.6 1.05 8.7m5-8.7-.55 8.7M9.25 13.5h16.85" fill="none" stroke="#d8dce2" stroke-opacity=".8" stroke-width="1.05" stroke-linecap="round"/><circle class="genmerch-cart-wheel" cx="12.2" cy="26.1" r="2.55"/><circle class="genmerch-cart-wheel" cx="22.8" cy="26.1" r="2.55"/><circle class="genmerch-cart-wheel-highlight" cx="11.45" cy="25.3" r=".72"/><circle class="genmerch-cart-wheel-highlight" cx="22.05" cy="25.3" r=".72"/></svg><span class="badge" id="cartBadge">0</span></span>
             <small>Cart</small>
           </button>
           <button class="header-action seller-centre-trigger" id="openSellerCentreButton" type="button" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">
