@@ -2630,6 +2630,37 @@
     }
     @media(prefers-reduced-motion:reduce){#sellerCentreLogoutButton.seller-logout-button{transition:none!important}}
   </style>
+  <style id="genmerch-help-center-styles">
+    #noticeOverlay .notice-modal.genmerch-help-modal{
+      width:min(720px,100%);max-height:min(90dvh,880px);padding:0;overflow:auto;
+      border:1px solid #f0d8cf;border-radius:16px;background:#fff;color:#29211e;
+    }
+    .genmerch-help-modal #noticeTitle{
+      margin:0;padding:20px 23px 15px;background:linear-gradient(115deg,#ff3218,#f52a12);
+      color:#fff;font-size:1.25rem;line-height:1.25;
+    }
+    .genmerch-help-content{padding:18px 23px 22px}
+    .genmerch-help-intro{margin:0 0 16px!important;color:#71645d;font-size:.88rem!important;line-height:1.55!important}
+    .genmerch-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .genmerch-help-card{min-width:0;padding:14px;border:1px solid #efdfd8;border-radius:11px;background:#fffaf7}
+    .genmerch-help-card h3{margin:0 0 7px;font-size:.92rem;line-height:1.35;color:#2b211d}
+    .genmerch-help-card p{margin:0 0 8px!important;font-size:.79rem!important;line-height:1.55!important;color:#6d5f58}
+    .genmerch-help-card p:last-child{margin-bottom:0!important}
+    .genmerch-help-card a{color:#c92d1b;font-weight:800;text-decoration:underline;overflow-wrap:anywhere}
+    .genmerch-help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+    .genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;flex:1 1 170px;padding:11px 14px;border-radius:8px;font-size:.83rem;font-weight:850;text-decoration:none;text-align:center}
+    .genmerch-help-actions .secondary-btn{border:1px solid #e2d3cc;background:#fff;color:#392a23}
+    .genmerch-help-hours-note{margin:12px 0 0!important;color:#8b7c74;font-size:.71rem!important;line-height:1.5!important}
+    @media(max-width:560px){
+      #noticeOverlay .notice-modal.genmerch-help-modal{max-height:calc(100dvh - 20px);border-radius:12px}
+      .genmerch-help-modal #noticeTitle{padding:16px 16px 13px;font-size:1.1rem}
+      .genmerch-help-content{padding:13px 13px 16px}
+      .genmerch-help-grid{grid-template-columns:minmax(0,1fr);gap:9px}
+      .genmerch-help-card{padding:12px}
+      .genmerch-help-actions{flex-direction:column}
+      .genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn{width:100%;flex:1 1 auto}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -2688,7 +2719,7 @@
         </div>
       </div>
       <nav class="desktop-links" aria-label="Main navigation">
-        <button class="active" onclick="resetCatalog()">Home</button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button onclick="showInfo('Track Order')">Track Order</button><button onclick="showInfo('Help Center')">Help</button>
+        <button class="active" onclick="resetCatalog()">Home</button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
       </nav>
     </div>
   </header>
@@ -2853,7 +2884,7 @@
   <nav class="bottom-nav" aria-label="Mobile navigation">
     <button class="nav-item active" onclick="resetCatalog()"><span>🏠</span><span>Home</span></button>
     <button class="nav-item" onclick="openCart()"><span>🛒</span><span>Cart</span></button>
-    <button class="nav-item" onclick="showInfo('Updates')"><span>🔔</span><span>Updates</span></button>
+    <button class="nav-item" type="button" onclick="openCustomerOrders()" aria-label="View order updates"><span>📦</span><span>Orders</span></button>
     <button class="nav-item" onclick="openCustomerAuth()"><span>👤</span><span>Me</span></button>
   </nav>
 
@@ -6149,7 +6180,74 @@
     }
     $('closeNoticeButton').addEventListener('click',closeNotice);
     $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay'))closeNotice();});
-    function showInfo(section){showNotice(section,'<p>This section is not connected yet.</p>');}
+    function openHelpCenter(){
+      const content=`
+        <div class="genmerch-help-content" id="genmerchHelpContent">
+          <p class="genmerch-help-intro">Welcome to GENMERCH support. Choose the help topic below, or contact our support channels directly.</p>
+          <div class="genmerch-help-grid">
+            <section class="genmerch-help-card">
+              <h3>📦 Track an order</h3>
+              <p><strong>Signed-in customers:</strong> open Orders to see the orders linked to your GENMERCH account.</p>
+              <p><strong>Guest checkout:</strong> use the full order number from your confirmation and the 11-digit mobile number entered at checkout.</p>
+            </section>
+            <section class="genmerch-help-card">
+              <h3>🚚 Shipping and delivery</h3>
+              <p>Open an order to review its latest status. When shipment details are available, the order may show the courier and delivery reference number.</p>
+              <p>Courier tracking updates and delivery estimates depend on the shipping provider.</p>
+            </section>
+            <section class="genmerch-help-card">
+              <h3>💳 Payment questions</h3>
+              <p>Check the payment method and payment status shown on your order. Selecting an online payment method does not, by itself, mean a payment was automatically charged.</p>
+              <p>Use the verified instructions shown at checkout and contact support if the recorded payment status looks incorrect.</p>
+            </section>
+            <section class="genmerch-help-card">
+              <h3>🧾 Order number and account</h3>
+              <p>Keep your GENMERCH order number when asking for assistance. Account orders appear under the account used when placing the order.</p>
+              <p>For guest orders, provide the order number and checkout mobile number in the Track Order form.</p>
+            </section>
+            <section class="genmerch-help-card">
+              <h3>✉️ Email support</h3>
+              <p>Send order questions to <a href="mailto:negosyonipinoy@gmail.com?subject=GENMERCH%20Customer%20Support">negosyonipinoy@gmail.com</a>.</p>
+              <p>Include the order number and a short description of the issue. Do not send your password or one-time codes.</p>
+            </section>
+            <section class="genmerch-help-card">
+              <h3>☎️ Telephone support</h3>
+              <p><a href="tel:09750634497">09750634497</a></p>
+              <p>Tap the number on a phone or supported device to start a call.</p>
+            </section>
+          </div>
+          <div class="genmerch-help-actions">
+            <button class="primary-btn" id="helpTrackOrderButton" type="button">📦 Track My Order</button>
+            <a class="secondary-btn" href="mailto:negosyonipinoy@gmail.com?subject=GENMERCH%20Customer%20Support">✉️ Email Support</a>
+            <a class="secondary-btn" href="tel:09750634497">☎️ Call Support</a>
+          </div>
+          <p class="genmerch-help-hours-note">Support response times are not listed here. Please use the contact details above; never share account passwords or verification codes.</p>
+        </div>`;
+      showNotice('GENMERCH Help Center',content);
+      const modal=$('noticeOverlay').querySelector('.notice-modal');
+      if(modal)modal.classList.add('genmerch-help-modal');
+      const trackButton=$('helpTrackOrderButton');
+      if(trackButton)trackButton.addEventListener('click',()=>{
+        closeNotice();
+        openCustomerOrders();
+      });
+    }
+    function showInfo(section){
+      const key=String(section||'').trim().toLowerCase();
+      if(key==='track order'||key==='track my order'||key==='orders'){
+        openCustomerOrders();
+        return;
+      }
+      if(key==='help'||key==='help center'||key==='support'){
+        openHelpCenter();
+        return;
+      }
+      if(key==='updates'){
+        openCustomerOrders();
+        return;
+      }
+      showNotice(section,'<p>This section is not connected yet.</p>');
+    }
 
     function openBusinessRegInfo(){
       const overlay=$('businessRegOverlay');
