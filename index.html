@@ -3541,6 +3541,34 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .card-sales-review{gap:4px 6px;font-size:.68rem;margin:5px 0 7px}
     }
   </style>
+  <style id="genmerch-product-card-wishlist-shortcut">
+    .card-topline{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      gap:8px;width:100%;min-width:0;margin:0 0 7px;
+    }
+    .card-topline .product-type{
+      margin:0;min-width:0;max-width:calc(100% - 42px);
+      overflow-wrap:anywhere;flex:0 1 auto;
+    }
+    .card-wishlist-button{
+      display:inline-flex;align-items:center;justify-content:center;
+      flex:0 0 36px;width:36px;height:36px;margin:-5px -4px 0 0;
+      padding:0;border:1px solid transparent;border-radius:50%;
+      background:#fff;color:#e11d2e;cursor:pointer;
+      transition:background .15s,border-color .15s,transform .15s;
+      -webkit-tap-highlight-color:transparent;position:relative;z-index:2;
+    }
+    .card-wishlist-button:hover{background:#fff0f0;border-color:#ffd2d6}
+    .card-wishlist-button:active{transform:scale(.92)}
+    .card-wishlist-button:focus-visible{outline:2px solid #e11d2e;outline-offset:2px}
+    .card-wishlist-button svg{display:block;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round}
+    .card-wishlist-button.active{background:#fff0f0;color:#e11d2e;border-color:#ffd2d6}
+    .card-wishlist-button.active svg{fill:currentColor}
+    @media(max-width:480px){
+      .card-wishlist-button{flex-basis:34px;width:34px;height:34px;margin:-5px -3px 0 0}
+      .card-wishlist-button svg{width:23px;height:23px}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -6399,7 +6427,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
         return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
-          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div><div class="card-sales-review" data-card-sales-review="'+escapeHtml(product.id)+'" aria-label="Product sold count and customer ratings">Loading sales &amp; reviews…</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
+          '<div class="card-body"><div class="card-topline"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><button class="card-wishlist-button'+(isProductWishlisted(product.id)?' active':'')+'" type="button" data-wishlist-id="'+escapeHtml(product.id)+'" aria-label="'+(isProductWishlisted(product.id)?'Remove '+escapeHtml(product.name)+' from wishlist':'Add '+escapeHtml(product.name)+' to wishlist')+'" title="'+(isProductWishlisted(product.id)?'Saved to Wishlist':'Add to Wishlist')+'" aria-pressed="'+String(isProductWishlisted(product.id))+'"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div><div class="card-sales-review" data-card-sales-review="'+escapeHtml(product.id)+'" aria-label="Product sold count and customer ratings">Loading sales &amp; reviews…</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
       loadProductCardSalesReviews(list);
@@ -6421,6 +6449,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
 
     $('productGrid').addEventListener('click',event=>{
+      const wishlistButton=event.target.closest('[data-wishlist-id]');
+      if(wishlistButton){
+        event.preventDefault();
+        event.stopPropagation();
+        toggleProductWishlist(wishlistButton.dataset.wishlistId);
+        return;
+      }
       const addButton=event.target.closest('[data-add-id]');
       if(addButton){event.stopPropagation();openSizeSelector(addButton.dataset.addId);return;}
       const card=event.target.closest('[data-product-id]');
