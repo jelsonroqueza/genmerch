@@ -7885,6 +7885,36 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let customerAuthSuccessCloseTimer = null;
     let customerAuthBusy = false;
     let customerAuthMode = 'signin';
+    const CUSTOMER_GOOGLE_OAUTH_PENDING_KEY = 'genmerchGoogleOAuthPendingAt';
+    const CUSTOMER_GOOGLE_OAUTH_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
+
+    function clearCustomerGoogleOAuthPending(){
+      try{sessionStorage.removeItem(CUSTOMER_GOOGLE_OAUTH_PENDING_KEY);}catch(_){}
+    }
+    function hasPendingCustomerGoogleOAuth(){
+      try{
+        const raw=sessionStorage.getItem(CUSTOMER_GOOGLE_OAUTH_PENDING_KEY);
+        if(!raw)return false;
+        const startedAt=Number(raw),age=Date.now()-startedAt;
+        if(!Number.isFinite(startedAt)||age< -60000||age>CUSTOMER_GOOGLE_OAUTH_PENDING_MAX_AGE_MS){
+          clearCustomerGoogleOAuthPending();
+          return false;
+        }
+        return true;
+      }catch(_){return false;}
+    }
+    function showCustomerGoogleOAuthError(message){
+      const overlay=$('customerAuthOverlay');
+      if(!overlay)return;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      if(!customerAuthCurrentSession){
+        setCustomerAuthMode('signin');
+        updateCustomerAuthScreen(null);
+      }
+      setCustomerAuthMessage(message,'error');
+    }
 
     function isCustomerAuthCallbackUrl(){
       const url=new URL(window.location.href);
@@ -7944,6 +7974,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           window.setTimeout(()=>maybeSendCustomerWelcomeEmail(session),0);
           syncWishlistForCustomerSession(session,true);
           if(event==='SIGNED_OUT'){
+            clearCustomerGoogleOAuthPending();
             if(customerDraftCloudSaveTimer!==null){window.clearTimeout(customerDraftCloudSaveTimer);customerDraftCloudSaveTimer=null;}
             customerDraftCloudReadyUserId='';
             try{
@@ -7960,7 +7991,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             syncCustomerDraftForSession(session,true);
           }
           if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open'))loadCustomerAccountOrders(true);
-          if(event==='SIGNED_IN'&&session&&session.user&&isCustomerAuthCallbackUrl()){
+          if(event==='SIGNED_IN'&&session&&session.user&&(isCustomerAuthCallbackUrl()||hasPendingCustomerGoogleOAuth())){
+            clearCustomerGoogleOAuthPending();
             const identity=getCustomerAuthIdentity(session.user);
             const overlay=$('customerAuthOverlay');
             if(overlay&&overlay.classList.contains('open')){
@@ -8192,19 +8224,37 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
       customerAuthBusy=true;
       const button=$('customerGoogleButton');
+      const passwordSubmit=$('customerPasswordSubmit');
       button.disabled=true;
-      $('customerPasswordSubmit').disabled=true;
-      setCustomerAuthMessage('Opening Google sign-in…');
+      passwordSubmit.disabled=true;
+      setCustomerAuthMessage('Connecting securely to Google…');
+      let redirectStarted=false;
       try{
         const redirectTo=getCustomerAuthRedirectUrl();
-        const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo}});
+        // Take control of the browser redirect so the button cannot start a second
+        // OAuth request while the first redirect is still being initiated.
+        const {data,error}=await client.auth.signInWithOAuth({
+          provider:'google',
+          options:{redirectTo,skipBrowserRedirect:true}
+        });
         if(error)throw error;
+        if(!data||!data.url)throw new Error('Google did not return a sign-in URL. Please try again.');
+        try{sessionStorage.setItem(CUSTOMER_GOOGLE_OAUTH_PENDING_KEY,String(Date.now()));}catch(_){}
+        redirectStarted=true;
+        setCustomerAuthMessage('Redirecting securely to Google…');
+        window.location.assign(data.url);
+        return;
       }catch(error){
+        clearCustomerGoogleOAuthPending();
         setCustomerAuthMessage(customerAuthFriendlyError(error,'google'),'error');
       }finally{
-        customerAuthBusy=false;
-        button.disabled=false;
-        $('customerPasswordSubmit').disabled=false;
+        // Keep both buttons disabled until navigation starts. The destination page
+        // initializes a fresh UI state after Google returns.
+        if(!redirectStarted){
+          customerAuthBusy=false;
+          button.disabled=false;
+          passwordSubmit.disabled=false;
+        }
       }
     });
     $('customerAuthSignOut').addEventListener('click',async()=>{
@@ -8232,23 +8282,46 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
     });
     function initializeCustomerAuth(){
+      const callbackAtStart=isCustomerAuthCallbackUrl();
+      const callbackParams=new URLSearchParams(window.location.search);
+      const callbackError=callbackParams.get('error_description')||callbackParams.get('error')||'';
       try{
         const client=getCustomerAuthClient();
         client.auth.getSession().then(({data,error})=>{
           if(error)throw error;
-          updateCustomerAuthScreen(data.session);
-          if(isCustomerAuthCallbackUrl()&&data.session){
-            showToast('Signed in as '+getCustomerAuthIdentity(data.session.user));
+          const session=data&&data.session?data.session:null;
+          updateCustomerAuthScreen(session);
+          if(callbackAtStart&&session){
+            clearCustomerGoogleOAuthPending();
+            // The SIGNED_IN auth event shows the success toast and clears callback parameters.
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
-          }else if(new URLSearchParams(window.location.search).has('error_description')){
-            const params=new URLSearchParams(window.location.search);
-            setCustomerAuthMessage(params.get('error_description')||'Sign-in was cancelled or could not be completed.','error');
-            openCustomerAuth();
+          }else if(callbackAtStart&&!session){
+            clearCustomerGoogleOAuthPending();
+            const message=callbackError
+              ?'Google sign-in was not completed: '+callbackError
+              :'Google returned to GENMERCH, but the sign-in session was not created. Please tap Continue using Google account once and wait for the redirect to finish.';
+            showCustomerGoogleOAuthError(message);
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
+          }else if(!session&&hasPendingCustomerGoogleOAuth()){
+            clearCustomerGoogleOAuthPending();
+            showCustomerGoogleOAuthError('Google sign-in did not finish on the previous attempt. Please tap Continue using Google account once and wait for it to return to GENMERCH.');
+          }else if(session){
+            clearCustomerGoogleOAuthPending();
           }
-        }).catch(error=>console.warn('Customer authentication session could not be restored.',error));
+        }).catch(error=>{
+          console.warn('Customer authentication session could not be restored.',error);
+          if(callbackAtStart||hasPendingCustomerGoogleOAuth()){
+            clearCustomerGoogleOAuthPending();
+            showCustomerGoogleOAuthError('We could not finish Google sign-in. '+customerAuthFriendlyError(error,'google')+' Please try again.');
+            if(callbackAtStart){try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}}
+          }
+        });
       }catch(error){
         console.warn('Supabase Auth SDK is not available until sign-in is requested.',error);
+        if(hasPendingCustomerGoogleOAuth()){
+          clearCustomerGoogleOAuthPending();
+          showCustomerGoogleOAuthError(error.message||'The sign-in service is unavailable. Please try again.');
+        }
       }
     }
     setCustomerAuthMode('signin');
