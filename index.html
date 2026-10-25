@@ -6616,9 +6616,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const buyButton=$('productModalBuyNow');
       updateProductModalQuantityControls(product);
       if(!productOptionsExpanded){
-        const hasAvailableStock=!Array.isArray(product.variants)||product.variants.some(variant=>Number(variant.stock)>0);
+        // Keep the overview footer actionable so customers can open options even if some/all sizes are sold out.
         addButton.textContent='Add to Cart';buyButton.textContent='Buy Now';
-        addButton.disabled=!hasAvailableStock;buyButton.disabled=!hasAvailableStock;
+        addButton.disabled=false;buyButton.disabled=false;
         return;
       }
       let canPurchase=Boolean(productDetailSelectedSize);
