@@ -10173,7 +10173,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     // Online-first only: the service worker does not cache pages, assets, or API responses.
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function (error) {
+        navigator.serviceWorker.register('/online-worker.js', { scope: '/' }).catch(function (error) {
           console.warn('GENMERCH online-only service worker registration failed.', error);
         });
       });
