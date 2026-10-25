@@ -8708,7 +8708,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     function renderSellerProducts(rows,categoryMap,imageMap,variantMap){
       const tbody=$('sellerProductsTableBody');
-      if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">No products found in cloud inventory.</td></tr>';return;}
+      if(!rows.length){
+        const hasFilters=Boolean(String($('sellerProductsSearch')?.value||'').trim()||$('sellerProductsCategoryFilter')?.value||$('sellerProductsStatusFilter')?.value||$('sellerProductsStockFilter')?.value);
+        const emptyMessage=hasFilters?'No products match your filters. Select Clear to view all products.':'No products found in cloud inventory.';
+        tbody.innerHTML='<tr><td colspan="6" class="seller-table-empty">'+emptyMessage+'</td></tr>';
+        return;
+      }
       tbody.innerHTML=rows.map(product=>{
         const id=String(product.id),images=(imageMap.get(id)||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
         const image=images[0]?safeCatalogImageUrl(images[0].image_url):'',variants=variantMap.get(id)||[],activeVariants=variants.filter(row=>row.is_active!==false);
@@ -10273,7 +10278,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const origin=event.target&&event.target.nodeType===1?event.target:event.target&&event.target.parentElement;
       const control=origin&&origin.closest('button,[role="button"]');
       if(!control||control.disabled||control.closest('#genmerchActionOverlay'))return;
-      if(control.matches('[data-gallery-index],[data-size],.product-gallery-thumb,.product-detail-size-option,[data-qty],[data-payment],[data-color],#productModalQuantityMinus,#productModalQuantityPlus'))return;
+      if(control.matches('[data-gallery-index],[data-size],.product-gallery-thumb,.product-detail-size-option,[data-qty],[data-payment],[data-color],#productModalQuantityMinus,#productModalQuantityPlus,#sellerProductsApplyFilters,#sellerProductsClearFilters'))return;
       const label=String(control.innerText||control.getAttribute('aria-label')||control.title||'').replace(/\s+/g,' ').trim();
       if(!label||/^(×|x|close|close modal|cancel|no)$/i.test(label))return;
       if(control.matches('[aria-label^="Close"],[data-close-modal]'))return;
