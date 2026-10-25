@@ -9387,7 +9387,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(sessionResult.error)throw sessionResult.error;
         const session=sessionResult.data&&sessionResult.data.session;
         if(!session||!session.user){
-          body.innerHTML='<div class="customer-orders-empty"><strong>Sign in to rate your purchases</strong>Only delivered products linked to your account can be reviewed.<br><button type="button" onclick="closeCustomerRateCenter();$('customerAuthOverlay').classList.add('open');$('customerAuthOverlay').setAttribute('aria-hidden','false')">Sign In / Create Account</button></div>';return;
+          body.innerHTML='<div class="customer-orders-empty"><strong>Sign in to rate your purchases</strong>Only delivered products linked to your account can be reviewed.<br><button type="button" onclick="closeCustomerRateCenter();document.getElementById(&quot;customerAuthOverlay&quot;).classList.add(&quot;open&quot;);document.getElementById(&quot;customerAuthOverlay&quot;).setAttribute(&quot;aria-hidden&quot;,&quot;false&quot;)">Sign In / Create Account</button></div>';return;
         }
         const userId=String(session.user.id);
         const ordersResult=await client.from('orders').select('id,order_number,status,created_at').eq('user_id',userId).eq('status','delivered').order('created_at',{ascending:false}).limit(100);
