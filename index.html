@@ -3391,6 +3391,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   </style>
   <style id="genmerch-product-reviews-ui">
     .genmerch-rate-trigger{position:relative}
+    .genmerch-rate-icon{overflow:visible!important}
+    .genmerch-rate-icon .genmerch-rate-star{display:block!important;width:27px!important;height:27px!important;fill:#ffc928!important;stroke:#c88700!important;stroke-width:1.15!important;stroke-linecap:round!important;stroke-linejoin:round!important;filter:drop-shadow(0 1px 1px #7a4b001f)}
     .genmerch-rate-badge{position:absolute;right:-7px;top:-6px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#f22a12;color:#fff;font-size:.61rem;font-weight:900;display:flex;align-items:center;justify-content:center}
     .genmerch-rate-badge[hidden]{display:none!important}
     .genmerch-review-overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:14px;background:#17110f99;backdrop-filter:blur(4px)}
@@ -3486,7 +3488,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <small>Orders</small>
           </button>
           <button class="header-action genmerch-rate-trigger" id="openCustomerRateButton" type="button" onclick="openCustomerRateCenter()" aria-label="Rate delivered products" title="Rate your delivered purchases">
-            <span class="header-icon" aria-hidden="true">⭐<span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
+            <span class="header-icon genmerch-rate-icon" aria-hidden="true"><svg class="genmerch-rate-star" viewBox="0 0 24 24" role="img" aria-label="Star"><path d="M12 2.6 14.9 8.5l6.5.95-4.7 4.58 1.11 6.47L12 17.45l-5.81 3.05 1.11-6.47-4.7-4.58 6.5-.95L12 2.6Z"/></svg><span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
           </button>
           <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
             <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
