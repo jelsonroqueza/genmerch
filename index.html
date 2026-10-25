@@ -6455,6 +6455,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       $('productModalAdd').onclick=()=>handleProductDetailPurchase('add-to-cart');
       $('productModalBuyNow').onclick=()=>handleProductDetailPurchase('buy-now');
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
+      loadProductReviews(p.id);
+      refreshCustomerRateBadge();
       hideCenteredActionStatus();
     }
     function renderProductModalSizes(product){
@@ -9385,7 +9387,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(sessionResult.error)throw sessionResult.error;
         const session=sessionResult.data&&sessionResult.data.session;
         if(!session||!session.user){
-          body.innerHTML='<div class="customer-orders-empty"><strong>Sign in to rate your purchases</strong>Only delivered products linked to your account can be reviewed.<br><button type="button" onclick="closeCustomerRateCenter();openCustomerAuth()">Sign In / Create Account</button></div>';return;
+          body.innerHTML='<div class="customer-orders-empty"><strong>Sign in to rate your purchases</strong>Only delivered products linked to your account can be reviewed.<br><button type="button" onclick="closeCustomerRateCenter();$('customerAuthOverlay').classList.add('open');$('customerAuthOverlay').setAttribute('aria-hidden','false')">Sign In / Create Account</button></div>';return;
         }
         const userId=String(session.user.id);
         const ordersResult=await client.from('orders').select('id,order_number,status,created_at').eq('user_id',userId).eq('status','delivered').order('created_at',{ascending:false}).limit(100);
@@ -9496,6 +9498,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(authResult.error)throw authResult.error;
         customerAuthCurrentSession=authResult.data&&authResult.data.session&&authResult.data.session.user?authResult.data.session:null;
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
+        refreshCustomerRateBadge();
       }catch(error){
         console.warn('GENMERCH could not initialize the Orders badge from the customer session.',error);
       }
