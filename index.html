@@ -6460,9 +6460,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const images=(Array.isArray(p.images)?p.images:[]).filter(image=>image&&image.url);
       if(!images.length&&p.image)images.push({url:p.image,alt:p.imageAlt||p.name});
       const colorMapping=getProductColorMapping(p,images);
-      const colors=colorMapping?colorMapping.colors:[];
+      const colors=getProductColors(p);
       const mainImage=images[0]||null;
-      openProductSelectedColor=colorMapping?(getColorForImage(mainImage,colors)||colors[0]):'';
+      openProductSelectedColor=colors.length?(getColorForImage(mainImage,colors)||colors[0]):'';
       $('productModalIcon').innerHTML=mainImage?'<img id="productGalleryMainImage" src="'+escapeHtml(mainImage.url)+'" alt="'+escapeHtml(mainImage.alt||p.name)+'">':escapeHtml(p.icon||'🛍️');
       const gallery=$('productModalGallery'), thumbnails=$('productGalleryThumbnails');
       if(images.length>1){
@@ -6477,9 +6477,19 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       colorSelector.hidden=true;
       updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
       $('productModalColorChoices').onclick=event=>{
-        const button=event.target.closest('[data-color]');if(!button||!colorMapping)return;
-        const index=colorMapping.imageIndexByColor.get(button.dataset.color);
-        if(Number.isInteger(index))showProductGalleryImage(p,images,index,thumbnails);
+        const button=event.target.closest('[data-color]');if(!button)return;
+        const selectedColor=String(button.dataset.color||'');
+        const colorChanged=openProductSelectedColor!==selectedColor;
+        openProductSelectedColor=selectedColor;
+        updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
+        if(colorMapping){
+          const index=colorMapping.imageIndexByColor.get(selectedColor);
+          if(Number.isInteger(index))showProductGalleryImage(p,images,index,thumbnails);
+        }
+        if(colorChanged){
+          productDetailSelectedSize='';productDetailSelectedVariantId=null;productDetailSelectedColor='';productDetailQuantity=1;
+          renderProductModalSizes(p);updateProductModalAddButton(p);
+        }
       };
       $('productModalName').textContent=p.name;
       $('productModalPrice').textContent=money(p.price);
@@ -6500,7 +6510,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       productOptionsExpanded=Boolean(expanded);
       const colorSelector=$('productModalColorSelector');
       const colorMapping=product?getProductColorMapping(product):null;
-      if(colorSelector)colorSelector.hidden=!(productOptionsExpanded&&Boolean(colorMapping));
+      if(colorSelector)colorSelector.hidden=!(productOptionsExpanded&&getProductColors(product).length>0);
       const sizeSelector=$('productModalSizeSelector');
       if(sizeSelector)sizeSelector.hidden=!productOptionsExpanded;
       const quantitySelector=$('productModalQuantitySelector');
@@ -6521,8 +6531,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const allVariants=Array.isArray(product.variants)
         ? product.variants.slice()
         : GENMERCH_ALLOWED_SIZES.map(size=>({id:null,size,color:'',price:null,stock:null,sku:''}));
-      let variants=colorMapping
-        ? allVariants.filter(variant=>variant.color===openProductSelectedColor)
+      let variants=productColors.length&&openProductSelectedColor
+        ? allVariants.filter(variant=>String(variant.color||'').trim().toLowerCase()===String(openProductSelectedColor).trim().toLowerCase())
         : allVariants;
       variants.sort((a,b)=>{
         const aIndex=order.indexOf(a.size),bIndex=order.indexOf(b.size);
@@ -6537,7 +6547,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(variant.id)button.dataset.variantId=String(variant.id);
         if(variant.color)button.dataset.color=String(variant.color);
         button.dataset.stock=variant.stock===null||variant.stock===undefined?'':String(variant.stock);
-        const appendColor=!colorMapping&&productColors.length>1&&variant.color;
+        const appendColor=!productColors.length&&variant.color;
         button.textContent=displaySizeLabel(variant.size)+(appendColor?' · '+variant.color:'');
         const isSelected=variant.id
           ? String(variant.id)===String(productDetailSelectedVariantId||'')
