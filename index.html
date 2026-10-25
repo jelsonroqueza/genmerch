@@ -2471,6 +2471,128 @@
 
 </style>
 
+  <style id="genmerch-adaptive-ui-v2">
+    /* Cross-device baseline: keep controls, cards and modals inside the visible viewport. */
+    html{width:100%;max-width:100%;overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:1rem}
+    body{width:100%;max-width:100%;overflow-x:hidden}
+    img,video,canvas,iframe{max-width:100%}
+    input,select,textarea,button{max-width:100%;touch-action:manipulation}
+    main,.container,.main-header,.announcement-inner,.hero,.hero-copy,.catalog-heading,.header-actions,.grid,.grid>*,
+    .product-modal,.size-modal,.cart-modal,.customer-auth-modal,.customer-orders-modal,.wishlist-modal,
+    .seller-modal,.seller-dashboard-modal,.business-reg-modal{min-width:0}
+    p,small,strong,label,span,a,button,td,th{overflow-wrap:anywhere}
+    .desktop-links{max-width:100%;min-width:0}
+    .desktop-links button{flex:0 0 auto}
+    .header-actions{min-width:0}
+    .header-action{min-width:0}
+    .search{min-width:0}
+    .catalog-heading>*{min-width:0}
+    .product-count{overflow-wrap:anywhere}
+    .customer-orders-badge{z-index:2}
+    .customer-orders-modal,.seller-dashboard-modal,.seller-modal,.wishlist-modal,.customer-auth-modal,.business-reg-modal{
+      overscroll-behavior:contain;-webkit-overflow-scrolling:touch
+    }
+    @media (min-width:761px) and (max-width:1100px){
+      .main-header{padding-inline:clamp(10px,2vw,24px)!important}
+      .main-header .nav{gap:clamp(8px,1.1vw,14px)!important;padding-inline:clamp(8px,1.2vw,16px)!important}
+      .brand-word{font-size:clamp(1.35rem,2vw,1.85rem)!important;letter-spacing:-1.2px!important}
+      .header-actions{gap:clamp(6px,1vw,13px)!important}
+      .header-action{min-width:38px!important}
+      .header-action small{font-size:clamp(.56rem,.7vw,.66rem)!important}
+      .desktop-links{gap:clamp(7px,1vw,12px)!important}
+      .desktop-links button{font-size:clamp(.66rem,.8vw,.78rem)!important}
+      .desktop-links button.active{padding-inline:clamp(12px,1.5vw,20px)!important}
+      .trust-strip{min-width:0}
+      .trust-strip>div{min-width:0}
+    }
+    @media (max-width:760px){
+      body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px))}
+      .site-header{position:sticky;top:0;z-index:100}
+      .main-header{width:100%!important;padding:7px clamp(6px,2vw,12px) 0!important}
+      .main-header .nav{
+        width:100%!important;min-width:0!important;
+        grid-template-columns:minmax(0,1fr) auto!important;
+        grid-template-rows:auto auto!important;
+        gap:7px clamp(4px,1.3vw,9px)!important;
+        padding:7px clamp(6px,1.7vw,10px)!important;
+      }
+      .brand-lockup{max-width:100%!important;min-width:0!important}
+      .brand-word{font-size:clamp(1.12rem,4.5vw,1.62rem)!important;letter-spacing:-1.2px!important}
+      .header-actions{
+        width:auto!important;max-width:100%!important;min-width:0!important;
+        display:flex!important;align-items:center!important;justify-content:flex-end!important;
+        gap:clamp(2px,1vw,7px)!important;flex:0 1 auto!important;
+      }
+      .header-action{
+        min-width:clamp(24px,6.3vw,38px)!important;max-width:50px!important;
+        flex:0 1 auto!important;padding:2px 0!important;
+      }
+      .header-action .header-icon{width:clamp(22px,5.6vw,27px)!important;height:clamp(23px,5.8vw,28px)!important}
+      .header-action .header-icon svg{width:clamp(20px,5.2vw,24px)!important;height:clamp(20px,5.2vw,24px)!important}
+      .header-action small{
+        max-width:100%!important;white-space:normal!important;text-align:center!important;
+        font-size:clamp(.46rem,1.65vw,.6rem)!important;line-height:1.05!important;
+      }
+      .search{grid-column:1/-1!important;grid-row:2!important;width:100%!important;max-width:100%!important}
+      .desktop-links{
+        display:flex!important;align-items:center!important;justify-content:flex-start!important;
+        gap:clamp(8px,2.1vw,16px)!important;overflow-x:auto!important;overflow-y:hidden!important;
+        white-space:nowrap!important;scrollbar-width:none!important;scroll-snap-type:x proximity;
+        -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+      }
+      .desktop-links::-webkit-scrollbar{display:none!important}
+      .desktop-links span{flex:0 0 10px!important}
+      .desktop-links button{flex:0 0 auto!important}
+      .hero,.trust-strip,main.container,.catalog-heading{max-width:100%;min-width:0}
+      .hero{overflow:hidden}
+      .hero-copy,.hero-art,.hero-models-photo{min-width:0;max-width:100%}
+      .hero-clock{white-space:normal;overflow-wrap:anywhere}
+      .catalog-heading{align-items:flex-start!important}
+      .catalog-heading .section-title{min-width:0;overflow-wrap:anywhere}
+      .catalog-heading .product-count{white-space:normal!important;text-align:right}
+      #productGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+      .customer-orders-overlay,.wishlist-overlay,.customer-auth-overlay,.seller-modal-overlay,.size-overlay,.business-reg-overlay{
+        padding:calc(7px + env(safe-area-inset-top,0px)) 7px calc(7px + env(safe-area-inset-bottom,0px))!important
+      }
+      .customer-orders-modal,.wishlist-modal,.customer-auth-modal,.seller-modal,.seller-dashboard-modal,.business-reg-modal{
+        width:100%!important;max-width:100%!important;max-height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+      }
+      .customer-orders-filter-tabs{overflow-x:auto!important;max-width:100%;scrollbar-width:thin}
+      .customer-orders-filter-tabs>*{flex:0 0 auto}
+      .customer-order-progress{gap:2px!important}
+      .customer-order-progress-step{min-width:0!important}
+      .customer-order-progress-label{font-size:clamp(.49rem,1.7vw,.62rem)!important}
+      .customer-order-item{min-width:0}
+      .customer-order-item-info{min-width:0;overflow-wrap:anywhere}
+      .customer-order-item-price{white-space:normal!important;overflow-wrap:anywhere}
+      .customer-order-card-head{gap:8px}
+      .customer-order-status-pill{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+      .checkout-grid,.seller-form-grid{grid-template-columns:minmax(0,1fr)!important}
+      .checkout-grid>*{min-width:0}
+      footer{padding-left:12px;padding-right:12px}
+    }
+    @media (max-width:420px){
+      .main-header .nav{padding:6px!important;gap:6px 3px!important}
+      .brand-word{font-size:clamp(1.02rem,4.3vw,1.24rem)!important;letter-spacing:-1px!important}
+      .header-actions{gap:2px!important}
+      .header-action{min-width:23px!important;max-width:43px!important}
+      .header-action small{font-size:.45rem!important;max-width:43px!important}
+      .desktop-links{gap:9px!important}
+      .desktop-links button{font-size:.72rem!important}
+      .section-title{font-size:1rem!important}
+      .product-count{font-size:.65rem!important}
+      .customer-orders-content{padding:8px!important}
+      .customer-order-card{padding:9px!important}
+      .customer-order-card-head{flex-direction:column;align-items:flex-start}
+      .customer-order-progress-label{font-size:.47rem!important}
+      .customer-order-item{grid-template-columns:42px minmax(0,1fr)!important;gap:7px!important}
+      .customer-order-item-image{width:42px!important;height:46px!important}
+      .customer-order-item-price{grid-column:2;text-align:left!important}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -4390,6 +4512,115 @@
     };
     let customerOrdersRefreshTimer=null;
     let customerGuestTrackingLookup=null;
+    let customerOrdersRealtimeChannel=null;
+    let customerOrdersRealtimeUserId='';
+    let customerOrdersBadgePollTimer=null;
+    let customerOrdersBadgeRefreshSequence=0;
+
+    function setCustomerOrdersBadgeCount(value){
+      const badge=$('customerOrdersBadge');
+      if(!badge)return;
+      const numeric=Number(value);
+      const count=Number.isFinite(numeric)?Math.max(0,Math.floor(numeric)):0;
+      badge.textContent=count>99?'99+':String(count);
+      badge.hidden=count===0;
+      const button=badge.closest('button');
+      if(button){
+        button.setAttribute('aria-label',count?'View and track your orders, '+count+' order'+(count===1?'':'s'):'View and track your orders');
+        button.title=count?'My Orders — '+count+' order'+(count===1?'':'s')+' · Track your delivery':'My Orders — Track your delivery';
+      }
+    }
+
+    async function refreshCustomerOrdersBadge(session=customerAuthCurrentSession){
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      if(!userId){customerOrdersBadgeRefreshSequence++;setCustomerOrdersBadgeCount(0);return;}
+      const sequence=++customerOrdersBadgeRefreshSequence;
+      const client=getCustomerAuthClient();
+      const result=await client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',userId);
+      if(result.error)throw result.error;
+      const activeUserId=customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.id
+        ?String(customerAuthCurrentSession.user.id):'';
+      if(sequence!==customerOrdersBadgeRefreshSequence||activeUserId!==userId)return;
+      setCustomerOrdersBadgeCount(result.count);
+    }
+
+    function stopCustomerOrdersBadgePolling(){
+      if(customerOrdersBadgePollTimer!==null){
+        window.clearInterval(customerOrdersBadgePollTimer);
+        customerOrdersBadgePollTimer=null;
+      }
+    }
+
+    function stopCustomerOrdersRealtimeChannel(){
+      if(customerOrdersRealtimeChannel&&customerAuthClient&&typeof customerAuthClient.removeChannel==='function'){
+        const previous=customerOrdersRealtimeChannel;
+        customerOrdersRealtimeChannel=null;
+        try{
+          const removal=customerAuthClient.removeChannel(previous);
+          if(removal&&typeof removal.catch==='function')removal.catch(()=>{});
+        }catch(_){}
+      }else{
+        customerOrdersRealtimeChannel=null;
+      }
+      customerOrdersRealtimeUserId='';
+    }
+
+    function startCustomerOrdersBadgePolling(){
+      if(customerOrdersBadgePollTimer!==null)return;
+      customerOrdersBadgePollTimer=window.setInterval(()=>{
+        if(document.hidden)return;
+        const session=customerAuthCurrentSession;
+        if(session&&session.user){
+          refreshCustomerOrdersBadge(session).catch(error=>console.warn('GENMERCH Orders badge fallback refresh failed.',error));
+        }
+      },15000);
+    }
+
+    function syncCustomerOrdersBadgeRealtime(session=customerAuthCurrentSession){
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      if(!userId){
+        customerOrdersBadgeRefreshSequence++;
+        stopCustomerOrdersBadgePolling();
+        stopCustomerOrdersRealtimeChannel();
+        setCustomerOrdersBadgeCount(0);
+        return;
+      }
+      if(customerOrdersRealtimeChannel&&customerOrdersRealtimeUserId===userId){
+        refreshCustomerOrdersBadge(session).catch(error=>console.warn('GENMERCH Orders badge refresh failed.',error));
+        startCustomerOrdersBadgePolling();
+        return;
+      }
+      stopCustomerOrdersRealtimeChannel();
+      const client=getCustomerAuthClient();
+      customerOrdersRealtimeUserId=userId;
+      try{
+        customerOrdersRealtimeChannel=client
+          .channel('genmerch-customer-orders-'+userId)
+          .on('postgres_changes',{
+            event:'*',
+            schema:'public',
+            table:'orders',
+            filter:'user_id=eq.'+userId
+          },()=>{
+            const activeSession=customerAuthCurrentSession;
+            if(!activeSession||!activeSession.user||String(activeSession.user.id)!==userId)return;
+            refreshCustomerOrdersBadge(activeSession).catch(error=>console.warn('GENMERCH realtime Orders badge update failed.',error));
+            if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open')){
+              loadCustomerAccountOrders(true);
+            }
+          })
+          .subscribe(status=>{
+            if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+              console.warn('GENMERCH Orders Realtime is temporarily unavailable; the automatic fallback refresh remains active.');
+            }
+          });
+      }catch(error){
+        customerOrdersRealtimeChannel=null;
+        console.warn('GENMERCH could not start Orders Realtime; the automatic fallback refresh remains active.',error);
+      }
+      refreshCustomerOrdersBadge(session).catch(error=>console.warn('GENMERCH initial Orders badge refresh failed.',error));
+      startCustomerOrdersBadgePolling();
+    }
     function customerOrderStatusMeta(status){
       return CUSTOMER_ORDER_STATUS_META[String(status||'pending').toLowerCase()]||{label:String(status||'Order update').replace(/_/g,' '),detail:'Your order status has been updated.',step:0};
     }
@@ -4623,11 +4854,6 @@
         history:historyMap.get(String(order.id))||[],
         shipment:shipmentMap.get(String(order.id))||null
       }));
-      const badge=$('customerOrdersBadge');
-      if(badge){
-        badge.textContent=customerAccountOrderRecords.length>99?'99+':String(customerAccountOrderRecords.length);
-        badge.hidden=customerAccountOrderRecords.length===0;
-      }
       renderCustomerOrderFilterResults();
     }
     async function loadCustomerAccountOrders(silent=false){
@@ -4642,15 +4868,17 @@
         const banner=$('customerOrdersAccountBanner');
         if(!session||!session.user){
           if(banner)banner.innerHTML='You are browsing as a guest. Sign in to see orders linked to your account, or use <strong>Track a guest order</strong> below.';
+          setCustomerOrdersBadgeCount(0);
           renderCustomerAccountOrders([]);
           return;
         }
         const userId=String(session.user.id);
         if(banner)banner.innerHTML='Signed in as <strong>'+escapeHtml(getCustomerAuthIdentity(session.user))+'</strong>. Only orders linked to this account are shown here.';
         if(!silent)container.innerHTML='<div class="customer-orders-loading">Fetching your orders from Supabase…</div>';
-        const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,customer_phone,receipt_email,created_at,updated_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
+        const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,customer_phone,receipt_email,created_at,updated_at',{count:'exact'}).eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
         if(ordersResult.error)throw ordersResult.error;
         const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
+        setCustomerOrdersBadgeCount(typeof ordersResult.count==='number'?ordersResult.count:orders.length);
         if(!orders.length){renderCustomerAccountOrders([]);return;}
         const orderIds=orders.map(order=>order.id);
         const [itemsResult,historyResult,shipmentsResult]=await Promise.all([
@@ -5940,6 +6168,7 @@
       if(!customerAuthSubscription){
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
+          window.setTimeout(()=>syncCustomerOrdersBadgeRealtime(session),0);
           syncWishlistForCustomerSession(session,true);
           if(event==='SIGNED_OUT'){
             if(customerDraftCloudSaveTimer!==null){window.clearTimeout(customerDraftCloudSaveTimer);customerDraftCloudSaveTimer=null;}
@@ -7236,6 +7465,14 @@
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
       await syncCustomerDraftForSession(undefined,false);restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();
+      try{
+        const authResult=await getCustomerAuthClient().auth.getSession();
+        if(authResult.error)throw authResult.error;
+        customerAuthCurrentSession=authResult.data&&authResult.data.session&&authResult.data.session.user?authResult.data.session:null;
+        syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
+      }catch(error){
+        console.warn('GENMERCH could not initialize the Orders badge from the customer session.',error);
+      }
       await restoreAddressReferenceContext();
     }
     initializeStorefront();
@@ -7247,6 +7484,17 @@
       else{
         syncWishlistForCustomerSession(undefined,true);
         syncCustomerDraftForSession(undefined,true);
+        syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
+      }
+    });
+    window.addEventListener('focus',()=>{
+      if(!document.hidden&&customerAuthCurrentSession&&customerAuthCurrentSession.user){
+        refreshCustomerOrdersBadge(customerAuthCurrentSession).catch(error=>console.warn('GENMERCH Orders badge focus refresh failed.',error));
+      }
+    });
+    window.addEventListener('online',()=>{
+      if(customerAuthCurrentSession&&customerAuthCurrentSession.user){
+        syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
       }
     });
   </script>
