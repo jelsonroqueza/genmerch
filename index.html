@@ -3192,7 +3192,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
               <button class="seller-collapse-button seller-dashboard-collapse-button" id="sellerCollapseDashboardButton" type="button" onclick="sellerSetDashboardCollapsed(true)" aria-controls="sellerInventoryMetrics" aria-expanded="true">− Collapse Dashboard</button>
               <button class="seller-collapse-button seller-dashboard-expand-button" id="sellerExpandDashboardButton" type="button" onclick="sellerSetDashboardCollapsed(false)" aria-controls="sellerInventoryMetrics" aria-expanded="false" disabled>＋ Expand Dashboard</button>
             </div>
-            <button class="seller-primary-button seller-export-excel-button" id="sellerExportExcelButton" type="button" onclick="exportSellerInventoryExcel()">⇩ Export to Excel</button>
+            <button class="seller-primary-button seller-export-excel-button seller-export-google-sheets-button" id="sellerExportGoogleSheetsButton" type="button" onclick="exportSellerGoogleSheetsReport()" aria-label="Export inventory, stock movements, summary and orders for Google Sheets">▦ Google Sheets Export</button>
           </div>
         </div>
         <div class="seller-feedback" id="sellerInventoryFeedback" role="status" aria-live="polite" hidden></div>
@@ -8611,11 +8611,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(stock<=5)return 'Low stock';
       return 'In stock';
     }
-    async function exportSellerInventoryExcel(){
+    async function exportSellerGoogleSheetsReport(){
       if(!sellerCentreIsUnlocked){showToast('Unlock Seller Centre before exporting inventory.');return;}
-      const button=$('sellerExportExcelButton');
-      if(button){button.disabled=true;button.textContent='Preparing Excel…';}
-      sellerFeedback('sellerInventoryFeedback','Preparing a fresh Excel report from Supabase…','');
+      const button=$('sellerExportGoogleSheetsButton');
+      if(button){button.disabled=true;button.textContent='Preparing Sheets…';}
+      showCenteredActionStatus('Preparing Google Sheets export, please wait...','loading');
+      sellerFeedback('sellerInventoryFeedback','Preparing a fresh Google Sheets-compatible report from Supabase…','');
       try{
         const client=await getSellerAdminClient(false);
         const [xlsx,productsResult,variantsResult,categoriesResult,ordersResult,movementsResult]=await Promise.all([
@@ -8737,15 +8738,18 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         xlsx.utils.book_append_sheet(workbook,ordersSheet,'Orders');
         workbook.Props={Title:'GENMERCH Inventory & Analytics',Subject:'Inventory, stock movements, and orders report',Author:'GENMERCH Seller Centre',CreatedDate:exportedAt};
         const stamp=exportedAt.toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).replace(/[^0-9-]/g,'')||exportedAt.toISOString().slice(0,10);
-        xlsx.writeFile(workbook,'GENMERCH_Inventory_Report_'+stamp+'.xlsx');
-        sellerFeedback('sellerInventoryFeedback','Excel report downloaded: '+inventoryRows.length+' variant(s), '+movements.length+' stock movement(s), '+orders.length+' order(s).','success');
-        showToast('Inventory report exported to Excel.');
+        xlsx.writeFile(workbook,'GENMERCH_Google_Sheets_Import_'+stamp+'.xlsx');
+        const successMessage='Google Sheets-compatible workbook downloaded: '+inventoryRows.length+' variant(s), '+movements.length+' stock movement(s), '+orders.length+' order(s). Open or import the .xlsx file in Google Sheets.';
+        sellerFeedback('sellerInventoryFeedback',successMessage,'success');
+        showCenteredActionStatus('Google Sheets export ready!','success',2400,'The workbook can be opened or imported in Google Sheets.');
+        showToast('Google Sheets-compatible export downloaded.');
       }catch(error){
-        console.error('GENMERCH Excel export failed.',error);
-        sellerFeedback('sellerInventoryFeedback',error.message||'Could not export the Excel report. Please retry.','error');
-        showToast('Excel export failed. Please try again.');
+        console.error('GENMERCH Google Sheets export failed.',error);
+        sellerFeedback('sellerInventoryFeedback',error.message||'Could not prepare the Google Sheets-compatible report. Please retry.','error');
+        showCenteredActionStatus(error.message||'Google Sheets export failed. Please try again.','error',2400);
+        showToast('Google Sheets export failed. Please try again.');
       }finally{
-        if(button){button.disabled=false;button.textContent='⇩ Export to Excel';}
+        if(button){button.disabled=false;button.textContent='▦ Google Sheets Export';}
       }
     }
 
