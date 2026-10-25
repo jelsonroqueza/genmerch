@@ -3679,6 +3679,34 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       header .header-actions #openCartButton .genmerch-premium-cart-icon{width:26px!important;height:26px!important}
     }
 </style>
+  <style id="genmerch-premium-seller-centre-icon">
+    .seller-centre-trigger .seller-trigger-icon{
+      display:grid!important;place-items:center!important;
+      width:31px!important;height:31px!important;flex:0 0 31px!important;
+      margin:0!important;padding:0!important;font-size:0!important;line-height:0!important;
+      filter:drop-shadow(0 1px 1px #10131824)!important;
+      transition:transform .16s ease,filter .16s ease!important;
+    }
+    .seller-centre-trigger .seller-trigger-icon .genmerch-premium-store-icon{
+      display:block!important;width:29px!important;height:29px!important;max-width:none!important;
+      overflow:visible!important;fill:none;stroke-linejoin:round;stroke-linecap:round;
+    }
+    .seller-centre-trigger:hover .seller-trigger-icon{
+      transform:translateY(-1px)!important;filter:drop-shadow(0 2px 2px #10131838)!important;
+    }
+    .seller-centre-trigger:focus-visible .genmerch-premium-store-icon{
+      outline:2px solid #e9272d;outline-offset:2px;border-radius:4px;
+    }
+    @media(max-width:900px){
+      .seller-centre-trigger .seller-trigger-icon{width:28px!important;height:28px!important;flex-basis:28px!important}
+      .seller-centre-trigger .seller-trigger-icon .genmerch-premium-store-icon{width:27px!important;height:27px!important}
+    }
+    @media(max-width:480px){
+      .seller-centre-trigger .seller-trigger-icon{width:26px!important;height:26px!important;flex-basis:26px!important}
+      .seller-centre-trigger .seller-trigger-icon .genmerch-premium-store-icon{width:25px!important;height:25px!important}
+    }
+    @media(prefers-reduced-motion:reduce){.seller-centre-trigger .seller-trigger-icon{transition:none!important}}
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -3735,7 +3763,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <small>Cart</small>
           </button>
           <button class="header-action seller-centre-trigger" id="openSellerCentreButton" type="button" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">
-            <span class="seller-trigger-icon" aria-hidden="true">🛍️</span><small>Seller Centre</small>
+            <span class="seller-trigger-icon" aria-hidden="true"><svg class="genmerch-premium-store-icon" viewBox="0 0 32 32" focusable="false"><defs><linearGradient id="genmerchStoreRoofGradient" x1="5" y1="3" x2="27" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#555d68"/><stop offset=".5" stop-color="#262c35"/><stop offset="1" stop-color="#11151b"/></linearGradient><linearGradient id="genmerchStoreWallGradient" x1="8" y1="13" x2="24" y2="29" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dfe3e8"/></linearGradient><linearGradient id="genmerchStoreRedGradient" x1="8" y1="6" x2="24" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5963"/><stop offset=".52" stop-color="#f22b38"/><stop offset="1" stop-color="#ce1226"/></linearGradient><linearGradient id="genmerchStoreGlassGradient" x1="9" y1="15" x2="16" y2="23" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#d8efff"/><stop offset="1" stop-color="#80b6df"/></linearGradient><linearGradient id="genmerchStoreGoldGradient" x1="22" y1="17" x2="26" y2="27" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#dc9d23"/></linearGradient></defs><path d="M6.4 12.2h19.2v15H6.4z" fill="url(#genmerchStoreWallGradient)" stroke="#252b34" stroke-width=".85" stroke-linejoin="round"/><path d="M4.5 12.1 7.2 4.5h17.6l2.7 7.6Z" fill="url(#genmerchStoreRoofGradient)" stroke="#171b22" stroke-width=".75" stroke-linejoin="round"/><path d="M5.1 10.6h21.8l.6 3.4c-.25 1.5-2.45 2.05-3.55.35-1.05 1.85-3.45 1.85-4.5 0-1.1 1.85-3.5 1.85-4.55 0-1.1 1.85-3.5 1.85-4.55 0-1.1 1.7-3.3 1.15-3.55-.35Z" fill="url(#genmerchStoreRedGradient)" stroke="#c8172a" stroke-width=".55" stroke-linejoin="round"/><path d="M9.35 10.7v3.2c1.05 1.85 3.45 1.85 4.55 0v-3.2Zm9.1 0v3.2c1.05 1.85 3.45 1.85 4.5 0v-3.2Z" fill="#fff3e9" stroke="#e4cfc4" stroke-width=".4"/><path d="M8.6 17h7.3v7.6H8.6z" fill="url(#genmerchStoreGlassGradient)" stroke="#424b56" stroke-width=".8" stroke-linejoin="round"/><path d="M12.25 17v7.6M8.6 20.8h7.3" fill="none" stroke="#fff" stroke-width=".65" stroke-opacity=".8"/><path d="M18.2 18h4.8v9.2h-4.8z" fill="#343a43" stroke="#252b34" stroke-width=".65"/><path d="M19.2 19h2.8v7.1h-2.8z" fill="#f5f7fa" opacity=".9"/><circle cx="21.15" cy="22.7" r=".38" fill="#ce1226"/><path d="M7.4 5.2h17.2" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".52"/><path d="M5.3 28h21.4" stroke="#1b2027" stroke-width="1.2" stroke-linecap="round"/><path d="M25 17.2h3.2v5.1H25z" fill="url(#genmerchStoreGoldGradient)" stroke="#9f711b" stroke-width=".55"/><path d="M25.7 17.2v-1c0-.8.35-1.3.9-1.3s.9.5.9 1.3v1" fill="none" stroke="#252b34" stroke-width=".85" stroke-linecap="round"/></svg></span><small>Seller Centre</small>
           </button>
         </div>
       </div>
