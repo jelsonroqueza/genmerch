@@ -3524,6 +3524,23 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .product-detail-action{min-height:45px!important;padding:10px 7px!important;font-size:.8rem!important}
     }
   </style>
+  <style id="genmerch-product-card-sales-reviews">
+    .card-sales-review{
+      display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;
+      gap:4px 8px;min-width:0;margin:6px 0 8px;padding:0;
+      color:#67574f;font-size:.72rem;font-weight:650;line-height:1.35;
+      font-variant-numeric:tabular-nums;
+    }
+    .card-sales-review>span{display:inline-flex;align-items:center;gap:3px;white-space:normal}
+    .card-sales-sold{color:#66574f}
+    .card-sales-sold strong{color:#29211c;font-weight:900}
+    .card-sales-rating{color:#c88700;font-weight:900}
+    .card-sales-review-count{color:#75645b}
+    .card-sales-no-rating,.card-sales-unavailable{color:#887970;font-weight:600}
+    @media(max-width:480px){
+      .card-sales-review{gap:4px 6px;font-size:.68rem;margin:5px 0 7px}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -6382,9 +6399,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
         return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
-          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
+          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div><div class="card-sales-review" data-card-sales-review="'+escapeHtml(product.id)+'" aria-label="Product sold count and customer ratings">Loading sales &amp; reviews…</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
+      loadProductCardSalesReviews(list);
     }
 
     function escapeHtml(text){
@@ -9621,6 +9639,63 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(count>=1000)return (count/1000).toFixed(count>=10000?0:1).replace(/\.0$/,'')+'K';
       return count.toLocaleString('en-PH');
     }
+    function renderProductCardSalesReviews(node,stats){
+      if(!node)return;
+      if(stats&&stats.unavailable){
+        node.innerHTML='<span class="card-sales-unavailable">Sales &amp; reviews unavailable</span>';
+        return;
+      }
+      const sold=Math.max(0,Number(stats&&stats.sold_count)||0);
+      const reviewCount=Math.max(0,Number(stats&&stats.review_count)||0);
+      const average=reviewCount?Number(stats&&stats.average_rating)||0:0;
+      node.innerHTML='<span class="card-sales-sold"><strong>'+escapeHtml(formatProductSoldCount(sold))+'</strong> Sold</span>'+
+        (reviewCount
+          ?'<span class="card-sales-rating">⭐ '+average.toFixed(1)+'</span><span class="card-sales-review-count">'+reviewCount.toLocaleString('en-PH')+' review'+(reviewCount===1?'':'s')+'</span>'
+          :'<span class="card-sales-no-rating">☆ No reviews yet</span>');
+    }
+    function loadProductCardSalesReviews(productList){
+      const cache=loadProductCardSalesReviews.cache||(loadProductCardSalesReviews.cache=new Map());
+      const pending=loadProductCardSalesReviews.pending||(loadProductCardSalesReviews.pending=new Map());
+      const findNode=id=>Array.from(document.querySelectorAll('[data-card-sales-review]')).find(node=>node.dataset.cardSalesReview===String(id));
+      productList.forEach(product=>{
+        const id=String(product&&product.id||'');
+        if(!id)return;
+        const node=findNode(id);
+        if(cache.has(id)){renderProductCardSalesReviews(node,cache.get(id));return;}
+        if(pending.has(id)){
+          pending.get(id).then(stats=>renderProductCardSalesReviews(findNode(id),stats));
+          return;
+        }
+        if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)){
+          const unavailable={unavailable:true};
+          cache.set(id,unavailable);
+          renderProductCardSalesReviews(node,unavailable);
+          return;
+        }
+        const request=getCustomerAuthClient().rpc('get_public_product_sales_review_stats',{p_product_id:id})
+          .then(result=>{
+            if(result.error)throw result.error;
+            const raw=Array.isArray(result.data)?(result.data[0]||{}):(result.data||{});
+            const stats={
+              sold_count:Math.max(0,Number(raw.sold_count)||0),
+              review_count:Math.max(0,Number(raw.review_count)||0),
+              average_rating:Math.max(0,Number(raw.average_rating)||0)
+            };
+            cache.set(id,stats);
+            return stats;
+          })
+          .catch(error=>{
+            console.warn('GENMERCH product-card sales and reviews could not load for product '+id+'.',error);
+            const unavailable={unavailable:true};
+            cache.set(id,unavailable);
+            return unavailable;
+          })
+          .finally(()=>pending.delete(id));
+        pending.set(id,request);
+        request.then(stats=>renderProductCardSalesReviews(findNode(id),stats));
+      });
+    }
+
     async function loadProductSalesStats(productId){
       const node=$('productModalSocialProof');if(!node)return;
       try{
