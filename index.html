@@ -77,8 +77,10 @@
     .business-reg-modal-head p{margin:0;font-size:.82rem;line-height:1.4;color:#fff}
     .business-reg-close{display:inline-grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #ffffff55;border-radius:50%;background:#ffffff18;color:#fff;font-size:1.5rem;cursor:pointer}
     .business-reg-body{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:18px;padding:20px}
-    .business-reg-image-wrap{margin:0;min-width:0}
+    .business-reg-documents{display:flex;flex-direction:column;gap:15px;min-width:0;align-self:start}
+    .business-reg-image-wrap,.business-reg-seal-wrap{margin:0;min-width:0}
     .business-reg-image{display:block;width:100%;height:auto;max-height:58dvh;object-fit:contain;background:#f8f8f4;border:1px solid #deded6;border-radius:8px}
+    .business-reg-seal-image{display:block;width:100%;height:auto;max-height:245px;object-fit:contain;background:#fff;border:1px solid #deded6;border-radius:8px}
     .business-reg-caption{font-size:.73rem!important;line-height:1.45!important;color:#766b64;margin:8px 2px 0!important}
     .business-reg-info{min-width:0;padding:15px;border:1px solid #f0ded6;border-radius:10px;background:#fffaf7}
     .business-reg-info h3{margin:0 0 5px;font-size:1.04rem;color:#221d1b}
@@ -2894,13 +2896,9 @@
           <img class="footer-registry-image footer-dti-image" src="/assets/dti-logo-footer.webp" alt="DTI Philippines logo" loading="lazy">
           <span class="footer-registry-caption">DTI</span>
         </button>
-        <button class="footer-registry-logo bir-registry-logo" type="button" onclick="openBusinessRegInfo()" aria-haspopup="dialog" aria-controls="businessRegOverlay" aria-label="View BIR and business information">
-          <img class="footer-registry-image footer-bir-image" src="/assets/bir-wordmark-footer.webp" alt="Bureau of Internal Revenue wordmark" loading="lazy">
-          <span class="footer-registry-caption">BIR</span>
-        </button>
-        <button class="footer-registry-logo bir-seal-registry-logo" type="button" onclick="openBusinessRegInfo()" aria-haspopup="dialog" aria-controls="businessRegOverlay" aria-label="View BIR registration seal badge and business information">
+        <button class="footer-registry-logo bir-seal-registry-logo" type="button" onclick="openBusinessRegInfo()" aria-haspopup="dialog" aria-controls="businessRegOverlay" aria-label="View BIR business information and registration seal badge">
           <img class="footer-registry-image footer-seal-image" src="/assets/bir-registration-seal.webp" alt="BIR Registration Seal Badge 2026, supplied by the business owner" loading="lazy">
-          <span class="footer-registry-caption">BIR SEAL BADGE</span>
+          <span class="footer-registry-caption">BIR SEAL</span>
         </button>
       </div>
     </section>
@@ -3152,10 +3150,16 @@
         <button class="business-reg-close" id="closeBusinessRegTop" type="button" aria-label="Close business registration information">×</button>
       </div>
       <div class="business-reg-body">
-        <figure class="business-reg-image-wrap">
-          <img class="business-reg-image" src="/assets/bir-business-notice.svg" alt="Display copy recreated from the BIR receipt or invoice notice supplied by the business owner" loading="lazy">
-          <figcaption class="business-reg-caption">Display copy recreated from the notice image supplied by the business owner. Refer to the original issued notice for official use.</figcaption>
-        </figure>
+        <div class="business-reg-documents">
+          <figure class="business-reg-image-wrap">
+            <img class="business-reg-image" src="/assets/bir-business-notice.svg" alt="Display copy recreated from the BIR receipt or invoice notice supplied by the business owner" loading="lazy">
+            <figcaption class="business-reg-caption">Display copy recreated from the notice image supplied by the business owner. Refer to the original issued notice for official use.</figcaption>
+          </figure>
+          <figure class="business-reg-seal-wrap">
+            <img class="business-reg-seal-image" src="/assets/bir-registration-seal.webp" alt="BIR Registration Seal Badge 2026 image supplied by the business owner" loading="lazy">
+            <figcaption class="business-reg-caption">BIR registration seal badge supplied by the business owner.</figcaption>
+          </figure>
+        </div>
         <section class="business-reg-info" aria-label="Business information">
           <h3>GENMERCH — Suot Apparel</h3>
           <p class="business-reg-info-intro">Online apparel and merchandise storefront. The details below are transcribed from the owner-supplied notice and current store contact information.</p>
