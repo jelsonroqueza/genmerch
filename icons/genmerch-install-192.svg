@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="34" fill="#ee4d2d"/>
+  <path d="M43 72h106l-8 84H51z" fill="#fff" opacity=".98"/>
+  <path d="M65 74V58a31 31 0 0 1 62 0v16" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M75 111h42" stroke="#ee4d2d" stroke-width="9" stroke-linecap="round"/>
+  <path d="M108 98l13 13-13 13" fill="none" stroke="#ee4d2d" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="96" y="145" font-family="Arial,sans-serif" font-size="26" font-weight="900" text-anchor="middle" fill="#ee4d2d">GM</text>
+</svg>
