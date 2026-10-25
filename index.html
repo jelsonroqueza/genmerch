@@ -2897,6 +2897,25 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .seller-orders-table thead th,.seller-inventory-table thead th,.seller-movements-table thead th{padding:10px 9px}
   }
 </style>
+<style id="genmerch-centered-action-feedback">
+  .overlay,.cart-overlay,.size-overlay,.customer-orders-overlay,.wishlist-overlay,.customer-auth-overlay,.seller-modal-overlay,.business-reg-overlay{
+    -webkit-backdrop-filter:blur(16px) brightness(.68) saturate(.72)!important;
+    backdrop-filter:blur(16px) brightness(.68) saturate(.72)!important;
+  }
+  .genmerch-action-overlay{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(22,10,6,.42);-webkit-backdrop-filter:blur(18px) brightness(.66) saturate(.68);backdrop-filter:blur(18px) brightness(.66) saturate(.68);pointer-events:auto}
+  .genmerch-action-overlay.active{display:flex}
+  .genmerch-action-status-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;width:min(400px,100%);min-height:164px;padding:27px 28px;border:1px solid rgba(255,94,54,.28);border-radius:20px;background:linear-gradient(145deg,#fff 0%,#fff8f4 100%);box-shadow:0 26px 90px rgba(0,0,0,.30),inset 0 1px 0 #fff;text-align:center;color:#261b17;animation:genmerchStatusIn .18s ease-out}
+  .genmerch-action-spinner{width:44px;height:44px;border:4px solid #ffe0d5;border-top-color:#f52a12;border-right-color:#ff6a26;border-radius:50%;animation:genmerchStatusSpin .72s linear infinite}
+  .genmerch-action-spinner[hidden],.genmerch-action-status-icon[hidden]{display:none!important}
+  .genmerch-action-status-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#ffad54 0%,#ff4b1c 56%,#da1f13 100%);color:#fff;font-size:1.6rem;font-weight:950;box-shadow:0 7px 20px rgba(238,77,45,.24)}
+  .genmerch-action-status-icon.error{background:linear-gradient(140deg,#8f1010,#d91e18)}
+  .genmerch-action-status-message{font-size:1rem;font-weight:900;line-height:1.5;overflow-wrap:anywhere}
+  .genmerch-action-status-subtext{margin-top:-6px;color:#79635a;font-size:.77rem;line-height:1.45}
+  @keyframes genmerchStatusSpin{to{transform:rotate(360deg)}}
+  @keyframes genmerchStatusIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @media(max-width:480px){.genmerch-action-overlay{padding:16px}.genmerch-action-status-card{min-height:148px;padding:23px 19px;border-radius:16px}.genmerch-action-status-message{font-size:.92rem}}
+  @media(prefers-reduced-motion:reduce){.genmerch-action-spinner{animation-duration:1.8s}.genmerch-action-status-card{animation:none}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -3706,6 +3725,15 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         <p class="customer-auth-privacy">Your account is secured by Supabase Auth. Never share your password with anyone.</p>
       </div>
     </section>
+  </div>
+
+  <div class="genmerch-action-overlay" id="genmerchActionOverlay" aria-hidden="true" role="presentation">
+    <div class="genmerch-action-status-card" role="status" aria-live="polite" aria-atomic="true">
+      <div class="genmerch-action-spinner" id="genmerchActionSpinner" aria-hidden="true"></div>
+      <div class="genmerch-action-status-icon" id="genmerchActionStatusIcon" aria-hidden="true" hidden>✓</div>
+      <p class="genmerch-action-status-message" id="genmerchActionStatusMessage">Please wait, processing your request...</p>
+      <p class="genmerch-action-status-subtext" id="genmerchActionStatusSubtext" hidden></p>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -4798,6 +4826,31 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       toastTimer = setTimeout(()=>$('toast').classList.remove('show'),2300);
     }
 
+    let genmerchActionStatusTimer=null;
+    let genmerchActionStatusToken=0;
+    let genmerchActionStatusType='';
+    function showCenteredActionStatus(message,type='loading',duration=0,subtext=''){
+      const overlay=$('genmerchActionOverlay');if(!overlay)return;
+      if(genmerchActionStatusTimer!==null){clearTimeout(genmerchActionStatusTimer);genmerchActionStatusTimer=null;}
+      const token=++genmerchActionStatusToken;
+      const spinner=$('genmerchActionSpinner'),icon=$('genmerchActionStatusIcon');
+      const text=$('genmerchActionStatusMessage'),detail=$('genmerchActionStatusSubtext');
+      genmerchActionStatusType=type;text.textContent=String(message||'Please wait, processing your request...');
+      spinner.hidden=type!=='loading';icon.hidden=type==='loading';icon.classList.toggle('error',type==='error');icon.textContent=type==='error'?'!':'✓';
+      detail.textContent=String(subtext||'');detail.hidden=!subtext;overlay.dataset.statusType=type;
+      overlay.classList.add('active');overlay.setAttribute('aria-hidden','false');
+      if(Number(duration)>0)genmerchActionStatusTimer=window.setTimeout(()=>{if(token===genmerchActionStatusToken)hideCenteredActionStatus();},Number(duration));
+    }
+    function hideCenteredActionStatus(){
+      if(genmerchActionStatusTimer!==null){clearTimeout(genmerchActionStatusTimer);genmerchActionStatusTimer=null;}
+      genmerchActionStatusToken++;genmerchActionStatusType='';
+      const overlay=$('genmerchActionOverlay');if(overlay){overlay.classList.remove('active');overlay.setAttribute('aria-hidden','true');delete overlay.dataset.statusType;}
+    }
+    function isCenteredActionStatusLoading(){
+      const overlay=$('genmerchActionOverlay');
+      return Boolean(overlay&&overlay.classList.contains('active')&&genmerchActionStatusType==='loading');
+    }
+
     const categoryIcons = {
       'T-Shirts': '👕',
       'Shorts': '🩳',
@@ -5773,9 +5826,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
     }
     async function openProduct(id){
+      showCenteredActionStatus('Loading product details, please wait...','loading');
       try { await refreshCatalogForLiveStock(); }
-      catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showToast('Unable to refresh live stock. Please try again.');return; }
-      const p=products.find(item=>String(item.id)===String(id));if(!p)return;
+      catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showCenteredActionStatus('Unable to refresh live stock. Please try again.','error',1900);showToast('Unable to refresh live stock. Please try again.');return; }
+      const p=products.find(item=>String(item.id)===String(id));if(!p){hideCenteredActionStatus();return;}
       openProductDetailId=p.id;
       updateWishlistDetailButton(p.id);
       productDetailSelectedSize='';
@@ -5815,6 +5869,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       $('productModalAdd').onclick=()=>handleProductDetailPurchase('add-to-cart');
       $('productModalBuyNow').onclick=()=>handleProductDetailPurchase('buy-now');
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
+      hideCenteredActionStatus();
     }
     function renderProductModalSizes(product){
       const options=$('productModalSizeOptions');
@@ -5928,6 +5983,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     async function handleProductDetailPurchase(action){
       const addButton=$('productModalAdd'),buyButton=$('productModalBuyNow');
       if(!productDetailSelectedSize){showToast('Please select a size first.');return;}
+      showCenteredActionStatus('Adding item to your cart, please wait...','loading');
       addButton.disabled=true;buyButton.disabled=true;
       try{
         await refreshCatalogForLiveStock();
@@ -5954,6 +6010,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         }
       }catch(error){console.error('GENMERCH could not verify live stock before purchase.',error);showToast('Unable to verify live stock. Please try again.');}
       finally{
+        if(isCenteredActionStatusLoading())hideCenteredActionStatus();
         const product=products.find(item=>String(item.id)===String(openProductDetailId));
         if($('productOverlay').classList.contains('open')&&product)updateProductModalAddButton(product);
       }
@@ -6062,6 +6119,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(pendingSizeProductId===null||!pendingSelectedSize)return;
       const button=$('confirmSizeButton'),id=pendingSizeProductId,size=pendingSelectedSize,variantId=pendingSelectedVariantId;
       button.disabled=true;
+      showCenteredActionStatus('Adding item to your cart, please wait...','loading');
       try{
         await refreshCatalogForLiveStock();
         const product=products.find(item=>String(item.id)===String(id));
@@ -6075,7 +6133,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         closeSizeSelector();
         addToCart(id,size,variantId);
       }catch(error){console.error('GENMERCH could not verify stock before adding to cart.',error);showToast('Unable to verify live stock. Please try again.');}
-      finally{if($('sizeOverlay').classList.contains('open'))button.disabled=true;}
+      finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();if($('sizeOverlay').classList.contains('open'))button.disabled=true;}
     }
     $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
     $('closeSizeModal').addEventListener('click',closeSizeSelector);
@@ -6098,7 +6156,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
       if(existing){existing.qty+=quantityToAdd;}
       else cart.push({...p,variantId:variant?variant.id:null,variantSku:variant?variant.sku:'',availableStock:variant?variant.stock:null,color:variant?String(variant.color||''):'',size,price:chosenPrice,qty:quantityToAdd});
-      updateCart();showToast(p.name+' ('+[variant&&variant.color,displaySizeLabel(size)].filter(Boolean).join(' · ')+') added to your cart');
+      updateCart();showCenteredActionStatus('Item added to your cart successfully!','success',1550);
       return true;
     }
     async function changeQuantity(key,delta){
@@ -6508,6 +6566,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         items:lines
       };
       const button=$('checkoutForm').querySelector('button[type="submit"]');
+      showCenteredActionStatus('Placing your order, please wait...','loading');
       checkoutSubmitting=true;
       if(button){button.disabled=true;button.textContent='Submitting order…';}
       checkoutFeedback('Checking current prices and stock, then submitting your order securely…');
@@ -6583,10 +6642,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           emailConfirmationNote+
           '<p>Stock has been reserved for this order. Keep your order number for reference.</p>';
         showNotice('Order placed successfully',message);
+        showCenteredActionStatus('Order placed successfully!','success',1700);
       }catch(error){
         console.error('GENMERCH checkout submission failed.',error);
         checkoutFeedback(error.message||'Unable to submit this order. Your cart has been kept; please retry.','error');
+        showCenteredActionStatus(error.message||'Unable to submit this order. Your cart has been kept; please retry.','error',2400);
       }finally{
+        if(isCenteredActionStatusLoading())hideCenteredActionStatus();
         checkoutSubmitting=false;
         if(button){button.disabled=false;button.textContent='Place Order';}
       }
@@ -7491,6 +7553,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       sellerPermanentDeleteBusy=true;
       yesButton.disabled=true;yesButton.textContent='Deleting…';noButton.disabled=true;closeButton.disabled=true;
       sellerFeedback('sellerPermanentDeleteFeedback','','');
+      showCenteredActionStatus('Deleting, Please wait a moment!','loading');
       let deletionSucceeded=false,cleanupWarning='';
       try{
         const client=await getSellerAdminClient(false);
@@ -7516,6 +7579,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         await loadSellerInventoryAnalytics();
         const successMessage='Permanently deleted "'+confirmedName+'". Order history and inventory movement snapshots were preserved.'+cleanupWarning;
         sellerFeedback('sellerDeletedFeedback',successMessage,cleanupWarning?'error':'success');
+        showCenteredActionStatus(cleanupWarning?'Deleted Successfully! Some uploaded photo files may need cleanup.':'Deleted Successfully!','success',cleanupWarning?2600:1650);
         showToast('Product permanently deleted.');
       }catch(error){
         if(deletionSucceeded){
@@ -7524,6 +7588,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           sellerFeedback('sellerDeletedFeedback','Product was permanently deleted, but the Seller Centre could not fully refresh. Open the Deleted tab and click Refresh. '+(error.message||''),'error');
         }else{
           sellerFeedback('sellerPermanentDeleteFeedback',error.message||'Could not permanently delete this item. No product changes were made.','error');
+          showCenteredActionStatus(error.message||'Could not delete this item. No product changes were made.','error',2300);
           yesButton.disabled=false;yesButton.textContent='YES';noButton.disabled=false;closeButton.disabled=false;
         }
       }finally{
@@ -7542,6 +7607,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         'MOVE "'+productName+'" TO DELETED?\n\nIt will disappear from the customer storefront and active inventory. The product details, uploaded photos, and gallery will be kept. Stock will reset to zero. You can restore it later; it will return as OUT OF STOCK until restocked.'
       );
       if(!confirmed)return;
+      showCenteredActionStatus('Deleting, Please wait a moment!','loading');
       try{
         const client=await getSellerAdminClient(false);
         const result=await client.rpc('delete_genmerch_product',{p_product_id:productId});
@@ -7553,9 +7619,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         renderCategoryFilters();renderProducts();
         await loadSellerInventoryAnalytics();
         sellerFeedback(feedbackTarget,'Moved "'+productName+'" to Deleted. Its photos and details are preserved; stock was reset to zero. You can restore it from the Deleted tab.','success');
+        showCenteredActionStatus('Deleted Successfully!','success',1650);
       }catch(error){
         sellerFeedback(feedbackTarget,error.message||'Could not move this product to Deleted.','error');
-      }
+        showCenteredActionStatus(error.message||'Could not delete this product. Please try again.','error',2200);
+      }finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();}
     }
     function sellerClearPreviewUrls(){sellerPreviewObjectUrls.forEach(url=>URL.revokeObjectURL(url));sellerPreviewObjectUrls=[];}
     function sellerGetSelectedFiles(){return SELLER_IMAGE_INPUT_IDS.map(id=>$(id).files&&$(id).files[0]).filter(Boolean);}
@@ -7649,6 +7717,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     async function submitSellerProduct(event){
       event.preventDefault();if(!sellerCentreIsUnlocked)return;
+      showCenteredActionStatus('Saving product details, please wait...','loading');
       const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
       const editingId=sellerEditingProductId,uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false;
       try{
@@ -7695,6 +7764,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
         }
         sellerInventoryLoaded=false;await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+        showCenteredActionStatus(sellerEditingProductId?'Product updated successfully!':'Product added successfully!','success',1600);
       }catch(error){
         if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
@@ -7717,7 +7787,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',productCreatedId);await client.from('product_variants').delete().eq('product_id',productCreatedId);await client.from('products').delete().eq('id',productCreatedId);}catch(_){}
         }
         sellerFeedback('sellerProductFeedback',(error.message||'Could not save the product or gallery. Check Storage and database permissions.'),'error');
-      }finally{button.disabled=false;button.textContent=sellerEditingProductId?'Save product changes':'＋ Add product to Supabase';}
+        showCenteredActionStatus(error.message||'Could not save the product. Please try again.','error',2400);
+      }finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();button.disabled=false;button.textContent=sellerEditingProductId?'Save product changes':'＋ Add product to Supabase';}
     }
 
     function stopSellerOrdersAutoRefresh(){if(sellerOrdersRefreshTimer!==null){window.clearInterval(sellerOrdersRefreshTimer);sellerOrdersRefreshTimer=null;}}
@@ -7739,9 +7810,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(deletedSelected)loadSellerProducts();
     }
     async function refreshSellerTab(){
-      if(sellerCurrentTab==='orders')await loadSellerOrders();
-      else if(sellerCurrentTab==='inventory')await loadSellerInventoryAnalytics();
-      else await loadSellerProducts();
+      showCenteredActionStatus('Refreshing page, please wait','loading');
+      try{
+        if(sellerCurrentTab==='orders')await loadSellerOrders();
+        else if(sellerCurrentTab==='inventory')await loadSellerInventoryAnalytics();
+        else await loadSellerProducts();
+      }finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();}
     }
     function sellerDate(value){if(!value)return '—';const date=new Date(value);return Number.isNaN(date.getTime())?String(value):date.toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'});}
     const SELLER_ORDER_NEXT_STEP={
@@ -8370,6 +8444,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!Number.isInteger(quantity)||quantity<1||quantity>1000000){sellerFeedback('sellerInventoryFeedback','Enter a whole-number quantity from 1 to 1,000,000.','error');return;}
       if(!variantId){sellerFeedback('sellerInventoryFeedback','Could not identify this product variant. Refresh inventory and try again.','error');return;}
       button.disabled=true;const priorLabel=button.textContent;button.textContent='Saving…';
+      showCenteredActionStatus('Updating inventory, please wait...','loading');
       try{
         const client=await getSellerAdminClient(false);
         const result=await client.rpc('adjust_genmerch_stock',{p_variant_id:variantId,p_adjustment:direction*quantity,p_reason:String($('sellerStockReason').value||'').trim()||null});
@@ -8377,8 +8452,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         sellerInventoryLoaded=false;
         await loadSellerInventoryAnalytics();await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
         sellerFeedback('sellerInventoryFeedback','Stock updated successfully. The movement has been recorded in the inventory history.','success');
-      }catch(error){sellerFeedback('sellerInventoryFeedback',error.message||'Stock adjustment failed. Stock was not changed.','error');}
-      finally{button.disabled=false;button.textContent=priorLabel;}
+        showCenteredActionStatus('Inventory updated successfully!','success',1450);
+      }catch(error){sellerFeedback('sellerInventoryFeedback',error.message||'Stock adjustment failed. Stock was not changed.','error');showCenteredActionStatus(error.message||'Stock adjustment failed. Stock was not changed.','error',2200);}
+      finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();button.disabled=false;button.textContent=priorLabel;}
     }
 
     $('sellerPasscodeForm').addEventListener('submit',verifySellerPasscode);
@@ -8438,6 +8514,22 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
       }
     });
+    document.addEventListener('click',event=>{
+      const origin=event.target&&event.target.nodeType===1?event.target:event.target&&event.target.parentElement;
+      const control=origin&&origin.closest('button,[role="button"]');
+      if(!control||control.disabled||control.closest('#genmerchActionOverlay'))return;
+      if(control.matches('[data-gallery-index],[data-size],.product-gallery-thumb,.product-detail-size-option,[data-qty],[data-payment],[data-color],#productModalQuantityMinus,#productModalQuantityPlus'))return;
+      const label=String(control.innerText||control.getAttribute('aria-label')||control.title||'').replace(/\s+/g,' ').trim();
+      if(!label||/^(×|x|close|close modal|cancel|no)$/i.test(label))return;
+      if(control.matches('[aria-label^="Close"],[data-close-modal]'))return;
+      const normalized=label.toLowerCase();
+      let message='Please wait, processing your request...';
+      if(normalized.includes('refresh'))message='Refreshing page, please wait';
+      else if(normalized.includes('delete')||normalized.includes('remove'))message='Deleting, Please wait a moment!';
+      else if(normalized.includes('add to cart'))message='Adding item to your cart, please wait...';
+      showCenteredActionStatus(message,'loading',850);
+    },true);
+
   </script>
 </body>
 </html>
