@@ -1,0 +1,19 @@
+.gm-install-overlay{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(17,24,39,.72);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:gmInstallFadeIn .18s ease-out}
+.gm-install-card{width:min(390px,100%);max-height:calc(100dvh - 40px);overflow:auto;border:1px solid #e5e7eb;border-radius:24px;background:#fff;padding:25px 23px 22px;text-align:center;box-shadow:0 26px 80px rgba(0,0,0,.3);color:#1f2937}
+.gm-install-secured{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:0 auto 17px;padding:7px 12px;border:1px solid #bbebcb;border-radius:999px;background:#effcf3;color:#166534;font-size:.78rem;font-weight:850;letter-spacing:.02em}
+.gm-install-lock{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#16803d;color:#fff;font-size:.75rem;font-weight:900}
+.gm-install-brand-mark{display:grid;place-items:center;margin:0 auto 16px;width:82px;height:82px;border-radius:23px;overflow:hidden;box-shadow:0 8px 22px rgba(238,77,45,.2)}
+.gm-install-brand-mark img{display:block;width:100%;height:100%;object-fit:cover}
+.gm-install-card h2{margin:0 auto 10px;max-width:310px;font-size:1.28rem;line-height:1.25;font-weight:900;letter-spacing:-.025em;color:#171717}
+.gm-install-card p{margin:0 auto 22px;max-width:315px;color:#5d6470;font-size:.9rem;line-height:1.55}
+.gm-install-card .gm-install-note{margin-top:-8px;font-size:.8rem;color:#8a3a28}
+.gm-install-primary{display:block;width:100%;min-height:48px;border:0;border-radius:12px;background:#ee4d2d;color:#fff;font-size:1rem;font-weight:900;box-shadow:0 5px 12px rgba(238,77,45,.22);cursor:pointer;transition:background .15s ease,transform .15s ease}
+.gm-install-primary:hover{background:#d7381a}
+.gm-install-primary:active{transform:scale(.99)}
+.gm-install-primary:disabled{opacity:.75;cursor:wait}
+.gm-install-primary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.gm-install-success-toast{position:fixed;z-index:10060;left:50%;top:22px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:11px;width:min(520px,calc(100vw - 28px));padding:16px;border:1px solid #b7e6c5;border-radius:14px;background:#f0fff4;color:#155b2c;box-shadow:0 15px 45px rgba(0,0,0,.2);font-size:.9rem;font-weight:750;line-height:1.5;animation:gmInstallToastIn .2s ease-out}
+.gm-install-success-check{flex:0 0 24px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#16803d;color:#fff;font-size:.88rem;font-weight:900}
+@keyframes gmInstallFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes gmInstallToastIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(prefers-reduced-motion:reduce){.gm-install-overlay,.gm-install-success-toast{animation:none}.gm-install-primary{transition:none}}
