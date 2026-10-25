@@ -68,7 +68,7 @@
     var apple = isAppleMobile();
     var title = apple ? 'Add GENMERCH to your Home Screen' : 'Install option not available yet';
     var instructions = apple
-      ? 'In Safari, tap Share, choose “Add to Home Screen”, then tap “Add”. This browser does not allow websites to open the install prompt automatically.'
+      ? 'Tap Share in your current browser, choose “Add to Home Screen”, then tap “Add”. This browser does not allow websites to open the install prompt automatically.'
       : /Android/i.test(window.navigator.userAgent)
         ? 'Open your browser menu (⋮) and choose “Install app” or “Add to Home screen”. The exact wording depends on your browser.'
         : 'Open your browser menu and look for “Install GENMERCH”, “Install page as app”, or “Add to Home Screen”. The option depends on your browser and device.';

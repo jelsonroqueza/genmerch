@@ -10,6 +10,12 @@
   "description": "Official GENMERCH online apparel and merchandise shop. Add a home-screen shortcut for quick access.",
   "icons": [
     {
+      "src": "/icons/genmerch-install-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "/icons/genmerch-install-192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
