@@ -6315,7 +6315,7 @@
           const client=getCustomerAuthClient();
           const result=await client.functions.invoke('send-genmerch-welcome-email',{body:{}});
           if(result.error)throw result.error;
-          if(result.data&&!result.data.ok&&!result.data.already_sent&&!result.data.eligible===false){
+          if(result.data&&!result.data.ok&&!result.data.already_sent&&result.data.eligible!==false){
             console.warn('GENMERCH welcome email was not completed.',result.data.message||result.data.code||'Unknown email error.');
           }else if(result.data&&result.data.ok&&result.data.delivery_status==='accepted_by_resend'){
             console.info('GENMERCH welcome email was accepted by Resend for '+email+'.');
