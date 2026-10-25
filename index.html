@@ -3426,9 +3426,15 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .genmerch-review-status{margin-top:10px;font-size:.78rem;line-height:1.45;color:#9d2d1d}.genmerch-review-status.success{color:#23733a}
     .genmerch-product-ratings{margin-top:16px;padding:15px;border:1px solid #eee0d8;border-radius:12px;background:#fff}
     .genmerch-product-ratings h3{margin:0 0 7px;font-size:1rem}
-    .genmerch-rating-summary{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-    .genmerch-rating-average{font-size:1.55rem;font-weight:950;color:#29211c}
-    .genmerch-rating-stars{color:#ffb21b;letter-spacing:1px}
+    .genmerch-rating-summary{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 12px;text-align:center;width:fit-content;max-width:100%;flex-wrap:wrap}
+    .genmerch-rating-average{font-size:1.55rem;font-weight:950;color:#29211c;text-align:center}
+    .genmerch-rating-summary>div:last-child{text-align:center}
+    .genmerch-rating-summary small{display:block;text-align:center}
+    .genmerch-rating-stars{color:#ffb21b;letter-spacing:1px;text-align:center}
+    .genmerch-review-card-head{align-items:center}
+    .genmerch-review-card> .genmerch-rating-stars{text-align:center;margin:8px auto 0}
+    .genmerch-review-card>p{text-align:center;max-width:100%;margin-left:auto;margin-right:auto}
+    .genmerch-review-photos{justify-content:center}
     .genmerch-review-card{padding:12px 0;border-top:1px solid #f0e7e2}
     .genmerch-review-card-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .genmerch-review-card-head strong{font-size:.8rem}
@@ -3452,7 +3458,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .genmerch-product-social-proof .rating{color:#e9a600;font-weight:950}
     .genmerch-product-social-proof .sold{padding-right:12px;border-right:1px solid #e8d8ce}
     .product-description{margin:0 0 12px!important}
-    .genmerch-product-ratings{margin-top:10px!important}
+    .genmerch-product-ratings{margin-top:10px!important;text-align:center!important}
+    .genmerch-product-ratings h3{text-align:center!important}
+    .genmerch-product-ratings .genmerch-rating-summary{display:flex!important;justify-content:center!important;align-items:center!important;margin-left:auto!important;margin-right:auto!important;text-align:center!important;width:fit-content!important;max-width:100%!important}
+    .genmerch-product-ratings .genmerch-review-card-head{justify-content:center!important;text-align:center!important}
+    .genmerch-product-ratings .genmerch-review-card-head strong{width:100%;text-align:center!important}
+    .genmerch-product-ratings .genmerch-review-card-date{width:100%;text-align:center!important}
+    .genmerch-product-ratings .genmerch-review-card>p{text-align:center!important}
+    .genmerch-product-ratings .genmerch-review-photos{justify-content:center!important}
     .product-options-stage-hint{margin:0 0 12px;padding:10px 12px;border-radius:8px;background:#fff5ef;border:1px solid #f2d2c4;color:#80503e;font-size:.76rem;line-height:1.45}
     .product-detail-actions{position:relative!important;inset:auto!important;flex:0 0 auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important;margin:0!important;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))!important;border-top:1px solid #eee1da!important;background:#fff!important;box-shadow:0 -6px 18px #2410060c!important;z-index:10!important}
     .product-detail-action{min-height:47px!important;font-size:.87rem!important}
