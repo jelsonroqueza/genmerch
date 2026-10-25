@@ -3707,6 +3707,87 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     @media(prefers-reduced-motion:reduce){.seller-centre-trigger .seller-trigger-icon{transition:none!important}}
   </style>
+  <style id="genmerch-compact-header-catalog-search">
+    /* Keep the header focused on brand and navigation; move search into the catalog area. */
+    @media (min-width:901px) {
+      .main-header .nav{
+        display:grid!important;
+        grid-template-columns:max-content minmax(0,1fr)!important;
+        grid-template-rows:auto!important;
+        align-items:center!important;
+        gap:clamp(12px,2vw,28px)!important;
+        min-height:0!important;
+        padding:8px clamp(14px,1.8vw,26px)!important;
+      }
+      .main-header .nav .brand-lockup{grid-column:1!important;grid-row:1!important}
+      .main-header .nav .header-actions{
+        grid-column:2!important;grid-row:1!important;
+        justify-self:end!important;width:auto!important;max-width:100%!important;
+      }
+    }
+    @media (min-width:481px) and (max-width:900px) {
+      .main-header .nav{
+        display:grid!important;
+        grid-template-columns:minmax(0,1fr) max-content!important;
+        grid-template-rows:auto!important;
+        align-items:center!important;
+        min-height:0!important;
+      }
+      .main-header .nav .brand-lockup{grid-column:1!important;grid-row:1!important}
+      .main-header .nav .header-actions{
+        grid-column:2!important;grid-row:1!important;
+        width:auto!important;max-width:100%!important;justify-self:end!important;
+      }
+    }
+    @media (max-width:480px) {
+      .main-header .nav{
+        display:grid!important;
+        grid-template-columns:minmax(0,1fr)!important;
+        grid-template-rows:auto auto!important;
+        align-items:center!important;
+        row-gap:7px!important;
+        min-height:0!important;
+      }
+      .main-header .nav .brand-lockup{grid-column:1!important;grid-row:1!important}
+      .main-header .nav .header-actions{
+        grid-column:1!important;grid-row:2!important;
+        width:100%!important;max-width:100%!important;justify-self:stretch!important;
+        justify-content:space-between!important;
+      }
+    }
+    .catalog-search.search{
+      display:flex!important;position:relative!important;
+      grid-column:auto!important;grid-row:auto!important;order:initial!important;
+      flex:0 1 auto!important;width:min(900px,100%)!important;max-width:100%!important;min-width:0!important;
+      margin:clamp(16px,2vw,24px) auto clamp(12px,1.5vw,18px)!important;
+      height:52px!important;min-height:52px!important;
+      box-sizing:border-box!important;
+      border:1px solid #e7e3df!important;
+      background:#f0f0f2!important;
+      box-shadow:0 2px 8px rgba(31,24,20,.045)!important;
+    }
+    .catalog-search.search:focus-within{
+      background:#fff!important;border-color:#ffb4a8!important;
+      box-shadow:0 0 0 3px rgba(255,43,22,.09)!important;
+    }
+    .catalog-search.search button{background:transparent!important;color:#252525!important}
+    .catalog-search.search button:hover{background:#e5e5e8!important}
+    .catalog-search.search input{font-size:.94rem!important}
+    @media(max-width:900px){
+      .catalog-search.search{
+        width:100%!important;max-width:100%!important;
+        margin:14px auto 12px!important;height:46px!important;min-height:46px!important;
+      }
+      .catalog-search.search button{flex-basis:40px!important;width:40px!important;min-width:40px!important;height:40px!important}
+      .catalog-search.search button svg{width:22px!important;height:22px!important}
+      .catalog-search.search input{font-size:.88rem!important;padding:0 8px!important}
+    }
+    @media(max-width:480px){
+      .catalog-search.search{margin:12px auto 10px!important;height:44px!important;min-height:44px!important}
+      .catalog-search.search button{flex-basis:36px!important;width:36px!important;min-width:36px!important;height:36px!important}
+      .catalog-search.search input{font-size:16px!important}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -3736,12 +3817,6 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH Home">
           <span class="brand-type"><span class="brand-word"><span>GEN</span><b>MERCH</b></span></span>
         </button>
-        <div class="search" role="search">
-          <button id="searchButton" type="button" aria-label="Search products" title="Search products">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.9"></circle><path d="m16 16 5 5"></path></svg>
-          </button>
-          <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
-        </div>
         <div class="header-actions">
           <button class="header-action wishlist-header-button" type="button" onclick="openWishlist()" aria-label="Open wishlist" title="View saved products">
             <span class="header-icon wishlist-header-icon"><svg class="genmerch-premium-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="genmerchHeaderHeartGradient" x1="4" y1="3" x2="20" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5364"/><stop offset=".52" stop-color="#f21f37"/><stop offset="1" stop-color="#c90d28"/></linearGradient></defs><path class="genmerch-heart-silhouette" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/><path class="genmerch-heart-glint" d="M5.2 7.5a3.2 3.2 0 0 1 3.25-1.55" fill="none" stroke="#fff" stroke-width="1.15" stroke-linecap="round" opacity=".82"/></svg><span class="wishlist-badge" id="wishlistBadge" aria-live="polite" hidden>0</span></span>
@@ -3982,6 +4057,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       <div><span class="trust-icon">♙</span><p><b>Secure Checkout</b><small>Your information is safe with us</small></p></div>
       <div><span class="trust-icon">♥</span><p><b>Made for Fans</b><small>Wear your passion with pride</small></p></div>
     </section>
+    <div class="search catalog-search" role="search" aria-label="Search products">
+      <button id="searchButton" type="button" aria-label="Search products" title="Search products">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.9"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
+    </div>
+
     <nav class="categories" id="categoryFilters" aria-label="Product categories"></nav>
 
     <div class="catalog-heading">
