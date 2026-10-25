@@ -9255,7 +9255,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
     $('sellerProductEditorCloseButton').addEventListener('click',()=>closeSellerProductEditor(true));
-    $('sellerProductEditorOverlay').addEventListener('click',event=>{if(event.target===$('sellerProductEditorOverlay'))closeSellerProductEditor(false);});
+    // Keep the product editor open when the user taps the dimmed backdrop.
+    // Closing is explicit only: the X button, Cancel edit, or Escape key.
+    $('sellerProductEditorOverlay').addEventListener('click',event=>{
+      if(event.target===$('sellerProductEditorOverlay')){
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
     $('sellerPermanentDeleteNoButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteCloseButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteYesButton').addEventListener('click',handleSellerPermanentDeleteProduct);
