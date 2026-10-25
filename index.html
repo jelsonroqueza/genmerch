@@ -9568,7 +9568,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const reviewCount=Math.max(0,Number(stats.review_count)||0);
         const average=reviewCount?Number(stats.average_rating)||0:0;
         node.innerHTML='<span class="sold"><strong>'+escapeHtml(formatProductSoldCount(sold))+'</strong> Sold</span>'+
-          (reviewCount?'<span class="rating">★ '+average.toFixed(1)+'</span><span>'+reviewCount.toLocaleString('en-PH')+' review'+(reviewCount===1?'':'s')+'</span>':'<span class="rating">No ratings yet</span>');
+          (reviewCount?'<span class="rating">⭐ '+average.toFixed(1)+'</span><span>'+reviewCount.toLocaleString('en-PH')+' review'+(reviewCount===1?'':'s')+'</span>':'<span class="rating">No ratings yet</span>');
       }catch(error){
         console.warn('GENMERCH sold count and rating summary could not load.',error);
         node.innerHTML='<span class="sold">Sales data unavailable</span><span class="rating">Reviews below</span>';
