@@ -2593,6 +2593,43 @@
       *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
     }
   </style>
+  <style id="genmerch-seller-logout-button-refinement">
+    .seller-dashboard-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;flex:0 0 auto!important;min-width:0}
+    #sellerCentreLogoutButton.seller-logout-button{
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+      width:auto!important;min-width:112px!important;height:40px!important;padding:0 15px!important;
+      border:1px solid #991b1b!important;border-radius:9px!important;
+      background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%)!important;
+      color:#fff!important;font-size:.82rem!important;font-weight:900!important;line-height:1!important;
+      white-space:nowrap!important;box-shadow:0 3px 0 #7f1d1d,0 5px 12px #7f1d1d28!important;
+      transition:background .16s ease,transform .16s ease,box-shadow .16s ease!important;
+    }
+    #sellerCentreLogoutButton.seller-logout-button svg{
+      display:block!important;width:18px!important;height:18px!important;flex:0 0 18px!important;
+      fill:none!important;stroke:currentColor!important;stroke-width:2.2!important;
+      stroke-linecap:round!important;stroke-linejoin:round!important;
+    }
+    #sellerCentreLogoutButton.seller-logout-button span{display:inline!important;overflow-wrap:normal!important}
+    #sellerCentreLogoutButton.seller-logout-button:hover{
+      background:linear-gradient(135deg,#b91c1c 0%,#991b1b 100%)!important;
+      box-shadow:0 2px 0 #7f1d1d,0 3px 8px #7f1d1d35!important;transform:translateY(1px)!important;
+    }
+    #sellerCentreLogoutButton.seller-logout-button:active{transform:translateY(2px)!important;box-shadow:0 1px 0 #7f1d1d!important}
+    #sellerCentreLogoutButton.seller-logout-button:focus-visible{outline:3px solid #fff!important;outline-offset:3px!important}
+    @media(max-width:760px){
+      .seller-dashboard-actions{gap:8px!important}
+      #sellerCentreLogoutButton.seller-logout-button{min-width:100px!important;height:38px!important;padding:0 11px!important;font-size:.77rem!important}
+      #sellerCentreLogoutButton.seller-logout-button svg{width:17px!important;height:17px!important;flex-basis:17px!important}
+    }
+    @media(max-width:380px){
+      .seller-modal-head{gap:8px!important}
+      .seller-modal-head h2{font-size:.92rem!important}
+      .seller-dashboard-actions{gap:6px!important}
+      #sellerCentreLogoutButton.seller-logout-button{min-width:0!important;height:35px!important;gap:5px!important;padding:0 8px!important;font-size:.68rem!important;border-radius:7px!important}
+      #sellerCentreLogoutButton.seller-logout-button svg{width:15px!important;height:15px!important;flex-basis:15px!important}
+    }
+    @media(prefers-reduced-motion:reduce){#sellerCentreLogoutButton.seller-logout-button{transition:none!important}}
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -2673,7 +2710,7 @@
   </div>
   <div class="seller-modal-overlay" id="sellerDashboardOverlay" aria-hidden="true">
     <section class="seller-modal seller-dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="sellerDashboardTitle">
-      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><div class="seller-dashboard-actions"><button class="seller-logout-button" id="sellerCentreLogoutButton" type="button" onclick="logoutSellerCentre()" aria-label="Log out of Seller Centre" title="Log out of Seller Centre">↪</button><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre" title="Close dashboard">×</button></div></div>
+      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><div class="seller-dashboard-actions"><button class="seller-logout-button" id="sellerCentreLogoutButton" type="button" onclick="logoutSellerCentre()" aria-label="Log out of Seller Centre" title="Log out of Seller Centre"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10"/><path d="M13 8l4 4-4 4M8 12h9"/></svg><span>Log Out</span></button><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre" title="Close dashboard">×</button></div></div>
       <div class="seller-tabs" role="tablist" aria-label="Seller Centre sections">
         <button class="seller-tab-button active" type="button" role="tab" id="sellerProductsTab" aria-selected="true" aria-controls="sellerProductsPanel" onclick="switchSellerTab('products')">Products</button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerOrdersTab" aria-selected="false" aria-controls="sellerOrdersPanel" onclick="switchSellerTab('orders')">Orders</button>
