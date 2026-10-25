@@ -7890,7 +7890,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);$('sellerProductLocation').required=!editing;
     }
     function resetSellerProductForm(){
-      sellerEditingProductId=null;sellerEditingProductSku='';sellerEditingVariants=[];sellerSelectedSizes=new Set();sellerEditingImages=[];$('sellerProductForm').reset();SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).value='');sellerClearPreviewUrls();
+      sellerEditingProductId=null;sellerEditingProductSku='';sellerEditingVariants=[];sellerSelectedSizes=new Set();sellerEditingImages=[];$('sellerProductForm').reset();SELLER_IMAGE_INPUT_IDS.forEach((id,index)=>{$(id).value='';$('sellerImageColor'+(index+1)).value='';});sellerClearPreviewUrls();
       $('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;$('sellerExistingGallery').innerHTML='';$('sellerExistingGallery').hidden=true;
       sellerSetFormMode('create');sellerRenderSizeOptions('',[]);sellerFeedback('sellerProductFeedback','','');sellerUpdateGalleryCount();
     }
@@ -7908,7 +7908,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         $('sellerProductLocation').value=product.location||'';$('sellerSellingPrice').value=String(product.regular_price||product.compare_at_price||product.base_price||'');
         $('sellerPromotionType').value=product.promotion_type==='percent'?String(Number(product.promotion_value)||0):String(product.promotion_type||'none');
         $('sellerOriginalPrice').value=product.compare_at_price===null||product.compare_at_price===undefined?'':String(product.compare_at_price);sellerUpdatePromotionPreview();
-        $('sellerProductDescription').value=product.description||'';SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).value='');sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
+        $('sellerProductDescription').value=product.description||'';SELLER_IMAGE_INPUT_IDS.forEach((id,index)=>{$(id).value='';$('sellerImageColor'+(index+1)).value='';});sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
         const categoryName=(sellerCategories.find(row=>String(row.id)===String(product.category_id))||{}).name||'';
         const options=sellerSizeOptionsForCategory(categoryName);
         sellerSelectedSizes=new Set(options.filter(size=>sellerEditingVariants.some(variant=>variant.size_label===size&&variant.is_active!==false)));
