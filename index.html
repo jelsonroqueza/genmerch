@@ -8382,8 +8382,6 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const matchesStatus=!statusFilter||currentStatus===statusFilter;
         return matchesQuery&&matchesCategory&&matchesVariant&&matchesStatus;
       });
-      const count=$('sellerInventoryFilterCount');
-      if(count)count.textContent='Showing '+rows.length+' of '+sellerInventoryRows.length+' variant(s)';
       if(resetPage)sellerInventoryCurrentPage=1;
       rows.sort((a,b)=>{
         const ap=a.product||{},av=a.variant||{},bp=b.product||{},bv=b.variant||{};
