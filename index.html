@@ -6294,6 +6294,38 @@
     function getCustomerAuthRedirectUrl(){
       return 'https://shopgenmerch.com/';
     }
+
+    // Send one welcome email to newly-created accounts, never on every ordinary sign-in.
+    const customerWelcomeEmailAttemptAtByUserId=new Map();
+    const CUSTOMER_WELCOME_EMAIL_WINDOW_MS=72*60*60*1000;
+    const CUSTOMER_WELCOME_EMAIL_RETRY_COOLDOWN_MS=5*60*1000;
+    function maybeSendCustomerWelcomeEmail(session){
+      const user=session&&session.user;
+      const userId=String(user&&user.id||'');
+      const email=String(user&&user.email||'').trim();
+      const createdAt=new Date(String(user&&user.created_at||'')).getTime();
+      const age=Date.now()-createdAt;
+      if(!userId||!email||!Number.isFinite(createdAt)||age< -5*60*1000||age>CUSTOMER_WELCOME_EMAIL_WINDOW_MS)return;
+      const lastAttempt=customerWelcomeEmailAttemptAtByUserId.get(userId)||0;
+      if(Date.now()-lastAttempt<CUSTOMER_WELCOME_EMAIL_RETRY_COOLDOWN_MS)return;
+      customerWelcomeEmailAttemptAtByUserId.set(userId,Date.now());
+      // Defer the network call until after the Supabase auth-state callback returns.
+      window.setTimeout(async()=>{
+        try{
+          const client=getCustomerAuthClient();
+          const result=await client.functions.invoke('send-genmerch-welcome-email',{body:{}});
+          if(result.error)throw result.error;
+          if(result.data&&!result.data.ok&&!result.data.already_sent&&!result.data.eligible===false){
+            console.warn('GENMERCH welcome email was not completed.',result.data.message||result.data.code||'Unknown email error.');
+          }else if(result.data&&result.data.ok&&result.data.delivery_status==='accepted_by_resend'){
+            console.info('GENMERCH welcome email was accepted by Resend for '+email+'.');
+          }
+        }catch(error){
+          console.warn('GENMERCH account was created/signed in, but welcome email delivery could not be confirmed.',error&&error.message?error.message:error);
+        }
+      },0);
+    }
+
     function getCustomerAuthClient(){
       if(customerAuthClient)return customerAuthClient;
       if(!window.supabase||typeof window.supabase.createClient!=='function'){
@@ -6306,6 +6338,7 @@
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           updateCustomerAuthScreen(session);
           window.setTimeout(()=>syncCustomerOrdersBadgeRealtime(session),0);
+          window.setTimeout(()=>maybeSendCustomerWelcomeEmail(session),0);
           syncWishlistForCustomerSession(session,true);
           if(event==='SIGNED_OUT'){
             if(customerDraftCloudSaveTimer!==null){window.clearTimeout(customerDraftCloudSaveTimer);customerDraftCloudSaveTimer=null;}
