@@ -1349,7 +1349,8 @@
 .seller-order-advance-button{min-height:30px;padding:7px 9px;font-size:.7rem;white-space:nowrap}
 @media(max-width:650px){.seller-order-actions{min-width:105px}}
 
-</style>
+ .seller-category-add-row{display:flex;gap:7px;margin-top:8px;align-items:stretch}.seller-category-add-row input{min-width:0;flex:1}.seller-category-add-row button{white-space:nowrap;flex:0 0 auto}.genmerch-price-before{display:inline-block;margin-right:5px;color:#897d76;text-decoration:line-through;font-size:.82em;font-weight:650}.genmerch-promo-caption{display:inline-flex;align-items:center;width:fit-content;max-width:100%;margin:2px 0 7px;padding:4px 7px;border-radius:5px;background:#fff0eb;color:#d72d17;font-size:.7rem;font-weight:850;line-height:1.35;overflow-wrap:anywhere}@media(max-width:480px){.seller-category-add-row{flex-direction:column}.seller-category-add-row button{width:100%}}
+  </style>
   <style id="genmerch-final-visual-refinement">
     /* FINAL VISUAL PASS: balanced hero lockup, spacious banner, aligned catalog. */
     :root {
@@ -2753,7 +2754,7 @@
         <form class="seller-product-form" id="sellerProductForm">
           <div class="seller-form-grid">
             <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
-            <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select></div>
+            <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select><div class="seller-category-add-row"><input id="sellerCustomCategoryName" type="text" maxlength="80" placeholder="Add a future category…" aria-label="New custom category name"><button class="seller-secondary-button" id="sellerAddCustomCategoryButton" type="button">＋ Add Custom</button></div><p class="seller-field-hint">Add your own category for future product types.</p></div>
             <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
             <div class="seller-field full seller-size-field">
               <label>Available clothing sizes *</label>
@@ -2761,8 +2762,9 @@
               <div class="seller-size-options" id="sellerSizeOptions"><span class="seller-gallery-empty">Choose a category to select sizes.</span></div>
               <div class="seller-gallery-count" id="sellerSizeCount">Choose at least one available size.</div>
             </div>
-            <div class="seller-field"><label for="sellerSellingPrice">Selling price (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
-            <div class="seller-field"><label for="sellerOriginalPrice">Original price (₱)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional"></div>
+            <div class="seller-field"><label for="sellerSellingPrice">Regular price before promotion (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
+            <div class="seller-field"><label for="sellerPromotionType">Promotion / discount</label><select id="sellerPromotionType" name="promotion_type"><option value="none">No promotion</option><option value="10">10% OFF</option><option value="15">15% OFF</option><option value="20">20% OFF</option><option value="25">25% OFF</option><option value="30">30% OFF</option><option value="35">35% OFF</option><option value="40">40% OFF</option><option value="50">50% OFF</option><option value="60">60% OFF</option><option value="70">70% OFF</option><option value="free_shipping_metro">Free Shipping (For Metro Manila Only)</option><option value="free_delivery_metro">Free Delivery (For Metro Manila Only)</option></select><p class="seller-field-hint" id="sellerPromotionPreview" aria-live="polite">Choose a promotion to preview the customer offer.</p></div>
+            <div class="seller-field"><label for="sellerOriginalPrice">Compare-at price (₱, optional)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional reference price"></div>
             <div class="seller-field full">
               <label>Product gallery photos (1–5 total)</label>
               <p class="seller-field-hint">Choose each photo separately as shown below. JPEG, PNG, and WebP only; each file has its own 2 MB limit.</p>
@@ -3357,7 +3359,7 @@
     async function loadSupabaseCatalog() {
       const result = await Promise.all([
         fetchSupabaseTable('categories','select=id,name,slug,is_active,sort_order&is_active=eq.true&order=sort_order.asc'),
-        fetchSupabaseTable('products','select=id,category_id,name,slug,sku,description,base_price,compare_at_price,is_active,is_demo,is_featured,created_at&is_active=eq.true&order=created_at.asc,id.asc'),
+        fetchSupabaseTable('products','select=id,category_id,name,slug,sku,description,base_price,compare_at_price,regular_price,promotion_type,promotion_value,is_active,is_demo,is_featured,created_at&is_active=eq.true&order=created_at.asc,id.asc'),
         fetchSupabaseTable('product_variants','select=id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active&is_active=eq.true'),
         fetchSupabaseTable('product_images','select=id,product_id,image_url,alt_text,sort_order,is_primary&order=sort_order.asc')
       ]);
@@ -3372,7 +3374,7 @@
         const imgs=(imagesByProduct.get(String(row.id))||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
         const primary=imgs.find(image=>image.is_primary)||imgs[0]||null;
         const totalStock=variants.reduce((sum,v)=>sum+v.stock,0), isDemo=row.is_demo===true;
-        return {id:String(row.id),sku:String(row.sku||''),name:String(row.name||'Unnamed product'),price:Number(row.base_price)||0,sold:totalStock>0?(isDemo?'Demo Only':'In stock'):'Out of stock',icon:category==='Shorts'?'🩳':'👕',cat:category,off:isDemo?'DEMO':(row.is_featured?'FEATURED':'NEW'),desc:String(row.description||(isDemo?'Demo Only':'Product details coming soon.')),image:safeCatalogImageUrl(primary&&primary.image_url),imageAlt:String((primary&&primary.alt_text)||row.name||'GENMERCH product'),images:imgs.map(image=>({url:safeCatalogImageUrl(image.image_url),alt:String(image.alt_text||row.name||'GENMERCH product')})).filter(image=>image.url),isDemo:isDemo,totalStock:totalStock,variants:variants};
+        const promoType=String(row.promotion_type||'none'),promoValue=Number(row.promotion_value)||0,regularPrice=Number(row.regular_price)||Number(row.compare_at_price)||Number(row.base_price)||0;const promoLabel=promoType==='percent'&&promoValue>0?promoValue+'% OFF':promoType==='free_shipping_metro'?'FREE SHIPPING · METRO MANILA':promoType==='free_delivery_metro'?'FREE DELIVERY · METRO MANILA':(isDemo?'DEMO':(row.is_featured?'FEATURED':'NEW'));return {id:String(row.id),sku:String(row.sku||''),name:String(row.name||'Unnamed product'),price:Number(row.base_price)||0,regularPrice:regularPrice,promotionType:promoType,promotionValue:promoValue,promotionLabel:promoLabel,sold:totalStock>0?(isDemo?'Demo Only':'In stock'):'Out of stock',icon:category==='Shorts'?'🩳':'👕',cat:category,off:promoLabel,desc:String(row.description||(isDemo?'Demo Only':'Product details coming soon.')),image:safeCatalogImageUrl(primary&&primary.image_url),imageAlt:String((primary&&primary.alt_text)||row.name||'GENMERCH product'),images:imgs.map(image=>({url:safeCatalogImageUrl(image.image_url),alt:String(image.alt_text||row.name||'GENMERCH product')})).filter(image=>image.url),isDemo:isDemo,totalStock:totalStock,variants:variants};
       });
       products.splice(0,products.length,...mapped);
       catalogLoadState='connected';
@@ -5239,7 +5241,7 @@
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
         return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
-          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+money(product.price)+'</div><div class="sold">'+escapeHtml(stockText)+'</div>'+
+          '<div class="card-body"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
     }
@@ -6777,6 +6779,8 @@
       }
     }
     function sellerSetCategoryOptions(categories){const select=$('sellerProductCategory'),previous=select.value;select.innerHTML='<option value="">Choose a category</option>'+categories.map(item=>'<option value="'+sellerEscape(item.id)+'">'+sellerEscape(item.name||'Unnamed category')+'</option>').join('');if(categories.some(item=>String(item.id)===previous))select.value=previous;}
+    async function sellerAddCustomCategory(){if(!sellerCentreIsUnlocked)return;const input=$('sellerCustomCategoryName'),name=String(input.value||'').trim();if(name.length<2||name.length>80){sellerFeedback('sellerProductFeedback','Enter a custom category name between 2 and 80 characters.','error');input.focus();return;}const button=$('sellerAddCustomCategoryButton');button.disabled=true;button.textContent='Saving…';try{const client=await getSellerAdminClient(false),slug=sellerSlugify(name);if(!slug)throw new Error('Use letters or numbers for the category name.');const existing=sellerCategories.find(row=>String(row.name||'').trim().toLowerCase()===name.toLowerCase());if(existing){$('sellerProductCategory').value=existing.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','That category already exists. It has been selected.','success');return;}const result=await client.from('categories').insert({name,slug,description:'Custom category created in Seller Centre',is_active:true,sort_order:sellerCategories.length+1}).select('id,name,slug,is_active,sort_order').single();if(result.error)throw result.error;sellerCategories.push(result.data);sellerSetCategoryOptions(sellerCategories);$('sellerProductCategory').value=result.data.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','Custom category “'+name+'” saved to Supabase and selected.','success');}catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not create category. Check category permissions.','error');}finally{button.disabled=false;button.textContent='＋ Add Custom';}}
+    function sellerUpdatePromotionPreview(){const type=String($('sellerPromotionType')?.value||'none'),price=Number($('sellerSellingPrice')?.value||0),node=$('sellerPromotionPreview');if(!node)return;if(type==='percent'){const percent=Number($('sellerPromotionType').value),sale=Math.round(price*(1-percent/100)*100)/100;node.textContent=price>0?'Customer price: '+money(sale)+' (save '+money(price-sale)+', '+percent+'% OFF).':'Enter a regular price to preview the discount.';}else if(type==='free_shipping_metro')node.textContent='Free Shipping for Metro Manila only. Verify the delivery zone at checkout.';else if(type==='free_delivery_metro')node.textContent='Free Delivery for Metro Manila only. Verify the delivery zone at checkout.';else node.textContent='No promotional discount will be applied.';}
 
     async function loadSellerProducts(){
       if(!sellerCentreIsUnlocked)return;
@@ -6786,7 +6790,7 @@
         const client=await getSellerAdminClient(false);
         const results=await Promise.all([
           client.from('categories').select('id,name,slug,is_active,sort_order').eq('is_active',true).order('sort_order',{ascending:true}),
-          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,is_active,is_demo,is_featured,location,created_at').order('created_at',{ascending:false}).limit(300),
+          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,regular_price,promotion_type,promotion_value,is_active,is_demo,is_featured,location,created_at').order('created_at',{ascending:false}).limit(300),
           client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary,created_at').order('sort_order',{ascending:true}),
           client.from('product_variants').select('id,product_id,size_label,color_label,stock_quantity,is_active')
         ]);
@@ -6906,15 +6910,16 @@
       if(!sellerCentreIsUnlocked)return;sellerFeedback('sellerProductFeedback','','');
       try{
         const client=await getSellerAdminClient(false),results=await Promise.all([
-          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,location,is_active').eq('id',productId).single(),
+          client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,regular_price,promotion_type,promotion_value,location,is_active').eq('id',productId).single(),
           client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true}),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active').eq('product_id',productId)
         ]);
         for(const result of results)if(result.error)throw result.error;
         const product=results[0].data;sellerEditingProductId=String(product.id);sellerEditingProductSku=String(product.sku||'');sellerEditingImages=results[1].data||[];sellerEditingVariants=results[2].data||[];
         $('sellerProductName').value=product.name||'';$('sellerProductCategory').value=product.category_id||'';
-        $('sellerProductLocation').value=product.location||'';$('sellerSellingPrice').value=product.base_price===null?'':String(product.base_price);
-        $('sellerOriginalPrice').value=product.compare_at_price===null||product.compare_at_price===undefined?'':String(product.compare_at_price);
+        $('sellerProductLocation').value=product.location||'';$('sellerSellingPrice').value=String(product.regular_price||product.compare_at_price||product.base_price||'');
+        $('sellerPromotionType').value=product.promotion_type==='percent'?String(Number(product.promotion_value)||0):String(product.promotion_type||'none');
+        $('sellerOriginalPrice').value=product.compare_at_price===null||product.compare_at_price===undefined?'':String(product.compare_at_price);sellerUpdatePromotionPreview();
         $('sellerProductDescription').value=product.description||'';SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).value='');sellerClearPreviewUrls();$('sellerUploadPreview').innerHTML='';$('sellerUploadPreview').hidden=true;
         const categoryName=(sellerCategories.find(row=>String(row.id)===String(product.category_id))||{}).name||'';
         const options=sellerSizeOptionsForCategory(categoryName);
@@ -6961,13 +6966,14 @@
       try{
         const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
-        const price=Number($('sellerSellingPrice').value),originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw);
+        const regularPrice=Number($('sellerSellingPrice').value),promotionSelection=String($('sellerPromotionType').value||'none'),promotionType=['10','15','20','25','30','35','40','50','60','70'].includes(promotionSelection)?'percent':promotionSelection,promotionValue=promotionType==='percent'?Number(promotionSelection):0,originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw),price=promotionType==='percent'?Math.round(regularPrice*(1-promotionValue/100)*100)/100:regularPrice;
         const selection=sellerUpdateGalleryCount(),files=selection.files,validation=sellerValidateFiles(files);
         const selectedSizes=sellerUpdateSizeCount();
         if(!name||!categoryId||(!editingId&&!location))throw new Error('Complete product name and category. A location is required for new products.');
         if(!selectedSizes.length)throw new Error('Select at least one available clothing size.');
-        if(!Number.isFinite(price)||price<=0)throw new Error('Selling price must be greater than zero.');
-        if(original!==null&&(!Number.isFinite(original)||original<price))throw new Error('Original price must be blank or greater than or equal to the selling price.');
+        if(!Number.isFinite(regularPrice)||regularPrice<=0)throw new Error('Regular price must be greater than zero.');
+        if(original!==null&&(!Number.isFinite(original)||original<regularPrice))throw new Error('Compare-at price must be blank or greater than or equal to the regular price.');
+        if(promotionType==='percent'&&(![10,15,20,25,30,35,40,50,60,70].includes(promotionValue)||price<=0))throw new Error('Choose a valid promotional discount.');
         if(validation)throw new Error(validation);
         const existing=editingId?sellerEditingImages.slice():[],removedIds=editingId?sellerGetImageRemovalIds():new Set();
         const retained=existing.filter(image=>!removedIds.has(String(image.id))),finalCount=retained.length+files.length;
@@ -6976,7 +6982,7 @@
         let productId=editingId;
         if(!editingId){
           const suffix=sellerRandomSuffix(),slug=sellerSlugify(name)+'-'+suffix.toLowerCase(),sku=sellerMakeSku(name,suffix);
-          const created=await client.from('products').insert({name,category_id:categoryId,slug,sku,description:description||null,base_price:price,compare_at_price:original,location,is_active:false,is_demo:false,is_featured:false}).select('id,name,sku').single();
+          const created=await client.from('products').insert({name,category_id:categoryId,slug,sku,description:description||null,base_price:price,regular_price:regularPrice,promotion_type:promotionType,promotion_value:promotionValue,compare_at_price:promotionType==='percent'?regularPrice:(promotionType==='none'?original:null),location,is_active:false,is_demo:false,is_featured:false}).select('id,name,sku').single();
           if(created.error)throw created.error;productId=created.data.id;productCreatedId=productId;
           const imageRows=await sellerUploadFiles(client,productId,files,0,uploadedPaths);
           const imageInsert=await client.from('product_images').insert(imageRows);if(imageInsert.error)throw imageInsert.error;insertedImageRows=true;
@@ -7590,7 +7596,7 @@
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
     $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
     SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).addEventListener('change',handleSellerImageSelection));
-    $('sellerProductCategory').addEventListener('change',sellerHandleCategoryChange);
+    $('sellerProductCategory').addEventListener('change',sellerHandleCategoryChange);$('sellerAddCustomCategoryButton').addEventListener('click',sellerAddCustomCategory);$('sellerCustomCategoryName').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();sellerAddCustomCategory();}});$('sellerSellingPrice').addEventListener('input',sellerUpdatePromotionPreview);$('sellerPromotionType').addEventListener('change',sellerUpdatePromotionPreview);
     $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
