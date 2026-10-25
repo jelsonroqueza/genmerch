@@ -3570,12 +3570,32 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
   </style>
   <style id="genmerch-header-filled-icons-store-rating">
-    header .header-actions .wishlist-header-button .wishlist-header-icon svg{
-      fill:#f21f2d!important;stroke:#f21f2d!important;stroke-width:1.6!important;
+    /* Premium, crisp header icons with subtle depth, tuned for desktop and mobile. */
+    header .header-actions .wishlist-header-button .wishlist-header-icon .genmerch-premium-heart{
+      display:block!important;width:26px!important;height:26px!important;overflow:visible!important;
+      fill:#f21f2d!important;stroke:#c9102c!important;stroke-width:.65!important;
+      stroke-linecap:round!important;stroke-linejoin:round!important;
+      filter:drop-shadow(0 1.1px 1px #9d13252e)!important;
+      transition:transform .16s ease,filter .16s ease!important;
     }
-    header .header-actions .genmerch-rate-trigger .genmerch-rate-icon .genmerch-rate-star{
-      fill:#ffd21f!important;stroke:#e5a900!important;stroke-width:1.1!important;
-      filter:drop-shadow(0 1px 1px #9b670033)!important;
+    header .header-actions .wishlist-header-button .wishlist-header-icon .genmerch-heart-silhouette{
+      fill:url(#genmerchHeaderHeartGradient)!important;stroke:#c9102c!important;stroke-width:.45!important;
+    }
+    header .header-actions .wishlist-header-button .wishlist-header-icon .genmerch-heart-glint{
+      fill:none!important;stroke:#fff!important;stroke-width:1.15!important;opacity:.82!important;
+    }
+    header .header-actions .wishlist-header-button:hover .genmerch-premium-heart{
+      transform:translateY(-1px) scale(1.06)!important;filter:drop-shadow(0 2px 2px #9d13253d)!important;
+    }
+    header .header-actions .genmerch-rate-trigger .genmerch-rate-icon .genmerch-premium-star{
+      display:block!important;width:28px!important;height:28px!important;overflow:visible!important;
+      fill:#ffd21f!important;stroke:#bb8100!important;stroke-width:.55!important;
+      stroke-linejoin:round!important;filter:drop-shadow(0 1.2px 1px #93600035)!important;
+      transition:transform .16s ease,filter .16s ease!important;
+    }
+    header .header-actions .genmerch-rate-trigger:hover .genmerch-premium-star{
+      transform:translateY(-1px) rotate(-4deg) scale(1.05)!important;
+      filter:drop-shadow(0 2px 2px #9360004d)!important;
     }
     .desktop-links .store-rating-nav{
       display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;
@@ -3592,10 +3612,17 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .desktop-links .store-rating-nav .store-rating-nav-value{font-variant-numeric:tabular-nums!important;font-weight:950!important;color:#202020!important}
     @media(max-width:900px){
       .desktop-links .store-rating-nav{padding:7px 10px!important;gap:5px!important}
+      header .header-actions .wishlist-header-button .wishlist-header-icon .genmerch-premium-heart{width:clamp(23px,3.5vw,26px)!important;height:clamp(23px,3.5vw,26px)!important}
+      header .header-actions .genmerch-rate-trigger .genmerch-rate-icon .genmerch-premium-star{width:clamp(24px,3.6vw,27px)!important;height:clamp(24px,3.6vw,27px)!important}
     }
     @media(max-width:480px){
       .desktop-links .store-rating-nav{padding:7px 8px!important;gap:4px!important;font-size:.66rem!important}
       .desktop-links .store-rating-nav .store-rating-star{font-size:.9rem!important}
+      header .header-actions .wishlist-header-button .wishlist-header-icon .genmerch-premium-heart{width:23px!important;height:23px!important}
+      header .header-actions .genmerch-rate-trigger .genmerch-rate-icon .genmerch-premium-star{width:24px!important;height:24px!important}
+    }
+    @media(prefers-reduced-motion:reduce){
+      header .header-actions .genmerch-premium-heart,header .header-actions .genmerch-premium-star{transition:none!important}
     }
   </style>
 </head>
@@ -3635,7 +3662,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         </div>
         <div class="header-actions">
           <button class="header-action wishlist-header-button" type="button" onclick="openWishlist()" aria-label="Open wishlist" title="View saved products">
-            <span class="header-icon wishlist-header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 8.8c0 5.1-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.8a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"></path></svg><span class="wishlist-badge" id="wishlistBadge" aria-live="polite" hidden>0</span></span>
+            <span class="header-icon wishlist-header-icon"><svg class="genmerch-premium-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="genmerchHeaderHeartGradient" x1="4" y1="3" x2="20" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5364"/><stop offset=".52" stop-color="#f21f37"/><stop offset="1" stop-color="#c90d28"/></linearGradient></defs><path class="genmerch-heart-silhouette" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/><path class="genmerch-heart-glint" d="M5.2 7.5a3.2 3.2 0 0 1 3.25-1.55" fill="none" stroke="#fff" stroke-width="1.15" stroke-linecap="round" opacity=".82"/></svg><span class="wishlist-badge" id="wishlistBadge" aria-live="polite" hidden>0</span></span>
             <small>Wishlist</small>
           </button>
           <button class="header-action" type="button" id="customerAccountButton" onclick="openCustomerAuth()" aria-label="Open account">
@@ -3647,7 +3674,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <small>Orders</small>
           </button>
           <button class="header-action genmerch-rate-trigger" id="openCustomerRateButton" type="button" onclick="openCustomerRateCenter()" aria-label="Rate delivered products" title="Rate your delivered purchases">
-            <span class="header-icon genmerch-rate-icon" aria-hidden="true"><svg class="genmerch-rate-star" viewBox="0 0 24 24" role="img" aria-label="Star"><path d="M12 2.6 14.9 8.5l6.5.95-4.7 4.58 1.11 6.47L12 17.45l-5.81 3.05 1.11-6.47-4.7-4.58 6.5-.95L12 2.6Z"/></svg><span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
+            <span class="header-icon genmerch-rate-icon" aria-hidden="true"><svg class="genmerch-rate-star genmerch-premium-star" viewBox="0 0 24 24" role="img" aria-label="Star"><defs><linearGradient id="genmerchHeaderStarGradient" x1="5" y1="2" x2="19" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff07a"/><stop offset=".48" stop-color="#ffd32a"/><stop offset="1" stop-color="#efa900"/></linearGradient></defs><path d="M12 2.15 15.02 8.3l6.79.99-4.91 4.79 1.16 6.76L12 17.65 5.94 20.84l1.16-6.76-4.91-4.79 6.79-.99L12 2.15Z" fill="url(#genmerchHeaderStarGradient)" stroke="#bb8100" stroke-width=".55" stroke-linejoin="round"/><path d="m12 4.15 2.37 4.8 5.3.77" fill="none" stroke="#fff9cf" stroke-width=".8" stroke-linecap="round" opacity=".78"/></svg><span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
           </button>
           <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
             <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
