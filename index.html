@@ -3206,14 +3206,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="seller-metric-card"><span class="seller-metric-label">Orders received</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">All recorded orders</span></div>
           <div class="seller-metric-card"><span class="seller-metric-label">Paid sales</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Paid, non-cancelled orders</span></div>
         </div>
-        <div class="seller-collapsible-section seller-stock-reason-section">
-          <div class="seller-section-heading seller-collapsible-heading-compact"><div><h3 class="seller-panel-title">Stock adjustment note</h3><p class="seller-panel-subtitle">Optional reason saved with stock changes.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerStockReasonContent',this)" data-collapse-label="Collapse Reason" data-expand-label="Expand Reason" aria-controls="sellerStockReasonContent" aria-expanded="true">− Collapse Reason</button></div>
-          <div class="seller-collapsible-content" id="sellerStockReasonContent">
-            <div class="seller-inventory-tools seller-inventory-reason-tools">
-              <div class="seller-field"><label for="sellerStockReason">Reason for stock adjustment (optional)</label><input id="sellerStockReason" type="text" maxlength="250" placeholder="e.g. New delivery, damaged item, stock count correction"></div>
-            </div>
-          </div>
-        </div>
+        <input id="sellerStockReason" type="hidden" value="">
         <div class="seller-collapsible-section seller-stock-table-section">
           <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Stock by product variant</h3><p class="seller-panel-subtitle">Use Add to receive stock or Remove to reduce it. Stock can never go below zero.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerInventoryTableContent',this)" data-collapse-label="Collapse Stock Table" data-expand-label="Expand Stock Table" aria-controls="sellerInventoryTableContent" aria-expanded="true">− Collapse Stock Table</button></div>
           <div class="seller-collapsible-content" id="sellerInventoryTableContent">
