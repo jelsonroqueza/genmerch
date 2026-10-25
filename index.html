@@ -6992,7 +6992,7 @@
           productCreatedId=null;resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product saved to Supabase with '+files.length+' gallery photo(s) and default size variants. Stock starts at 0; set verified inventory before accepting purchases.','success');
         }else{
           const newImageRows=await sellerUploadFiles(client,productId,files,retained.length,uploadedPaths);
-          const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,compare_at_price:original,location:location||null}).eq('id',productId);if(updated.error)throw updated.error;
+          const updated=await client.from('products').update({name,category_id:categoryId,description:description||null,base_price:price,regular_price:regularPrice,promotion_type:promotionType,promotion_value:promotionValue,compare_at_price:promotionType==='percent'?regularPrice:(promotionType==='none'?original:null),location:location||null}).eq('id',productId);if(updated.error)throw updated.error;
           await sellerApplySelectedSizes(client,productId,sellerEditingProductSku||'GM-'+sellerSlugify(name).toUpperCase(),categoryName,selectedSizes);
           if(removedIds.size){
             removedImagesToRestore=existing.filter(image=>removedIds.has(String(image.id)));
