@@ -2981,6 +2981,39 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .seller-table-pagination{justify-content:flex-start;flex-wrap:wrap}
   }
 </style>
+<style id="genmerch-seller-gradient-collapse-dashboard">
+  .seller-metrics-grid[hidden],.seller-collapsible-content[hidden]{display:none!important}
+  .seller-metric-card{position:relative;isolation:isolate;overflow:hidden;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+  .seller-metric-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:12px 0 0 12px;background:var(--metric-accent,#ff4b2b);z-index:-1}
+  .seller-metric-card::after{content:"";position:absolute;right:-22px;top:-29px;width:84px;height:84px;border-radius:50%;background:var(--metric-orb,rgba(255,255,255,.5));pointer-events:none;z-index:-1}
+  .seller-metric-card:nth-child(1){--metric-accent:#f05a24;--metric-orb:rgba(255,175,116,.27);background:linear-gradient(135deg,#fff8ef 0%,#ffe2ce 54%,#ffd4b5 100%);border-color:#f6d0b7}
+  .seller-metric-card:nth-child(2){--metric-accent:#685bd7;--metric-orb:rgba(167,169,255,.27);background:linear-gradient(135deg,#f8f8ff 0%,#e9eaff 58%,#dedfff 100%);border-color:#d9d9fa}
+  .seller-metric-card:nth-child(3){--metric-accent:#0c9b85;--metric-orb:rgba(118,220,193,.24);background:linear-gradient(135deg,#f0fff9 0%,#dff8ed 58%,#c9f0e3 100%);border-color:#caeadc}
+  .seller-metric-card:nth-child(4){--metric-accent:#c88300;--metric-orb:rgba(255,206,91,.24);background:linear-gradient(135deg,#fffbee 0%,#fff0c6 56%,#ffe5a2 100%);border-color:#f1e0b5}
+  .seller-metric-card:nth-child(5){--metric-accent:#d92c2c;--metric-orb:rgba(255,132,140,.22);background:linear-gradient(135deg,#fff7f6 0%,#ffe5e3 56%,#ffd5d2 100%);border-color:#f2cfce}
+  .seller-metric-card:nth-child(6){--metric-accent:#1687ba;--metric-orb:rgba(113,209,244,.22);background:linear-gradient(135deg,#f1fbff 0%,#dff4fc 56%,#ccecf8 100%);border-color:#cde5f1}
+  .seller-metric-card:nth-child(7){--metric-accent:#8b4dc1;--metric-orb:rgba(210,159,244,.23);background:linear-gradient(135deg,#fcf7ff 0%,#f1e5ff 58%,#e9d5fb 100%);border-color:#e5d5f1}
+  .seller-metric-card:nth-child(8){--metric-accent:#d94f27;--metric-orb:rgba(255,183,119,.25);background:linear-gradient(135deg,#fff8f0 0%,#ffe8ce 56%,#ffdab2 100%);border-color:#f0d4b8}
+  .seller-metric-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(82,45,26,.09);border-color:var(--metric-accent,#ff4b2b)}
+  .seller-metric-label,.seller-metric-value,.seller-metric-detail{position:relative;z-index:1}
+  .seller-inventory-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+  .seller-dashboard-toggle-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .seller-collapse-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:7px 10px;border:1px solid #efc7b7;border-radius:8px;background:linear-gradient(135deg,#fffaf6,#ffece2);color:#923a25;font-size:.72rem;font-weight:900;line-height:1.2;white-space:nowrap;cursor:pointer;transition:background .16s,border-color .16s,box-shadow .16s}
+  .seller-collapse-button:hover:not(:disabled){border-color:#f18b6d;background:linear-gradient(135deg,#fff0e6,#ffd9c9);box-shadow:0 3px 8px rgba(201,76,39,.09)}
+  .seller-collapse-button:disabled{opacity:.5;cursor:not-allowed}
+  .seller-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 8px}
+  .seller-section-heading .seller-panel-title{margin:0 0 3px!important}
+  .seller-section-heading .seller-panel-subtitle{margin:0!important}
+  .seller-collapsible-content{min-width:0}
+  .seller-collapsible-section-heading{padding:10px 12px;border:1px solid #f0ddd3;border-radius:10px;background:linear-gradient(110deg,#fffaf7,#fff2e9 62%,#fffaf8);margin:14px 0 0}
+  .seller-collapsible-heading-compact{padding:10px 12px;border:1px solid #f0ddd3;border-radius:10px;background:linear-gradient(110deg,#fffaf7,#fff2e9 62%,#fffaf8);margin:14px 0 7px}
+  .seller-stock-reason-section .seller-inventory-tools{border-radius:0 0 10px 10px;border-top:0;background:linear-gradient(125deg,#fffdfb,#fff8f3)}
+  .seller-stock-table-section .seller-compact-filter-toolbar{margin-top:8px}
+  .seller-stock-table-section .seller-collapsible-content[hidden],.seller-movement-section .seller-collapsible-content[hidden],#sellerOrdersTableContent[hidden]{display:none!important}
+  @media(max-width:900px){.seller-inventory-heading{align-items:flex-start}.seller-inventory-header-actions{flex-direction:column;align-items:flex-end}.seller-dashboard-toggle-group{justify-content:flex-end}}
+  @media(max-width:650px){.seller-inventory-heading{flex-direction:column;align-items:stretch}.seller-inventory-header-actions{align-items:stretch}.seller-dashboard-toggle-group{justify-content:flex-start}.seller-inventory-header-actions .seller-export-excel-button{align-self:flex-start}.seller-section-heading{align-items:flex-start;flex-direction:column;gap:8px}.seller-section-heading .seller-collapse-button{align-self:flex-start}.seller-collapsible-section-heading,.seller-collapsible-heading-compact{padding:9px 10px}.seller-metric-card:hover{transform:none}}
+  @media(prefers-reduced-motion:reduce){.seller-metric-card,.seller-collapse-button{transition:none}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -3069,7 +3102,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
       </div>
       <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
-        <h3 class="seller-panel-title" id="sellerProductFormTitle">Add a product</h3><p class="seller-panel-subtitle" id="sellerProductFormSubtitle">New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.</p>
+        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title" id="sellerProductFormTitle">Add a product</h3><p class="seller-panel-subtitle" id="sellerProductFormSubtitle">New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerProductFormContent',this)" data-collapse-label="Collapse Product Form" data-expand-label="Expand Product Form" aria-controls="sellerProductFormContent" aria-expanded="true">− Collapse Product Form</button></div>
+        <div class="seller-collapsible-content" id="sellerProductFormContent">
         <form class="seller-product-form" id="sellerProductForm">
           <div class="seller-form-grid">
             <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
@@ -3103,22 +3137,28 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="button">Clear form</button><button class="seller-secondary-button" id="sellerCancelEditButton" type="button" hidden>Cancel edit</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Add product to Supabase</button></div>
           <div class="seller-feedback" id="sellerProductFeedback" role="status" aria-live="polite" hidden></div>
         </form>
-        <h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p>
+        </div>
+        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerCloudInventoryContent',this)" data-collapse-label="Collapse Product List" data-expand-label="Expand Product List" aria-controls="sellerCloudInventoryContent" aria-expanded="true">− Collapse Product List</button></div>
         <div class="seller-feedback" id="sellerProductsFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-collapsible-content" id="sellerCloudInventoryContent">
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
+        </div>
       </section>
       <section class="seller-panel" id="sellerDeletedPanel" role="tabpanel" aria-labelledby="sellerDeletedTab" hidden>
-        <h3 class="seller-panel-title">Deleted products</h3>
-        <p class="seller-panel-subtitle">Archived products are hidden from customers. Their product details and uploaded photos are kept. Restore a product to list it again with zero stock, then add stock in Inventory &amp; Analytics.</p>
+        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Deleted products</h3>
+        <p class="seller-panel-subtitle">Archived products are hidden from customers. Their product details and uploaded photos are kept. Restore a product to list it again with zero stock, then add stock in Inventory &amp; Analytics.</p></div>
+        <button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerDeletedProductsContent',this)" data-collapse-label="Collapse Deleted List" data-expand-label="Expand Deleted List" aria-controls="sellerDeletedProductsContent" aria-expanded="true">− Collapse Deleted List</button></div>
         <div class="seller-feedback" id="sellerDeletedFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-collapsible-content" id="sellerDeletedProductsContent">
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table">
           <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Photos</th><th>Deleted on</th><th>Action</th></tr></thead>
           <tbody id="sellerDeletedProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Open this tab to load deleted products.</td></tr></tbody>
-        </table></div>
+        </table></div></div>
       </section>
       <section class="seller-panel" id="sellerOrdersPanel" role="tabpanel" aria-labelledby="sellerOrdersTab" hidden>
-        <h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Live customer orders saved by checkout. New orders and their item details refresh automatically while this tab is open.</p>
+        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Live customer orders saved by checkout. New orders and their item details refresh automatically while this tab is open.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerOrdersTableContent',this)" data-collapse-label="Collapse Orders" data-expand-label="Expand Orders" aria-controls="sellerOrdersTableContent" aria-expanded="true">− Collapse Orders</button></div>
         <div class="seller-feedback" id="sellerOrdersFeedback" role="status" aria-live="polite" hidden></div>
+        <div class="seller-collapsible-content" id="sellerOrdersTableContent">
         <div class="seller-filter-toolbar seller-compact-filter-toolbar seller-orders-filter-toolbar" id="sellerOrdersFilterToolbar">
           <div class="seller-filter-field seller-filter-search"><label for="sellerOrdersSearch">Search orders</label><input id="sellerOrdersSearch" type="search" placeholder="Order #, customer, email, phone, item or SKU"></div>
           <div class="seller-filter-field"><label for="sellerOrdersStatusFilter">Order status</label><select id="sellerOrdersStatusFilter"><option value="">All order statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option><option value="refunded">Refunded</option></select></div>
@@ -3130,12 +3170,19 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         </div>
         <div class="seller-table-wrap seller-orders-table-wrap"><table class="seller-table seller-orders-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
         <div class="seller-table-pagination" id="sellerOrdersPagination" role="navigation" aria-label="Orders table pages"></div>
+        </div>
       </section>
       <section class="seller-panel" id="sellerInventoryPanel" role="tabpanel" aria-labelledby="sellerInventoryTab" hidden>
         <div class="seller-inventory-heading">
           <div><h3 class="seller-panel-title">Inventory overview &amp; analytics</h3>
           <p class="seller-panel-subtitle">Adjust stock by size/variant. Stock deductions and cancellation returns are recorded in Supabase. Low stock means 1–5 units.</p></div>
-          <button class="seller-primary-button seller-export-excel-button" id="sellerExportExcelButton" type="button" onclick="exportSellerInventoryExcel()">⇩ Export to Excel</button>
+          <div class="seller-inventory-header-actions">
+            <div class="seller-dashboard-toggle-group" role="group" aria-label="Dashboard tile visibility">
+              <button class="seller-collapse-button seller-dashboard-collapse-button" id="sellerCollapseDashboardButton" type="button" onclick="sellerSetDashboardCollapsed(true)" aria-controls="sellerInventoryMetrics" aria-expanded="true">− Collapse Dashboard</button>
+              <button class="seller-collapse-button seller-dashboard-expand-button" id="sellerExpandDashboardButton" type="button" onclick="sellerSetDashboardCollapsed(false)" aria-controls="sellerInventoryMetrics" aria-expanded="false" disabled>＋ Expand Dashboard</button>
+            </div>
+            <button class="seller-primary-button seller-export-excel-button" id="sellerExportExcelButton" type="button" onclick="exportSellerInventoryExcel()">⇩ Export to Excel</button>
+          </div>
         </div>
         <div class="seller-feedback" id="sellerInventoryFeedback" role="status" aria-live="polite" hidden></div>
         <div class="seller-metrics-grid" id="sellerInventoryMetrics">
@@ -3148,11 +3195,17 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="seller-metric-card"><span class="seller-metric-label">Orders received</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">All recorded orders</span></div>
           <div class="seller-metric-card"><span class="seller-metric-label">Paid sales</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Paid, non-cancelled orders</span></div>
         </div>
-        <div class="seller-inventory-tools seller-inventory-reason-tools">
-          <div class="seller-field"><label for="sellerStockReason">Reason for stock adjustment (optional)</label><input id="sellerStockReason" type="text" maxlength="250" placeholder="e.g. New delivery, damaged item, stock count correction"></div>
+        <div class="seller-collapsible-section seller-stock-reason-section">
+          <div class="seller-section-heading seller-collapsible-heading-compact"><div><h3 class="seller-panel-title">Stock adjustment note</h3><p class="seller-panel-subtitle">Optional reason saved with stock changes.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerStockReasonContent',this)" data-collapse-label="Collapse Reason" data-expand-label="Expand Reason" aria-controls="sellerStockReasonContent" aria-expanded="true">− Collapse Reason</button></div>
+          <div class="seller-collapsible-content" id="sellerStockReasonContent">
+            <div class="seller-inventory-tools seller-inventory-reason-tools">
+              <div class="seller-field"><label for="sellerStockReason">Reason for stock adjustment (optional)</label><input id="sellerStockReason" type="text" maxlength="250" placeholder="e.g. New delivery, damaged item, stock count correction"></div>
+            </div>
+          </div>
         </div>
-        <h3 class="seller-panel-title" style="margin-top:20px">Stock by product variant</h3>
-        <p class="seller-panel-subtitle">Use Add to receive stock or Remove to reduce it. Stock can never go below zero.</p>
+        <div class="seller-collapsible-section seller-stock-table-section">
+          <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Stock by product variant</h3><p class="seller-panel-subtitle">Use Add to receive stock or Remove to reduce it. Stock can never go below zero.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerInventoryTableContent',this)" data-collapse-label="Collapse Stock Table" data-expand-label="Expand Stock Table" aria-controls="sellerInventoryTableContent" aria-expanded="true">− Collapse Stock Table</button></div>
+          <div class="seller-collapsible-content" id="sellerInventoryTableContent">
         <div class="seller-filter-toolbar seller-compact-filter-toolbar seller-inventory-filter-toolbar" id="sellerInventoryFilterToolbar">
           <div class="seller-filter-field seller-filter-search"><label for="sellerInventorySearch">Search inventory</label><input id="sellerInventorySearch" type="search" placeholder="Product, SKU, size or color"></div>
           <div class="seller-filter-field"><label for="sellerInventoryCategoryFilter">Category</label><select id="sellerInventoryCategoryFilter"><option value="">All categories</option></select></div>
@@ -3173,12 +3226,17 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <tbody id="sellerInventoryTableBody"><tr><td colspan="7" class="seller-table-empty">Open this tab to load stock levels.</td></tr></tbody>
         </table></div>
         <div class="seller-table-pagination" id="sellerInventoryPagination" role="navigation" aria-label="Inventory table pages"></div>
-        <h3 class="seller-panel-title" style="margin-top:22px">Recent inventory movements</h3>
-        <p class="seller-panel-subtitle">Records manual stock changes, order deductions, and stock returned by cancellations.</p>
+          </div>
+        </div>
+        <div class="seller-collapsible-section seller-movement-section">
+        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Recent inventory movements</h3><p class="seller-panel-subtitle">Records manual stock changes, order deductions, and stock returned by cancellations.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerMovementHistoryContent',this)" data-collapse-label="Collapse Movement History" data-expand-label="Expand Movement History" aria-controls="sellerMovementHistoryContent" aria-expanded="true">− Collapse Movement History</button></div>
+        <div class="seller-collapsible-content" id="sellerMovementHistoryContent">
         <div class="seller-table-wrap seller-movements-table-wrap"><table class="seller-table seller-movements-table">
           <thead><tr><th>Date</th><th>Product variant</th><th>Movement</th><th>Change</th><th>Stock before → after</th><th>Reason / order</th></tr></thead>
           <tbody id="sellerMovementTableBody"><tr><td colspan="6" class="seller-table-empty">Stock movement history appears here after inventory changes.</td></tr></tbody>
         </table></div>
+        </div>
+        </div>
       </section>
       <div class="seller-dashboard-foot">GENMERCH Seller Centre · Admin-only Supabase access · Stock changes are recorded in the inventory movement history.</div>
     </section>
@@ -8279,6 +8337,23 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
     }
 
+    function sellerSetDashboardCollapsed(collapsed){
+      const isCollapsed=Boolean(collapsed),grid=$('sellerInventoryMetrics'),collapseButton=$('sellerCollapseDashboardButton'),expandButton=$('sellerExpandDashboardButton');
+      if(!grid)return;
+      grid.hidden=isCollapsed;
+      grid.setAttribute('aria-hidden',String(isCollapsed));
+      if(collapseButton){collapseButton.disabled=isCollapsed;collapseButton.setAttribute('aria-expanded',String(!isCollapsed));}
+      if(expandButton){expandButton.disabled=!isCollapsed;expandButton.setAttribute('aria-expanded',String(isCollapsed));}
+    }
+    function sellerToggleSection(sectionId,button){
+      const section=$(sectionId);
+      if(!section||!button)return;
+      const collapseNow=!section.hidden;
+      section.hidden=collapseNow;
+      section.setAttribute('aria-hidden',String(collapseNow));
+      button.setAttribute('aria-expanded',String(!collapseNow));
+      button.textContent=(collapseNow?'＋ ':'− ')+(collapseNow?(button.dataset.expandLabel||'Expand Section'):(button.dataset.collapseLabel||'Collapse Section'));
+    }
     function sellerInventoryMoney(value){return money(Number(value)||0);}
     function sellerRenderInventoryMetrics(products,variants,orders){
       const productMap=new Map(products.map(product=>[String(product.id),product]));
