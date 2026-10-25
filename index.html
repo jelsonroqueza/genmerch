@@ -23,7 +23,7 @@
     .toast{position:fixed;top:82px;left:50%;transform:translate(-50%,-10px);z-index:1000;background:#222;color:#fff;border-radius:10px;padding:13px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100vw - 28px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s;font-size:.9rem;font-weight:700}.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}.toast-icon{display:grid;place-items:center;background:var(--accent);border-radius:50%;width:23px;height:23px;flex-shrink:0}
     footer{margin-top:28px;background:#1a1a1a;color:#ddd;padding:24px 16px;text-align:center;border-top:3px solid var(--primary);font-size:.88rem}.footer-brand{font-weight:850;color:#fff;font-size:1.05rem;margin-bottom:8px}
     /* Product detail modal */
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.56);z-index:400;display:none;align-items:center;justify-content:center;padding:14px}.overlay.open{display:flex}.product-modal{background:#fff;width:min(460px,100%);max-height:92dvh;overflow:auto;border-radius:14px;box-shadow:var(--shadow)}.modal-head{background:var(--primary);color:#fff;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;font-weight:850}.icon-btn{border:0;background:transparent;color:inherit;font-size:1.4rem;line-height:1}.product-modal-body{padding:22px;text-align:center}.product-modal-icon{font-size:4.5rem;background:#fff8f6;padding:18px;border-radius:10px;margin-bottom:12px}.product-modal-body h2{font-size:1.12rem;margin-bottom:8px}.product-modal-price{font-size:1.35rem;color:var(--primary);font-weight:850;margin-bottom:12px}.product-description{background:#f8f8f8;border-radius:7px;padding:12px;text-align:left;color:#555;font-size:.9rem;line-height:1.5;margin-bottom:16px}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.56);z-index:400;display:none;align-items:center;justify-content:center;padding:14px}.overlay.open{display:flex}.product-modal{background:#fff;width:min(460px,100%);max-height:92dvh;overflow:auto;border-radius:14px;box-shadow:var(--shadow)}.modal-head{background:var(--primary);color:#fff;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;font-weight:850}.icon-btn{border:0;background:transparent;color:inherit;font-size:1.4rem;line-height:1}.product-modal-back{border:0;background:transparent;color:#fff;font:inherit;font-size:.85rem;font-weight:850;display:inline-flex;align-items:center;gap:5px;padding:4px 8px 4px 0;white-space:nowrap}.product-modal-back[hidden]{display:none!important}.product-modal-options-expanded #productModalRatings{display:none!important}.product-modal-options-expanded .genmerch-product-social-proof>:not(.sold){display:none!important}.product-modal-body{padding:22px;text-align:center}.product-modal-icon{font-size:4.5rem;background:#fff8f6;padding:18px;border-radius:10px;margin-bottom:12px}.product-modal-body h2{font-size:1.12rem;margin-bottom:8px}.product-modal-price{font-size:1.35rem;color:var(--primary);font-weight:850;margin-bottom:12px}.product-description{background:#f8f8f8;border-radius:7px;padding:12px;text-align:left;color:#555;font-size:.9rem;line-height:1.5;margin-bottom:16px}
     /* Product size selector shown before an item is added to cart */
     .size-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(15,15,15,.62);backdrop-filter:blur(3px)}
     .size-overlay.open{display:flex}
@@ -3860,7 +3860,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
   <div class="overlay" id="productOverlay" aria-hidden="true">
     <section class="product-modal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
-      <div class="modal-head"><span id="productModalTitle">Product details</span><button class="icon-btn" id="closeProductModal" aria-label="Close product details">×</button></div>
+      <div class="modal-head"><button type="button" class="product-modal-back" id="productModalBack" aria-label="Back to product reviews" hidden>← <span>Back</span></button><span id="productModalTitle">Product details</span><button class="icon-btn" id="closeProductModal" aria-label="Close product details">×</button></div>
       <div class="product-modal-body">
         <div class="product-modal-icon" id="productModalIcon">💿</div>
         <div class="product-modal-gallery" id="productModalGallery" hidden>
@@ -6509,8 +6509,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     function setProductPurchaseStage(expanded,product){
       productOptionsExpanded=Boolean(expanded);
       const colorSelector=$('productModalColorSelector');
-      const colorMapping=product?getProductColorMapping(product):null;
-      if(colorSelector)colorSelector.hidden=!(productOptionsExpanded&&getProductColors(product).length>0);
+      if(colorSelector)colorSelector.hidden=!(productOptionsExpanded&&product&&getProductColors(product).length>0);
       const sizeSelector=$('productModalSizeSelector');
       if(sizeSelector)sizeSelector.hidden=!productOptionsExpanded;
       const quantitySelector=$('productModalQuantitySelector');
@@ -6519,6 +6518,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(hint)hint.hidden=!productOptionsExpanded;
       const modal=document.querySelector('#productOverlay .product-modal');
       if(modal)modal.classList.toggle('product-modal-options-expanded',productOptionsExpanded);
+      const back=$('productModalBack');
+      if(back)back.hidden=!productOptionsExpanded;
+      const title=$('productModalTitle');
+      if(title)title.textContent=productOptionsExpanded?'Product Options':'Product Details';
       if(product)updateProductModalAddButton(product);
     }
     function renderProductModalSizes(product){
@@ -6704,6 +6707,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       updateProductModalAddButton(product);
     });
     function closeProduct(){ $('productOverlay').classList.remove('open');$('productOverlay').setAttribute('aria-hidden','true'); }
+    $('productModalBack').addEventListener('click',()=>{
+      const product=products.find(item=>String(item.id)===String(openProductDetailId));
+      if(product)setProductPurchaseStage(false,product);
+    });
     $('closeProductModal').addEventListener('click',closeProduct);
     $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay'))closeProduct();});
 
