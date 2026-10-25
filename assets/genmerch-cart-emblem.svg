@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 140" role="img" aria-label="GENMERCH cart emblem">
+  <defs>
+    <linearGradient id="genmerch-rainbow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff343d"/>
+      <stop offset=".22" stop-color="#ff7a28"/>
+      <stop offset=".43" stop-color="#ffd836"/>
+      <stop offset=".61" stop-color="#70d64c"/>
+      <stop offset=".78" stop-color="#36d8bd"/>
+      <stop offset="1" stop-color="#2f84ff"/>
+    </linearGradient>
+    <linearGradient id="genmerch-rainbow-reverse" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff343d"/>
+      <stop offset=".28" stop-color="#ff962b"/>
+      <stop offset=".54" stop-color="#ffe144"/>
+      <stop offset=".76" stop-color="#42ddb0"/>
+      <stop offset="1" stop-color="#387bff"/>
+    </linearGradient>
+    <filter id="soft-glow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#392415" flood-opacity=".14"/>
+    </filter>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft-glow)">
+    <g stroke="url(#genmerch-rainbow)" stroke-width="7">
+      <path d="M66 33V25C66 12 77 5 91 5s26 8 26 21v8"/>
+      <path d="M66 33H157Q163 33 161 40L152 79H83L72 40Q70 33 66 33Z"/>
+      <path d="M83 79H152L156 89H91Q84 89 82 82"/>
+      <path d="M24 59H58"/>
+      <path d="M34 80H63"/>
+      <path d="M49 102H88"/>
+      <path d="M88 102H147"/>
+    </g>
+    <g stroke="url(#genmerch-rainbow-reverse)" stroke-width="4.5">
+      <path d="M65 43H160"/>
+      <path d="M72 59H157"/>
+      <path d="M77 73H154"/>
+      <path d="M96 39V75"/>
+      <path d="M119 38V76"/>
+      <path d="M141 38L137 76"/>
+      <circle cx="79" cy="31" r="7" fill="#fff" stroke-width="4"/>
+      <circle cx="125" cy="31" r="7" fill="#fff" stroke-width="4"/>
+    </g>
+    <path d="M91 102H147L151 112H84" stroke="url(#genmerch-rainbow)" stroke-width="6"/>
+    <path d="M83 112H149" stroke="#f5bc39" stroke-width="2.5" opacity=".7"/>
+    <circle cx="96" cy="127" r="8" fill="url(#genmerch-rainbow)" stroke="url(#genmerch-rainbow)" stroke-width="3"/>
+    <circle cx="142" cy="127" r="8" fill="url(#genmerch-rainbow-reverse)" stroke="url(#genmerch-rainbow-reverse)" stroke-width="3"/>
+  </g>
+</svg>
