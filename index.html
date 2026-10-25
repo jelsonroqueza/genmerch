@@ -3066,6 +3066,100 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .seller-open-product-form-button{width:100%}
   }
 </style>
+  <style id="genmerch-professional-header-spacing">
+    /* Balanced desktop header: keep logo, search and action buttons inside the viewport. */
+    @media (min-width:761px) {
+      .main-header{
+        width:100%!important;
+        max-width:1780px!important;
+        padding:10px clamp(12px,1.5vw,26px) 0!important;
+        box-sizing:border-box!important;
+      }
+      .main-header .nav{
+        display:grid!important;
+        grid-template-columns:max-content minmax(180px,1fr) max-content!important;
+        grid-template-rows:minmax(76px,auto)!important;
+        align-items:center!important;
+        gap:clamp(12px,1.55vw,24px)!important;
+        width:100%!important;
+        min-width:0!important;
+        min-height:86px!important;
+        padding:9px clamp(14px,1.5vw,26px)!important;
+        box-sizing:border-box!important;
+      }
+      .brand-lockup{grid-column:1!important;grid-row:1!important;max-width:100%!important}
+      .brand-word{font-size:clamp(1.48rem,2.1vw,2.12rem)!important;letter-spacing:-1.45px!important}
+      .search{
+        grid-column:2!important;grid-row:1!important;
+        width:100%!important;max-width:100%!important;min-width:0!important;
+        height:54px!important;min-height:54px!important;
+      }
+      .search input{min-width:0!important;padding-inline:clamp(7px,.75vw,13px)!important}
+      .header-actions{
+        grid-column:3!important;grid-row:1!important;
+        min-width:0!important;max-width:100%!important;
+        justify-content:flex-end!important;
+        gap:clamp(9px,1.18vw,19px)!important;
+      }
+      .header-action{min-width:clamp(44px,3.2vw,54px)!important;max-width:none!important}
+      .header-action small{font-size:clamp(.6rem,.67vw,.72rem)!important;white-space:nowrap!important}
+      .header-action .header-icon{flex:0 0 30px!important}
+      /* Navigation items wrap naturally when the viewport is narrower instead of being clipped. */
+      .desktop-links{
+        display:flex!important;flex-wrap:wrap!important;
+        align-items:center!important;justify-content:flex-start!important;
+        gap:clamp(5px,.65vw,11px)!important;
+        width:100%!important;max-width:100%!important;min-width:0!important;
+        min-height:48px!important;
+        margin:7px auto 8px!important;padding:4px clamp(3px,.5vw,9px) 8px!important;
+        box-sizing:border-box!important;
+        overflow:visible!important;overflow-wrap:normal!important;
+      }
+      .desktop-links button{
+        flex:0 0 auto!important;min-width:0!important;min-height:40px!important;
+        padding:10px clamp(9px,.85vw,14px)!important;
+        border-radius:10px!important;
+        font-size:clamp(.73rem,.78vw,.86rem)!important;
+        line-height:1.2!important;
+      }
+      .desktop-links button.active{
+        padding-inline:clamp(16px,1.1vw,22px)!important;
+        border-radius:22px!important;
+      }
+      .desktop-links span{flex:1 1 36px!important;min-width:32px!important}
+      .desktop-links button:nth-last-child(-n+2){
+        border:1px solid transparent!important;border-radius:9px!important;
+        padding-inline:clamp(11px,.95vw,16px)!important;
+      }
+      .desktop-links button:nth-last-child(-n+2):hover{
+        border-color:#ead8ce!important;background:#fff5ef!important;color:#d72712!important;
+      }
+      main.container{
+        width:100%!important;max-width:1800px!important;
+        padding-inline:clamp(16px,2.05vw,36px)!important;
+        margin-inline:auto!important;box-sizing:border-box!important;
+      }
+      .hero{
+        width:100%!important;max-width:100%!important;min-width:0!important;
+        margin-inline:0!important;box-sizing:border-box!important;overflow:hidden!important;
+      }
+    }
+    @media (min-width:761px) and (max-width:1100px){
+      .main-header .nav{
+        grid-template-columns:max-content minmax(145px,1fr) max-content!important;
+        gap:clamp(8px,1vw,13px)!important;
+        padding-inline:clamp(9px,1.2vw,14px)!important;
+      }
+      .brand-word{font-size:clamp(1.34rem,2vw,1.78rem)!important;letter-spacing:-1.2px!important}
+      .header-actions{gap:clamp(5px,.75vw,9px)!important}
+      .header-action{min-width:clamp(37px,4vw,44px)!important}
+      .header-action small{font-size:clamp(.55rem,.68vw,.64rem)!important}
+      .desktop-links{gap:clamp(4px,.55vw,7px)!important}
+      .desktop-links button{padding-inline:clamp(7px,.75vw,10px)!important;font-size:clamp(.68rem,.76vw,.76rem)!important}
+      .desktop-links button.active{padding-inline:clamp(12px,1.2vw,16px)!important}
+      .main.container{padding-inline:clamp(14px,2.1vw,22px)!important}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
