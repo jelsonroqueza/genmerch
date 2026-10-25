@@ -1,17 +1,23 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
-const ALLOWED_ORIGIN = "https://jelsonroqueza.github.io";
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Vary": "Origin",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://jelsonroqueza.github.io",
+  "https://shopgenmerch.com",
+  "https://www.shopgenmerch.com",
+]);
+function corsHeaders(origin: string | null = null) {
+  return {
+    "Access-Control-Allow-Origin": origin && ALLOWED_ORIGINS.has(origin) ? origin : "https://shopgenmerch.com",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
-function jsonResponse(status: number, body: Record<string, unknown>) {
+function jsonResponse(status: number, body: Record<string, unknown>, origin: string | null = null) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" },
+    headers: { ...corsHeaders(origin), "Content-Type": "application/json; charset=utf-8" },
   });
 }
 function escapeHtml(value: unknown): string {
@@ -147,35 +153,36 @@ function buildEmailText(order: Record<string, unknown>, items: Record<string, un
     "", "PAYMENT", "Preferred payment method: " + String(order.payment_method || "Not specified"),
     "Payment status: " + String(order.payment_status || "pending"), payment, "",
     "IMPORTANT: Please take a screenshot of the order confirmation screen and check this email for your reference. Keep your order number safe.",
-    "Open https://jelsonroqueza.github.io/genmerch/, sign in, and select Orders to track your order.",
+    "Open https://shopgenmerch.com/, sign in, and select Orders to track your order.",
     "", "This email confirms that the order was saved. It does not confirm that payment has been received.",
     "Sent to: " + recipient,
   ].filter(Boolean).join("\n");
 }
 
 Deno.serve(async (request: Request) => {
+  const origin = request.headers.get("origin");
+  const respond = (status: number, payload: Record<string, unknown>) => jsonResponse(status, payload, origin);
+  if (origin && !ALLOWED_ORIGINS.has(origin)) {
+    return new Response("Forbidden origin", { status: 403 });
+  }
   if (request.method === "OPTIONS") {
-    return new Response("ok", { headers: CORS_HEADERS });
+    return new Response("ok", { headers: corsHeaders(origin) });
   }
   if (request.method !== "POST") {
-    return jsonResponse(405, { ok: false, code: "method_not_allowed", message: "Use POST for order confirmation." });
-  }
-  const origin = request.headers.get("origin");
-  if (origin && origin !== ALLOWED_ORIGIN) {
-    return jsonResponse(403, { ok: false, code: "origin_not_allowed", message: "This storefront is not allowed to call the email endpoint." });
+    return respond(405, { ok: false, code: "method_not_allowed", message: "Use POST for order confirmation." });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse(500, { ok: false, code: "backend_not_configured", message: "Order email service backend is not configured." });
+    return respond(500, { ok: false, code: "backend_not_configured", message: "Order email service backend is not configured." });
   }
 
   let body: Record<string, unknown>;
   try {
     body = await request.json();
   } catch {
-    return jsonResponse(400, { ok: false, code: "invalid_json", message: "Request body must be valid JSON." });
+    return respond(400, { ok: false, code: "invalid_json", message: "Request body must be valid JSON." });
   }
   const orderId = String(body.order_id ?? "").trim();
   const orderNumber = String(body.order_number ?? "").trim();
@@ -185,7 +192,7 @@ Deno.serve(async (request: Request) => {
       !/^GM-[0-9]{8}-[A-F0-9]{8}$/i.test(orderNumber) ||
       !/^09[0-9]{9}$/.test(phone) ||
       !validEmail(recipient)) {
-    return jsonResponse(400, { ok: false, code: "invalid_order_details", message: "Check the order number, checkout mobile number, and recipient email." });
+    return respond(400, { ok: false, code: "invalid_order_details", message: "Check the order number, checkout mobile number, and recipient email." });
   }
 
   const admin = createClient(supabaseUrl, serviceRoleKey, {
@@ -203,16 +210,16 @@ Deno.serve(async (request: Request) => {
       .maybeSingle();
 
     if (orderError || !order) {
-      return jsonResponse(404, { ok: false, code: "order_not_found", message: "Order details could not be verified. Keep your order number and contact the seller if needed." });
+      return respond(404, { ok: false, code: "order_not_found", message: "Order details could not be verified. Keep your order number and contact the seller if needed." });
     }
     const createdAt = new Date(String(order.created_at)).getTime();
     if (!Number.isFinite(createdAt) || Date.now() - createdAt > 48 * 60 * 60 * 1000 || createdAt > Date.now() + 5 * 60 * 1000) {
-      return jsonResponse(403, { ok: false, code: "confirmation_window_expired", message: "The automatic email confirmation window has expired." });
+      return respond(403, { ok: false, code: "confirmation_window_expired", message: "The automatic email confirmation window has expired." });
     }
 
     // receipt_email is saved atomically during order creation and cannot be changed through this public endpoint.
     if (String(order.receipt_email || "").trim().toLowerCase() !== recipient) {
-      return jsonResponse(409, {
+      return respond(409, {
         ok: false,
         code: "receipt_email_mismatch",
         message: "This email does not match the receipt address selected during checkout. Contact the seller if you need help.",
@@ -222,7 +229,7 @@ Deno.serve(async (request: Request) => {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     const fromAddress = Deno.env.get("GENMERCH_EMAIL_FROM");
     if (!resendApiKey || !fromAddress) {
-      return jsonResponse(503, {
+      return respond(503, {
         ok: false,
         code: "email_provider_not_configured",
         message: "The order is saved, but automatic email delivery is not configured yet. Please screenshot the order confirmation and keep your order number.",
@@ -238,14 +245,14 @@ Deno.serve(async (request: Request) => {
     });
     if (reservationError) {
       console.error("Could not reserve the order confirmation email.", reservationError.message);
-      return jsonResponse(409, { ok: false, code: "email_send_guard", message: reservationError.message || "The confirmation email could not be queued." });
+      return respond(409, { ok: false, code: "email_send_guard", message: reservationError.message || "The confirmation email could not be queued." });
     }
     const reservation = Array.isArray(reservationData) ? reservationData[0] : reservationData;
     if (reservation?.status === "sent") {
-      return jsonResponse(200, { ok: true, already_sent: true, recipient_email: reservation.recipient_email || recipient });
+      return respond(200, { ok: true, already_sent: true, recipient_email: reservation.recipient_email || recipient });
     }
     if (reservation?.already_sending) {
-      return jsonResponse(202, { ok: false, sending: true, recipient_email: reservation.recipient_email || recipient, message: "Your order email is already being processed." });
+      return respond(202, { ok: false, sending: true, recipient_email: reservation.recipient_email || recipient, message: "Your order email is already being processed." });
     }
 
     const { data: items, error: itemsError } = await admin
@@ -257,7 +264,7 @@ Deno.serve(async (request: Request) => {
       await admin.rpc("finish_genmerch_order_confirmation_email", {
         p_order_id: orderId, p_status: "failed", p_provider_message_id: null, p_error: "Order items could not be loaded.",
       });
-      return jsonResponse(500, { ok: false, code: "items_unavailable", message: "Order saved, but its email details could not be prepared." });
+      return respond(500, { ok: false, code: "items_unavailable", message: "Order saved, but its email details could not be prepared." });
     }
 
     let providerResponse: Response;
@@ -282,7 +289,7 @@ Deno.serve(async (request: Request) => {
       await admin.rpc("finish_genmerch_order_confirmation_email", {
         p_order_id: orderId, p_status: "failed", p_provider_message_id: null, p_error: String(error),
       });
-      return jsonResponse(502, { ok: false, code: "email_provider_unreachable", message: "The order was saved, but the confirmation email could not be sent right now. Please screenshot the order confirmation." });
+      return respond(502, { ok: false, code: "email_provider_unreachable", message: "The order was saved, but the confirmation email could not be sent right now. Please screenshot the order confirmation." });
     }
 
     if (!providerResponse.ok) {
@@ -291,7 +298,7 @@ Deno.serve(async (request: Request) => {
         p_order_id: orderId, p_status: "failed", p_provider_message_id: null, p_error: providerError,
       });
       console.error("Resend rejected a GENMERCH order confirmation.", { status: providerResponse.status, error: providerError });
-      return jsonResponse(502, { ok: false, code: "email_provider_rejected", message: "Your order was saved, but the confirmation email could not be sent. Please screenshot the order confirmation and keep your order number." });
+      return respond(502, { ok: false, code: "email_provider_rejected", message: "Your order was saved, but the confirmation email could not be sent. Please screenshot the order confirmation and keep your order number." });
     }
 
     const messageId = String(providerPayload.id || "");
@@ -299,9 +306,9 @@ Deno.serve(async (request: Request) => {
       p_order_id: orderId, p_status: "sent", p_provider_message_id: messageId, p_error: null,
     });
     if (finishError) console.error("Email was accepted by provider but notification state could not be updated.", finishError.message);
-    return jsonResponse(200, { ok: true, recipient_email: recipient, message_id: messageId });
+    return respond(200, { ok: true, recipient_email: recipient, message_id: messageId });
   } catch (error) {
     console.error("Order email confirmation handler failed.", error instanceof Error ? error.message : "unknown error");
-    return jsonResponse(500, { ok: false, code: "unexpected_error", message: "Your order was saved, but the confirmation email could not be sent right now. Please screenshot your order confirmation." });
+    return respond(500, { ok: false, code: "unexpected_error", message: "Your order was saved, but the confirmation email could not be sent right now. Please screenshot your order confirmation." });
   }
 });
