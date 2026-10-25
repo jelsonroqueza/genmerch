@@ -3439,6 +3439,34 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .genmerch-review-empty{padding:14px 0;color:#80736b;font-size:.78rem;line-height:1.5}
     @media(max-width:540px){.genmerch-review-overlay{padding:7px}.genmerch-review-modal{max-height:95dvh;border-radius:12px}.genmerch-review-head{padding:13px}.genmerch-review-body{padding:10px}.genmerch-review-item{grid-template-columns:54px minmax(0,1fr);gap:9px;padding:9px}.genmerch-review-item img{width:54px;height:58px}.genmerch-review-item .genmerch-review-action{grid-column:2;justify-self:start}.genmerch-review-star{font-size:1.8rem}}
   </style>
+  <style id="genmerch-product-overview-purchase-stages">
+    .product-modal{display:flex!important;flex-direction:column!important;overflow:hidden!important;width:min(560px,100%)!important;max-height:min(92dvh,900px)!important}
+    .product-modal [hidden]{display:none!important}
+    .product-modal-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding-bottom:18px!important}
+    .product-modal-icon{width:100%!important;box-sizing:border-box!important}
+    .product-modal-icon img{max-height:300px!important;object-fit:contain!important}
+    .product-modal-body h2{margin:0 0 8px!important;text-align:left!important;font-size:1.16rem!important;line-height:1.35!important}
+    .product-modal-price{margin:8px 0 10px!important;text-align:left!important}
+    .genmerch-product-social-proof{display:flex;align-items:center;flex-wrap:wrap;gap:7px 12px;margin:0 0 12px;text-align:left;color:#5f5048;font-size:.78rem;line-height:1.4}
+    .genmerch-product-social-proof strong{color:#26201c;font-weight:900}
+    .genmerch-product-social-proof .rating{color:#e9a600;font-weight:950}
+    .genmerch-product-social-proof .sold{padding-right:12px;border-right:1px solid #e8d8ce}
+    .product-description{margin:0 0 12px!important}
+    .genmerch-product-ratings{margin-top:10px!important}
+    .product-options-stage-hint{margin:0 0 12px;padding:10px 12px;border-radius:8px;background:#fff5ef;border:1px solid #f2d2c4;color:#80503e;font-size:.76rem;line-height:1.45}
+    .product-detail-actions{position:relative!important;inset:auto!important;flex:0 0 auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px!important;margin:0!important;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))!important;border-top:1px solid #eee1da!important;background:#fff!important;box-shadow:0 -6px 18px #2410060c!important;z-index:10!important}
+    .product-detail-action{min-height:47px!important;font-size:.87rem!important}
+    .product-modal-options-expanded .product-detail-actions{box-shadow:0 -7px 20px #24100612!important}
+    @media(max-width:520px){
+      .product-modal{width:100%!important;max-height:95dvh!important;border-radius:13px!important}
+      .product-modal-body{padding:14px!important}
+      .product-modal-icon img{max-height:230px!important}
+      .product-modal-body h2{font-size:1.04rem!important}
+      .genmerch-product-social-proof{font-size:.73rem!important;gap:6px 9px!important}
+      .product-detail-actions{gap:8px!important;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))!important}
+      .product-detail-action{min-height:45px!important;padding:10px 7px!important;font-size:.8rem!important}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -3839,6 +3867,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="product-gallery-thumbnails" id="productGalleryThumbnails" role="group" aria-label="More product photos"></div>
         </div>
         <h2 id="productModalName"></h2>
+        <div class="genmerch-product-social-proof" id="productModalSocialProof" aria-live="polite"><span class="sold">Loading sold count…</span><span class="rating">Loading ratings…</span></div>
         <div class="product-modal-price" id="productModalPrice"></div>
         <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
         <p class="product-description" id="productModalDescription"></p>
@@ -3849,7 +3878,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <span class="product-color-heading">Color: <strong id="productModalSelectedColor">—</strong></span>
           <div class="product-color-choices" id="productModalColorChoices" role="group" aria-label="Choose product color"></div>
         </div>
-        <div class="product-detail-size-selector" id="productModalSizeSelector">
+        <div class="product-detail-size-selector" id="productModalSizeSelector" hidden>
           <div class="product-detail-size-heading">
             <span>Size</span>
             <span class="product-detail-selected-size" id="productModalSelectedSize">Choose size</span>
@@ -3857,7 +3886,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="product-detail-size-options" id="productModalSizeOptions" role="group" aria-label="Choose product size"></div>
           <p class="product-detail-size-hint" id="productModalSizeHint" aria-live="polite">Select your size.</p>
         </div>
-        <div class="product-detail-quantity" id="productModalQuantitySelector">
+        <p class="product-options-stage-hint" id="productModalOptionsHint" hidden>Choose the product color and size, adjust the quantity, then use the buttons below to continue.</p>
+        <div class="product-detail-quantity" id="productModalQuantitySelector" hidden>
           <span class="product-detail-quantity-label">Quantity</span>
           <div class="product-detail-quantity-control" role="group" aria-label="Select quantity">
             <button type="button" class="product-detail-quantity-button" id="productModalQuantityMinus" aria-label="Decrease quantity" disabled>−</button>
@@ -3865,10 +3895,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <button type="button" class="product-detail-quantity-button" id="productModalQuantityPlus" aria-label="Increase quantity" disabled>+</button>
           </div>
         </div>
-        <div class="product-detail-actions" id="productModalActions">
-          <button type="button" class="product-detail-action add-to-cart" id="productModalAdd" disabled>Add to Cart</button>
-          <button type="button" class="product-detail-action buy-now" id="productModalBuyNow" disabled>Buy Now</button>
-        </div>
+      </div>
+      <div class="product-detail-actions" id="productModalActions">
+        <button type="button" class="product-detail-action add-to-cart" id="productModalAdd">Add to Cart</button>
+        <button type="button" class="product-detail-action buy-now" id="productModalBuyNow">Buy Now</button>
       </div>
     </section>
   </div>
@@ -4344,6 +4374,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let productDetailSelectedVariantId = null;
     let productDetailSelectedColor = '';
     let productDetailQuantity = 1;
+    let productOptionsExpanded = false;
     let catalogLoadState = 'loading';
 
     const $ = id => document.getElementById(id);
