@@ -2719,6 +2719,52 @@
       .hero-cart.hero-cart-image{width:52px!important;max-width:52px!important}
     }
 
+
+    /* About Us and Partner With Us footer sections */
+    .footer-details-grid{width:min(1040px,100%);margin:27px auto 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;text-align:left;align-items:stretch}
+    .footer-info-card{min-width:0;padding:22px 23px;border:1px solid #f0ddd3;border-radius:16px;background:linear-gradient(145deg,#fff 0%,#fffaf7 100%);box-shadow:0 5px 19px rgba(81,42,22,.055)}
+    .footer-info-card h2{margin:0 0 11px;text-align:left;color:#231b18;font-size:1.18rem;line-height:1.2;font-weight:950;letter-spacing:-.02em}
+    .footer-info-card p{margin:0 0 10px;color:#665850;font-size:.84rem;line-height:1.65;text-align:left}
+    .footer-info-kicker{margin:0 0 7px!important;color:#ec321b!important;font-size:.65rem!important;font-weight:950!important;letter-spacing:.15em;line-height:1.25!important}
+    .footer-about-promise{display:inline-flex;margin-top:3px;padding:8px 11px;border-radius:7px;background:#ffeadc;color:#27201b;font-weight:950;font-size:.82rem;letter-spacing:.04em}
+    .footer-partner-benefits{display:grid;gap:8px;margin:9px 0 11px;padding:0 0 0 19px;color:#5e5049;font-size:.82rem;line-height:1.55;text-align:left}
+    .footer-partner-benefits li{padding-left:2px}
+    .footer-partner-note{font-size:.78rem!important}
+    .footer-partner-apply-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:44px;margin:12px 0 14px;padding:11px 14px;border:0;border-radius:10px;background:linear-gradient(110deg,#ff3218,#ff5317);color:#fff;font-weight:950;font-size:.85rem;box-shadow:0 5px 14px rgba(237,53,22,.16);transition:transform .16s ease,box-shadow .16s ease}
+    .footer-partner-apply-btn span{font-size:1.1rem;line-height:1}
+    .footer-partner-apply-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(237,53,22,.23)}
+    .footer-partner-contact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;border-top:1px solid #f0e0d8;padding-top:12px}
+    .footer-partner-contact p{margin:0;font-size:.75rem;overflow-wrap:anywhere}
+    .footer-partner-contact p:last-child{grid-column:1/-1}
+    .footer-partner-contact a{color:#c52b17;text-decoration:underline;font-weight:750}
+    #noticeOverlay .notice-modal.genmerch-partner-modal{width:min(800px,100%);max-height:min(92dvh,930px);padding:0;overflow:auto;border:1px solid #f0d8cf;border-radius:16px;background:#fff;color:#29211e}
+    .genmerch-partner-modal #noticeTitle{margin:0;padding:19px 23px 16px;background:linear-gradient(115deg,#ff3218,#f52a12);color:#fff;font-size:1.24rem;line-height:1.25}
+    .genmerch-partner-modal #noticeContent{padding:18px 23px 3px}
+    .genmerch-partner-modal #closeNoticeButton{display:block;width:auto;margin:0 23px 18px auto;padding:9px 15px}
+    .partner-application-intro{margin:0 0 14px!important;color:#6f6058;font-size:.86rem!important;line-height:1.6!important}
+    .partner-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+    .partner-form-field{display:flex;flex-direction:column;gap:6px;min-width:0;text-align:left}
+    .partner-form-field label{font-size:.77rem;font-weight:850;color:#342620}
+    .partner-form-field label .required{color:#e12d18}
+    .partner-form-field input,.partner-form-field select,.partner-form-field textarea{width:100%;min-width:0;border:1px solid #ddd0c8;border-radius:9px;background:#fff;color:#2b211c;padding:10px 11px;font:inherit;font-size:.84rem;outline-offset:2px}
+    .partner-form-field input,.partner-form-field select{min-height:42px}
+    .partner-form-field textarea{min-height:94px;resize:vertical;line-height:1.5}
+    .partner-form-field input:focus,.partner-form-field select:focus,.partner-form-field textarea:focus{border-color:#ff654e;box-shadow:0 0 0 3px rgba(255,57,27,.09);outline:none}
+    .partner-form-field-full{grid-column:1/-1}
+    .partner-consent{display:flex;align-items:flex-start;gap:9px;margin:14px 0 8px;color:#554840;font-size:.75rem;line-height:1.55;text-align:left}
+    .partner-consent input{flex:0 0 auto;width:16px;height:16px;margin-top:2px;accent-color:#f4331b}
+    .partner-privacy-note{margin:0 0 12px!important;color:#77675f;font-size:.72rem!important;line-height:1.55!important}
+    .partner-submit-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;padding:11px 15px;border:0;border-radius:10px;background:linear-gradient(110deg,#ff3218,#ff5317);color:#fff;font-weight:950;font-size:.88rem;cursor:pointer}
+    .partner-submit-btn:disabled{opacity:.65;cursor:wait}
+    .partner-form-status{margin:11px 0 0;padding:10px 12px;border-radius:9px;font-size:.78rem;line-height:1.5}
+    .partner-form-status[hidden]{display:none!important}
+    .partner-form-status.success{background:#eefaf0;border:1px solid #b9e6c0;color:#17672c}
+    .partner-form-status.error{background:#fff1ef;border:1px solid #ffc8bf;color:#9b2114}
+    .partner-honeypot{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+    @media(max-width:720px){.footer-details-grid{grid-template-columns:minmax(0,1fr);gap:12px}.footer-info-card{padding:18px}.footer-partner-contact{grid-template-columns:1fr}.footer-partner-contact p:last-child{grid-column:auto}}
+    @media(max-width:600px){#noticeOverlay .notice-modal.genmerch-partner-modal{max-height:94dvh;border-radius:13px}.genmerch-partner-modal #noticeTitle{padding:16px 16px 13px;font-size:1.08rem}.genmerch-partner-modal #noticeContent{padding:15px 16px 2px}.genmerch-partner-modal #closeNoticeButton{margin:0 16px 15px auto}.partner-form-grid{grid-template-columns:minmax(0,1fr);gap:11px}.partner-form-field-full{grid-column:auto}.partner-form-field input,.partner-form-field select,.partner-form-field textarea{font-size:16px}.partner-consent{font-size:.72rem}}
+    @media(prefers-reduced-motion:reduce){.footer-partner-apply-btn{transition:none}}
+
 </style>
 </head>
 <body>
@@ -2955,6 +3001,32 @@
       <a href="mailto:negosyonipinoy@gmail.com" style="color:inherit;text-decoration:underline">Contact</a>
       <a href="tel:09750634497" style="color:inherit;text-decoration:underline">☎ 09750634497</a>
     </p>
+    <div class="footer-details-grid" aria-label="About GENMERCH and partnership information">
+      <section class="footer-info-card footer-about-card" aria-labelledby="footerAboutTitle">
+        <p class="footer-info-kicker">THE STORY BEHIND THE BRAND</p>
+        <h2 id="footerAboutTitle">About Us</h2>
+        <p><strong>GENMERCH — Suot Apparel</strong> is a Philippine online apparel and merchandise store built around everyday comfort, personal style, and practical essentials. Our collection includes wearable favourites such as T-shirts, shorts, sandos, and selected merchandise for everyday life.</p>
+        <p>We aim to make online shopping straightforward with clear product details, size and stock information, and delivery options shown during checkout. We also welcome entrepreneurs and creators who want to explore opportunities to grow with a local apparel brand.</p>
+        <div class="footer-about-promise">Comfort. Style. For Every You.</div>
+      </section>
+      <section class="footer-info-card footer-partner-card" aria-labelledby="footerPartnerTitle">
+        <p class="footer-info-kicker">GROW WITH GENMERCH</p>
+        <h2 id="footerPartnerTitle">Partner With Us</h2>
+        <p>Palaguin ang negosyo kasama ang GENMERCH! Bukas kami sa mga <strong>resellers, wholesalers, at brand affiliates</strong> na gustong mag-alok ng apparel at merchandise sa sarili nilang customers.</p>
+        <ul class="footer-partner-benefits">
+          <li><strong>Partner pricing:</strong> inquiries for eligible bulk orders, subject to review and agreed terms.</li>
+          <li><strong>Wearable product range:</strong> T-shirts, shorts, sandos, and future catalog additions.</li>
+          <li><strong>Reach more customers:</strong> explore selling through your shop, social pages, or other sales channels.</li>
+        </ul>
+        <p class="footer-partner-note">Fill out the application form with your contact details and business plans. Our team will review your inquiry and contact you using your preferred method. Applying does not automatically guarantee approval or special pricing.</p>
+        <button class="footer-partner-apply-btn" type="button" onclick="openPartnerApplication()">Apply Now / Fill Out Form <span aria-hidden="true">→</span></button>
+        <div class="footer-partner-contact">
+          <p><strong>Partnership applications</strong><br><a href="mailto:negosyonipinoy@yahoo.com.ph?subject=GENMERCH%20Partner%20Application">negosyonipinoy@yahoo.com.ph</a></p>
+          <p><strong>General inquiries</strong><br><a href="mailto:negosyonipinoy@gmail.com">negosyonipinoy@gmail.com</a></p>
+          <p><strong>Phone</strong><br><a href="tel:09750634497">09750634497</a></p>
+        </div>
+      </section>
+    </div>
     <section class="footer-registry" aria-label="Business registration">
       <h2 class="footer-registry-label">BUSINESS REGISTRATION</h2>
       <div class="footer-registry-logos">
@@ -6329,6 +6401,8 @@
     });
     function showNotice(title,html){
       $('noticeTitle').textContent=title;$('noticeContent').innerHTML=html;
+      const noticeModal=$('noticeOverlay').querySelector('.notice-modal');
+      if(noticeModal)noticeModal.classList.remove('genmerch-help-modal','genmerch-partner-modal');
       $('noticeOverlay').classList.add('open');$('noticeOverlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     }
     function closeNotice(){
@@ -6338,6 +6412,98 @@
     }
     $('closeNoticeButton').addEventListener('click',closeNotice);
     $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay'))closeNotice();});
+    function openPartnerApplication(){
+      const formContent = `
+        <div class="partner-application-content">
+          <p class="partner-application-intro">Tell us a little about yourself and your business. The GENMERCH team will review your application and contact you using your preferred method. Fields marked <strong>*</strong> are required.</p>
+          <form id="partnerApplicationForm" novalidate>
+            <input type="hidden" id="partnerFormStartedAt" name="form_started_at" value="">
+            <div class="partner-honeypot" aria-hidden="true"><label for="partnerWebsiteTrap">Leave this field blank</label><input id="partnerWebsiteTrap" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+            <div class="partner-form-grid">
+              <div class="partner-form-field"><label for="partnerFullName">Full name <span class="required">*</span></label><input id="partnerFullName" name="full_name" type="text" autocomplete="name" maxlength="120" required placeholder="Your complete name"></div>
+              <div class="partner-form-field"><label for="partnerBusinessName">Business / brand name</label><input id="partnerBusinessName" name="business_name" type="text" autocomplete="organization" maxlength="160" placeholder="Business or shop name (optional)"></div>
+              <div class="partner-form-field"><label for="partnerEmail">Email address <span class="required">*</span></label><input id="partnerEmail" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></div>
+              <div class="partner-form-field"><label for="partnerPhone">Mobile number <span class="required">*</span></label><input id="partnerPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" pattern="09[0-9]{9}" required placeholder="09171234567" title="Use an 11-digit Philippine mobile number beginning with 09."></div>
+              <div class="partner-form-field partner-form-field-full"><label for="partnerLocation">City / municipality and province <span class="required">*</span></label><input id="partnerLocation" name="location" type="text" autocomplete="address-level2" maxlength="160" required placeholder="e.g. Mandaluyong City, Metro Manila"></div>
+              <div class="partner-form-field"><label for="partnerType">How would you like to partner? <span class="required">*</span></label><select id="partnerType" name="partner_type" required><option value="">Select partnership type</option><option value="Reseller">Reseller</option><option value="Wholesaler">Wholesaler</option><option value="Brand Affiliate">Brand Affiliate</option></select></div>
+              <div class="partner-form-field"><label for="partnerBusinessStage">Business stage</label><select id="partnerBusinessStage" name="business_stage"><option value="">Select one (optional)</option><option value="Already operating">Already selling / operating</option><option value="Starting soon">Planning to start soon</option><option value="Exploring options">Still exploring options</option></select></div>
+              <div class="partner-form-field"><label for="partnerSellingChannels">Where do you sell?</label><select id="partnerSellingChannels" name="selling_channels"><option value="">Select selling channel</option><option value="Facebook / Instagram / TikTok">Facebook / Instagram / TikTok</option><option value="Marketplace / online store">Marketplace / online store</option><option value="Physical store">Physical store</option><option value="Multiple channels">Multiple channels</option><option value="Not selling yet">Not selling yet</option></select></div>
+              <div class="partner-form-field"><label for="partnerProductInterest">Products you are interested in</label><select id="partnerProductInterest" name="interested_products"><option value="">Select product interest</option><option value="T-Shirts">T-Shirts</option><option value="Shorts">Shorts</option><option value="Sandos">Sandos</option><option value="Mixed / all categories">Mixed / all categories</option><option value="Other / future releases">Other / future releases</option></select></div>
+              <div class="partner-form-field"><label for="partnerOrderVolume">Estimated monthly order volume</label><select id="partnerOrderVolume" name="estimated_monthly_orders"><option value="">Select an estimate</option><option value="1–10 pieces">1–10 pieces</option><option value="11–30 pieces">11–30 pieces</option><option value="31–100 pieces">31–100 pieces</option><option value="More than 100 pieces">More than 100 pieces</option><option value="Not sure yet">Not sure yet</option></select></div>
+              <div class="partner-form-field partner-form-field-full"><label for="partnerSocialLink">Website / shop / social media link</label><input id="partnerSocialLink" name="website_social" type="url" maxlength="240" placeholder="https://... (optional)"></div>
+              <div class="partner-form-field"><label for="partnerPreferredContact">Preferred contact method <span class="required">*</span></label><select id="partnerPreferredContact" name="preferred_contact" required><option value="Either">Either email or phone</option><option value="Email">Email</option><option value="Phone">Phone</option></select></div>
+              <div class="partner-form-field"><label for="partnerMessage">Anything else we should know?</label><textarea id="partnerMessage" name="message" maxlength="2500" placeholder="Tell us about your goals, target customers, or questions (optional)"></textarea></div>
+            </div>
+            <label class="partner-consent" for="partnerPrivacyConsent"><input id="partnerPrivacyConsent" name="privacy_consent" type="checkbox" required><span>I confirm that the information above is accurate and allow GENMERCH to use it to review this application and contact me about a potential partnership.</span></label>
+            <p class="partner-privacy-note">Please do not include passwords, payment-card details, or sensitive identity documents. See our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. Application and partner-pricing approval depend on review and agreed terms.</p>
+            <div class="partner-form-status" id="partnerApplicationMessage" role="status" aria-live="polite" hidden></div>
+            <button class="partner-submit-btn" id="partnerApplicationSubmit" type="submit">Submit Partner Application</button>
+          </form>
+        </div>`;
+      showNotice('Partner With Us — Apply Now',formContent);
+      const modal=$('noticeOverlay').querySelector('.notice-modal');
+      if(modal)modal.classList.add('genmerch-partner-modal');
+      $('partnerFormStartedAt').value=String(Date.now());
+      $('partnerApplicationForm').addEventListener('submit',submitPartnerApplication);
+    }
+
+    async function submitPartnerApplication(event){
+      event.preventDefault();
+      const form=event.currentTarget;
+      const status=$('partnerApplicationMessage');
+      const button=$('partnerApplicationSubmit');
+      const started=Date.now();
+      const fullName=$('partnerFullName').value.trim();
+      const email=$('partnerEmail').value.trim();
+      const phone=$('partnerPhone').value.trim();
+      const location=$('partnerLocation').value.trim();
+      if(!fullName||!email||!phone||!location||!$('partnerType').value){
+        status.hidden=false;status.className='partner-form-status error';status.textContent='Please complete all required fields before submitting.';return;
+      }
+      if(!form.reportValidity())return;
+      const formData={
+        full_name:fullName,
+        business_name:$('partnerBusinessName').value.trim(),
+        email,
+        phone,
+        location,
+        partner_type:$('partnerType').value,
+        business_stage:$('partnerBusinessStage').value,
+        selling_channels:$('partnerSellingChannels').value,
+        interested_products:$('partnerProductInterest').value,
+        estimated_monthly_orders:$('partnerOrderVolume').value,
+        website_social:$('partnerSocialLink').value.trim(),
+        preferred_contact:$('partnerPreferredContact').value,
+        message:$('partnerMessage').value.trim(),
+        privacy_consent:$('partnerPrivacyConsent').checked,
+        website:$('partnerWebsiteTrap').value,
+        form_started_at:Number($('partnerFormStartedAt').value)||started
+      };
+      button.disabled=true;button.textContent='Submitting application…';
+      status.hidden=true;status.textContent='';
+      try{
+        const client=getCustomerAuthClient();
+        const response=await client.functions.invoke('send-genmerch-partner-application',{body:formData});
+        let data=response.data||{};
+        if(response.error){
+          const context=response.error.context;
+          if(context&&typeof context.json==='function'){
+            try{const errorBody=await context.json();if(errorBody&&errorBody.message)throw new Error(errorBody.message);}catch(parseError){if(parseError instanceof Error&&parseError.message!=='Unexpected end of JSON input')throw parseError;}
+          }
+          throw new Error('We could not submit your application right now. Please email negosyonipinoy@yahoo.com.ph or call 09750634497.');
+        }
+        if(!data.ok)throw new Error(data.message||'We could not submit your application right now. Please try again or contact us directly.');
+        status.hidden=false;status.className='partner-form-status success';
+        status.textContent='Thank you! Your application was submitted. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. The GENMERCH team will review your details and contact you using your preferred method.';
+        form.reset();$('partnerFormStartedAt').value=String(Date.now());
+      }catch(error){
+        status.hidden=false;status.className='partner-form-status error';
+        status.textContent=(error&&error.message?error.message:'Application submission failed.')+' You may also contact negosyonipinoy@yahoo.com.ph or 09750634497.';
+      }finally{
+        button.disabled=false;button.textContent='Submit Partner Application';
+      }
+    }
+
     function openHelpCenter(){
       const content=`
         <div class="genmerch-help-content" id="genmerchHelpContent">
