@@ -7342,12 +7342,23 @@
         const client=await getSellerAdminClient(false);
         const result=await client.rpc('cancel_genmerch_order',{p_order_id:orderId,p_reason:'Cancelled by Seller Centre administrator'});
         if(result.error)throw result.error;
+        let cancellationEmailStatus=' Cancellation email sent to the customer.';
+        try{
+          const emailResponse=await client.functions.invoke('send-genmerch-cancellation-email',{body:{order_id:orderId}});
+          if(emailResponse.error)throw emailResponse.error;
+          const emailData=emailResponse.data||{};
+          if(!emailData.ok)throw new Error(emailData.message||'The email provider did not confirm sending the cancellation email.');
+          if(emailData.already_sent)cancellationEmailStatus=' Cancellation email had already been sent.';
+        }catch(emailError){
+          console.error('Order was cancelled, but cancellation email status could not be confirmed.',emailError);
+          cancellationEmailStatus=' The order is cancelled, but the cancellation email could not be confirmed. Check the email notification status before retrying.';
+        }
         sellerOrdersLoaded=false;sellerInventoryLoaded=false;
         await loadSellerOrders();
         await loadSellerInventoryAnalytics();
         await loadSellerProducts();
         await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
-        sellerFeedback('sellerOrdersFeedback','Order '+displayNumber+' cancelled. Reserved stock has been returned by the database trigger, if applicable.','success');
+        sellerFeedback('sellerOrdersFeedback','Order '+displayNumber+' cancelled. Reserved stock has been returned by the database trigger, if applicable.'+cancellationEmailStatus,cancellationEmailStatus.includes('could not be confirmed')?'error':'success');
       }catch(error){
         sellerFeedback('sellerOrdersFeedback',error.message||'Could not cancel this order.','error');
         if(button){button.disabled=false;button.textContent='Cancel order';}
