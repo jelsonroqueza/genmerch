@@ -6455,6 +6455,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       productDetailSelectedVariantId=null;
       productDetailSelectedColor='';
       productDetailQuantity=1;
+      productOptionsExpanded=false;
       $('productModalTitle').textContent='Product Details';
       const images=(Array.isArray(p.images)?p.images:[]).filter(image=>image&&image.url);
       if(!images.length&&p.image)images.push({url:p.image,alt:p.imageAlt||p.name});
@@ -6473,7 +6474,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         };
       }else{gallery.hidden=true;thumbnails.replaceChildren();thumbnails.onclick=null;}
       const colorSelector=$('productModalColorSelector');
-      colorSelector.hidden=!colorMapping;
+      colorSelector.hidden=true;
       updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
       $('productModalColorChoices').onclick=event=>{
         const button=event.target.closest('[data-color]');if(!button||!colorMapping)return;
@@ -6482,15 +6483,33 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       };
       $('productModalName').textContent=p.name;
       $('productModalPrice').textContent=money(p.price);
+      $('productModalSocialProof').innerHTML='<span class="sold">Loading sold count…</span><span class="rating">Loading ratings…</span>';
       $('productModalDescription').textContent=p.desc;
       renderProductModalSizes(p);
       updateProductModalAddButton(p);
       $('productModalAdd').onclick=()=>handleProductDetailPurchase('add-to-cart');
       $('productModalBuyNow').onclick=()=>handleProductDetailPurchase('buy-now');
+      setProductPurchaseStage(false,p);
       $('productOverlay').classList.add('open');$('productOverlay').setAttribute('aria-hidden','false');
+      loadProductSalesStats(p.id);
       loadProductReviews(p.id);
       refreshCustomerRateBadge();
       hideCenteredActionStatus();
+    }
+    function setProductPurchaseStage(expanded,product){
+      productOptionsExpanded=Boolean(expanded);
+      const colorSelector=$('productModalColorSelector');
+      const colorMapping=product?getProductColorMapping(product):null;
+      if(colorSelector)colorSelector.hidden=!(productOptionsExpanded&&Boolean(colorMapping));
+      const sizeSelector=$('productModalSizeSelector');
+      if(sizeSelector)sizeSelector.hidden=!productOptionsExpanded;
+      const quantitySelector=$('productModalQuantitySelector');
+      if(quantitySelector)quantitySelector.hidden=!productOptionsExpanded;
+      const hint=$('productModalOptionsHint');
+      if(hint)hint.hidden=!productOptionsExpanded;
+      const modal=document.querySelector('#productOverlay .product-modal');
+      if(modal)modal.classList.toggle('product-modal-options-expanded',productOptionsExpanded);
+      if(product)updateProductModalAddButton(product);
     }
     function renderProductModalSizes(product){
       const options=$('productModalSizeOptions');
@@ -6586,6 +6605,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const addButton=$('productModalAdd');
       const buyButton=$('productModalBuyNow');
       updateProductModalQuantityControls(product);
+      if(!productOptionsExpanded){
+        const hasAvailableStock=!Array.isArray(product.variants)||product.variants.some(variant=>Number(variant.stock)>0);
+        addButton.textContent='Add to Cart';buyButton.textContent='Buy Now';
+        addButton.disabled=!hasAvailableStock;buyButton.disabled=!hasAvailableStock;
+        return;
+      }
       let canPurchase=Boolean(productDetailSelectedSize);
       if(Array.isArray(product.variants)){
         const selectedVariant=product.variants.find(item=>String(item.id)===String(productDetailSelectedVariantId||''));
@@ -6603,6 +6628,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     async function handleProductDetailPurchase(action){
       const addButton=$('productModalAdd'),buyButton=$('productModalBuyNow');
+      const currentForOptions=products.find(item=>String(item.id)===String(openProductDetailId));
+      if(!currentForOptions){showToast('This product is no longer available.');return;}
+      if(!productOptionsExpanded){
+        setProductPurchaseStage(true,currentForOptions);
+        const optionsTarget=!$('productModalColorSelector').hidden?$('productModalColorSelector'):$('productModalSizeSelector');
+        if(optionsTarget)optionsTarget.scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+      }
       if(!productDetailSelectedSize){showToast('Please select a size first.');return;}
       showCenteredActionStatus('Adding item to your cart, please wait...','loading');
       addButton.disabled=true;buyButton.disabled=true;
