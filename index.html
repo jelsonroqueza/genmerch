@@ -3792,6 +3792,43 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
   </style>
   <script src="/install-flow.js" defer></script>
+
+<style id="genmerch-seller-products-filter-and-border-polish">
+  .seller-products-filter-toolbar{grid-template-columns:minmax(190px,1.7fr) minmax(120px,1fr) minmax(118px,.85fr) minmax(140px,1fr) auto minmax(130px,.78fr)}
+  .seller-products-table-wrap{
+    max-height:min(58dvh,630px);margin-top:0!important;overflow:auto;overscroll-behavior:contain;
+    border:1px solid #ffbda6;border-top:0;border-radius:0 0 10px 10px;background:#fff;
+    box-shadow:0 4px 14px rgba(100,45,24,.035);scrollbar-color:#e58a6c #fff2eb;scrollbar-width:thin
+  }
+  .seller-products-table{min-width:900px;border-collapse:separate;border-spacing:0}
+  .seller-products-table thead th{
+    position:sticky;top:0;z-index:3;background:linear-gradient(110deg,#fff0e8 0%,#fff8f3 52%,#ffe8dd 100%);
+    color:#793726;border-bottom:1px solid #ffb398;border-right:1px solid #ffd3c4;padding:12px 11px;font-size:.7rem;
+    box-shadow:0 1px 0 rgba(231,88,50,.05)
+  }
+  .seller-products-table tbody td{border-bottom:1px solid #f5d9cf;border-right:1px solid #f8e5de;padding:11px 12px}
+  .seller-products-table th:last-child,.seller-products-table td:last-child{border-right:0}
+  .seller-products-table tbody tr:nth-child(even) td{background:#fffaf7}
+  .seller-products-table tbody tr:hover td{background:#fff0e8}
+  .seller-products-table tbody tr:last-child td{border-bottom:0}
+  .seller-products-table .seller-table-empty{padding:26px 16px;text-align:center}
+  .seller-products-filter-toolbar .seller-filter-result-count{grid-column:auto;justify-self:end;text-align:right;white-space:normal}
+  @media(max-width:1150px){
+    .seller-products-filter-toolbar{grid-template-columns:minmax(170px,1.6fr) repeat(3,minmax(100px,1fr)) auto}
+  }
+  @media(max-width:760px){
+    .seller-products-filter-toolbar{position:sticky;top:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}
+    .seller-products-filter-toolbar .seller-filter-field.seller-filter-search{grid-column:1/-1}
+    .seller-products-filter-toolbar .seller-filter-actions{grid-column:1/-1;justify-content:stretch}
+    .seller-products-filter-toolbar .seller-filter-actions button{flex:1}
+    .seller-products-filter-toolbar .seller-filter-result-count{grid-column:1/-1;justify-self:start;text-align:left}
+    .seller-products-table-wrap{max-height:52dvh}
+    .seller-products-table{min-width:860px}
+    .seller-products-table thead th{padding:10px 9px}
+    .seller-products-table tbody td{padding:9px}
+  }
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -3884,7 +3921,15 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerCloudInventoryContent',this)" data-collapse-label="Collapse Product List" data-expand-label="Expand Product List" aria-controls="sellerCloudInventoryContent" aria-expanded="true">− Collapse Product List</button></div>
         <div class="seller-feedback" id="sellerProductsFeedback" role="status" aria-live="polite" hidden></div>
         <div class="seller-collapsible-content" id="sellerCloudInventoryContent">
-        <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
+        <div class="seller-filter-toolbar seller-compact-filter-toolbar seller-products-filter-toolbar" id="sellerProductsFilterToolbar" aria-label="Filter products">
+          <div class="seller-filter-field seller-filter-search"><label for="sellerProductsSearch">Search products</label><input id="sellerProductsSearch" type="search" placeholder="Search product name or SKU" autocomplete="off"></div>
+          <div class="seller-filter-field"><label for="sellerProductsCategoryFilter">Category</label><select id="sellerProductsCategoryFilter"><option value="">All categories</option></select></div>
+          <div class="seller-filter-field"><label for="sellerProductsStatusFilter">Product status</label><select id="sellerProductsStatusFilter"><option value="">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+          <div class="seller-filter-field"><label for="sellerProductsStockFilter">Stock status</label><select id="sellerProductsStockFilter"><option value="">All stock statuses</option><option value="in_stock">In stock (6+ units)</option><option value="low_stock">Low stock (1–5)</option><option value="out_of_stock">Out of stock</option></select></div>
+          <div class="seller-filter-actions"><button class="seller-primary-button" id="sellerProductsApplyFilters" type="button">Filter</button><button class="seller-secondary-button" id="sellerProductsClearFilters" type="button">Clear</button></div>
+          <div class="seller-filter-result-count" id="sellerProductsFilterResultCount" role="status" aria-live="polite">Load products to see results</div>
+        </div>
+        <div class="seller-table-wrap seller-products-table-wrap"><table class="seller-table seller-products-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
         </div>
       </section>
       <section class="seller-panel" id="sellerDeletedPanel" role="tabpanel" aria-labelledby="sellerDeletedTab" hidden>
@@ -8374,6 +8419,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let sellerSelectedSizes = new Set();
     let sellerEditingImages = [];
     let sellerProductRowsById = new Map();
+    let sellerActiveProductRows = [];
+    let sellerProductCategoryMap = new Map();
+    let sellerProductImageMap = new Map();
+    let sellerProductVariantMap = new Map();
     let sellerPendingPermanentDeleteProductId = '';
     let sellerPermanentDeleteBusy = false;
     let sellerPermanentDeleteReturnFocus = null;
@@ -8590,7 +8639,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         (results[3].data||[]).forEach(item=>{const key=String(item.product_id);if(!variantMap.has(key))variantMap.set(key,[]);variantMap.get(key).push(item);});
         const activeProductRows=productRows.filter(item=>item.is_deleted!==true);
         const deletedProductRows=productRows.filter(item=>item.is_deleted===true);
-        renderSellerProducts(activeProductRows,categoryMap,imageMap,variantMap);
+        sellerActiveProductRows=activeProductRows;
+        sellerProductCategoryMap=categoryMap;
+        sellerProductImageMap=imageMap;
+        sellerProductVariantMap=variantMap;
+        sellerPopulateProductFilterCategories();
+        sellerApplyProductFilters();
         renderSellerDeletedProducts(deletedProductRows,categoryMap,imageMap,variantMap);
         $('sellerDeletedCount').textContent=String(deletedProductRows.length);
         $('sellerDeletedCount').hidden=deletedProductRows.length===0;
@@ -8600,6 +8654,56 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         sellerSetLoadingRow('sellerDeletedProductsTableBody',6,'Deleted products could not be loaded.');
         sellerFeedback('sellerProductsFeedback',error.message||'Could not load products. Check the Supabase admin policies.','error');
         sellerFeedback('sellerDeletedFeedback',error.message||'Could not load deleted products. Check the Supabase admin policies.','error');
+      }
+    }
+    function sellerPopulateProductFilterCategories(){
+      const select=$('sellerProductsCategoryFilter');
+      if(!select)return;
+      const previous=select.value;
+      const categories=new Map();
+      sellerActiveProductRows.forEach(product=>{
+        const id=String(product.category_id||'');
+        const label=sellerProductCategoryMap.get(id)||'Other';
+        const key=id||'__uncategorized__';
+        if(!categories.has(key))categories.set(key,label);
+      });
+      const sorted=Array.from(categories.entries()).sort((a,b)=>String(a[1]).localeCompare(String(b[1]),'en',{sensitivity:'base'}));
+      select.innerHTML='<option value="">All categories</option>'+sorted.map(([id,label])=>'<option value="'+sellerEscape(id)+'">'+sellerEscape(label)+'</option>').join('');
+      if(sorted.some(([id])=>id===previous))select.value=previous;
+    }
+    function sellerApplyProductFilters(){
+      const tbody=$('sellerProductsTableBody');
+      if(!tbody)return;
+      const query=String($('sellerProductsSearch')?.value||'').trim().toLowerCase();
+      const category=String($('sellerProductsCategoryFilter')?.value||'');
+      const status=String($('sellerProductsStatusFilter')?.value||'');
+      const stockFilter=String($('sellerProductsStockFilter')?.value||'');
+      const rows=sellerActiveProductRows.filter(product=>{
+        const productId=String(product.id);
+        const categoryId=String(product.category_id||'');
+        const categoryLabel=sellerProductCategoryMap.get(categoryId)||'Other';
+        if(category){
+          const key=categoryId||'__uncategorized__';
+          if(key!==category)return false;
+        }
+        if(status==='active'&&product.is_active!==true)return false;
+        if(status==='inactive'&&product.is_active===true)return false;
+        const variants=sellerProductVariantMap.get(productId)||[];
+        const activeVariants=variants.filter(row=>row.is_active!==false);
+        const stock=activeVariants.reduce((total,row)=>total+Math.max(0,Math.floor(Number(row.stock_quantity)||0)),0);
+        if(stockFilter==='in_stock'&&stock<=5)return false;
+        if(stockFilter==='low_stock'&&(stock<1||stock>5))return false;
+        if(stockFilter==='out_of_stock'&&stock>0)return false;
+        if(query){
+          const haystack=[product.name,product.sku,categoryLabel].map(value=>String(value||'').toLowerCase()).join(' ');
+          if(!haystack.includes(query))return false;
+        }
+        return true;
+      });
+      renderSellerProducts(rows,sellerProductCategoryMap,sellerProductImageMap,sellerProductVariantMap);
+      const resultCount=$('sellerProductsFilterResultCount');
+      if(resultCount){
+        resultCount.textContent='Showing '+rows.length+' of '+sellerActiveProductRows.length+' products';
       }
     }
     function renderSellerProducts(rows,categoryMap,imageMap,variantMap){
@@ -9800,6 +9904,16 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('sellerOrdersSearch').addEventListener('input',sellerOrdersFilterChanged);
     ['sellerOrdersStatusFilter','sellerOrdersPaymentFilter','sellerOrdersMethodFilter','sellerOrdersDateFilter'].forEach(id=>$(id).addEventListener('change',sellerOrdersFilterChanged));
     $('sellerOrdersClearFilters').addEventListener('click',()=>{$('sellerOrdersSearch').value='';$('sellerOrdersStatusFilter').value='';$('sellerOrdersPaymentFilter').value='';$('sellerOrdersMethodFilter').value='';$('sellerOrdersDateFilter').value='';sellerRefreshOrderPaymentMethodOptions();sellerOrdersFilterChanged();});
+    $('sellerProductsSearch').addEventListener('input',sellerApplyProductFilters);
+    ['sellerProductsCategoryFilter','sellerProductsStatusFilter','sellerProductsStockFilter'].forEach(id=>$(id).addEventListener('change',sellerApplyProductFilters));
+    $('sellerProductsApplyFilters').addEventListener('click',sellerApplyProductFilters);
+    $('sellerProductsClearFilters').addEventListener('click',()=>{
+      $('sellerProductsSearch').value='';
+      $('sellerProductsCategoryFilter').value='';
+      $('sellerProductsStatusFilter').value='';
+      $('sellerProductsStockFilter').value='';
+      sellerApplyProductFilters();
+    });
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
     $('sellerCancelEditButton').addEventListener('click',()=>closeSellerProductEditor(true));
