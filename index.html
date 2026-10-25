@@ -8245,6 +8245,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         window.location.assign(data.url);
         return;
       }catch(error){
+        redirectStarted=false;
         clearCustomerGoogleOAuthPending();
         setCustomerAuthMessage(customerAuthFriendlyError(error,'google'),'error');
       }finally{
