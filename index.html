@@ -2695,13 +2695,13 @@
     @media(prefers-reduced-motion:reduce){.flash-deals-banner::before,.flash-deals-lightning,.flash-time-unit,.flash-time-colon,.flash-deals-sparkle{animation:none!important}}
 
   
-    /* Use the supplied GENMERCH cart emblem in place of the emoji in the hero lockup. */
+    /* Use the exact supplied no-circle GENMERCH cart artwork in the hero lockup. */
     .hero-cart.hero-cart-image{
       display:block!important;
-      width:clamp(110px,15.5vw,145px)!important;
-      max-width:145px!important;
+      width:clamp(150px,12vw,190px)!important;
+      max-width:190px!important;
       height:auto!important;
-      aspect-ratio:1 / 1!important;
+      aspect-ratio:auto!important;
       object-fit:contain!important;
       flex:0 0 auto!important;
       margin:0!important;
@@ -2713,10 +2713,10 @@
       filter:drop-shadow(0 2px 2px rgba(0,0,0,.08))!important;
     }
     @media(max-width:760px){
-      .hero-cart.hero-cart-image{width:clamp(70px,19vw,100px)!important;max-width:100px!important}
+      .hero-cart.hero-cart-image{width:clamp(82px,18vw,132px)!important;max-width:132px!important}
     }
     @media(max-width:380px){
-      .hero-cart.hero-cart-image{width:64px!important;max-width:64px!important}
+      .hero-cart.hero-cart-image{width:74px!important;max-width:74px!important}
     }
 
 
@@ -2953,7 +2953,7 @@
     <section class="hero">
       <div class="hero-copy">
         <div class="hero-brand-lockup" aria-label="GENMERCH">
-          <img class="hero-cart hero-cart-image" src="/assets/genmerch-cart-emblem.svg?v=20261026-refined" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
+          <img class="hero-cart hero-cart-image" src="/assets/genmerch-cart-actual.webp?v=20261026-no-circle" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
           <span class="hero-wordmark"><span>GEN</span><b>MERCH</b></span>
         </div>
         <p class="hero-tagline">Comfort. Style. For Every You.</p>
