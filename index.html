@@ -9330,6 +9330,163 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('sellerPermanentDeleteOverlay').addEventListener('click',event=>{if(event.target===$('sellerPermanentDeleteOverlay'))closeSellerPermanentDeleteConfirm();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerPermanentDeleteOverlay').classList.contains('open'))closeSellerPermanentDeleteConfirm();else if($('sellerProductEditorOverlay').classList.contains('open'))closeSellerProductEditor(true);else if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
 
+
+    let customerReviewDraftItem=null;
+    let customerReviewSelectedRating=5;
+    let customerReviewSelectedFiles=[];
+    const CUSTOMER_REVIEW_RATING_LABELS={1:'Very Poor',2:'Poor',3:'Average',4:'Good',5:'Excellent'};
+    function customerReviewStars(value){return '★'.repeat(Math.max(0,Math.min(5,Number(value)||0)) )+'☆'.repeat(5-Math.max(0,Math.min(5,Number(value)||0)));}
+    function customerReviewStatus(message,success=false){
+      const node=$('customerReviewFormStatus');
+      if(!node)return;
+      node.hidden=!message;node.textContent=message||'';node.classList.toggle('success',Boolean(success));
+    }
+    function setCustomerReviewRating(value){
+      customerReviewSelectedRating=Math.max(1,Math.min(5,Number(value)||5));
+      document.querySelectorAll('[data-review-star]').forEach(button=>{
+        const active=Number(button.dataset.reviewStar)<=customerReviewSelectedRating;
+        button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active&&Number(button.dataset.reviewStar)===customerReviewSelectedRating));
+      });
+      const label=$('customerReviewRatingLabel');if(label)label.textContent=CUSTOMER_REVIEW_RATING_LABELS[customerReviewSelectedRating];
+    }
+    function closeCustomerRateCenter(){
+      const overlay=$('customerRateOverlay');if(!overlay)return;
+      overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');
+      if(!document.querySelector('.genmerch-review-overlay.open,.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+    }
+    async function openCustomerRateCenter(){
+      const overlay=$('customerRateOverlay');overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+      $('customerRateBody').innerHTML='<div class="customer-orders-loading">Loading your delivered products…</div>';
+      await loadCustomerRateCenter();
+    }
+    async function refreshCustomerRateBadge(){
+      const badge=$('customerRateBadge');if(!badge)return;
+      try{
+        const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession(),session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user){badge.hidden=true;return;}
+        const ordersResult=await client.from('orders').select('id',{count:'exact'}).eq('user_id',session.user.id).eq('status','delivered').limit(100);
+        if(ordersResult.error)throw ordersResult.error;
+        const ids=(ordersResult.data||[]).map(row=>row.id);
+        if(!ids.length){badge.hidden=true;return;}
+        const [itemsResult,reviewsResult]=await Promise.all([
+          client.from('order_items').select('id').in('order_id',ids),
+          client.from('product_reviews').select('order_item_id').eq('user_id',session.user.id)
+        ]);
+        if(itemsResult.error)throw itemsResult.error;if(reviewsResult.error)throw reviewsResult.error;
+        const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
+        const count=(itemsResult.data||[]).filter(row=>!reviewed.has(String(row.id))).length;
+        badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;
+      }catch(error){console.warn('GENMERCH review badge could not refresh.',error);}
+    }
+    async function loadCustomerRateCenter(){
+      const body=$('customerRateBody');
+      try{
+        const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user){
+          body.innerHTML='<div class="customer-orders-empty"><strong>Sign in to rate your purchases</strong>Only delivered products linked to your account can be reviewed.<br><button type="button" onclick="closeCustomerRateCenter();openCustomerAuth()">Sign In / Create Account</button></div>';return;
+        }
+        const userId=String(session.user.id);
+        const ordersResult=await client.from('orders').select('id,order_number,status,created_at').eq('user_id',userId).eq('status','delivered').order('created_at',{ascending:false}).limit(100);
+        if(ordersResult.error)throw ordersResult.error;
+        const orders=ordersResult.data||[];
+        if(!orders.length){body.innerHTML='<div class="customer-orders-empty"><strong>No delivered purchases to rate yet</strong>When an order is marked Delivered, its products will appear here.</div>';const badge=$('customerRateBadge');if(badge)badge.hidden=true;return;}
+        const orderIds=orders.map(row=>row.id);
+        const [itemsResult,reviewsResult]=await Promise.all([
+          client.from('order_items').select('id,order_id,product_id,product_name,sku,size_label,color_label,quantity,image_url_snapshot,created_at').in('order_id',orderIds).order('created_at',{ascending:false}),
+          client.from('product_reviews').select('order_item_id').eq('user_id',userId)
+        ]);
+        if(itemsResult.error)throw itemsResult.error;if(reviewsResult.error)throw reviewsResult.error;
+        const orderMap=new Map(orders.map(row=>[String(row.id),row]));
+        const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
+        const items=(itemsResult.data||[]).filter(row=>row.product_id&&!reviewed.has(String(row.id)));
+        const badge=$('customerRateBadge');if(badge){badge.textContent=items.length>99?'99+':String(items.length);badge.hidden=items.length===0;}
+        if(!items.length){body.innerHTML='<div class="customer-orders-empty"><strong>You are all caught up!</strong>Every delivered product from your account has already been reviewed.</div>';return;}
+        body.innerHTML='<p style="margin:0 0 12px;color:#756b64;font-size:.78rem;line-height:1.5">Each delivered product can receive its own review. Your rating starts at 5 stars, and you can change it before submitting.</p>'+items.map(item=>{
+          const order=orderMap.get(String(item.order_id))||{},image=safeCatalogImageUrl(item.image_url_snapshot||'');
+          return '<article class="genmerch-review-item">'+(image?'<img src="'+escapeHtml(image)+'" alt="'+escapeHtml(item.product_name)+'">':'<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2268%22 height=%2272%22 viewBox=%220 0 68 72%22%3E%3Crect width=%2268%22 height=%2272%22 rx=%228%22 fill=%22%23fff0e8%22/%3E%3Ctext x=%2234%22 y=%2245%22 font-size=%2230%22 text-anchor=%22middle%22%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E" alt="">')+'<div><strong>'+escapeHtml(item.product_name||'GENMERCH Product')+'</strong><small>Order '+escapeHtml(order.order_number||'')+' · '+escapeHtml(item.color_label||'Color not specified')+' · '+escapeHtml(item.size_label||'Size not specified')+' · Qty '+escapeHtml(item.quantity)+'</small></div><button type="button" class="genmerch-review-action" data-review-item="'+escapeHtml(item.id)+'">Rate Now</button></article>';
+        }).join('');
+        body.querySelectorAll('[data-review-item]').forEach(button=>button.addEventListener('click',()=>{
+          const item=items.find(row=>String(row.id)===String(button.dataset.reviewItem));if(item)renderCustomerReviewForm(item);
+        }));
+      }catch(error){
+        console.error('GENMERCH could not load eligible products for review.',error);
+        body.innerHTML='<div class="customer-orders-empty"><strong>We could not load your delivered products</strong>'+escapeHtml(error&&error.message?error.message:'Please refresh and try again.')+'<br><button type="button" onclick="loadCustomerRateCenter()">Try Again</button></div>';
+      }
+    }
+    function renderCustomerReviewForm(item){
+      customerReviewDraftItem=item;customerReviewSelectedRating=5;customerReviewSelectedFiles=[];
+      const body=$('customerRateBody');
+      const image=safeCatalogImageUrl(item.image_url_snapshot||'');
+      body.innerHTML='<button type="button" class="genmerch-review-photo-button" id="customerReviewBackButton">← Back to delivered products</button><form class="genmerch-review-form" id="customerReviewForm" style="margin-top:12px"><h3>Rate Your Product</h3><p>'+escapeHtml(item.product_name||'GENMERCH Product')+' · '+escapeHtml(item.color_label||'Color not specified')+' · '+escapeHtml(item.size_label||'Size not specified')+'</p>'+(image?'<img src="'+escapeHtml(image)+'" alt="" style="width:76px;height:76px;object-fit:cover;border-radius:9px">':'')+'<div class="genmerch-review-field"><label>Your rating</label><div class="genmerch-review-stars" role="group" aria-label="Choose a star rating">'+[1,2,3,4,5].map(n=>'<button type="button" class="genmerch-review-star '+(n<=5?'active':'')+'" data-review-star="'+n+'" aria-label="'+n+' star'+(n===1?'':'s')+'" aria-pressed="'+(n===5?'true':'false')+'">★</button>').join('')+'</div><div class="genmerch-review-rating-label" id="customerReviewRatingLabel">Excellent</div></div><div class="genmerch-review-field"><label for="customerReviewFeedback">Your feedback</label><textarea id="customerReviewFeedback" maxlength="2000" minlength="3" placeholder="Share your experience with this product…" required></textarea></div><div class="genmerch-review-field"><label for="customerReviewNickname">Enter your nickname</label><input id="customerReviewNickname" maxlength="40" minlength="2" placeholder="Nickname shown with your review" required></div><div class="genmerch-review-field"><label>Photos (optional, up to 3; max 2 MB each)</label><div class="genmerch-review-photo-actions"><label class="genmerch-review-photo-button" for="customerReviewCameraInput">📷 Take a Picture</label><input id="customerReviewCameraInput" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden><label class="genmerch-review-photo-button" for="customerReviewUploadInput">＋ Upload Picture(s)</label><input id="customerReviewUploadInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></div><div class="genmerch-review-photo-preview" id="customerReviewPhotoPreview"></div></div><button class="genmerch-review-submit" id="customerReviewSubmit" type="submit">Submit Review</button><div class="genmerch-review-status" id="customerReviewFormStatus" role="status" aria-live="polite" hidden></div></form>';
+      $('customerReviewBackButton').addEventListener('click',loadCustomerRateCenter);
+      body.querySelectorAll('[data-review-star]').forEach(button=>button.addEventListener('click',()=>setCustomerReviewRating(button.dataset.reviewStar)));
+      const addFiles=input=>{
+        const incoming=Array.from(input.files||[]);
+        for(const file of incoming){
+          if(!['image/jpeg','image/png','image/webp'].includes(file.type)){customerReviewStatus('Please choose a JPG, PNG, or WebP image.');continue;}
+          if(file.size>2097152){customerReviewStatus('Each photo must be 2 MB or smaller.');continue;}
+          if(customerReviewSelectedFiles.length>=3){customerReviewStatus('You can attach up to 3 photos.');break;}
+          customerReviewSelectedFiles.push(file);
+        }
+        input.value='';
+        const preview=$('customerReviewPhotoPreview');
+        preview.innerHTML=customerReviewSelectedFiles.map((file,index)=>'<img src="'+URL.createObjectURL(file)+'" alt="Review photo '+(index+1)+'">').join('');
+        if(customerReviewSelectedFiles.length)customerReviewStatus(customerReviewSelectedFiles.length+' photo(s) selected.',true);
+      };
+      $('customerReviewCameraInput').addEventListener('change',event=>addFiles(event.target));
+      $('customerReviewUploadInput').addEventListener('change',event=>addFiles(event.target));
+      $('customerReviewForm').addEventListener('submit',submitCustomerProductReview);
+    }
+    async function submitCustomerProductReview(event){
+      event.preventDefault();
+      const form=$('customerReviewForm'),button=$('customerReviewSubmit');if(!form||!customerReviewDraftItem)return;
+      const feedback=$('customerReviewFeedback').value.trim(),nickname=$('customerReviewNickname').value.trim();
+      if(feedback.length<3){customerReviewStatus('Please enter feedback of at least 3 characters.');return;}
+      if(nickname.length<2){customerReviewStatus('Please enter a nickname of at least 2 characters.');return;}
+      button.disabled=true;button.textContent='Submitting…';customerReviewStatus('');
+      try{
+        const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession(),session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user)throw new Error('Please sign in again before submitting your review.');
+        const photoUrls=[];
+        for(let i=0;i<customerReviewSelectedFiles.length;i++){
+          const file=customerReviewSelectedFiles[i],ext=file.type==='image/png'?'png':(file.type==='image/webp'?'webp':'jpg');
+          const path=String(session.user.id)+'/'+String(customerReviewDraftItem.id)+'-'+Date.now()+'-'+(i+1)+'.'+ext;
+          const upload=await client.storage.from('genmerch-review-photos').upload(path,file,{contentType:file.type,upsert:false});
+          if(upload.error)throw upload.error;
+          const url=client.storage.from('genmerch-review-photos').getPublicUrl(upload.data.path).data.publicUrl;
+          photoUrls.push(url);
+        }
+        const result=await client.rpc('submit_product_review',{
+          p_order_item_id:customerReviewDraftItem.id,p_rating:customerReviewSelectedRating,
+          p_feedback:feedback,p_nickname:nickname,p_photo_urls:photoUrls
+        });
+        if(result.error)throw result.error;
+        $('customerRateBody').innerHTML='<div class="customer-orders-empty"><strong>Thank you for your support to GENMERCH ~ Suot Apparel!</strong>We value your kind feedback.</div>';
+        await refreshCustomerRateBadge();
+        window.setTimeout(()=>{if($('customerRateOverlay').classList.contains('open'))loadCustomerRateCenter();},1600);
+      }catch(error){
+        console.error('GENMERCH product review submission failed.',error);
+        customerReviewStatus(error&&error.message?error.message:'We could not submit your review. Please try again.');
+      }finally{
+        const submit=$('customerReviewSubmit');if(submit){submit.disabled=false;submit.textContent='Submit Review';}
+      }
+    }
+    async function loadProductReviews(productId){
+      const section=$('productModalRatings');if(!section)return;
+      section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Loading customer reviews…</div>';
+      try{
+        const client=getCustomerAuthClient();
+        const result=await client.from('product_reviews').select('rating,feedback,nickname,photo_urls,created_at').eq('product_id',productId).eq('moderation_status','published').order('created_at',{ascending:false}).limit(30);
+        if(result.error)throw result.error;
+        const reviews=result.data||[];
+        if(!reviews.length){section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">No reviews yet. If you have purchased and received this product, you can be the first to share your experience.</div>';return;}
+        const average=reviews.reduce((sum,review)=>sum+Number(review.rating||0),0)/reviews.length;
+        section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-rating-summary"><div class="genmerch-rating-average">'+average.toFixed(1)+'</div><div><div class="genmerch-rating-stars">'+customerReviewStars(Math.round(average))+'</div><small>'+reviews.length+' recent verified review(s)</small></div></div>'+reviews.map(review=>'<article class="genmerch-review-card"><div class="genmerch-review-card-head"><strong>'+escapeHtml(review.nickname||'GENMERCH Customer')+' <span style="color:#218044;font-size:.68rem">✓ Verified Purchase</span></strong><span class="genmerch-review-card-date">'+escapeHtml(customerOrderDate(review.created_at))+'</span></div><div class="genmerch-rating-stars">'+customerReviewStars(review.rating)+'</div><p>'+escapeHtml(review.feedback)+'</p>'+(Array.isArray(review.photo_urls)&&review.photo_urls.length?'<div class="genmerch-review-photos">'+review.photo_urls.map(url=>'<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener"><img src="'+escapeHtml(url)+'" alt="Customer review photo" loading="lazy"></a>').join('')+'</div>':'')+'</article>').join('');
+      }catch(error){console.warn('GENMERCH product reviews could not load.',error);section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Reviews are temporarily unavailable. Please try again later.</div>';}
+    }
+
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
