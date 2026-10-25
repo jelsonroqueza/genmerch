@@ -9541,17 +9541,50 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const submit=$('customerReviewSubmit');if(submit){submit.disabled=false;submit.textContent='Submit Review';}
       }
     }
+    function formatProductSoldCount(value){
+      const count=Math.max(0,Number(value)||0);
+      if(count>=1000000)return (count/1000000).toFixed(count>=10000000?0:1).replace(/\.0$/,'')+'M';
+      if(count>=1000)return (count/1000).toFixed(count>=10000?0:1).replace(/\.0$/,'')+'K';
+      return count.toLocaleString('en-PH');
+    }
+    async function loadProductSalesStats(productId){
+      const node=$('productModalSocialProof');if(!node)return;
+      try{
+        const client=getCustomerAuthClient();
+        const result=await client.rpc('get_public_product_sales_review_stats',{p_product_id:productId});
+        if(result.error)throw result.error;
+        const stats=Array.isArray(result.data)?(result.data[0]||{}):(result.data||{});
+        const sold=Math.max(0,Number(stats.sold_count)||0);
+        const reviewCount=Math.max(0,Number(stats.review_count)||0);
+        const average=reviewCount?Number(stats.average_rating)||0:0;
+        node.innerHTML='<span class="sold"><strong>'+escapeHtml(formatProductSoldCount(sold))+'</strong> Sold</span>'+
+          (reviewCount?'<span class="rating">★ '+average.toFixed(1)+'</span><span>'+reviewCount.toLocaleString('en-PH')+' review'+(reviewCount===1?'':'s')+'</span>':'<span class="rating">No ratings yet</span>');
+      }catch(error){
+        console.warn('GENMERCH sold count and rating summary could not load.',error);
+        node.innerHTML='<span class="sold">Sales data unavailable</span><span class="rating">Reviews below</span>';
+      }
+    }
+
     async function loadProductReviews(productId){
       const section=$('productModalRatings');if(!section)return;
       section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Loading customer reviews…</div>';
       try{
         const client=getCustomerAuthClient();
-        const result=await client.from('product_reviews').select('rating,feedback,nickname,photo_urls,created_at').eq('product_id',productId).eq('moderation_status','published').order('created_at',{ascending:false}).limit(30);
+        const [result,statsResult]=await Promise.all([
+          client.from('product_reviews').select('rating,feedback,nickname,photo_urls,created_at').eq('product_id',productId).eq('moderation_status','published').order('created_at',{ascending:false}).limit(30),
+          client.rpc('get_public_product_sales_review_stats',{p_product_id:productId})
+        ]);
         if(result.error)throw result.error;
         const reviews=result.data||[];
+        let reviewCount=reviews.length;
+        let average=reviews.length?reviews.reduce((sum,review)=>sum+Number(review.rating||0),0)/reviews.length:0;
+        if(!statsResult.error){
+          const stats=Array.isArray(statsResult.data)?(statsResult.data[0]||{}):(statsResult.data||{});
+          reviewCount=Math.max(0,Number(stats.review_count)||0);
+          average=reviewCount?Number(stats.average_rating)||0:0;
+        }else console.warn('GENMERCH aggregate review summary unavailable; using the loaded review sample.',statsResult.error);
         if(!reviews.length){section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">No reviews yet. If you have purchased and received this product, you can be the first to share your experience.</div>';return;}
-        const average=reviews.reduce((sum,review)=>sum+Number(review.rating||0),0)/reviews.length;
-        section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-rating-summary"><div class="genmerch-rating-average">'+average.toFixed(1)+'</div><div><div class="genmerch-rating-stars">'+customerReviewStars(Math.round(average))+'</div><small>'+reviews.length+' recent verified review(s)</small></div></div>'+reviews.map(review=>'<article class="genmerch-review-card"><div class="genmerch-review-card-head"><strong>'+escapeHtml(review.nickname||'GENMERCH Customer')+' <span style="color:#218044;font-size:.68rem">✓ Verified Purchase</span></strong><span class="genmerch-review-card-date">'+escapeHtml(customerOrderDate(review.created_at))+'</span></div><div class="genmerch-rating-stars">'+customerReviewStars(review.rating)+'</div><p>'+escapeHtml(review.feedback)+'</p>'+(Array.isArray(review.photo_urls)&&review.photo_urls.length?'<div class="genmerch-review-photos">'+review.photo_urls.map(url=>'<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener"><img src="'+escapeHtml(url)+'" alt="Customer review photo" loading="lazy"></a>').join('')+'</div>':'')+'</article>').join('');
+        section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-rating-summary"><div class="genmerch-rating-average">'+average.toFixed(1)+'</div><div><div class="genmerch-rating-stars">'+customerReviewStars(Math.round(average))+'</div><small>'+reviewCount.toLocaleString('en-PH')+' verified review(s) · showing latest '+reviews.length+'</small></div></div>'+reviews.map(review=>'<article class="genmerch-review-card"><div class="genmerch-review-card-head"><strong>'+escapeHtml(review.nickname||'GENMERCH Customer')+' <span style="color:#218044;font-size:.68rem">✓ Verified Purchase</span></strong><span class="genmerch-review-card-date">'+escapeHtml(customerOrderDate(review.created_at))+'</span></div><div class="genmerch-rating-stars">'+customerReviewStars(review.rating)+'</div><p>'+escapeHtml(review.feedback)+'</p>'+(Array.isArray(review.photo_urls)&&review.photo_urls.length?'<div class="genmerch-review-photos">'+review.photo_urls.map(url=>'<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener"><img src="'+escapeHtml(url)+'" alt="Customer review photo" loading="lazy"></a>').join('')+'</div>':'')+'</article>').join('');
       }catch(error){console.warn('GENMERCH product reviews could not load.',error);section.innerHTML='<h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Reviews are temporarily unavailable. Please try again later.</div>';}
     }
 
