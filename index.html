@@ -2838,6 +2838,25 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
 }
 </style>
+<style id="genmerch-permanent-delete-action">
+  .seller-permanent-delete-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 12px;border:1px solid #bd1010;border-radius:8px;background:linear-gradient(110deg,#e51f1b 0%,#ba0d0d 100%);color:#fff;font-size:.78rem;font-weight:900;line-height:1.15;white-space:nowrap;box-shadow:0 3px 8px rgba(190,20,20,.14);cursor:pointer}
+  .seller-permanent-delete-button:hover:not(:disabled),.seller-permanent-delete-yes:hover:not(:disabled){background:linear-gradient(110deg,#c91616 0%,#990606 100%)}
+  .seller-permanent-delete-button:disabled,.seller-permanent-delete-yes:disabled{opacity:.65;cursor:wait}
+  .seller-deleted-row-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .seller-permanent-delete-overlay{z-index:2600!important}
+  .seller-permanent-delete-modal{width:min(440px,100%);max-height:90dvh;padding:0;overflow:hidden;border:1px solid #ffc8be}
+  .seller-permanent-delete-modal .seller-modal-head{background:linear-gradient(110deg,#e9241a 0%,#ff4c1a 100%)}
+  .seller-permanent-delete-body{padding:22px}
+  .seller-permanent-delete-body>p{margin:0 0 12px;color:#40312b;font-size:.92rem;line-height:1.6}
+  .seller-permanent-delete-body .seller-permanent-delete-product-name{margin:0;padding:11px 13px;border:1px solid #f2d9d0;border-radius:9px;background:#fff5f1;color:#8f1710;font-size:.9rem;font-weight:900;overflow-wrap:anywhere}
+  .seller-permanent-delete-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:21px}
+  .seller-permanent-delete-actions button{min-width:88px;min-height:42px}
+  .seller-permanent-delete-yes{border:1px solid #bd1010;border-radius:8px;padding:10px 18px;background:linear-gradient(110deg,#e51f1b 0%,#ba0d0d 100%);color:#fff;font-size:.84rem;font-weight:900;cursor:pointer}
+  .seller-permanent-delete-no{border-radius:8px;font-weight:900}
+  #sellerPermanentDeleteFeedback{margin-top:14px}
+  @media(max-width:540px){.seller-deleted-row-actions{align-items:stretch;flex-direction:column;min-width:125px}.seller-deleted-row-actions button{width:100%;white-space:normal;padding:8px 9px;font-size:.72rem}.seller-permanent-delete-body{padding:18px}.seller-permanent-delete-actions{gap:8px}}
+  @media(prefers-reduced-motion:reduce){.seller-permanent-delete-button{transition:none}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -3062,6 +3081,24 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     </div>
     <section class="grid" id="productGrid" aria-label="Product catalog"></section>
   </main>
+
+  <div class="seller-modal-overlay seller-permanent-delete-overlay" id="sellerPermanentDeleteOverlay" aria-hidden="true">
+    <section class="seller-modal seller-permanent-delete-modal" role="dialog" aria-modal="true" aria-labelledby="sellerPermanentDeleteTitle" aria-describedby="sellerPermanentDeleteMessage">
+      <div class="seller-modal-head">
+        <div><h2 id="sellerPermanentDeleteTitle">Confirm Permanent Deletion</h2><p>This action cannot be undone.</p></div>
+        <button class="seller-modal-close" id="sellerPermanentDeleteCloseButton" type="button" aria-label="Close confirmation">×</button>
+      </div>
+      <div class="seller-permanent-delete-body">
+        <p id="sellerPermanentDeleteMessage">Are you sure you want to permanently delete this item?</p>
+        <p class="seller-permanent-delete-product-name" id="sellerPermanentDeleteProductName"></p>
+        <div class="seller-permanent-delete-actions">
+          <button class="seller-secondary-button seller-permanent-delete-no" id="sellerPermanentDeleteNoButton" type="button">NO</button>
+          <button class="seller-danger-button seller-permanent-delete-yes" id="sellerPermanentDeleteYesButton" type="button">YES</button>
+        </div>
+        <div class="seller-feedback" id="sellerPermanentDeleteFeedback" role="status" aria-live="polite" hidden></div>
+      </div>
+    </section>
+  </div>
 
   <footer>
     <div class="footer-brand">GENMERCH - Suot Apparel</div>
@@ -7126,6 +7163,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let sellerSelectedSizes = new Set();
     let sellerEditingImages = [];
     let sellerProductRowsById = new Map();
+    let sellerPendingPermanentDeleteProductId = '';
+    let sellerPermanentDeleteBusy = false;
+    let sellerPermanentDeleteReturnFocus = null;
     let sellerImageRowsByProductId = new Map();
     let sellerPreviewObjectUrls = [];
     const SELLER_IMAGE_INPUT_IDS = ['sellerImageFile1','sellerImageFile2','sellerImageFile3','sellerImageFile4','sellerImageFile5'];
@@ -7324,9 +7364,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
         const category=categoryMap.get(String(product.category_id))||'Other';
         const restore='<button class="seller-primary-button" type="button" data-seller-restore-product="'+sellerEscape(id)+'">↶ Restore</button>';
-        return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong></td><td>'+images.length+'/5 photos</td><td>'+sellerEscape(sellerDate(product.deleted_at))+'</td><td>'+restore+'</td></tr>';
+        const permanentDelete='<button class="seller-danger-button seller-permanent-delete-button" type="button" data-seller-permanent-delete-product="'+sellerEscape(id)+'" aria-label="Permanently delete '+sellerEscape(product.name||'product')+'">Delete Permanently</button>';
+        return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong></td><td>'+images.length+'/5 photos</td><td>'+sellerEscape(sellerDate(product.deleted_at))+'</td><td><div class="seller-row-actions seller-deleted-row-actions">'+restore+permanentDelete+'</div></td></tr>';
       }).join('');
       tbody.querySelectorAll('[data-seller-restore-product]').forEach(button=>button.addEventListener('click',()=>handleSellerRestoreProduct(button.dataset.sellerRestoreProduct,button)));
+      tbody.querySelectorAll('[data-seller-permanent-delete-product]').forEach(button=>button.addEventListener('click',()=>openSellerPermanentDeleteConfirm(button.dataset.sellerPermanentDeleteProduct,button)));
     }
     async function handleSellerRestoreProduct(productId,button){
       if(!sellerCentreIsUnlocked)return;
@@ -7349,6 +7391,87 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         sellerFeedback('sellerDeletedFeedback',error.message||'Could not restore this product.','error');
       }finally{
         if(button){button.disabled=false;button.textContent=originalLabel;}
+      }
+    }
+    function openSellerPermanentDeleteConfirm(productId,triggerButton){
+      if(!sellerCentreIsUnlocked)return;
+      const product=sellerProductRowsById.get(String(productId));
+      if(!product||product.is_deleted!==true){
+        sellerFeedback('sellerDeletedFeedback','Only products already in Deleted can be permanently deleted.','error');
+        return;
+      }
+      sellerPendingPermanentDeleteProductId=String(productId);
+      sellerPermanentDeleteReturnFocus=triggerButton||null;
+      $('sellerPermanentDeleteProductName').textContent=String(product.name||'Unnamed product');
+      sellerFeedback('sellerPermanentDeleteFeedback','','');
+      $('sellerPermanentDeleteYesButton').disabled=false;
+      $('sellerPermanentDeleteYesButton').textContent='YES';
+      $('sellerPermanentDeleteNoButton').disabled=false;
+      $('sellerPermanentDeleteCloseButton').disabled=false;
+      sellerShowOverlay('sellerPermanentDeleteOverlay');
+      $('sellerPermanentDeleteNoButton').focus();
+    }
+    function closeSellerPermanentDeleteConfirm(force=false){
+      if(sellerPermanentDeleteBusy&&!force)return;
+      sellerHideOverlay('sellerPermanentDeleteOverlay');
+      sellerPendingPermanentDeleteProductId='';
+      sellerFeedback('sellerPermanentDeleteFeedback','','');
+      if(sellerPermanentDeleteReturnFocus&&sellerPermanentDeleteReturnFocus.isConnected)sellerPermanentDeleteReturnFocus.focus();
+      sellerPermanentDeleteReturnFocus=null;
+    }
+    async function handleSellerPermanentDeleteProduct(){
+      if(sellerPermanentDeleteBusy||!sellerCentreIsUnlocked)return;
+      const productId=String(sellerPendingPermanentDeleteProductId||'');
+      const product=sellerProductRowsById.get(productId);
+      if(!productId||!product||product.is_deleted!==true){
+        sellerFeedback('sellerPermanentDeleteFeedback','This item is no longer available in Deleted. Refresh the tab and try again.','error');
+        return;
+      }
+      const productName=String(product.name||'Unnamed product');
+      const yesButton=$('sellerPermanentDeleteYesButton'),noButton=$('sellerPermanentDeleteNoButton'),closeButton=$('sellerPermanentDeleteCloseButton');
+      sellerPermanentDeleteBusy=true;
+      yesButton.disabled=true;yesButton.textContent='Deleting…';noButton.disabled=true;closeButton.disabled=true;
+      sellerFeedback('sellerPermanentDeleteFeedback','','');
+      let deletionSucceeded=false,cleanupWarning='';
+      try{
+        const client=await getSellerAdminClient(false);
+        const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
+        if(imageResult.error)throw imageResult.error;
+        const storagePaths=Array.from(new Set((imageResult.data||[]).map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean)));
+        const result=await client.rpc('permanently_delete_genmerch_product',{p_product_id:productId});
+        if(result.error)throw result.error;
+        deletionSucceeded=true;
+        const resultData=result.data&&typeof result.data==='object'?result.data:{};
+        const confirmedName=String(resultData.deleted_product_name||productName);
+        if(storagePaths.length){
+          const removal=await client.storage.from(SELLER_IMAGE_BUCKET).remove(storagePaths);
+          if(removal.error)cleanupWarning=' The product record and gallery rows were deleted, but one or more uploaded photo files could not be removed from Storage.';
+        }
+        if(sellerEditingProductId&&String(sellerEditingProductId)===productId)resetSellerProductForm();
+        sellerPermanentDeleteBusy=false;
+        closeSellerPermanentDeleteConfirm(true);
+        sellerInventoryLoaded=false;
+        await loadSellerProducts();
+        await loadSupabaseCatalog();
+        renderCategoryFilters();renderProducts();
+        await loadSellerInventoryAnalytics();
+        const successMessage='Permanently deleted "'+confirmedName+'". Order history and inventory movement snapshots were preserved.'+cleanupWarning;
+        sellerFeedback('sellerDeletedFeedback',successMessage,cleanupWarning?'error':'success');
+        showToast('Product permanently deleted.');
+      }catch(error){
+        if(deletionSucceeded){
+          sellerPermanentDeleteBusy=false;
+          closeSellerPermanentDeleteConfirm(true);
+          sellerFeedback('sellerDeletedFeedback','Product was permanently deleted, but the Seller Centre could not fully refresh. Open the Deleted tab and click Refresh. '+(error.message||''),'error');
+        }else{
+          sellerFeedback('sellerPermanentDeleteFeedback',error.message||'Could not permanently delete this item. No product changes were made.','error');
+          yesButton.disabled=false;yesButton.textContent='YES';noButton.disabled=false;closeButton.disabled=false;
+        }
+      }finally{
+        sellerPermanentDeleteBusy=false;
+        if($('sellerPermanentDeleteOverlay').classList.contains('open')){
+          yesButton.disabled=false;yesButton.textContent='YES';noButton.disabled=false;closeButton.disabled=false;
+        }
       }
     }
     async function handleSellerProductAction(productId,action,feedbackTarget='sellerProductsFeedback'){
@@ -8126,7 +8249,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
+    $('sellerPermanentDeleteNoButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
+    $('sellerPermanentDeleteCloseButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
+    $('sellerPermanentDeleteYesButton').addEventListener('click',handleSellerPermanentDeleteProduct);
+    $('sellerPermanentDeleteOverlay').addEventListener('click',event=>{if(event.target===$('sellerPermanentDeleteOverlay'))closeSellerPermanentDeleteConfirm();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerPermanentDeleteOverlay').classList.contains('open'))closeSellerPermanentDeleteConfirm();else if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
 
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
