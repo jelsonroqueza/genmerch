@@ -59,6 +59,15 @@
     .business-reg-action{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin:12px auto 0;padding:10px 16px;border:1px solid #d7e5d9;border-radius:999px;background:#fff;color:#252525;font-weight:850;font-size:.84rem;letter-spacing:.015em;cursor:pointer;box-shadow:0 3px 12px #00000008;transition:transform .15s ease,box-shadow .15s ease}
     .business-reg-action:hover{transform:translateY(-1px);box-shadow:0 6px 18px #00000012}
     .business-reg-check{display:inline-grid;place-items:center;width:23px;height:23px;flex:0 0 23px;border-radius:50%;background:#16803d;color:#fff;font-size:16px;font-weight:900;line-height:1}
+    .footer-registry{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;margin:16px auto 0}
+    .footer-registry-label{font-size:.88rem;font-weight:850;color:#3e342f}
+    .footer-registry-logo{min-width:112px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 12px;border:1px solid #e5ded8;border-radius:12px;background:#fff;cursor:pointer;box-shadow:0 3px 12px #00000008;transition:transform .15s ease,box-shadow .15s ease}
+    .footer-registry-logo:hover{transform:translateY(-2px);box-shadow:0 7px 18px #00000014}
+    .footer-dti-mark{width:108px;height:46px;display:block}
+    .footer-bir-mark{display:block;font-size:1.5rem;line-height:1;font-weight:950;letter-spacing:.06em;color:#1d2e7f}
+    .footer-registry-caption{display:block;font-size:.57rem;font-weight:850;line-height:1.1;letter-spacing:.08em;color:#5d514b}
+    .dti-registry-logo{border-color:#d9dfef}
+    .bir-registry-logo{border-color:#d9dfef}
     .business-reg-overlay{z-index:1300;background:rgba(15,18,16,.68);backdrop-filter:blur(4px)}
     .business-reg-modal{width:min(960px,100%);padding:0;border:1px solid #f0dfd7;overflow:auto}
     .business-reg-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:17px 20px;background:linear-gradient(110deg,#ff2d1b,#ff4b0d);color:#fff}
@@ -2876,11 +2885,22 @@
       <a href="mailto:negosyonipinoy@gmail.com" style="color:inherit;text-decoration:underline">Contact</a>
       <a href="tel:09750634497" style="color:inherit;text-decoration:underline">☎ 09750634497</a>
     </p>
-    <p style="margin:12px 0 0">
-      <button class="business-reg-action" type="button" onclick="openBusinessRegInfo()" aria-haspopup="dialog" aria-controls="businessRegOverlay">
-        <span>VIEW BIR/BUSINESS REG. #</span><span class="business-reg-check" aria-hidden="true">✓</span>
+    <div class="footer-registry" aria-label="Business registration">
+      <span class="footer-registry-label">Business Registration:</span>
+      <button class="footer-registry-logo dti-registry-logo" type="button" onclick="openDtiRegInfo()" aria-haspopup="dialog" aria-controls="dtiRegOverlay" aria-label="View DTI business name registration">
+        <svg class="footer-dti-mark" viewBox="0 0 156 66" aria-hidden="true">
+          <circle cx="126" cy="14" r="13" fill="#1d2e7f"/>
+          <path d="M123 3l8 1 2 5-3 4 3 5-5 5-5-4-4-5 2-4-3-3z" fill="#ffdf00"/>
+          <text x="2" y="43" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="800" letter-spacing="-4" fill="#1d2e7f">dti</text>
+          <text x="4" y="59" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing="2.4" fill="#1d2e7f">PHILIPPINES</text>
+        </svg>
+        <span class="footer-registry-caption">DTI</span>
       </button>
-    </p>
+      <button class="footer-registry-logo bir-registry-logo" type="button" onclick="openBusinessRegInfo()" aria-haspopup="dialog" aria-controls="businessRegOverlay" aria-label="View BIR and business information">
+        <span class="footer-bir-mark">BIR</span>
+        <span class="footer-registry-caption">BUSINESS REGISTRATION</span>
+      </button>
+    </div>
   </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
@@ -3167,6 +3187,57 @@
       <div class="business-reg-modal-foot">
         <small>For formal verification, use the original government-issued documents and relevant official channels.</small>
         <button class="primary-btn" id="closeBusinessRegButton" type="button">Close</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="overlay business-reg-overlay" id="dtiRegOverlay" aria-hidden="true">
+    <section class="notice-modal business-reg-modal" role="dialog" aria-modal="true" aria-labelledby="dtiRegTitle" aria-describedby="dtiRegDisclosure">
+      <div class="business-reg-modal-head">
+        <div>
+          <h2 id="dtiRegTitle">DTI Business Name Registration</h2>
+          <p>Registration details supplied by the business owner</p>
+        </div>
+        <button class="business-reg-close" id="closeDtiRegTop" type="button" aria-label="Close DTI business registration">×</button>
+      </div>
+      <div class="business-reg-body">
+        <figure class="business-reg-image-wrap">
+          <img class="business-reg-image" src="/assets/dti-registration-display.svg" alt="Display rendering of DTI business name registration details supplied by the owner" loading="lazy">
+          <figcaption class="business-reg-caption">Display rendering based on the owner-supplied certificate image. This is not the original certificate scan.</figcaption>
+        </figure>
+        <section class="business-reg-info" aria-label="DTI business registration details">
+          <h3>DTI Business Name Registration</h3>
+          <p class="business-reg-info-intro">The following details are transcribed from the image provided by the business owner.</p>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Registered business name</span>
+            <span class="business-reg-value">NNP2012 HOUSEHOLD GOODS STORE (BARANGAY)</span>
+          </div>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Business owner (as shown on certificate)</span>
+            <span class="business-reg-value">KING J.R OTORDOS CAISIP</span>
+          </div>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Registered address</span>
+            <span class="business-reg-value">SANJA MAYOR, TANZA CAVITE — REGION IV-A (CALABARZON)</span>
+          </div>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Business name registration number</span>
+            <span class="business-reg-value">5481648</span>
+          </div>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Issue date</span>
+            <span class="business-reg-value">04 January 2024</span>
+          </div>
+          <div class="business-reg-detail">
+            <span class="business-reg-label">Validity stated on certificate</span>
+            <span class="business-reg-value">04 January 2024 to 04 January 2029</span>
+          </div>
+          <p class="business-reg-disclaimer" id="dtiRegDisclosure"><strong>Important:</strong> These details are reproduced from the owner-supplied image and are not independently verified here. Refer to the original issued DTI certificate for formal use or verification.</p>
+        </section>
+      </div>
+      <div class="business-reg-modal-foot">
+        <small>Business registration information provided by the owner.</small>
+        <button class="primary-btn" id="closeDtiRegButton" type="button">Close</button>
       </div>
     </section>
   </div>
@@ -6274,6 +6345,29 @@
     $('businessRegOverlay').addEventListener('click',event=>{if(event.target===$('businessRegOverlay'))closeBusinessRegInfo();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('businessRegOverlay').classList.contains('open'))closeBusinessRegInfo();});
 
+
+    function openDtiRegInfo(){
+      const overlay=$('dtiRegOverlay');
+      if(!overlay)return;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      const closeButton=$('closeDtiRegTop');
+      if(closeButton)closeButton.focus();
+    }
+    function closeDtiRegInfo(){
+      const overlay=$('dtiRegOverlay');
+      if(!overlay||!overlay.classList.contains('open'))return;
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open')){
+        document.body.style.overflow='';
+      }
+    }
+    $('closeDtiRegTop').addEventListener('click',closeDtiRegInfo);
+    $('closeDtiRegButton').addEventListener('click',closeDtiRegInfo);
+    $('dtiRegOverlay').addEventListener('click',event=>{if(event.target===$('dtiRegOverlay'))closeDtiRegInfo();});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('dtiRegOverlay').classList.contains('open'))closeDtiRegInfo();});
 
     // Customer email + password authentication using Supabase Auth v2.
     let customerAuthClient = null;
