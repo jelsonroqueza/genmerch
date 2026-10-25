@@ -3014,6 +3014,49 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   @media(max-width:650px){.seller-inventory-heading{flex-direction:column;align-items:stretch}.seller-inventory-header-actions{align-items:stretch}.seller-dashboard-toggle-group{justify-content:flex-start}.seller-inventory-header-actions .seller-export-excel-button{align-self:flex-start}.seller-section-heading{align-items:flex-start;flex-direction:column;gap:8px}.seller-section-heading .seller-collapse-button{align-self:flex-start}.seller-collapsible-section-heading,.seller-collapsible-heading-compact{padding:9px 10px}.seller-metric-card:hover{transform:none}}
   @media(prefers-reduced-motion:reduce){.seller-metric-card,.seller-collapse-button{transition:none}}
 </style>
+<style id="genmerch-centered-product-editor">
+  .seller-products-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 18px;padding:15px 16px;border:1px solid #f1d9cf;border-radius:12px;background:linear-gradient(115deg,#fffaf7 0%,#fff1e8 58%,#fffaf7 100%)}
+  .seller-products-topbar .seller-panel-title{margin:0 0 4px!important}
+  .seller-products-topbar .seller-panel-subtitle{margin:0!important}
+  .seller-open-product-form-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:10px 16px;white-space:nowrap;box-shadow:0 5px 12px rgba(242,42,18,.14)}
+  .seller-product-editor-overlay{z-index:3400!important;padding:18px;background:rgba(15,8,5,.66)!important;-webkit-backdrop-filter:blur(15px) brightness(.62) saturate(.68)!important;backdrop-filter:blur(15px) brightness(.62) saturate(.68)!important}
+  .seller-product-editor-modal{width:min(860px,calc(100vw - 30px));max-height:calc(100dvh - 36px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #f3c2b1;border-radius:18px;box-shadow:0 30px 110px rgba(0,0,0,.38)}
+  .seller-product-editor-modal .seller-modal-head{position:relative;inset:auto;flex:0 0 auto;padding:17px 22px;background:linear-gradient(110deg,#f82d17 0%,#ff4a1c 56%,#e92a17 100%)}
+  .seller-product-editor-head h2{font-size:1.12rem}
+  .seller-product-editor-body{min-height:0;overflow:auto;overscroll-behavior:contain;padding:18px 22px 22px;background:linear-gradient(135deg,#fff 0%,#fffaf7 65%,#fff4ed 100%);scrollbar-color:#df9a80 #fff2ea;scrollbar-width:thin}
+  .seller-product-editor-modal .seller-product-form{margin:0;padding:0;border:0;border-radius:0;background:transparent}
+  .seller-product-editor-modal .seller-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+  .seller-product-editor-modal .seller-field.full{grid-column:1/-1}
+  .seller-product-editor-modal .seller-field label{color:#403028;font-size:.78rem}
+  .seller-product-editor-modal .seller-field input,.seller-product-editor-modal .seller-field textarea,.seller-product-editor-modal .seller-field select{border-color:#e6d7cf;border-radius:9px;background:#fff;min-height:42px}
+  .seller-product-editor-modal .seller-field input:focus,.seller-product-editor-modal .seller-field textarea:focus,.seller-product-editor-modal .seller-field select:focus{border-color:#f64a2a;box-shadow:0 0 0 3px rgba(246,74,42,.12)}
+  .seller-product-editor-modal .seller-category-add-row{margin-top:0;gap:7px}
+  .seller-product-editor-modal .seller-category-add-row button{min-height:42px;padding:9px 12px}
+  .seller-product-editor-modal .seller-size-field{padding:13px;border:1px solid #f1ddd4;border-radius:10px;background:linear-gradient(120deg,#fffaf7,#fff2e9)}
+  .seller-product-editor-modal .seller-size-options{gap:8px}
+  .seller-product-editor-modal .seller-file-picker-stack{gap:7px}
+  .seller-product-editor-modal .seller-file-picker{grid-template-columns:145px minmax(0,1fr);padding:9px 11px;border-color:#efded5;border-radius:9px;background:#fff}
+  .seller-product-editor-modal .seller-gallery-count{margin-top:8px}
+  .seller-product-editor-modal #sellerProductDescription{min-height:105px}
+  .seller-product-editor-modal .seller-form-actions{position:sticky;bottom:-22px;z-index:4;margin:18px -22px -22px;padding:13px 22px;background:rgba(255,250,247,.97);border-top:1px solid #efddd4;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .seller-product-editor-modal .seller-form-actions button{min-height:41px}
+  .seller-product-editor-modal .seller-feedback{margin-top:12px}
+  @media(max-width:680px){
+    .seller-product-editor-overlay{padding:10px}
+    .seller-product-editor-modal{width:100%;max-height:calc(100dvh - 20px);border-radius:14px}
+    .seller-product-editor-modal .seller-modal-head{padding:13px 15px}
+    .seller-product-editor-body{padding:15px 14px 18px}
+    .seller-product-editor-modal .seller-form-grid{grid-template-columns:minmax(0,1fr);gap:13px}
+    .seller-product-editor-modal .seller-field.full{grid-column:auto}
+    .seller-product-editor-modal .seller-category-add-row{align-items:stretch;flex-direction:column}
+    .seller-product-editor-modal .seller-category-add-row button{width:100%}
+    .seller-product-editor-modal .seller-file-picker{grid-template-columns:minmax(0,1fr);gap:6px}
+    .seller-product-editor-modal .seller-form-actions{bottom:-18px;margin:16px -14px -18px;padding:11px 14px;gap:7px}
+    .seller-product-editor-modal .seller-form-actions button{flex:1;white-space:normal}
+    .seller-products-topbar{align-items:flex-start;flex-direction:column}
+    .seller-open-product-form-button{width:100%}
+  }
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -3102,43 +3145,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
       </div>
       <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
-        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title" id="sellerProductFormTitle">Add a product</h3><p class="seller-panel-subtitle" id="sellerProductFormSubtitle">New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerProductFormContent',this)" data-collapse-label="Collapse Product Form" data-expand-label="Expand Product Form" aria-controls="sellerProductFormContent" aria-expanded="true">− Collapse Product Form</button></div>
-        <div class="seller-collapsible-content" id="sellerProductFormContent">
-        <form class="seller-product-form" id="sellerProductForm">
-          <div class="seller-form-grid">
-            <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
-            <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select><div class="seller-category-add-row"><input id="sellerCustomCategoryName" type="text" maxlength="80" placeholder="Add a future category…" aria-label="New custom category name"><button class="seller-secondary-button" id="sellerAddCustomCategoryButton" type="button">＋ Add Custom</button></div><p class="seller-field-hint">Add your own category for future product types.</p></div>
-            <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
-            <div class="seller-field full seller-size-field">
-              <label>Available clothing sizes *</label>
-              <p class="seller-field-hint">Check only the sizes you actually sell. Unchecked sizes will not appear on the live product page. Stock quantity is managed separately in Inventory &amp; Analytics.</p>
-              <div class="seller-size-options" id="sellerSizeOptions"><span class="seller-gallery-empty">Choose a category to select sizes.</span></div>
-              <div class="seller-gallery-count" id="sellerSizeCount">Choose at least one available size.</div>
-            </div>
-            <div class="seller-field"><label for="sellerSellingPrice">Regular price before promotion (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
-            <div class="seller-field"><label for="sellerPromotionType">Promotion / discount</label><select id="sellerPromotionType" name="promotion_type"><option value="none">No promotion</option><option value="10">10% OFF</option><option value="15">15% OFF</option><option value="20">20% OFF</option><option value="25">25% OFF</option><option value="30">30% OFF</option><option value="35">35% OFF</option><option value="40">40% OFF</option><option value="50">50% OFF</option><option value="60">60% OFF</option><option value="70">70% OFF</option><option value="free_shipping_metro">Free Shipping (For Metro Manila Only)</option><option value="free_delivery_metro">Free Delivery (For Metro Manila Only)</option></select><p class="seller-field-hint" id="sellerPromotionPreview" aria-live="polite">Choose a promotion to preview the customer offer.</p></div>
-            <div class="seller-field"><label for="sellerOriginalPrice">Compare-at price (₱, optional)</label><input id="sellerOriginalPrice" name="original_price" type="number" min="0" step="0.01" placeholder="Optional reference price"></div>
-            <div class="seller-field full">
-              <label>Product gallery photos (1–5 total)</label>
-              <p class="seller-field-hint">Choose each photo separately as shown below. JPEG, PNG, and WebP only; each file has its own 2 MB limit.</p>
-              <div class="seller-file-picker-stack">
-                <div class="seller-file-picker"><label for="sellerImageFile1">Choose file 1 <span>2 MB max</span></label><input id="sellerImageFile1" name="image_file_1" type="file" accept="image/jpeg,image/png,image/webp"></div>
-                <div class="seller-file-picker"><label for="sellerImageFile2">Choose file 2 <span>2 MB max</span></label><input id="sellerImageFile2" name="image_file_2" type="file" accept="image/jpeg,image/png,image/webp"></div>
-                <div class="seller-file-picker"><label for="sellerImageFile3">Choose file 3 <span>2 MB max</span></label><input id="sellerImageFile3" name="image_file_3" type="file" accept="image/jpeg,image/png,image/webp"></div>
-                <div class="seller-file-picker"><label for="sellerImageFile4">Choose file 4 <span>2 MB max</span></label><input id="sellerImageFile4" name="image_file_4" type="file" accept="image/jpeg,image/png,image/webp"></div>
-                <div class="seller-file-picker"><label for="sellerImageFile5">Choose file 5 <span>2 MB max</span></label><input id="sellerImageFile5" name="image_file_5" type="file" accept="image/jpeg,image/png,image/webp"></div>
-              </div>
-              <div class="seller-gallery-count" id="sellerGalleryCount">New product: choose at least 1 photo, up to 5.</div>
-              <div class="seller-gallery-previews" id="sellerUploadPreview" aria-live="polite"></div>
-              <div class="seller-gallery-previews seller-existing-gallery" id="sellerExistingGallery" hidden></div>
-            </div>
-            <div class="seller-field full"><label for="sellerProductDescription">Description</label><textarea id="sellerProductDescription" name="description" maxlength="4000" placeholder="Describe the product"></textarea></div>
-          </div>
-          <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="button">Clear form</button><button class="seller-secondary-button" id="sellerCancelEditButton" type="button" hidden>Cancel edit</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Add product to Supabase</button></div>
-          <div class="seller-feedback" id="sellerProductFeedback" role="status" aria-live="polite" hidden></div>
-        </form>
+                <div class="seller-products-topbar">
+          <div><h3 class="seller-panel-title">Product Management</h3><p class="seller-panel-subtitle">Create a new listing or manage existing products in your cloud inventory.</p></div>
+          <button class="seller-primary-button seller-open-product-form-button" id="sellerOpenProductFormButton" type="button" onclick="openSellerProductCreate()">＋ Add Product</button>
         </div>
-        <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerCloudInventoryContent',this)" data-collapse-label="Collapse Product List" data-expand-label="Expand Product List" aria-controls="sellerCloudInventoryContent" aria-expanded="true">− Collapse Product List</button></div>
+<div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Cloud inventory</h3><p class="seller-panel-subtitle">Delete deactivates the product to preserve related records and order history. Restore makes it active again.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerCloudInventoryContent',this)" data-collapse-label="Collapse Product List" data-expand-label="Expand Product List" aria-controls="sellerCloudInventoryContent" aria-expanded="true">− Collapse Product List</button></div>
         <div class="seller-feedback" id="sellerProductsFeedback" role="status" aria-live="polite" hidden></div>
         <div class="seller-collapsible-content" id="sellerCloudInventoryContent">
         <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Variants / stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="sellerProductsTableBody"><tr><td colspan="6" class="seller-table-empty">Unlock Seller Centre to load products.</td></tr></tbody></table></div>
@@ -3239,6 +3250,51 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         </div>
       </section>
       <div class="seller-dashboard-foot">GENMERCH Seller Centre · Admin-only Supabase access · Stock changes are recorded in the inventory movement history.</div>
+    </section>
+  </div>
+
+  <div class="seller-modal-overlay seller-product-editor-overlay" id="sellerProductEditorOverlay" aria-hidden="true">
+    <section class="seller-modal seller-product-editor-modal" role="dialog" aria-modal="true" aria-labelledby="sellerProductFormTitle" aria-describedby="sellerProductFormSubtitle">
+      <div class="seller-modal-head seller-product-editor-head">
+        <div><h2 id="sellerProductFormTitle">Add a product</h2><p id="sellerProductFormSubtitle">Create a product listing and upload 1–5 gallery photos. Each new photo must be 2 MB or smaller.</p></div>
+        <button class="seller-modal-close" id="sellerProductEditorCloseButton" type="button" aria-label="Close product editor">×</button>
+      </div>
+      <div class="seller-product-editor-body">
+        <form class="seller-product-form" id="sellerProductForm">
+                  <div class="seller-form-grid">
+                    <div class="seller-field full"><label for="sellerProductName">Product name *</label><input id="sellerProductName" name="product_name" maxlength="180" autocomplete="off" required></div>
+                    <div class="seller-field"><label for="sellerProductCategory">Category *</label><select id="sellerProductCategory" name="category" required><option value="">Loading categories…</option></select></div>
+                    <div class="seller-field seller-custom-category-field"><label for="sellerCustomCategoryName">Add Custom Category</label><div class="seller-category-add-row"><input id="sellerCustomCategoryName" type="text" maxlength="80" placeholder="Type a new category name" aria-label="New custom category name"><button class="seller-secondary-button" id="sellerAddCustomCategoryButton" type="button">＋ Add Custom Category</button></div><p class="seller-field-hint">Add a new product category if it is not listed above.</p></div>
+                    <div class="seller-field"><label for="sellerProductLocation">Location *</label><input id="sellerProductLocation" name="location" maxlength="180" placeholder="e.g. Manila, Philippines" required></div>
+                    <div class="seller-field full seller-size-field">
+                      <label>Available clothing sizes *</label>
+                      <p class="seller-field-hint">Check only the sizes you actually sell. Unchecked sizes will not appear on the live product page. Stock quantity is managed separately in Inventory &amp; Analytics.</p>
+                      <div class="seller-size-options" id="sellerSizeOptions"><span class="seller-gallery-empty">Choose a category to select sizes.</span></div>
+                      <div class="seller-gallery-count" id="sellerSizeCount">Choose at least one available size.</div>
+                    </div>
+                    <div class="seller-field"><label for="sellerSellingPrice">Actual price before promotion discount (₱) *</label><input id="sellerSellingPrice" name="selling_price" type="number" min="0.01" step="0.01" required></div>
+                    <div class="seller-field"><label for="sellerPromotionType">Promotion / discount</label><select id="sellerPromotionType" name="promotion_type"><option value="none">No promotion</option><option value="10">10% OFF</option><option value="15">15% OFF</option><option value="20">20% OFF</option><option value="25">25% OFF</option><option value="30">30% OFF</option><option value="35">35% OFF</option><option value="40">40% OFF</option><option value="50">50% OFF</option><option value="60">60% OFF</option><option value="70">70% OFF</option><option value="free_shipping_metro">Free Shipping (For Metro Manila Only)</option><option value="free_delivery_metro">Free Delivery (For Metro Manila Only)</option></select><p class="seller-field-hint" id="sellerPromotionPreview" aria-live="polite">Choose a promotion to preview the customer offer.</p></div>
+                    <input id="sellerOriginalPrice" name="original_price" type="hidden" value="">
+                    <div class="seller-field full">
+                      <label>Product gallery photos (1–5 total)</label>
+                      <p class="seller-field-hint">Choose each photo separately as shown below. JPEG, PNG, and WebP only; each file has its own 2 MB limit.</p>
+                      <div class="seller-file-picker-stack">
+                        <div class="seller-file-picker"><label for="sellerImageFile1">Choose File 1 <span>2 MB max</span></label><input id="sellerImageFile1" name="image_file_1" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                        <div class="seller-file-picker"><label for="sellerImageFile2">Choose File 2 <span>2 MB max</span></label><input id="sellerImageFile2" name="image_file_2" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                        <div class="seller-file-picker"><label for="sellerImageFile3">Choose File 3 <span>2 MB max</span></label><input id="sellerImageFile3" name="image_file_3" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                        <div class="seller-file-picker"><label for="sellerImageFile4">Choose File 4 <span>2 MB max</span></label><input id="sellerImageFile4" name="image_file_4" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                        <div class="seller-file-picker"><label for="sellerImageFile5">Choose File 5 <span>2 MB max</span></label><input id="sellerImageFile5" name="image_file_5" type="file" accept="image/jpeg,image/png,image/webp"></div>
+                      </div>
+                      <div class="seller-gallery-count" id="sellerGalleryCount">New product: choose at least 1 photo, up to 5.</div>
+                      <div class="seller-gallery-previews" id="sellerUploadPreview" aria-live="polite"></div>
+                      <div class="seller-gallery-previews seller-existing-gallery" id="sellerExistingGallery" hidden></div>
+                    </div>
+                    <div class="seller-field full"><label for="sellerProductDescription">Product Description *</label><textarea id="sellerProductDescription" name="description" maxlength="4000" placeholder="Describe the product" required></textarea></div>
+                  </div>
+                  <div class="seller-form-actions"><button class="seller-secondary-button" id="sellerProductResetButton" type="button">Clear form</button><button class="seller-secondary-button" id="sellerCancelEditButton" type="button" hidden>Cancel edit</button><button class="seller-primary-button" id="sellerSaveProductButton" type="submit">＋ Add product to Supabase</button></div>
+                  <div class="seller-feedback" id="sellerProductFeedback" role="status" aria-live="polite" hidden></div>
+                </form>
+      </div>
     </section>
   </div>
 
@@ -7791,6 +7847,17 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }).join('');
       sellerUpdateGalleryCount();
     }
+    function openSellerProductCreate(){
+      if(!sellerCentreIsUnlocked)return;
+      resetSellerProductForm();
+      sellerSetFormMode('create');
+      sellerShowOverlay('sellerProductEditorOverlay');
+      window.setTimeout(()=>$('sellerProductName').focus({preventScroll:true}),35);
+    }
+    function closeSellerProductEditor(reset=true){
+      if(reset)resetSellerProductForm();
+      sellerHideOverlay('sellerProductEditorOverlay');
+    }
     function sellerSetFormMode(mode){
       const editing=mode==='edit';$('sellerProductFormTitle').textContent=editing?'Edit product':'Add a product';
       $('sellerProductFormSubtitle').textContent=editing?'Update product details and manage its gallery. Keep 1–5 photos total; each new upload must be 2 MB or smaller.':'New products save to Supabase. Upload 1–5 gallery photos; each photo must be 2 MB or smaller. Default size variants start at zero stock.';
@@ -7820,7 +7887,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const options=sellerSizeOptionsForCategory(categoryName);
         sellerSelectedSizes=new Set(options.filter(size=>sellerEditingVariants.some(variant=>variant.size_label===size&&variant.is_active!==false)));
         sellerRenderSizeOptions(categoryName,sellerSelectedSizes);
-        sellerSetFormMode('edit');sellerRenderExistingGallery();$('sellerProductForm').scrollIntoView({behavior:'smooth',block:'start'});$('sellerProductName').focus({preventScroll:true});
+        sellerSetFormMode('edit');sellerRenderExistingGallery();sellerShowOverlay('sellerProductEditorOverlay');window.setTimeout(()=>$('sellerProductName').focus({preventScroll:true}),35);
       }catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not load this product for editing.','error');}
     }
     function sellerValidateFiles(files){
@@ -7858,7 +7925,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       event.preventDefault();if(!sellerCentreIsUnlocked)return;
       showCenteredActionStatus('Saving product details, please wait...','loading');
       const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
-      const editingId=sellerEditingProductId,uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false;
+      const editingId=sellerEditingProductId,wasEditing=Boolean(editingId),uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false;
       try{
         const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
@@ -7903,7 +7970,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
         }
         sellerInventoryLoaded=false;await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
-        showCenteredActionStatus(sellerEditingProductId?'Product updated successfully!':'Product added successfully!','success',1600);
+        sellerHideOverlay('sellerProductEditorOverlay');
+        showCenteredActionStatus(wasEditing?'Product updated successfully!':'Product added successfully!','success',1600);
       }catch(error){
         if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
@@ -8760,17 +8828,19 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     $('sellerOrdersClearFilters').addEventListener('click',()=>{$('sellerOrdersSearch').value='';$('sellerOrdersStatusFilter').value='';$('sellerOrdersPaymentFilter').value='';$('sellerOrdersMethodFilter').value='';$('sellerOrdersDateFilter').value='';sellerRefreshOrderPaymentMethodOptions();sellerOrdersFilterChanged();});
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
-    $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
+    $('sellerCancelEditButton').addEventListener('click',()=>closeSellerProductEditor(true));
     SELLER_IMAGE_INPUT_IDS.forEach(id=>$(id).addEventListener('change',handleSellerImageSelection));
     $('sellerProductCategory').addEventListener('change',sellerHandleCategoryChange);$('sellerAddCustomCategoryButton').addEventListener('click',sellerAddCustomCategory);$('sellerCustomCategoryName').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();sellerAddCustomCategory();}});$('sellerSellingPrice').addEventListener('input',sellerUpdatePromotionPreview);$('sellerPromotionType').addEventListener('change',sellerUpdatePromotionPreview);
     $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 5 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
     $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
     $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
+    $('sellerProductEditorCloseButton').addEventListener('click',()=>closeSellerProductEditor(true));
+    $('sellerProductEditorOverlay').addEventListener('click',event=>{if(event.target===$('sellerProductEditorOverlay'))closeSellerProductEditor(false);});
     $('sellerPermanentDeleteNoButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteCloseButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteYesButton').addEventListener('click',handleSellerPermanentDeleteProduct);
     $('sellerPermanentDeleteOverlay').addEventListener('click',event=>{if(event.target===$('sellerPermanentDeleteOverlay'))closeSellerPermanentDeleteConfirm();});
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerPermanentDeleteOverlay').classList.contains('open'))closeSellerPermanentDeleteConfirm();else if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerPermanentDeleteOverlay').classList.contains('open'))closeSellerPermanentDeleteConfirm();else if($('sellerProductEditorOverlay').classList.contains('open'))closeSellerProductEditor(true);else if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
 
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
