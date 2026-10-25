@@ -3389,6 +3389,54 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .hero-copy {padding-left:12px!important;padding-right:12px!important}
     }
   </style>
+  <style id="genmerch-product-reviews-ui">
+    .genmerch-rate-trigger{position:relative}
+    .genmerch-rate-badge{position:absolute;right:-7px;top:-6px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#f22a12;color:#fff;font-size:.61rem;font-weight:900;display:flex;align-items:center;justify-content:center}
+    .genmerch-rate-badge[hidden]{display:none!important}
+    .genmerch-review-overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:14px;background:#17110f99;backdrop-filter:blur(4px)}
+    .genmerch-review-overlay.open{display:flex}
+    .genmerch-review-modal{width:min(760px,100%);max-height:92dvh;display:flex;flex-direction:column;overflow:hidden;background:#fff;border:1px solid #f0ddd4;border-radius:16px;box-shadow:0 24px 80px #0005}
+    .genmerch-review-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;background:linear-gradient(110deg,#ff3218,#ed2b13);color:#fff}
+    .genmerch-review-head h2{margin:0;font-size:1.08rem;font-weight:900}.genmerch-review-head p{margin:5px 0 0;font-size:.77rem;line-height:1.45}
+    .genmerch-review-close{width:36px;height:36px;flex:0 0 auto;border:0;border-radius:50%;background:#ffffff28;color:#fff;font-size:1.55rem}
+    .genmerch-review-body{padding:16px;overflow:auto;min-height:0;background:#fffaf7}
+    .genmerch-review-item{display:grid;grid-template-columns:68px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px;margin-bottom:10px;border:1px solid #efdfd7;border-radius:12px;background:#fff}
+    .genmerch-review-item img{width:68px;height:72px;object-fit:cover;border-radius:8px;background:#fff4ed}
+    .genmerch-review-item strong{display:block;font-size:.84rem;color:#2c211b;line-height:1.35}
+    .genmerch-review-item small{display:block;margin-top:4px;color:#82746b;font-size:.7rem;line-height:1.4}
+    .genmerch-review-action{padding:9px 12px;border:0;border-radius:8px;background:#f22a12;color:#fff;font-size:.76rem;font-weight:900;white-space:nowrap}
+    .genmerch-review-form{padding:15px;border:1px solid #f0d9ce;border-radius:12px;background:#fff}
+    .genmerch-review-form h3{margin:0 0 5px;font-size:1rem}.genmerch-review-form>p{margin:0 0 14px;color:#776a62;font-size:.76rem;line-height:1.45}
+    .genmerch-review-stars{display:flex;gap:5px;margin:9px 0 4px}
+    .genmerch-review-star{border:0;background:transparent;padding:2px;color:#cfc5bd;font-size:2rem;line-height:1;cursor:pointer}
+    .genmerch-review-star.active{color:#ffb21b}
+    .genmerch-review-rating-label{font-size:.78rem;font-weight:900;color:#e52c17}
+    .genmerch-review-field{display:flex;flex-direction:column;gap:6px;margin-top:13px}
+    .genmerch-review-field label{font-size:.76rem;font-weight:850;color:#392b24}
+    .genmerch-review-field input,.genmerch-review-field textarea{width:100%;box-sizing:border-box;border:1px solid #dfd1c9;border-radius:8px;padding:11px 12px;font:inherit;font-size:.83rem;background:#fff;color:#2c211b}
+    .genmerch-review-field textarea{min-height:105px;resize:vertical}
+    .genmerch-review-photo-actions{display:flex;flex-wrap:wrap;gap:8px}
+    .genmerch-review-photo-button{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border:1px solid #e4d2c8;border-radius:8px;background:#fff;color:#5c4136;font-size:.76rem;font-weight:850;cursor:pointer}
+    .genmerch-review-photo-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .genmerch-review-photo-preview img{width:66px;height:66px;object-fit:cover;border-radius:8px;border:1px solid #ead9d0}
+    .genmerch-review-submit{width:100%;margin-top:16px;min-height:44px;border:0;border-radius:9px;background:#f22a12;color:#fff;font-weight:900}
+    .genmerch-review-submit:disabled{opacity:.6;cursor:wait}
+    .genmerch-review-status{margin-top:10px;font-size:.78rem;line-height:1.45;color:#9d2d1d}.genmerch-review-status.success{color:#23733a}
+    .genmerch-product-ratings{margin-top:16px;padding:15px;border:1px solid #eee0d8;border-radius:12px;background:#fff}
+    .genmerch-product-ratings h3{margin:0 0 7px;font-size:1rem}
+    .genmerch-rating-summary{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .genmerch-rating-average{font-size:1.55rem;font-weight:950;color:#29211c}
+    .genmerch-rating-stars{color:#ffb21b;letter-spacing:1px}
+    .genmerch-review-card{padding:12px 0;border-top:1px solid #f0e7e2}
+    .genmerch-review-card-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .genmerch-review-card-head strong{font-size:.8rem}
+    .genmerch-review-card-date{font-size:.68rem;color:#887970}
+    .genmerch-review-card p{margin:7px 0 0;font-size:.82rem;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+    .genmerch-review-photos{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+    .genmerch-review-photos img{width:76px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #eee0d8}
+    .genmerch-review-empty{padding:14px 0;color:#80736b;font-size:.78rem;line-height:1.5}
+    @media(max-width:540px){.genmerch-review-overlay{padding:7px}.genmerch-review-modal{max-height:95dvh;border-radius:12px}.genmerch-review-head{padding:13px}.genmerch-review-body{padding:10px}.genmerch-review-item{grid-template-columns:54px minmax(0,1fr);gap:9px;padding:9px}.genmerch-review-item img{width:54px;height:58px}.genmerch-review-item .genmerch-review-action{grid-column:2;justify-self:start}.genmerch-review-star{font-size:1.8rem}}
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -3436,6 +3484,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <button class="header-action" id="openCustomerOrdersButton" type="button" onclick="openCustomerOrders()" aria-label="View and track your orders" title="My Orders — Track your delivery">
             <span class="header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5.5" y="4" width="13" height="17" rx="1.8"></rect><path d="M9 4.5a3 3 0 0 1 6 0V7H9zM9 12h6M9 16h6"></path></svg><span class="customer-orders-badge" id="customerOrdersBadge" hidden>0</span></span>
             <small>Orders</small>
+          </button>
+          <button class="header-action genmerch-rate-trigger" id="openCustomerRateButton" type="button" onclick="openCustomerRateCenter()" aria-label="Rate delivered products" title="Rate your delivered purchases">
+            <span class="header-icon" aria-hidden="true">⭐<span class="genmerch-rate-badge" id="customerRateBadge" hidden>0</span></span><small>Rate</small>
           </button>
           <button class="cart-top header-action" id="openCartButton" type="button" aria-label="Open shopping cart">
             <span class="cart-icon header-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="9.2" cy="20" r="1.2"></circle><circle cx="17.5" cy="20" r="1.2"></circle></svg><span class="badge" id="cartBadge">0</span></span>
@@ -3789,6 +3840,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         <div class="product-modal-price" id="productModalPrice"></div>
         <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
         <p class="product-description" id="productModalDescription"></p>
+        <section class="genmerch-product-ratings" id="productModalRatings" aria-label="Product ratings and reviews">
+          <h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Loading customer reviews…</div>
+        </section>
         <div class="product-modal-colors" id="productModalColorSelector" hidden>
           <span class="product-color-heading">Color: <strong id="productModalSelectedColor">—</strong></span>
           <div class="product-color-choices" id="productModalColorChoices" role="group" aria-label="Choose product color"></div>
@@ -4159,6 +4213,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div id="customerGuestTrackResult"></div>
         </section>
       </div>
+    </section>
+  </div>
+
+  <div class="genmerch-review-overlay" id="customerRateOverlay" aria-hidden="true">
+    <section class="genmerch-review-modal" role="dialog" aria-modal="true" aria-labelledby="customerRateTitle">
+      <header class="genmerch-review-head"><div><h2 id="customerRateTitle">Rate Your Purchases</h2><p>Share your experience with products delivered to you.</p></div><button type="button" class="genmerch-review-close" onclick="closeCustomerRateCenter()" aria-label="Close ratings">×</button></header>
+      <div class="genmerch-review-body" id="customerRateBody"><div class="customer-orders-loading">Loading delivered products…</div></div>
     </section>
   </div>
 
