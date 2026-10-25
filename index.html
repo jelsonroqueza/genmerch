@@ -8079,10 +8079,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const identity=signedIn?getCustomerAuthIdentity(user):'';
       const accountLabel=$('customerAccountLabel');
       const accountButton=$('customerAccountButton');
-      if(accountLabel)accountLabel.textContent=signedIn?identity:'Sign In';
+      if(accountLabel)accountLabel.textContent=signedIn?identity:'Sign in';
       if(accountButton){
         accountButton.setAttribute('aria-label',signedIn?'Account: '+identity+'. Open account options':'Sign in or create your GENMERCH customer account');
-        accountButton.title=signedIn?identity:'Sign In or Create Account';
+        accountButton.title=signedIn?identity:'Sign in or Create Account';
         accountButton.classList.toggle('customer-account-signed-in',signedIn);
       }
       $('customerAuthSignedIn').hidden=!signedIn;
