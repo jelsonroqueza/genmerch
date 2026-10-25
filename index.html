@@ -7456,6 +7456,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     const GENMERCH_SELLER_PASSCODE = '121793';
     let sellerCentreIsUnlocked = false;
     const SELLER_CENTRE_SESSION_KEY = 'genmerchSellerCentreAdminUserId';
+    // Session-scoped UI state: survives hard refresh in each open tab, but is cleared by Exit/Log Out.
+    const SELLER_CENTRE_VIEW_STATE_KEY = 'genmerchSellerCentreViewState';
+    const SELLER_CENTRE_TAB_STATE_KEY = 'genmerchSellerCentreActiveTab';
+    const SELLER_CENTRE_ALLOWED_TABS = new Set(['products','deleted','orders','inventory']);
     // Explicit email allowlist: only these two addresses may use Seller Centre.
     // Supabase app_metadata.role must also be "admin"; email alone never grants access.
     const GENMERCH_SELLER_ADMIN_EMAILS = new Set([
@@ -7510,6 +7514,45 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     function sellerRememberAdminId(userId){
       try{if(userId)localStorage.setItem(SELLER_CENTRE_SESSION_KEY,String(userId));else localStorage.removeItem(SELLER_CENTRE_SESSION_KEY);}catch(error){console.warn('Seller Centre sign-in could not be persisted in this browser.',error);}
     }
+    function sellerRememberViewState(isOpen){
+      try{
+        if(isOpen)sessionStorage.setItem(SELLER_CENTRE_VIEW_STATE_KEY,'open');
+        else{sessionStorage.removeItem(SELLER_CENTRE_VIEW_STATE_KEY);sessionStorage.removeItem(SELLER_CENTRE_TAB_STATE_KEY);}
+      }catch(error){console.warn('Seller Centre page state could not be saved in this tab.',error);}
+    }
+    function sellerWasOpenBeforeRefresh(){try{return sessionStorage.getItem(SELLER_CENTRE_VIEW_STATE_KEY)==='open';}catch(_){return false;}}
+    function sellerGetRememberedTab(){try{const tab=sessionStorage.getItem(SELLER_CENTRE_TAB_STATE_KEY)||'products';return SELLER_CENTRE_ALLOWED_TABS.has(tab)?tab:'products';}catch(_){return 'products';}}
+    async function restoreSellerCentreAfterRefresh(){
+      if(!sellerWasOpenBeforeRefresh())return false;
+      const rememberedId=sellerGetRememberedAdminId();
+      if(!rememberedId){sellerRememberViewState(false);return false;}
+      try{
+        const client=getCustomerAuthClient();
+        const sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user){sellerRememberAdminId('');sellerRememberViewState(false);return false;}
+        if(String(session.user.id)!==String(rememberedId)||!isAuthorizedSellerAdmin(session.user)){
+          sellerRememberAdminId('');sellerRememberViewState(false);return false;
+        }
+        // Verify against Supabase before re-opening the admin portal; a saved UI flag never grants access.
+        const userResult=await client.auth.getUser();
+        if(userResult.error){console.warn('Seller Centre restore is waiting for Supabase session verification.',userResult.error);return false;}
+        const user=userResult.data&&userResult.data.user;
+        if(!user||String(user.id)!==String(rememberedId)||!isAuthorizedSellerAdmin(user)){
+          sellerRememberAdminId('');sellerRememberViewState(false);return false;
+        }
+        sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;sellerInventoryLoaded=false;
+        sellerShowOverlay('sellerDashboardOverlay');
+        switchSellerTab(sellerGetRememberedTab());
+        await loadSellerProducts();
+        return true;
+      }catch(error){
+        // Preserve the intent if session verification is temporarily unavailable; retry on the next refresh.
+        console.warn('Seller Centre could not be restored yet. The saved tab state has been kept.',error);
+        return false;
+      }
+    }
     async function openSellerCentre(){
       sellerFeedback('sellerPasscodeFeedback','','');
       $('sellerPasscodeInput').value='';
@@ -7524,8 +7567,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             sellerCentreIsUnlocked=true;
             sellerOrdersLoaded=false;
             sellerInventoryLoaded=false;
+            sellerRememberViewState(true);
             sellerShowOverlay('sellerDashboardOverlay');
-            switchSellerTab('products');
+            switchSellerTab(sellerGetRememberedTab());
             await loadSellerProducts();
             return;
           }
@@ -7539,7 +7583,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       window.setTimeout(()=>$('sellerPasscodeInput').focus(),30);
     }
     function closeSellerPasscode(){sellerHideOverlay('sellerPasscodeOverlay');$('sellerPasscodeInput').value='';}
-    function closeSellerDashboard(){sellerCentreIsUnlocked=false;stopSellerOrdersAutoRefresh();sellerHideOverlay('sellerDashboardOverlay');}
+    function closeSellerDashboard(){sellerCentreIsUnlocked=false;stopSellerOrdersAutoRefresh();sellerRememberViewState(false);sellerHideOverlay('sellerDashboardOverlay');}
     function logoutSellerCentre(){
       sellerRememberAdminId('');
       sellerCentreIsUnlocked=false;
@@ -7570,6 +7614,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(!user||!isAuthorizedSellerAdmin(user))throw new Error('This Supabase account is not one of the two authorized Seller Centre admin accounts.');
         sellerRememberAdminId(user.id);
         sellerCentreIsUnlocked=true;sellerOrdersLoaded=false;sellerInventoryLoaded=false;
+        sellerRememberViewState(true);
         closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();
       }
       catch(error){const message=error&&error.message?error.message:'Could not verify Seller Centre access.';if(/sign in first/i.test(message)){closeSellerPasscode();openCustomerAuth();showToast('Please sign in using the authorized Seller Centre admin account.');}else{sellerFeedback('sellerPasscodeFeedback',message,'error');input.value='';input.focus();}}
@@ -8051,6 +8096,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     function switchSellerTab(tab){
       sellerCurrentTab=tab==='deleted'?'deleted':(tab==='orders'?'orders':(tab==='inventory'?'inventory':'products'));
+      if(sellerCentreIsUnlocked&&$('sellerDashboardOverlay').classList.contains('open')){try{sessionStorage.setItem(SELLER_CENTRE_TAB_STATE_KEY,sellerCurrentTab);}catch(error){console.warn('Seller Centre active tab could not be saved.',error);}}
       const productsSelected=sellerCurrentTab==='products',deletedSelected=sellerCurrentTab==='deleted',ordersSelected=sellerCurrentTab==='orders',inventorySelected=sellerCurrentTab==='inventory';
       $('sellerProductsPanel').hidden=!productsSelected;$('sellerDeletedPanel').hidden=!deletedSelected;$('sellerOrdersPanel').hidden=!ordersSelected;$('sellerInventoryPanel').hidden=!inventorySelected;
       $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerDeletedTab').classList.toggle('active',deletedSelected);$('sellerOrdersTab').classList.toggle('active',ordersSelected);$('sellerInventoryTab').classList.toggle('active',inventorySelected);
@@ -8902,6 +8948,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }catch(error){
         console.warn('GENMERCH could not initialize the Orders badge from the customer session.',error);
       }
+      await restoreSellerCentreAfterRefresh();
       await restoreAddressReferenceContext();
     }
     initializeStorefront();
