@@ -2857,6 +2857,43 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   @media(max-width:540px){.seller-deleted-row-actions{align-items:stretch;flex-direction:column;min-width:125px}.seller-deleted-row-actions button{width:100%;white-space:normal;padding:8px 9px;font-size:.72rem}.seller-permanent-delete-body{padding:18px}.seller-permanent-delete-actions{gap:8px}}
   @media(prefers-reduced-motion:reduce){.seller-permanent-delete-button{transition:none}}
 </style>
+<style id="genmerch-seller-filter-sticky-table-polish">
+  .seller-filter-toolbar{
+    position:sticky;top:0;z-index:5;display:grid;grid-template-columns:minmax(220px,2fr) repeat(3,minmax(130px,1fr)) minmax(120px,.8fr) auto;
+    align-items:end;gap:10px;margin:10px 0 13px;padding:13px;border:1px solid #f3cdbd;border-radius:12px;
+    background:linear-gradient(115deg,#fffaf6 0%,#fff4ed 58%,#fffaf8 100%);box-shadow:0 5px 16px rgba(113,49,24,.055);
+  }
+  .seller-filter-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .seller-filter-field label{font-size:.68rem;line-height:1.25;font-weight:900;letter-spacing:.025em;color:#704338}
+  .seller-filter-field input,.seller-filter-field select{width:100%;min-width:0;height:40px;border:1px solid #ead5ca;border-radius:8px;padding:8px 10px;background:#fff;color:#30231e;font-size:.78rem;outline:none}
+  .seller-filter-field input:focus,.seller-filter-field select:focus{border-color:#ff5639;box-shadow:0 0 0 3px rgba(255,65,35,.12)}
+  .seller-filter-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .seller-filter-actions button{min-height:40px;padding:9px 12px}
+  .seller-filter-result-count{grid-column:1/-1;justify-self:end;color:#7a6257;font-size:.7rem;font-weight:800;line-height:1.3}
+  .seller-inventory-reason-tools{grid-template-columns:minmax(0,1fr);margin-bottom:10px}
+  .seller-orders-table-wrap,.seller-inventory-table-wrap,.seller-movements-table-wrap{max-height:min(58dvh,640px);overflow:auto;overscroll-behavior:contain;border:1px solid #efb59f;border-radius:11px;background:#fff;box-shadow:0 4px 14px rgba(100,45,24,.035);scrollbar-color:#e58a6c #fff2eb;scrollbar-width:thin}
+  .seller-orders-table,.seller-inventory-table,.seller-movements-table{border-collapse:separate;border-spacing:0}
+  .seller-orders-table thead th,.seller-inventory-table thead th,.seller-movements-table thead th{position:sticky;top:0;z-index:3;background:linear-gradient(110deg,#fff0e8 0%,#fff8f3 52%,#ffe8dd 100%);color:#6f3022;border-bottom:1px solid #f0ad91;border-right:1px solid #f6d0c1;padding:12px 11px;box-shadow:0 1px 0 rgba(231,88,50,.05)}
+  .seller-orders-table tbody td,.seller-inventory-table tbody td,.seller-movements-table tbody td{border-bottom:1px solid #f2d8ce;border-right:1px solid #f5e3dc}
+  .seller-orders-table th:last-child,.seller-orders-table td:last-child,.seller-inventory-table th:last-child,.seller-inventory-table td:last-child,.seller-movements-table th:last-child,.seller-movements-table td:last-child{border-right:0}
+  .seller-orders-table tbody tr:nth-child(even) td,.seller-inventory-table tbody tr:nth-child(even) td,.seller-movements-table tbody tr:nth-child(even) td{background:#fffaf7}
+  .seller-orders-table tbody tr:hover td,.seller-inventory-table tbody tr:hover td,.seller-movements-table tbody tr:hover td{background:#fff1e9}
+  .seller-orders-table .seller-order-detail-row td{background:#fff7f2}
+  @media(max-width:1100px){
+    .seller-filter-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .seller-filter-field.seller-filter-search{grid-column:span 2}
+    .seller-filter-actions{grid-column:1/-1}
+  }
+  @media(max-width:650px){
+    .seller-filter-toolbar{position:relative;top:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px}
+    .seller-filter-field.seller-filter-search{grid-column:1/-1}
+    .seller-filter-actions{grid-column:1/-1}
+    .seller-filter-actions button{flex:1}
+    .seller-filter-result-count{grid-column:1/-1;justify-self:start}
+    .seller-orders-table-wrap,.seller-inventory-table-wrap,.seller-movements-table-wrap{max-height:52dvh}
+    .seller-orders-table thead th,.seller-inventory-table thead th,.seller-movements-table thead th{padding:10px 9px}
+  }
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -2995,7 +3032,16 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       <section class="seller-panel" id="sellerOrdersPanel" role="tabpanel" aria-labelledby="sellerOrdersTab" hidden>
         <h3 class="seller-panel-title">Customer orders</h3><p class="seller-panel-subtitle">Live customer orders saved by checkout. New orders and their item details refresh automatically while this tab is open.</p>
         <div class="seller-feedback" id="sellerOrdersFeedback" role="status" aria-live="polite" hidden></div>
-        <div class="seller-table-wrap" style="margin-top:12px"><table class="seller-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
+        <div class="seller-filter-toolbar seller-orders-filter-toolbar" id="sellerOrdersFilterToolbar">
+          <div class="seller-filter-field seller-filter-search"><label for="sellerOrdersSearch">Search orders</label><input id="sellerOrdersSearch" type="search" placeholder="Order #, customer, email, phone, item or SKU"></div>
+          <div class="seller-filter-field"><label for="sellerOrdersStatusFilter">Order status</label><select id="sellerOrdersStatusFilter"><option value="">All order statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option><option value="refunded">Refunded</option></select></div>
+          <div class="seller-filter-field"><label for="sellerOrdersPaymentFilter">Payment status</label><select id="sellerOrdersPaymentFilter"><option value="">All payment statuses</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="failed">Failed</option><option value="cancelled">Cancelled</option><option value="refunded">Refunded</option></select></div>
+          <div class="seller-filter-field"><label for="sellerOrdersMethodFilter">Payment method</label><select id="sellerOrdersMethodFilter"><option value="">All payment methods</option></select></div>
+          <div class="seller-filter-field"><label for="sellerOrdersDateFilter">Order date</label><select id="sellerOrdersDateFilter"><option value="">Any date</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></div>
+          <div class="seller-filter-actions"><button class="seller-primary-button" type="button" onclick="sellerApplyOrderFilters()">Filter</button><button class="seller-secondary-button" id="sellerOrdersClearFilters" type="button">Clear</button></div>
+          <div class="seller-filter-result-count" id="sellerOrdersFilterCount" role="status" aria-live="polite">Showing all orders</div>
+        </div>
+        <div class="seller-table-wrap seller-orders-table-wrap" style="margin-top:12px"><table class="seller-table seller-orders-table"><thead id="sellerOrdersTableHead"><tr><th>Orders</th></tr></thead><tbody id="sellerOrdersTableBody"><tr><td class="seller-table-empty">Open this tab to load orders.</td></tr></tbody></table></div>
       </section>
       <section class="seller-panel" id="sellerInventoryPanel" role="tabpanel" aria-labelledby="sellerInventoryTab" hidden>
         <div class="seller-inventory-heading">
@@ -3014,19 +3060,26 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <div class="seller-metric-card"><span class="seller-metric-label">Orders received</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">All recorded orders</span></div>
           <div class="seller-metric-card"><span class="seller-metric-label">Paid sales</span><strong class="seller-metric-value">—</strong><span class="seller-metric-detail">Paid, non-cancelled orders</span></div>
         </div>
-        <div class="seller-inventory-tools">
+        <div class="seller-inventory-tools seller-inventory-reason-tools">
           <div class="seller-field"><label for="sellerStockReason">Reason for stock adjustment (optional)</label><input id="sellerStockReason" type="text" maxlength="250" placeholder="e.g. New delivery, damaged item, stock count correction"></div>
-          <div class="seller-field"><label for="sellerInventorySearch">Find product or size</label><input id="sellerInventorySearch" type="search" placeholder="Search product, SKU, size or color"></div>
+        </div>
+        <div class="seller-filter-toolbar seller-inventory-filter-toolbar" id="sellerInventoryFilterToolbar">
+          <div class="seller-filter-field seller-filter-search"><label for="sellerInventorySearch">Search inventory</label><input id="sellerInventorySearch" type="search" placeholder="Product, SKU, size or color"></div>
+          <div class="seller-filter-field"><label for="sellerInventoryCategoryFilter">Category</label><select id="sellerInventoryCategoryFilter"><option value="">All categories</option></select></div>
+          <div class="seller-filter-field"><label for="sellerInventoryVariantFilter">Variant / size</label><select id="sellerInventoryVariantFilter"><option value="">All variants</option></select></div>
+          <div class="seller-filter-field"><label for="sellerInventoryStatusFilter">Stock status</label><select id="sellerInventoryStatusFilter"><option value="">All stock statuses</option><option value="in_stock">In stock</option><option value="low_stock">Low stock (1–5)</option><option value="out_of_stock">Out of stock</option><option value="inactive">Inactive</option></select></div>
+          <div class="seller-filter-actions"><button class="seller-primary-button" type="button" onclick="sellerRenderInventoryRows()">Filter</button><button class="seller-secondary-button" id="sellerInventoryClearFilters" type="button">Clear</button></div>
+          <div class="seller-filter-result-count" id="sellerInventoryFilterCount" role="status" aria-live="polite">Showing all variants</div>
         </div>
         <h3 class="seller-panel-title" style="margin-top:20px">Stock by product variant</h3>
         <p class="seller-panel-subtitle">Use Add to receive stock or Remove to reduce it. Stock can never go below zero.</p>
-        <div class="seller-table-wrap"><table class="seller-table seller-inventory-table">
+        <div class="seller-table-wrap seller-inventory-table-wrap"><table class="seller-table seller-inventory-table">
           <thead><tr><th>Product</th><th>Variant / SKU</th><th>Unit price</th><th>Stock</th><th>Status</th><th>Adjust quantity</th><th>Delete product</th></tr></thead>
           <tbody id="sellerInventoryTableBody"><tr><td colspan="7" class="seller-table-empty">Open this tab to load stock levels.</td></tr></tbody>
         </table></div>
         <h3 class="seller-panel-title" style="margin-top:22px">Recent inventory movements</h3>
         <p class="seller-panel-subtitle">Records manual stock changes, order deductions, and stock returned by cancellations.</p>
-        <div class="seller-table-wrap"><table class="seller-table seller-movements-table">
+        <div class="seller-table-wrap seller-movements-table-wrap"><table class="seller-table seller-movements-table">
           <thead><tr><th>Date</th><th>Product variant</th><th>Movement</th><th>Change</th><th>Stock before → after</th><th>Reason / order</th></tr></thead>
           <tbody id="sellerMovementTableBody"><tr><td colspan="6" class="seller-table-empty">Stock movement history appears here after inventory changes.</td></tr></tbody>
         </table></div>
@@ -7153,6 +7206,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let sellerCategories = [];
     let sellerOrdersLoaded = false;
     let sellerOrdersRefreshTimer = null;
+    let sellerOrderFilterSourceRows = [];
+    let sellerOrderFilterSourceItems = [];
+    let sellerOrderFilterSourceShipments = [];
     let sellerInventoryLoaded = false;
     let sellerInventoryRows = [];
     let sellerMovementRows = [];
@@ -7813,10 +7869,53 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       return '<div class="seller-shipment-summary"><span><strong>Courier:</strong> '+sellerEscape(shipment.courier_name)+'</span><span><strong>Ref #:</strong> '+sellerEscape(shipment.tracking_number||'—')+'</span></div>';
     }
     function renderSellerOrders(rows,itemRows=[],shipmentRows=[]){
+      sellerOrderFilterSourceRows=Array.isArray(rows)?rows:[];
+      sellerOrderFilterSourceItems=Array.isArray(itemRows)?itemRows:[];
+      sellerOrderFilterSourceShipments=Array.isArray(shipmentRows)?shipmentRows:[];
+      sellerRefreshOrderPaymentMethodOptions();
+      sellerApplyOrderFilters();
+    }
+    function sellerRefreshOrderPaymentMethodOptions(){
+      const select=$('sellerOrdersMethodFilter');
+      if(!select)return;
+      const current=select.value;
+      const methods=Array.from(new Set(sellerOrderFilterSourceRows.map(row=>String(row.payment_method||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+      select.innerHTML='<option value="">All payment methods</option>'+methods.map(method=>'<option value="'+sellerEscape(method)+'">'+sellerEscape(method.replace(/_/g,' '))+'</option>').join('');
+      select.value=methods.includes(current)?current:'';
+    }
+    function sellerApplyOrderFilters(){
+      const query=String($('sellerOrdersSearch')?.value||'').trim().toLowerCase();
+      const status=String($('sellerOrdersStatusFilter')?.value||'').toLowerCase();
+      const payment=String($('sellerOrdersPaymentFilter')?.value||'').toLowerCase();
+      const method=String($('sellerOrdersMethodFilter')?.value||'').toLowerCase();
+      const dateWindow=Number($('sellerOrdersDateFilter')?.value||0);
+      const cutoff=dateWindow?Date.now()-dateWindow*24*60*60*1000:0;
+      const rows=sellerOrderFilterSourceRows.filter(row=>{
+        const rowStatus=String(row.status||'pending').toLowerCase();
+        const rowPayment=String(row.payment_status||'pending').toLowerCase();
+        if(status&&rowStatus!==status)return false;
+        if(payment&&rowPayment!==payment)return false;
+        if(method&&String(row.payment_method||'').toLowerCase()!==method)return false;
+        if(cutoff){const created=Date.parse(row.created_at||'');if(!Number.isFinite(created)||created<cutoff)return false;}
+        if(!query)return true;
+        const orderId=String(row.id||'');
+        const items=sellerOrderFilterSourceItems.filter(item=>String(item.order_id)===orderId);
+        const shipment=sellerOrderFilterSourceShipments.find(item=>String(item.order_id)===orderId)||{};
+        const searchable=[row.order_number,row.customer_name,row.customer_phone,row.customer_email,row.status,row.payment_status,row.payment_method,row.shipping_street_address,row.shipping_barangay,row.shipping_city_municipality,row.shipping_province,row.shipping_postal_code,row.delivery_zone,shipment.courier_name,shipment.tracking_number,...items.flatMap(item=>[item.product_name,item.sku,item.size_label,item.color_label])];
+        return searchable.some(value=>String(value||'').toLowerCase().includes(query));
+      });
+      const matchingIds=new Set(rows.map(row=>String(row.id)));
+      const items=sellerOrderFilterSourceItems.filter(item=>matchingIds.has(String(item.order_id)));
+      const shipments=sellerOrderFilterSourceShipments.filter(item=>matchingIds.has(String(item.order_id)));
+      const count=$('sellerOrdersFilterCount');
+      if(count)count.textContent='Showing '+rows.length+' of '+sellerOrderFilterSourceRows.length+' order(s)';
+      sellerRenderOrdersTable(rows,items,shipments,Boolean(query||status||payment||method||dateWindow));
+    }
+    function sellerRenderOrdersTable(rows,itemRows=[],shipmentRows=[],filtered=false){
       const head=$('sellerOrdersTableHead'),body=$('sellerOrdersTableBody');
       const columns=[['Order','order_number'],['Customer','customer_name'],['Contact','customer_phone'],['Email','customer_email'],['Status','status'],['Payment','payment_status'],['Method','payment_method'],['Total','total_amount'],['Delivery','shipping_street_address'],['City','shipping_city_municipality'],['Province','shipping_province'],['Date','created_at'],['Items','__items'],['Action','__action']];
       head.innerHTML='<tr>'+columns.map(col=>'<th>'+sellerEscape(col[0])+'</th>').join('')+'</tr>';
-      if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">No orders have been placed yet. Customer checkout orders will appear here automatically.</td></tr>';return;}
+      if(!rows.length){body.innerHTML='<tr><td colspan="'+columns.length+'" class="seller-table-empty">'+(filtered?'No orders match these filters. Select Clear to show all orders.':'No orders have been placed yet. Customer checkout orders will appear here automatically.')+'</td></tr>';return;}
       const itemsByOrder=new Map(),shipmentsByOrder=new Map();
       (itemRows||[]).forEach(item=>{const key=String(item.order_id);if(!itemsByOrder.has(key))itemsByOrder.set(key,[]);itemsByOrder.get(key).push(item);});
       (shipmentRows||[]).forEach(shipment=>{if(!shipmentsByOrder.has(String(shipment.order_id)))shipmentsByOrder.set(String(shipment.order_id),shipment);});
@@ -7985,13 +8084,52 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       ];
       $('sellerInventoryMetrics').innerHTML=cards.map(card=>'<div class="seller-metric-card"><span class="seller-metric-label">'+sellerEscape(card[0])+'</span><strong class="seller-metric-value">'+sellerEscape(card[1])+'</strong><span class="seller-metric-detail">'+sellerEscape(card[2])+'</span></div>').join('');
     }
+    function sellerSetInventoryFilterOptions(products,variants){
+      const categorySelect=$('sellerInventoryCategoryFilter'),variantSelect=$('sellerInventoryVariantFilter');
+      if(categorySelect){
+        const current=categorySelect.value,categoryMap=new Map();
+        (products||[]).forEach(product=>{
+          const id=String(product.category_id||'');
+          if(!id)return;
+          const category=sellerCategories.find(item=>String(item.id)===id);
+          categoryMap.set(id,category&&category.name?category.name:'Other');
+        });
+        const options=Array.from(categoryMap.entries()).sort((a,b)=>a[1].localeCompare(b[1]));
+        categorySelect.innerHTML='<option value="">All categories</option>'+options.map(([id,name])=>'<option value="'+sellerEscape(id)+'">'+sellerEscape(name)+'</option>').join('');
+        categorySelect.value=categoryMap.has(current)?current:'';
+      }
+      if(variantSelect){
+        const current=variantSelect.value,variantMap=new Map();
+        (variants||[]).forEach(variant=>{
+          const size=String(variant.size_label||'Variant'),color=String(variant.color_label||''),key=JSON.stringify([size,color]);
+          variantMap.set(key,size+(color?' / '+color:''));
+        });
+        const options=Array.from(variantMap.entries()).sort((a,b)=>a[1].localeCompare(b[1]));
+        variantSelect.innerHTML='<option value="">All variants</option>'+options.map(([key,label])=>'<option value="'+sellerEscape(key)+'">'+sellerEscape(label)+'</option>').join('');
+        variantSelect.value=variantMap.has(current)?current:'';
+      }
+    }
     function sellerRenderInventoryRows(){
-      const query=String($('sellerInventorySearch').value||'').trim().toLowerCase(),tbody=$('sellerInventoryTableBody');
+      const query=String($('sellerInventorySearch').value||'').trim().toLowerCase();
+      const categoryFilter=String($('sellerInventoryCategoryFilter')?.value||'');
+      const variantFilter=String($('sellerInventoryVariantFilter')?.value||'');
+      const statusFilter=String($('sellerInventoryStatusFilter')?.value||'');
+      const tbody=$('sellerInventoryTableBody');
       const rows=sellerInventoryRows.filter(item=>{
-        const product=item.product||{},variant=item.variant||{};
-        return !query||[product.name,variant.sku,variant.size_label,variant.color_label].some(value=>String(value||'').toLowerCase().includes(query));
+        const product=item.product||{},variant=item.variant||{},stock=Math.max(0,Number(variant.stock_quantity)||0);
+        const matchesQuery=!query||[product.name,variant.sku,variant.size_label,variant.color_label].some(value=>String(value||'').toLowerCase().includes(query));
+        const matchesCategory=!categoryFilter||String(product.category_id||'')===categoryFilter;
+        const variantKey=JSON.stringify([String(variant.size_label||'Variant'),String(variant.color_label||'')]);
+        const matchesVariant=!variantFilter||variantKey===variantFilter;
+        const sellable=product.is_active!==false&&variant.is_active!==false;
+        const currentStatus=!sellable?'inactive':stock===0?'out_of_stock':stock<=5?'low_stock':'in_stock';
+        const matchesStatus=!statusFilter||currentStatus===statusFilter;
+        return matchesQuery&&matchesCategory&&matchesVariant&&matchesStatus;
       });
-      if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="seller-table-empty">'+(query?'No matching product variants.':'No product variants were found.')+'</td></tr>';return;}
+      const count=$('sellerInventoryFilterCount');
+      if(count)count.textContent='Showing '+rows.length+' of '+sellerInventoryRows.length+' variant(s)';
+      const anyFilter=Boolean(query||categoryFilter||variantFilter||statusFilter);
+      if(!rows.length){tbody.innerHTML='<tr><td colspan="7" class="seller-table-empty">'+(anyFilter?'No inventory variants match these filters. Select Clear to show all variants.':'No product variants were found.')+'</td></tr>';return;}
       const deleteActionProducts=new Set();
       tbody.innerHTML=rows.map(item=>{
         const product=item.product||{},variant=item.variant||{},stock=Math.max(0,Number(variant.stock_quantity)||0);
@@ -8200,7 +8338,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       try{
         const client=await getSellerAdminClient(false);
         const results=await Promise.all([
-          client.from('products').select('id,name,base_price,is_active,is_deleted').eq('is_deleted',false),
+          client.from('products').select('id,name,category_id,base_price,is_active,is_deleted').eq('is_deleted',false),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active,updated_at').order('updated_at',{ascending:false}),
           client.from('orders').select('id,order_number,status,payment_status,total_amount,created_at').order('created_at',{ascending:false}).limit(1000),
           client.from('inventory_movements').select('id,variant_id,order_id,movement_type,quantity_delta,stock_before,stock_after,reason,actor_id,created_at,product_name_snapshot,variant_sku_snapshot,size_label_snapshot,color_label_snapshot').order('created_at',{ascending:false}).limit(50)
@@ -8211,6 +8349,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const visibleProducts=Array.from(productMap.values());
         const variants=allVariants.filter(variant=>productMap.has(String(variant.product_id)));
         sellerInventoryRows=variants.map(variant=>({variant,product:productMap.get(String(variant.product_id))}));
+        sellerSetInventoryFilterOptions(visibleProducts,variants);
         sellerMovementRows=movements;
         sellerRenderInventoryMetrics(visibleProducts,variants,orders);
         sellerRenderInventoryRows();sellerRenderMovements(movements,variants,visibleProducts,orders);
@@ -8241,6 +8380,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
     $('sellerPasscodeForm').addEventListener('submit',verifySellerPasscode);
     $('sellerInventorySearch').addEventListener('input',sellerRenderInventoryRows);
+    ['sellerInventoryCategoryFilter','sellerInventoryVariantFilter','sellerInventoryStatusFilter'].forEach(id=>$(id).addEventListener('change',sellerRenderInventoryRows));
+    $('sellerInventoryClearFilters').addEventListener('click',()=>{$('sellerInventorySearch').value='';$('sellerInventoryCategoryFilter').value='';$('sellerInventoryVariantFilter').value='';$('sellerInventoryStatusFilter').value='';sellerRenderInventoryRows();});
+    $('sellerOrdersSearch').addEventListener('input',sellerApplyOrderFilters);
+    ['sellerOrdersStatusFilter','sellerOrdersPaymentFilter','sellerOrdersMethodFilter','sellerOrdersDateFilter'].forEach(id=>$(id).addEventListener('change',sellerApplyOrderFilters));
+    $('sellerOrdersClearFilters').addEventListener('click',()=>{$('sellerOrdersSearch').value='';$('sellerOrdersStatusFilter').value='';$('sellerOrdersPaymentFilter').value='';$('sellerOrdersMethodFilter').value='';$('sellerOrdersDateFilter').value='';sellerRefreshOrderPaymentMethodOptions();sellerApplyOrderFilters();});
     $('sellerProductForm').addEventListener('submit',submitSellerProduct);
     $('sellerProductResetButton').addEventListener('click',resetSellerProductForm);
     $('sellerCancelEditButton').addEventListener('click',resetSellerProductForm);
