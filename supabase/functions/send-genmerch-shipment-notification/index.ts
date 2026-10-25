@@ -1,15 +1,21 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
-const ALLOWED_ORIGIN = "https://jelsonroqueza.github.io";
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Vary": "Origin",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://jelsonroqueza.github.io",
+  "https://shopgenmerch.com",
+  "https://www.shopgenmerch.com",
+]);
+function corsHeaders(origin: string | null = null) {
+  return {
+    "Access-Control-Allow-Origin": origin && ALLOWED_ORIGINS.has(origin) ? origin : "https://shopgenmerch.com",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
-function jsonResponse(status: number, body: Record<string, unknown>) {
-  return new Response(JSON.stringify(body), { status, headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" } });
+function jsonResponse(status: number, body: Record<string, unknown>, origin: string | null = null) {
+  return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders(origin), "Content-Type": "application/json; charset=utf-8" } });
 }
 function escapeHtml(value: unknown): string {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -100,9 +106,10 @@ function buildShipmentText(order: Record<string, unknown>, shipment: Record<stri
 
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get("Origin");
-  if (origin && origin !== ALLOWED_ORIGIN) return new Response("Forbidden origin", { status: 403 });
-  if (request.method === "OPTIONS") return new Response("ok", { headers: CORS_HEADERS });
-  if (request.method !== "POST") return jsonResponse(405, { ok: false, code: "method_not_allowed", message: "Use POST to send a shipment update." });
+  const respond = (status: number, payload: Record<string, unknown>) => jsonResponse(status, payload, origin);
+  if (origin && !ALLOWED_ORIGINS.has(origin)) return new Response("Forbidden origin", { status: 403 });
+  if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(origin) });
+  if (request.method !== "POST") return respond(405, { ok: false, code: "method_not_allowed", message: "Use POST to send a shipment update." });
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -111,8 +118,8 @@ Deno.serve(async (request: Request) => {
   const authHeader = request.headers.get("Authorization") || "";
   const token = authHeader.match(/^Bearer\s+(.+)$/i)?.[1] || "";
 
-  if (!supabaseUrl || !serviceRoleKey) return jsonResponse(503, { ok: false, code: "supabase_not_configured", message: "The shipment email service is not configured." });
-  if (!token) return jsonResponse(401, { ok: false, code: "authentication_required", message: "Sign in as a GENMERCH administrator to send a shipment email." });
+  if (!supabaseUrl || !serviceRoleKey) return respond(503, { ok: false, code: "supabase_not_configured", message: "The shipment email service is not configured." });
+  if (!token) return respond(401, { ok: false, code: "authentication_required", message: "Sign in as a GENMERCH administrator to send a shipment email." });
 
   let publishableKey = Deno.env.get("SUPABASE_ANON_KEY") || "";
   if (!publishableKey) {
@@ -122,58 +129,61 @@ Deno.serve(async (request: Request) => {
       if (envName) publishableKey = Deno.env.get(envName) || "";
     } catch { publishableKey = ""; }
   }
-  if (!publishableKey) return jsonResponse(503, { ok: false, code: "auth_key_unavailable", message: "The administrator verification key is missing from Supabase environment settings." });
+  if (!publishableKey) return respond(503, { ok: false, code: "auth_key_unavailable", message: "The administrator verification key is missing from Supabase environment settings." });
 
   const userClient = createClient(supabaseUrl, publishableKey, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { Authorization: "Bearer " + token } },
   });
   const { data: userData, error: userError } = await userClient.auth.getUser(token);
-  if (userError || !userData.user) return jsonResponse(401, { ok: false, code: "invalid_session", message: "Your administrator session is no longer valid. Sign in again and retry." });
-  if (userData.user.app_metadata?.role !== "admin") return jsonResponse(403, { ok: false, code: "admin_required", message: "Only a GENMERCH administrator can send shipment notifications." });
+  if (userError || !userData.user) return respond(401, { ok: false, code: "invalid_session", message: "Your administrator session is no longer valid. Sign in again and retry." });
+  const { data: allowedAdmin, error: adminGuardError } = await userClient.rpc("is_genmerch_admin");
+  if (adminGuardError || allowedAdmin !== true) {
+    return respond(403, { ok: false, code: "admin_required", message: "Only one of the two authorized GENMERCH admin accounts can send shipment notifications." });
+  }
 
   let body: Record<string, unknown>;
   try { body = await request.json(); }
-  catch { return jsonResponse(400, { ok: false, code: "invalid_json", message: "Request body must be valid JSON." }); }
+  catch { return respond(400, { ok: false, code: "invalid_json", message: "Request body must be valid JSON." }); }
   const orderId = String(body.order_id ?? "").trim();
   const orderNumber = String(body.order_number ?? "").trim();
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId) ||
       !/^GM-[0-9]{8}-[A-F0-9]{8}$/i.test(orderNumber)) {
-    return jsonResponse(400, { ok: false, code: "invalid_order_details", message: "The order reference is invalid." });
+    return respond(400, { ok: false, code: "invalid_order_details", message: "The order reference is invalid." });
   }
-  if (!resendApiKey || !fromAddress) return jsonResponse(503, { ok: false, code: "email_provider_not_configured", message: "The order was shipped, but email sending is not configured. The shipping details remain saved." });
+  if (!resendApiKey || !fromAddress) return respond(503, { ok: false, code: "email_provider_not_configured", message: "The order was shipped, but email sending is not configured. The shipping details remain saved." });
 
   const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
   try {
     const { data: order, error: orderError } = await admin.from("orders")
       .select("id,order_number,customer_name,customer_phone,customer_email,receipt_email,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,created_at")
       .eq("id", orderId).eq("order_number", orderNumber).maybeSingle();
-    if (orderError || !order) return jsonResponse(404, { ok: false, code: "order_not_found", message: "The order could not be found for this shipping update." });
+    if (orderError || !order) return respond(404, { ok: false, code: "order_not_found", message: "The order could not be found for this shipping update." });
     if (!["shipped", "out_for_delivery", "delivered"].includes(String(order.status).toLowerCase())) {
-      return jsonResponse(409, { ok: false, code: "order_not_shipped", message: "The order is not marked as shipped yet." });
+      return respond(409, { ok: false, code: "order_not_shipped", message: "The order is not marked as shipped yet." });
     }
     const recipient = String(order.receipt_email || order.customer_email || "").trim().toLowerCase();
-    if (!validEmail(recipient)) return jsonResponse(409, { ok: false, code: "no_recipient_email", message: "No valid customer receipt email is saved on this order." });
+    if (!validEmail(recipient)) return respond(409, { ok: false, code: "no_recipient_email", message: "No valid customer receipt email is saved on this order." });
 
     const { data: shipment, error: shipmentError } = await admin.from("shipments")
       .select("order_id,courier_name,tracking_number,tracking_url,status,shipped_at,updated_at")
       .eq("order_id", orderId).maybeSingle();
     if (shipmentError || !shipment || !shipment.courier_name || !shipment.tracking_number) {
-      return jsonResponse(409, { ok: false, code: "shipment_details_missing", message: "Courier and delivery reference details must be saved before sending this email." });
+      return respond(409, { ok: false, code: "shipment_details_missing", message: "Courier and delivery reference details must be saved before sending this email." });
     }
     const { data: items, error: itemsError } = await admin.from("order_items")
       .select("product_name,sku,size_label,color_label,quantity,unit_price,line_total")
       .eq("order_id", orderId).order("created_at", { ascending: true });
-    if (itemsError || !Array.isArray(items) || items.length === 0) return jsonResponse(500, { ok: false, code: "items_unavailable", message: "The shipping details were saved, but the order email could not be prepared." });
+    if (itemsError || !Array.isArray(items) || items.length === 0) return respond(500, { ok: false, code: "items_unavailable", message: "The shipping details were saved, but the order email could not be prepared." });
 
     const { data: reservationData, error: reservationError } = await admin.rpc("reserve_genmerch_shipment_email", { p_order_id: orderId });
     if (reservationError) {
       console.error("Could not reserve shipment notification.", reservationError.message);
-      return jsonResponse(409, { ok: false, code: "shipment_email_guard", message: reservationError.message || "The shipment email could not be queued." });
+      return respond(409, { ok: false, code: "shipment_email_guard", message: reservationError.message || "The shipment email could not be queued." });
     }
     const reservation = Array.isArray(reservationData) ? reservationData[0] : reservationData;
-    if (reservation?.status === "sent" && reservation?.already_sent) return jsonResponse(200, { ok: true, already_sent: true, recipient_email: reservation.recipient_email });
-    if (reservation?.already_sending) return jsonResponse(409, { ok: false, code: "shipment_email_in_progress", message: "A shipment notification for this order is already being processed. Check the customer inbox before retrying." });
+    if (reservation?.status === "sent" && reservation?.already_sent) return respond(200, { ok: true, already_sent: true, recipient_email: reservation.recipient_email });
+    if (reservation?.already_sending) return respond(409, { ok: false, code: "shipment_email_in_progress", message: "A shipment notification for this order is already being processed. Check the customer inbox before retrying." });
 
     let providerResponse: Response;
     let providerPayload: Record<string, unknown> = {};
@@ -193,21 +203,21 @@ Deno.serve(async (request: Request) => {
     } catch (error) {
       await admin.rpc("finish_genmerch_shipment_email", { p_order_id: orderId, p_status: "failed", p_provider_message_id: null, p_error: String(error) });
       console.error("Resend transport failed for shipment notification.");
-      return jsonResponse(502, { ok: false, code: "email_provider_unreachable", message: "The order is shipped, but the customer email could not be sent. The shipping information remains saved." });
+      return respond(502, { ok: false, code: "email_provider_unreachable", message: "The order is shipped, but the customer email could not be sent. The shipping information remains saved." });
     }
     if (!providerResponse.ok) {
       const providerError = String(providerPayload.message || providerPayload.name || ("Resend returned HTTP " + providerResponse.status));
       await admin.rpc("finish_genmerch_shipment_email", { p_order_id: orderId, p_status: "failed", p_provider_message_id: null, p_error: providerError });
       console.error("Resend rejected a GENMERCH shipment notification.", { status: providerResponse.status, error: providerError });
-      return jsonResponse(502, { ok: false, code: "email_provider_rejected", message: "The order is shipped, but Resend could not accept the notification email. The shipping information remains saved." });
+      return respond(502, { ok: false, code: "email_provider_rejected", message: "The order is shipped, but Resend could not accept the notification email. The shipping information remains saved." });
     }
 
     const messageId = String(providerPayload.id || "");
     const { error: finishError } = await admin.rpc("finish_genmerch_shipment_email", { p_order_id: orderId, p_status: "sent", p_provider_message_id: messageId, p_error: null });
     if (finishError) console.error("Shipment email accepted by provider but notification state could not be updated.", finishError.message);
-    return jsonResponse(200, { ok: true, recipient_email: reservation?.recipient_email || recipient, message_id: messageId });
+    return respond(200, { ok: true, recipient_email: reservation?.recipient_email || recipient, message_id: messageId });
   } catch (error) {
     console.error("Shipment notification handler failed.", error instanceof Error ? error.message : "unknown error");
-    return jsonResponse(500, { ok: false, code: "unexpected_error", message: "The order was marked shipped, but the shipment email could not be sent. The shipping details remain saved." });
+    return respond(500, { ok: false, code: "unexpected_error", message: "The order was marked shipped, but the shipment email could not be sent. The shipping details remain saved." });
   }
 });
