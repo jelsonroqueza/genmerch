@@ -2729,6 +2729,10 @@
     .footer-about-promise{display:inline-flex;margin-top:3px;padding:8px 11px;border-radius:7px;background:#ffeadc;color:#27201b;font-weight:950;font-size:.82rem;letter-spacing:.04em}
     .footer-partner-benefits{display:grid;gap:8px;margin:9px 0 11px;padding:0 0 0 19px;color:#5e5049;font-size:.82rem;line-height:1.55;text-align:left}
     .footer-partner-benefits li{padding-left:2px}
+    .footer-partner-howto{margin:11px 0 12px;padding:11px 12px;border:1px solid #f2e1d7;border-radius:10px;background:#fffaf7}
+    .footer-partner-howto>p{margin:0 0 7px!important;color:#33251f!important;font-size:.78rem!important;font-weight:900!important}
+    .footer-partner-howto ol{margin:0;padding-left:19px;color:#66564e;font-size:.77rem;line-height:1.55}
+    .footer-partner-howto li{padding:2px 0 2px 2px}
     .footer-partner-note{font-size:.78rem!important}
     .footer-partner-apply-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:44px;margin:12px 0 14px;padding:11px 14px;border:0;border-radius:10px;background:linear-gradient(110deg,#ff3218,#ff5317);color:#fff;font-weight:950;font-size:.85rem;box-shadow:0 5px 14px rgba(237,53,22,.16);transition:transform .16s ease,box-shadow .16s ease}
     .footer-partner-apply-btn span{font-size:1.1rem;line-height:1}
@@ -3005,21 +3009,29 @@
       <section class="footer-info-card footer-about-card" aria-labelledby="footerAboutTitle">
         <p class="footer-info-kicker">THE STORY BEHIND THE BRAND</p>
         <h2 id="footerAboutTitle">About Us</h2>
-        <p><strong>GENMERCH — Suot Apparel</strong> is a Philippine online apparel and merchandise store built around everyday comfort, personal style, and practical essentials. Our collection includes wearable favourites such as T-shirts, shorts, sandos, and selected merchandise for everyday life.</p>
-        <p>We aim to make online shopping straightforward with clear product details, size and stock information, and delivery options shown during checkout. We also welcome entrepreneurs and creators who want to explore opportunities to grow with a local apparel brand.</p>
+        <p><strong>GENMERCH — Suot Apparel</strong> is a Philippine-based online apparel and merchandise store built around everyday comfort, personal style, and practical essentials. Our collection features everyday favourites such as T-Shirts, Shorts, and Sandos, along with selected merchandise for different styles and routines.</p>
+        <p>Our goal is to make online shopping simple and clear through useful product details, available sizes, stock information, and order updates. Nationwide shipping and Cash on Delivery are available where shown at checkout. We want every customer to find apparel that feels comfortable, fits their style, and suits their day.</p>
         <div class="footer-about-promise">Comfort. Style. For Every You.</div>
       </section>
       <section class="footer-info-card footer-partner-card" aria-labelledby="footerPartnerTitle">
         <p class="footer-info-kicker">GROW WITH GENMERCH</p>
         <h2 id="footerPartnerTitle">Partner With Us</h2>
-        <p>Palaguin ang negosyo kasama ang GENMERCH! Bukas kami sa mga <strong>resellers, wholesalers, at brand affiliates</strong> na gustong mag-alok ng apparel at merchandise sa sarili nilang customers.</p>
+        <p>Palaguin ang negosyo kasama ang <strong>GENMERCH — Suot Apparel</strong>. Tumatanggap kami ng inquiries mula sa <strong>resellers, wholesalers, at brand affiliates</strong> na gustong mag-alok ng everyday apparel sa sarili nilang customers at communities.</p>
         <ul class="footer-partner-benefits">
-          <li><strong>Partner pricing:</strong> inquiries for eligible bulk orders, subject to review and agreed terms.</li>
-          <li><strong>Wearable product range:</strong> T-shirts, shorts, sandos, and future catalog additions.</li>
-          <li><strong>Reach more customers:</strong> explore selling through your shop, social pages, or other sales channels.</li>
+          <li><strong>Partner and bulk-order inquiries:</strong> pag-usapan natin ang volume, pricing, at terms para sa eligible orders. Ang final rates at conditions ay kumpirmado lamang pagkatapos ng review.</li>
+          <li><strong>Everyday apparel:</strong> explore T-Shirts, Shorts, Sandos, at mga susunod na product additions sa catalog.</li>
+          <li><strong>Flexible selling channels:</strong> welcome ang applicants na nagbebenta sa physical shop, online store, social media, o nagpaplanong magsimula.</li>
         </ul>
-        <p class="footer-partner-note">Fill out the application form with your contact details and business plans. Our team will review your inquiry and contact you using your preferred method. Applying does not automatically guarantee approval or special pricing.</p>
-        <button class="footer-partner-apply-btn" type="button" onclick="openPartnerApplication()">Apply Now / Fill Out Form <span aria-hidden="true">→</span></button>
+        <div class="footer-partner-howto">
+          <p><strong>How to apply</strong></p>
+          <ol>
+            <li>Fill out the form with your contact and business details.</li>
+            <li>Select your partnership type and products of interest.</li>
+            <li>Our team will review your application and contact you by email or phone.</li>
+          </ol>
+        </div>
+        <p class="footer-partner-note">Fill out the form to tell us about your goals, sales channels, and expected order volume. Applying does not guarantee approval, reseller rates, or special pricing; all partnerships are subject to review and agreed terms.</p>
+        <button class="footer-partner-apply-btn" type="button" onclick="openPartnerApplication()">Apply Now — Partner Application <span aria-hidden="true">→</span></button>
         <div class="footer-partner-contact">
           <p><strong>Partnership applications</strong><br><a href="mailto:negosyonipinoy@yahoo.com.ph?subject=GENMERCH%20Partner%20Application">negosyonipinoy@yahoo.com.ph</a></p>
           <p><strong>General inquiries</strong><br><a href="mailto:negosyonipinoy@gmail.com">negosyonipinoy@gmail.com</a></p>
@@ -6415,7 +6427,7 @@
     function openPartnerApplication(){
       const formContent = `
         <div class="partner-application-content">
-          <p class="partner-application-intro">Tell us a little about yourself and your business. The GENMERCH team will review your application and contact you using your preferred method. Fields marked <strong>*</strong> are required.</p>
+          <p class="partner-application-intro">Interested in working with GENMERCH — Suot Apparel? Share your contact details, business plans, selling channels, and product interests below. We’ll review your application and contact you through your preferred method. Required fields are marked <strong>*</strong>.</p>
           <form id="partnerApplicationForm" novalidate>
             <input type="hidden" id="partnerFormStartedAt" name="form_started_at" value="">
             <div class="partner-honeypot" aria-hidden="true"><label for="partnerWebsiteTrap">Leave this field blank</label><input id="partnerWebsiteTrap" name="website" type="text" tabindex="-1" autocomplete="off"></div>
@@ -6494,7 +6506,7 @@
         }
         if(!data.ok)throw new Error(data.message||'We could not submit your application right now. Please try again or contact us directly.');
         status.hidden=false;status.className='partner-form-status success';
-        status.textContent='Thank you! Your application was submitted. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. The GENMERCH team will review your details and contact you using your preferred method.';
+        status.textContent='Thank you! Your GENMERCH partner application was submitted successfully. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. Our team will review your details and contact you using your preferred method.';
         form.reset();$('partnerFormStartedAt').value=String(Date.now());
       }catch(error){
         status.hidden=false;status.className='partner-form-status error';
