@@ -3389,6 +3389,40 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .hero-copy {padding-left:12px!important;padding-right:12px!important}
     }
   </style>
+  <style id="genmerch-hero-benefits-mobile-centering">
+    @media (max-width: 900px) {
+      .hero-copy .hero-benefits {
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        width:min(100%,360px)!important;
+        max-width:360px!important;
+        min-width:0!important;
+        justify-self:center!important;
+        align-self:center!important;
+        margin:0 auto 19px!important;
+        padding:0!important;
+        box-sizing:border-box!important;
+        position:relative!important;
+        left:auto!important;
+        right:auto!important;
+        transform:none!important;
+      }
+      .hero-copy .hero-benefits>span {
+        width:100%!important;
+        min-width:0!important;
+        box-sizing:border-box!important;
+        justify-content:flex-start!important;
+        text-align:left!important;
+      }
+    }
+    @media (max-width:480px) {
+      .hero-copy .hero-benefits {
+        width:min(100%,340px)!important;
+        max-width:340px!important;
+        gap:12px 10px!important;
+      }
+    }
+  </style>
   <style id="genmerch-product-reviews-ui">
     .genmerch-rate-trigger{position:relative}
     .genmerch-rate-icon{overflow:visible!important}
