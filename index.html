@@ -10285,7 +10285,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       const normalized=label.toLowerCase();
       let message='Please wait, processing your request...';
       if(normalized.includes('refresh'))message='Refreshing page, please wait';
-      else if(normalized.includes('delete')||normalized.includes('remove'))message='Deleting, Please wait a moment!';
+      else if(normalized.includes('delete')||normalized.includes('remove'))message='Please wait';
       else if(normalized.includes('add to cart'))message='Adding item to your cart, please wait...';
       showCenteredActionStatus(message,'loading',850);
     },true);
