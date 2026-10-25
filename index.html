@@ -3569,6 +3569,35 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .card-wishlist-button svg{width:23px;height:23px}
     }
   </style>
+  <style id="genmerch-header-filled-icons-store-rating">
+    header .header-actions .wishlist-header-button .wishlist-header-icon svg{
+      fill:#f21f2d!important;stroke:#f21f2d!important;stroke-width:1.6!important;
+    }
+    header .header-actions .genmerch-rate-trigger .genmerch-rate-icon .genmerch-rate-star{
+      fill:#ffd21f!important;stroke:#e5a900!important;stroke-width:1.1!important;
+      filter:drop-shadow(0 1px 1px #9b670033)!important;
+    }
+    .desktop-links .store-rating-nav{
+      display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;
+      gap:6px!important;min-width:0!important;max-width:100%!important;
+      padding:8px 13px!important;border:1px solid #f0d16c!important;border-radius:999px!important;
+      background:#fff9e5!important;color:#282116!important;font-size:.8rem!important;
+      font-weight:800!important;line-height:1.2!important;white-space:nowrap!important;
+      box-shadow:0 1px 3px #6f4e0010;
+    }
+    .desktop-links .store-rating-nav:hover{background:#fff0b8!important;border-color:#e3b52f!important}
+    .desktop-links .store-rating-nav:focus-visible{outline:2px solid #d19a00!important;outline-offset:2px!important}
+    .desktop-links .store-rating-nav .store-rating-star{display:inline-block!important;flex:0 0 auto!important;color:#f2b900!important;font-size:1.05rem!important;line-height:1!important}
+    .desktop-links .store-rating-nav .store-rating-nav-label{font-weight:850!important}
+    .desktop-links .store-rating-nav .store-rating-nav-value{font-variant-numeric:tabular-nums!important;font-weight:950!important;color:#202020!important}
+    @media(max-width:900px){
+      .desktop-links .store-rating-nav{padding:7px 10px!important;gap:5px!important}
+    }
+    @media(max-width:480px){
+      .desktop-links .store-rating-nav{padding:7px 8px!important;gap:4px!important;font-size:.66rem!important}
+      .desktop-links .store-rating-nav .store-rating-star{font-size:.9rem!important}
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -3630,7 +3659,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         </div>
       </div>
       <nav class="desktop-links" aria-label="Main navigation">
-        <button class="active" onclick="resetCatalog()">Home</button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
+        <button class="active" onclick="resetCatalog()">Home</button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" class="store-rating-nav" id="storeRatingNavButton" onclick="showStoreRatingDetails()" title="Overall average from all published customer product reviews" aria-label="Overall GENMERCH store rating"><b class="store-rating-nav-label">Store Rating</b><b class="store-rating-star" aria-hidden="true">★</b><b class="store-rating-nav-value" id="storeRatingNavValue" aria-live="polite">…</b></button><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
       </nav>
     </div>
   </header>
@@ -9554,6 +9583,53 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       $('customerRateBody').innerHTML='<div class="customer-orders-loading">Loading your delivered products…</div>';
       await loadCustomerRateCenter();
     }
+    async function loadStoreRatingSummary(){
+      const button=$('storeRatingNavButton'),value=$('storeRatingNavValue');
+      if(!button||!value)return;
+      value.textContent='…';
+      try{
+        const client=getCustomerAuthClient(),pageSize=1000;
+        let offset=0,totalCount=null,totalRating=0,ratingCount=0;
+        while(true){
+          let request=client.from('product_reviews').select('rating',offset===0?{count:'exact'}:undefined);
+          request=request.eq('moderation_status','published').order('created_at',{ascending:true}).range(offset,offset+pageSize-1);
+          const result=await request;
+          if(result.error)throw result.error;
+          if(offset===0&&result.count!==null&&result.count!==undefined&&Number.isFinite(Number(result.count)))totalCount=Number(result.count);
+          const rows=Array.isArray(result.data)?result.data:[];
+          rows.forEach(row=>{
+            const rating=Number(row.rating);
+            if(Number.isFinite(rating)&&rating>=1&&rating<=5){totalRating+=rating;ratingCount++;}
+          });
+          offset+=rows.length;
+          if(!rows.length||rows.length<pageSize||(totalCount!==null&&offset>=totalCount))break;
+        }
+        const average=ratingCount?totalRating/ratingCount:0;
+        loadStoreRatingSummary.summary={loaded:true,average,count:ratingCount};
+        value.textContent=ratingCount?average.toFixed(1):'New';
+        button.setAttribute('aria-label',ratingCount?'Overall GENMERCH store rating: '+average.toFixed(1)+' out of 5 from '+ratingCount+' published reviews':'GENMERCH has no published customer reviews yet');
+        button.title=ratingCount?'Overall store rating: '+average.toFixed(1)+'/5 from '+ratingCount+' published customer review'+(ratingCount===1?'':'s'):'No published customer reviews yet';
+      }catch(error){
+        console.warn('GENMERCH overall store rating could not load.',error);
+        loadStoreRatingSummary.summary={loaded:false,average:0,count:0,error:true};
+        value.textContent='—';
+        button.setAttribute('aria-label','Overall GENMERCH store rating temporarily unavailable');
+        button.title='Store rating is temporarily unavailable';
+      }
+    }
+    function showStoreRatingDetails(){
+      const summary=loadStoreRatingSummary.summary;
+      if(!summary||!summary.loaded){
+        showToast('Loading overall store rating…');
+        loadStoreRatingSummary();
+        return;
+      }
+      if(!summary.count){
+        showToast('GENMERCH Store Rating: No published customer reviews yet.');
+        return;
+      }
+      showToast('GENMERCH Store Rating: '+summary.average.toFixed(1)+'/5 from '+summary.count.toLocaleString('en-PH')+' published customer review'+(summary.count===1?'':'s')+'.');
+    }
     async function refreshCustomerRateBadge(){
       const badge=$('customerRateBadge');if(!badge)return;
       try{
@@ -9775,7 +9851,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     async function initializeStorefront(){
       try{await loadSupabaseCatalog();}
       catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
-      await syncCustomerDraftForSession(undefined,false);restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();
+      await syncCustomerDraftForSession(undefined,false);restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();loadStoreRatingSummary();
       try{
         const authResult=await getCustomerAuthClient().auth.getSession();
         if(authResult.error)throw authResult.error;
