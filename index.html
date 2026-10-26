@@ -4400,6 +4400,63 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 }
 @media(prefers-reduced-motion:reduce){.genmerch-notification-backdrop,.genmerch-notification-panel{transition:none!important}}
 </style>
+<style id="genmerch-premium-wordmark-animation">
+/* Premium, restrained logo motion: animated red gradient + soft light sweep, zero layout shift. */
+.site-header .main-header .nav .brand-lockup .brand-word{
+  position:relative!important;isolation:isolate;
+  display:inline-block!important;
+  transform-origin:center center;
+  animation:gm-wordmark-breathe 5.8s ease-in-out infinite;
+}
+.site-header .main-header .nav .brand-lockup .brand-word span{
+  color:#171717!important;
+  text-shadow:0 0 0 rgba(241,45,22,0);
+}
+.site-header .main-header .nav .brand-lockup .brand-word b{
+  display:inline-block!important;
+  color:#f12d16!important;
+  background:linear-gradient(105deg,#d91f2a 0%,#ff4334 24%,#c91926 43%,#ff6240 55%,#e5262d 72%,#b91522 100%);
+  background-size:240% 100%;
+  background-position:0% 50%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gm-wordmark-gradient 5.2s ease-in-out infinite;
+  filter:drop-shadow(0 1px 0 rgba(160,20,25,.08));
+}
+.site-header .main-header .nav .brand-lockup .brand-word::after{
+  content:"";position:absolute;inset:-3% -1%;z-index:2;pointer-events:none;
+  background:linear-gradient(112deg,transparent 0%,transparent 39%,rgba(255,255,255,0) 43%,rgba(255,255,255,.78) 49%,rgba(255,255,255,.14) 54%,transparent 61%,transparent 100%);
+  background-size:250% 100%;background-position:130% 0;
+  mix-blend-mode:screen;
+  animation:gm-wordmark-shine 6.8s ease-in-out infinite;
+}
+.site-header .main-header .nav .brand-lockup:hover .brand-word{
+  filter:drop-shadow(0 2px 5px rgba(229,38,45,.16));
+}
+.site-header .main-header .nav .brand-lockup:focus-visible{
+  outline:2px solid rgba(241,45,22,.6)!important;outline-offset:4px!important;border-radius:5px
+}
+@keyframes gm-wordmark-gradient{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+@keyframes gm-wordmark-shine{
+  0%,62%{background-position:140% 0;opacity:0}
+  67%{opacity:.95}
+  82%{background-position:-80% 0;opacity:.7}
+  88%,100%{background-position:-80% 0;opacity:0}
+}
+@keyframes gm-wordmark-breathe{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(232,37,45,0))}
+  50%{filter:drop-shadow(0 2px 3px rgba(232,37,45,.10))}
+}
+@media(prefers-reduced-motion:reduce){
+ .site-header .main-header .nav .brand-lockup .brand-word,
+ .site-header .main-header .nav .brand-lockup .brand-word b,
+ .site-header .main-header .nav .brand-lockup .brand-word::after{animation:none!important}
+ .site-header .main-header .nav .brand-lockup .brand-word b{background:none!important;color:#f12d16!important;-webkit-text-fill-color:#f12d16!important}
+}
+</style>
 </head>
 <body>
   <header class="site-header">
