@@ -4462,6 +4462,56 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 .genmerch-notification-mark-read:hover{background:#fff0e9!important;border-color:#f2c7b7!important}
 @media(max-width:760px){.genmerch-notification-mark-read{padding:7px 8px!important;font-size:10px!important}.genmerch-notification-head-actions{gap:5px!important}}
 </style>
+<style id="genmerch-notification-header-compact-fix">
+/* Keep the Notifications title intact; let the action controls wrap neatly on narrow screens. */
+.genmerch-notification-panel .genmerch-notification-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;min-width:0!important;box-sizing:border-box!important
+}
+.genmerch-notification-panel .genmerch-notification-title-wrap{
+ display:flex!important;flex:1 1 auto!important;align-items:center!important;gap:9px!important;
+ min-width:0!important;white-space:nowrap!important
+}
+.genmerch-notification-panel .genmerch-notification-title-wrap strong{
+ display:block!important;flex:0 1 auto!important;min-width:max-content!important;
+ white-space:nowrap!important;overflow:visible!important;overflow-wrap:normal!important;word-break:normal!important;
+ font-size:clamp(15px,2.5vw,17px)!important;line-height:1.15!important;letter-spacing:-.02em!important
+}
+.genmerch-notification-panel .genmerch-notification-head-actions{
+ display:flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:flex-end!important;
+ gap:7px!important;min-width:0!important;white-space:nowrap!important
+}
+@media(max-width:600px){
+ .genmerch-notification-panel .genmerch-notification-head{
+   padding:12px 11px!important;gap:7px!important;flex-wrap:nowrap!important
+ }
+ .genmerch-notification-panel .genmerch-notification-title-wrap{flex:1 1 auto!important;gap:7px!important}
+ .genmerch-notification-panel .genmerch-notification-title-mark{width:28px!important;height:28px!important;flex:0 0 28px!important;font-size:16px!important}
+ .genmerch-notification-panel .genmerch-notification-title-wrap strong{
+   font-size:14px!important;min-width:max-content!important;letter-spacing:-.035em!important
+ }
+ .genmerch-notification-panel .genmerch-notification-head-actions{gap:5px!important}
+ .genmerch-notification-panel .genmerch-notification-mark-read{
+   padding:7px 7px!important;font-size:9px!important;letter-spacing:-.025em!important
+ }
+ .genmerch-notification-panel .genmerch-notification-refresh{
+   padding:7px 7px!important;font-size:10px!important
+ }
+ .genmerch-notification-panel .genmerch-notification-close{
+   width:30px!important;height:30px!important;flex:0 0 30px!important;font-size:21px!important
+ }
+}
+@media(max-width:390px){
+ .genmerch-notification-panel .genmerch-notification-head{padding:10px 8px!important;gap:5px!important}
+ .genmerch-notification-panel .genmerch-notification-title-wrap{gap:5px!important}
+ .genmerch-notification-panel .genmerch-notification-title-mark{width:25px!important;height:25px!important;flex-basis:25px!important}
+ .genmerch-notification-panel .genmerch-notification-title-wrap strong{font-size:12px!important;letter-spacing:-.04em!important}
+ .genmerch-notification-panel .genmerch-notification-head-actions{gap:4px!important}
+ .genmerch-notification-panel .genmerch-notification-mark-read{font-size:8px!important;padding:6px 5px!important}
+ .genmerch-notification-panel .genmerch-notification-refresh{font-size:9px!important;padding:6px 5px!important}
+ .genmerch-notification-panel .genmerch-notification-close{width:27px!important;height:27px!important;flex-basis:27px!important;font-size:19px!important}
+}
+</style>
 </head>
 <body>
   <header class="site-header">
