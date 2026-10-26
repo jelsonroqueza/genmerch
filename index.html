@@ -2132,6 +2132,21 @@
 }
 .customer-auth-overlay{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(13,13,13,.58);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .customer-auth-overlay.open{display:flex}
+.customer-logout-confirm-overlay{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(13,13,13,.64);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.customer-logout-confirm-overlay.open{display:flex}
+.customer-logout-confirm-modal{width:min(420px,100%);padding:26px 24px 22px;background:#fff;border:1px solid #f3d4cc;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.3);color:#171717;text-align:center}
+.customer-logout-confirm-icon{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 14px;border-radius:50%;background:#fff0e9;color:#d92a1d;font-size:1.55rem;font-weight:950}
+.customer-logout-confirm-modal h2{margin:0 0 9px;font-size:1.12rem;line-height:1.3;font-weight:900}
+.customer-logout-confirm-modal p{margin:0;color:#666;font-size:.9rem;line-height:1.55}
+.customer-logout-confirm-actions{display:flex;gap:10px;margin-top:23px}
+.customer-logout-confirm-actions button{flex:1;min-height:44px;padding:10px 13px;border-radius:8px;font:inherit;font-size:.85rem;font-weight:850;cursor:pointer}
+.customer-logout-cancel{border:1px solid #d9d3d0;background:#fff;color:#332d2a}
+.customer-logout-cancel:hover{background:#f7f5f4}
+.customer-logout-accept{border:1px solid #f22925;background:#f22925;color:#fff}
+.customer-logout-accept:hover:not(:disabled){background:#d91d1a;border-color:#d91d1a}
+.customer-logout-confirm-actions button:focus-visible{outline:3px solid rgba(242,41,37,.3);outline-offset:2px}
+.customer-logout-confirm-actions button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:420px){.customer-logout-confirm-modal{padding:23px 18px 18px}.customer-logout-confirm-actions{flex-direction:column-reverse}} 
 .customer-auth-modal{width:min(480px,100%);max-height:min(92vh,92dvh);overflow-y:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.28);color:#171717}
 .customer-auth-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:22px 22px 18px;border-bottom:1px solid #eee}
 .customer-auth-head h2{margin:0;font-size:1.2rem;line-height:1.3;font-weight:900}
@@ -4693,6 +4708,18 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
         <p class="customer-auth-message" id="customerAuthMessage" role="status" aria-live="polite" hidden></p>
         <p class="customer-auth-privacy">Your account is secured by Supabase Auth. Never share your password with anyone.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="customer-logout-confirm-overlay" id="customerLogoutConfirmOverlay" aria-hidden="true">
+    <section class="customer-logout-confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="customerLogoutConfirmTitle" aria-describedby="customerLogoutConfirmMessage">
+      <div class="customer-logout-confirm-icon" aria-hidden="true">!</div>
+      <h2 id="customerLogoutConfirmTitle">Log out of GENMERCH?</h2>
+      <p id="customerLogoutConfirmMessage">Are you sure you want to log out of your account? You may need to sign in again to access your account details and saved items.</p>
+      <div class="customer-logout-confirm-actions">
+        <button class="customer-logout-cancel" id="customerLogoutCancelButton" type="button">Stay signed in</button>
+        <button class="customer-logout-accept" id="customerLogoutConfirmButton" type="button">Yes, log out</button>
       </div>
     </section>
   </div>
@@ -8389,7 +8416,23 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         }
       }
     });
-    $('customerAuthSignOut').addEventListener('click',async()=>{
+    function openCustomerLogoutConfirmation(){
+      if(customerAuthBusy)return;
+      const overlay=$('customerLogoutConfirmOverlay');
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      $('customerLogoutCancelButton').focus();
+    }
+    function closeCustomerLogoutConfirmation(restoreFocus=true){
+      const overlay=$('customerLogoutConfirmOverlay');
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      if(restoreFocus&&!customerAuthBusy){
+        const trigger=$('customerAuthSignOut');
+        if(trigger&&!trigger.disabled)trigger.focus();
+      }
+    }
+    async function performCustomerSignOut(){
       const button=$('customerAuthSignOut');
       if(customerAuthBusy)return;
       customerAuthBusy=true;
@@ -8411,6 +8454,23 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         customerAuthBusy=false;
         button.disabled=false;
         button.textContent='Log Out';
+      }
+    }
+    $('customerAuthSignOut').addEventListener('click',openCustomerLogoutConfirmation);
+    $('customerLogoutCancelButton').addEventListener('click',()=>closeCustomerLogoutConfirmation());
+    $('customerLogoutConfirmButton').addEventListener('click',()=>{
+      if(customerAuthBusy)return;
+      closeCustomerLogoutConfirmation(false);
+      performCustomerSignOut();
+    });
+    $('customerLogoutConfirmOverlay').addEventListener('click',event=>{
+      if(event.target===$('customerLogoutConfirmOverlay'))closeCustomerLogoutConfirmation();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape'&&$('customerLogoutConfirmOverlay').classList.contains('open')){
+        event.preventDefault();
+        event.stopPropagation();
+        closeCustomerLogoutConfirmation();
       }
     });
     function initializeCustomerAuth(){
