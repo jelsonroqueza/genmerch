@@ -11308,5 +11308,110 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     })();
   </script>
 
+<style id="genmerch-product-image-lightbox">
+#genmerchProductImageLightbox{
+ position:fixed!important;inset:0!important;z-index:30000!important;display:none;
+ align-items:center!important;justify-content:center!important;padding:18px!important;box-sizing:border-box!important;
+ background:rgba(18,13,11,.48)!important;
+ -webkit-backdrop-filter:blur(28px) saturate(125%)!important;backdrop-filter:blur(28px) saturate(125%)!important;
+}
+#genmerchProductImageLightbox.open{display:flex!important}
+#genmerchProductImageLightbox .gm-lightbox-card{
+ position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ width:min(100%,1000px)!important;height:min(90dvh,900px)!important;max-height:90dvh!important;
+ background:rgba(255,253,250,.92)!important;
+ -webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important;
+ border:1px solid rgba(255,255,255,.72)!important;border-radius:20px!important;
+ box-shadow:0 25px 90px rgba(0,0,0,.28)!important;overflow:hidden!important;
+}
+#genmerchProductImageLightbox .gm-lightbox-image-stage{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:absolute!important;inset:0!important;overflow:hidden!important;
+ touch-action:none!important;overscroll-behavior:contain!important;cursor:zoom-in!important;
+}
+#genmerchProductImageLightbox .gm-lightbox-image{
+ display:block!important;max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;
+ object-fit:contain!important;user-select:none!important;-webkit-user-drag:none!important;
+ transform-origin:center center!important;will-change:transform!important;pointer-events:none!important;
+}
+#genmerchProductImageLightbox .gm-lightbox-close{
+ position:absolute!important;top:12px!important;right:12px!important;z-index:5!important;
+ display:grid!important;place-items:center!important;width:42px!important;height:42px!important;
+ padding:0!important;border:1px solid rgba(65,49,41,.12)!important;border-radius:50%!important;
+ background:rgba(255,255,255,.94)!important;color:#29221e!important;font-size:28px!important;line-height:1!important;
+ box-shadow:0 3px 12px rgba(30,20,10,.13)!important;cursor:pointer!important;
+}
+#genmerchProductImageLightbox .gm-lightbox-close:hover{background:#fff0e9!important;color:#c82f20!important}
+#genmerchProductImageLightbox .gm-lightbox-hint{
+ position:absolute!important;bottom:12px!important;left:50%!important;transform:translateX(-50%)!important;
+ z-index:3!important;padding:8px 12px!important;border:1px solid rgba(240,220,208,.8)!important;
+ border-radius:999px!important;background:rgba(255,253,250,.9)!important;color:#6b5c54!important;
+ font:600 12px/1.2 system-ui,-apple-system,sans-serif!important;white-space:nowrap!important;pointer-events:none!important;
+}
+@media(max-width:600px){
+ #genmerchProductImageLightbox{padding:9px!important}
+ #genmerchProductImageLightbox .gm-lightbox-card{
+   width:100%!important;height:calc(100dvh - 18px)!important;max-height:calc(100dvh - 18px)!important;
+   border-radius:17px!important;background:rgba(255,253,250,.94)!important
+ }
+ #genmerchProductImageLightbox .gm-lightbox-image{max-width:100%!important;max-height:100%!important}
+ #genmerchProductImageLightbox .gm-lightbox-close{top:10px!important;right:10px!important;width:40px!important;height:40px!important}
+ #genmerchProductImageLightbox .gm-lightbox-hint{bottom:12px!important;font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){#genmerchProductImageLightbox{transition:none!important}}
+</style>
+<script id="genmerch-product-image-lightbox-controller">
+(function(){
+ let overlay=null,stage=null,image=null,scale=1,tx=0,ty=0,pointers=new Map(),startScale=1,startDistance=0,startMid={x:0,y:0},startTx=0,startTy=0,lastTap=0,lastTapAt=0,dragStart={x:0,y:0},didDrag=false;
+ const MIN_SCALE=1,MAX_SCALE=5;
+ function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+ function paint(){if(image)image.style.transform='translate3d('+tx+'px,'+ty+'px,0) scale('+scale+')';if(stage)stage.style.cursor=scale>1?'grab':'zoom-in';}
+ function reset(){scale=1;tx=0;ty=0;paint();}
+ function fitBounds(){if(!image||!stage)return;const sr=stage.getBoundingClientRect(),ir=image.getBoundingClientRect();const extraX=Math.max(0,(ir.width-sr.width)/2),extraY=Math.max(0,(ir.height-sr.height)/2);tx=clamp(tx,-extraX,extraX);ty=clamp(ty,-extraY,extraY);}
+ function open(src,alt){
+   ensure();
+   image.src=src;image.alt=alt||'Product image enlarged';
+   overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
+   document.body.dataset.gmLightboxPreviousOverflow=document.body.style.overflow||'';
+   document.body.style.overflow='hidden';
+   reset();
+   image.onload=function(){reset();};
+   const close=overlay.querySelector('.gm-lightbox-close');if(close)close.focus({preventScroll:true});
+ }
+ function close(){
+   if(!overlay)return;
+   overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');
+   document.body.style.overflow=document.body.dataset.gmLightboxPreviousOverflow||'';
+   delete document.body.dataset.gmLightboxPreviousOverflow;
+   pointers.clear();reset();
+ }
+ function ensure(){
+   if(overlay)return;
+   overlay=document.createElement('div');overlay.id='genmerchProductImageLightbox';overlay.setAttribute('aria-hidden','true');
+   overlay.innerHTML='<div class="gm-lightbox-card" role="dialog" aria-modal="true" aria-label="Product image viewer"><button type="button" class="gm-lightbox-close" aria-label="Close enlarged product image" title="Close">×</button><div class="gm-lightbox-image-stage"><img class="gm-lightbox-image" alt=""></div><div class="gm-lightbox-hint">Pinch to zoom · Double-tap to enlarge</div></div>';
+   document.body.appendChild(overlay);
+   stage=overlay.querySelector('.gm-lightbox-image-stage');image=overlay.querySelector('.gm-lightbox-image');
+   overlay.querySelector('.gm-lightbox-close').addEventListener('click',close);
+   overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+   document.addEventListener('keydown',function(e){if(!overlay.classList.contains('open'))return;if(e.key==='Escape'){close();return;}if(e.key==='+'||e.key==='='){scale=clamp(scale+.5,MIN_SCALE,MAX_SCALE);paint();}if(e.key==='-'){scale=clamp(scale-.5,MIN_SCALE,MAX_SCALE);if(scale===1)tx=ty=0;paint();}});
+   stage.addEventListener('wheel',function(e){e.preventDefault();const old=scale;scale=clamp(scale*(e.deltaY<0?1.15:.87),MIN_SCALE,MAX_SCALE);if(scale===1){tx=ty=0;}else{const r=stage.getBoundingClientRect(),px=e.clientX-r.left-r.width/2,py=e.clientY-r.top-r.height/2,k=scale/old;tx=px-(px-tx)*k;ty=py-(py-ty)*k;fitBounds();}paint();},{passive:false});
+   stage.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;stage.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});didDrag=false;dragStart={x:e.clientX,y:e.clientY};if(pointers.size===1){startTx=tx;startTy=ty;}if(pointers.size===2){const pts=[...pointers.values()];startDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1;startScale=scale;startMid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};startTx=tx;startTy=ty;}});
+   stage.addEventListener('pointermove',function(e){if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const pts=[...pointers.values()],dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1,mid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};scale=clamp(startScale*dist/startDistance,MIN_SCALE,MAX_SCALE);tx=startTx+(mid.x-startMid.x);ty=startTy+(mid.y-startMid.y);if(scale===1)tx=ty=0;fitBounds();paint();didDrag=true;}else if(pointers.size===1&&scale>1){tx=startTx+(e.clientX-dragStart.x);ty=startTy+(e.clientY-dragStart.y);fitBounds();paint();if(Math.abs(e.clientX-dragStart.x)+Math.abs(e.clientY-dragStart.y)>4)didDrag=true;}});
+   function endPointer(e){pointers.delete(e.pointerId);if(pointers.size===1){const p=[...pointers.values()][0];dragStart={x:p.x,y:p.y};startTx=tx;startTy=ty;}if(pointers.size===0&&!didDrag&&e.pointerType!=='mouse'){const now=Date.now();if(now-lastTapAt<320){scale=scale>1?1:2.5; if(scale===1)tx=ty=0;paint();lastTapAt=0;}else lastTapAt=now;} }
+   stage.addEventListener('pointerup',endPointer);stage.addEventListener('pointercancel',endPointer);
+   stage.addEventListener('dblclick',function(e){e.preventDefault();scale=scale>1?1:2.5;if(scale===1)tx=ty=0;else{const r=stage.getBoundingClientRect();tx=(r.width/2-(e.clientX-r.left))*0.7;ty=(r.height/2-(e.clientY-r.top))*0.7;}paint();});
+ }
+ document.addEventListener('click',function(e){
+   const target=e.target;
+   if(!(target instanceof Element))return;
+   const productImage=target.closest('#productGalleryMainImage');
+   if(productImage&&productImage.src){e.preventDefault();open(productImage.currentSrc||productImage.src,productImage.alt);return;}
+   const modalImage=target.closest('#productModalIcon img');
+   if(modalImage&&modalImage.src){e.preventDefault();open(modalImage.currentSrc||modalImage.src,modalImage.alt);}
+ });
+ window.openGenmerchProductImageViewer=open;
+ window.closeGenmerchProductImageViewer=close;
+})();
+</script>
 </body>
 </html>
