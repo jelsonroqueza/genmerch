@@ -9681,12 +9681,18 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       sellerInventoryCurrentPage=1;
       sellerRenderInventoryRows();
     }
-    function sellerInventoryThumbMarkup(productId,productName){
+    function sellerInventoryThumbMarkup(productId,productName,colorLabel){
       const rows=sellerImageRowsByProductId.get(String(productId))||[];
-      const image=rows.find(row=>row.is_primary)||rows[0];
+      const requestedColor=sellerNormalizeColorLabel(colorLabel);
+      // Color variants must use the gallery photo explicitly linked to that color, not the product's primary image.
+      const image=requestedColor
+        ?rows.find(row=>sellerNormalizeColorLabel(row.color_label)===requestedColor)
+        :(rows.find(row=>row.is_primary)||rows[0]);
       const url=image?safeCatalogImageUrl(image.image_url):'';
-      if(url)return '<img class="seller-inventory-product-thumb" src="'+sellerEscape(url)+'" alt="'+sellerEscape(productName||'Product photo')+'" loading="lazy">';
-      return '<span class="seller-inventory-product-thumb seller-inventory-product-thumb-fallback" aria-hidden="true">👕</span>';
+      const imageLabel=(productName||'Product')+(requestedColor?' — '+requestedColor:'')+' photo';
+      if(url)return '<img class="seller-inventory-product-thumb" src="'+sellerEscape(url)+'" alt="'+sellerEscape(imageLabel)+'" title="'+sellerEscape(imageLabel)+'" loading="lazy">';
+      const fallbackTitle=requestedColor?'No gallery photo linked to '+requestedColor+'. Check the product photo color label.':'No product photo available.';
+      return '<span class="seller-inventory-product-thumb seller-inventory-product-thumb-fallback" title="'+sellerEscape(fallbackTitle)+'" aria-label="'+sellerEscape(fallbackTitle)+'">👕</span>';
     }
     function sellerRenderInventoryPagination(totalRows){
       const node=$('sellerInventoryPagination');if(!node)return;
@@ -9767,7 +9773,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const unitPrice=variant.price_override==null?product.base_price:variant.price_override;
         const deleteButton=showDelete?'<button class="seller-danger-button seller-inventory-delete-button" type="button" data-seller-inventory-delete="'+sellerEscape(productId)+'" aria-label="Permanently delete '+sellerEscape(product.name||'product')+'">DELETE</button>':'<span class="seller-muted">—</span>';
         const productName=product.name||'Unknown product';
-        const thumb=sellerInventoryThumbMarkup(productId,productName);
+        const thumb=sellerInventoryThumbMarkup(productId,productName,variant.color_label);
         return '<tr data-stock-row="'+sellerEscape(variant.id)+'"><td><div class="seller-inventory-product-cell">'+thumb+'<div class="seller-inventory-product-copy"><div class="seller-product-name">'+sellerEscape(productName)+'</div><div class="seller-muted">'+sellerEscape((sellerCategories.find(category=>String(category.id)===String(product.category_id))||{}).name||'Category unavailable')+'</div>'+(product.is_active===false?'<div class="seller-muted">Inactive product</div>':'')+'</div></div></td><td><strong>'+sellerEscape(variant.size_label||'Variant')+(variant.color_label?' / '+sellerEscape(variant.color_label):'')+'</strong><div class="seller-muted">SKU: '+sellerEscape(variant.sku||'—')+'</div></td><td>'+sellerEscape(money(unitPrice))+'</td><td><span class="seller-stock-count">'+stock+'</span> unit(s)</td><td>'+status+'</td><td><div class="seller-stock-actions"><input class="seller-stock-input" type="number" min="1" max="1000000" step="1" value="1" aria-label="Stock quantity adjustment" data-stock-quantity><button class="seller-primary-button" type="button" data-stock-adjust="add" data-variant-id="'+sellerEscape(variant.id)+'">＋ Add</button><button class="seller-secondary-button" type="button" data-stock-adjust="remove" data-variant-id="'+sellerEscape(variant.id)+'" '+(stock===0?'disabled':'')+'>− Remove</button></div></td><td>'+deleteButton+'</td></tr>';
       }).join('');
       tbody.querySelectorAll('[data-stock-adjust]').forEach(button=>button.addEventListener('click',()=>handleSellerStockAdjustment(button)));
