@@ -4296,6 +4296,26 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     .hero-video-launch-button{left:50%;right:auto;bottom:10px;transform:translateX(50%);min-height:46px;white-space:nowrap}
     .hero.hero-video-autoplay-blocked .hero-video-launch-button{left:50%;transform:translateX(-50%)}
   }
+ 
+  /* Mobile-first fallback: always show a correctly proportioned 16:9 branded poster/video,
+     even when autoplay is blocked or JavaScript has not finished initializing. */
+  @media(max-width:760px){
+    .hero:not(.hero--video-active){
+      display:block!important;position:relative;width:100%;height:auto!important;min-height:0!important;
+      aspect-ratio:16/9;padding:0!important;margin:0 auto;overflow:hidden;
+      background:linear-gradient(110deg,#fff0df 0%,#ff8b27 42%,#ff4a17 65%,#25100c 100%);
+    }
+    .hero-video-stage{
+      position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+      visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:auto!important;
+    }
+    .hero.hero--video-active{display:block!important;height:auto!important;min-height:0!important;aspect-ratio:16/9;padding:0!important}
+    .hero.hero--video-active>.hero-video-stage{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;visibility:visible!important;opacity:1!important;transform:none!important}
+    .hero>.hero-copy,.hero>.hero-art{display:none!important}
+    .hero-video-main{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;background:transparent}
+    .hero-video-launch-button{display:inline-flex!important}
+    .hero.hero--video-active .hero-video-launch-button{display:none!important}
+  }
 </style>
 </head>
 <body>
@@ -4547,13 +4567,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   <main class="container">
     <section class="hero">
       <div class="hero-video-stage" id="genmerchHeroVideoStage" aria-label="GENMERCH — Suot Apparel promotional video">
-        <video class="hero-video-main" id="genmerchHeroVideo" muted playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel promotional video">
+        <video class="hero-video-main" id="genmerchHeroVideo" poster="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-poster.jpg" muted playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel promotional video">
           <source src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-720p.mp4" type="video/mp4">
           Your browser does not support HTML video. The standard GENMERCH hero banner is shown instead.
         </video>
         <button class="hero-video-audio-toggle" id="genmerchHeroAudioToggle" type="button" aria-label="Turn video sound on" aria-pressed="false">🔇 Tap for sound</button>
       </div>
-      <button class="hero-video-launch-button" id="genmerchHeroVideoLaunch" type="button" hidden>▶ Play promo video</button>
+      <button class="hero-video-launch-button" id="genmerchHeroVideoLaunch" type="button">▶ Play promo video</button>
       <div class="hero-copy">
         <div class="hero-brand-lockup" aria-label="GENMERCH">
           <img class="hero-cart hero-cart-image" src="/assets/genmerch-cart-actual.webp?v=20261026-no-circle" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
