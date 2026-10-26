@@ -3962,126 +3962,102 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
 
   
-  /* Signature-style GENMERCH - Suot Apparel: calligraphic gradient with a refined reveal. */
-  @keyframes gmHeaderBrandSubtitleReveal{
-    0%{opacity:0;transform:translateX(14px) translateY(2px);filter:blur(2px)}
-    72%{opacity:1;filter:blur(0)}
-    100%{opacity:1;transform:translateX(0) translateY(0);filter:blur(0)}
+  /* Cohesive GENMERCH wordmark: bold matching typography and a refined mixed-color gradient. */
+  @keyframes gmHeaderBrandLineReveal{
+    0%{opacity:0;transform:translateX(10px);filter:blur(1.5px)}
+    100%{opacity:1;transform:translateX(0);filter:blur(0)}
   }
-  @keyframes gmHeaderSignatureReveal{
-    0%{opacity:0;transform:translateX(11px) translateY(2px);filter:blur(2px)}
-    75%{opacity:1;filter:blur(0)}
-    100%{opacity:1;transform:translateX(0) translateY(0);filter:blur(0)}
-  }
-  @keyframes gmHeaderSignatureShimmer{
+  @keyframes gmHeaderBrandGradientShift{
     0%,100%{background-position:100% 50%}
     50%{background-position:0% 50%}
-  }
-  @keyframes gmHeaderBrandUnderlineReveal{
-    0%{transform:scaleX(.12);opacity:0}
-    100%{transform:scaleX(1);opacity:.92}
-  }
-  @keyframes gmHeaderBrandUnderlineSweep{
-    0%,100%{background-position:100% 0;opacity:.75}
-    50%{background-position:-100% 0;opacity:1}
   }
   .main-header .nav .brand-lockup .brand-subtitle{
     position:relative!important;
     display:inline-flex!important;
     flex:0 0 auto!important;
-    align-items:baseline!important;
-    gap:clamp(5px,.5vw,8px)!important;
+    align-items:center!important;
+    gap:clamp(6px,.6vw,10px)!important;
     align-self:center!important;
-    margin:0 0 0 clamp(8px,.85vw,14px)!important;
-    padding:5px 1px 9px!important;
-    color:#343434!important;
-    font-size:clamp(.96rem,1.05vw,1.08rem)!important;
+    margin:0 0 0 clamp(8px,.8vw,13px)!important;
+    padding:0!important;
     font-family:Arial,Helvetica,sans-serif!important;
+    font-size:clamp(1.48rem,2.1vw,2.12rem)!important;
     font-style:normal!important;
-    font-weight:800!important;
-    letter-spacing:.01em!important;
+    font-weight:1000!important;
+    letter-spacing:-1.45px!important;
     line-height:1!important;
     white-space:nowrap!important;
     opacity:0;
-    animation:gmHeaderBrandSubtitleReveal .78s cubic-bezier(.2,.75,.2,1) .12s both;
+    animation:gmHeaderBrandLineReveal .68s cubic-bezier(.2,.75,.2,1) .12s both;
   }
   .main-header .nav .brand-lockup .brand-subtitle-dash{
-    color:#f12d24!important;
+    display:inline-block!important;
+    flex:0 0 auto!important;
+    padding:0!important;
+    color:#e9272d!important;
     font-family:Arial,Helvetica,sans-serif!important;
-    font-weight:950!important;
-    font-size:1.08em!important;
+    font-size:inherit!important;
+    font-style:normal!important;
+    font-weight:1000!important;
+    letter-spacing:inherit!important;
     line-height:1!important;
   }
   .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash){
     display:inline-block!important;
-    padding:0 1px 3px!important;
-    font-family:'Great Vibes',cursive!important;
-    font-size:clamp(1.55rem,1.72vw,1.92rem)!important;
+    padding:0!important;
+    font-family:Arial,Helvetica,sans-serif!important;
+    font-size:inherit!important;
     font-style:normal!important;
-    font-weight:400!important;
-    letter-spacing:.005em!important;
+    font-weight:1000!important;
+    letter-spacing:inherit!important;
     line-height:1!important;
     white-space:nowrap!important;
-    background-image:linear-gradient(108deg,#241719 0%,#6e1d2b 19%,#e9272d 42%,#ff5a22 59%,#ff923e 74%,#9b1b37 91%,#241719 100%)!important;
+    background-image:linear-gradient(105deg,#171717 0%,#6d2026 18%,#e9272d 40%,#ff3d1e 58%,#ff7a2f 75%,#c91c2b 91%,#171717 100%)!important;
     background-size:240% 100%!important;
     background-position:100% 50%;
     background-clip:text!important;
     -webkit-background-clip:text!important;
-    color:transparent!important;
+    color:#e9272d!important;
     -webkit-text-fill-color:transparent!important;
-    text-shadow:0 1px 0 rgba(255,255,255,.22);
-    opacity:0;
-    animation:gmHeaderSignatureReveal .9s cubic-bezier(.2,.75,.2,1) .24s both,gmHeaderSignatureShimmer 6.2s ease-in-out 1.5s infinite;
+    text-shadow:none!important;
+    animation:gmHeaderBrandGradientShift 5.8s ease-in-out 1s infinite;
   }
-  .main-header .nav .brand-lockup .brand-subtitle::after{
-    content:"";
-    position:absolute;
-    left:0;right:0;bottom:1px;
-    height:2.5px;
-    border-radius:3px;
-    background:linear-gradient(100deg,#f12d24 0%,#ff775f 24%,#ffd0bb 48%,#ff775f 72%,#f12d24 100%);
-    background-size:220% 100%;
-    transform-origin:left center;
-    transform:scaleX(0);
-    opacity:0;
-    animation:gmHeaderBrandUnderlineReveal .7s cubic-bezier(.2,.75,.2,1) .53s both,gmHeaderBrandUnderlineSweep 4.8s ease-in-out 1.35s infinite;
-  }
-  @media (min-width:481px) and (max-width:900px){
+  .main-header .nav .brand-lockup .brand-subtitle::after{content:none!important;display:none!important}
+  @media (min-width:761px) and (max-width:900px){
     .main-header .nav .brand-lockup .brand-subtitle{
-      margin-left:clamp(5px,.65vw,10px)!important;
-      gap:4px!important;
-      font-size:clamp(.82rem,1.05vw,.94rem)!important;
-      letter-spacing:0!important;
+      margin-left:clamp(6px,.7vw,10px)!important;
+      gap:5px!important;
+      font-size:clamp(1.35rem,3vw,1.85rem)!important;
+      letter-spacing:-1.2px!important;
     }
-    .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash){
-      font-size:clamp(1.28rem,2.1vw,1.55rem)!important;
+  }
+  @media (min-width:481px) and (max-width:760px){
+    .main-header .nav .brand-lockup .brand-subtitle{
+      margin-left:6px!important;
+      gap:4px!important;
+      font-size:clamp(1.12rem,4.5vw,1.62rem)!important;
+      letter-spacing:-1.1px!important;
     }
   }
   @media (max-width:600px){
+    .main-header .nav .brand-lockup .brand-subtitle{margin-left:6px!important}
+  }
+  @media (max-width:480px){
     .main-header .nav .brand-lockup .brand-subtitle{
-      margin-left:6px!important;
-      gap:3px!important;
-      padding:4px 0 7px!important;
-      font-size:clamp(.68rem,2.7vw,.81rem)!important;
-      letter-spacing:0!important;
-      white-space:nowrap!important;
-      text-shadow:none!important;
+      margin-left:0!important;
+      gap:5px!important;
+      font-size:clamp(1.25rem,5.3vw,1.58rem)!important;
+      letter-spacing:-1px!important;
     }
-    .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash){
-      font-size:clamp(1.12rem,3.7vw,1.38rem)!important;
-    }
-    .main-header .nav .brand-lockup .brand-subtitle::after{height:2px}
   }
   @media(prefers-reduced-motion:reduce){
     .main-header .nav .brand-lockup .brand-subtitle,
-    .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash),
-    .main-header .nav .brand-lockup .brand-subtitle::after{
+    .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash){
       animation:none!important;
       transition:none!important;
       filter:none!important;
       opacity:1!important;
       transform:none!important;
-      letter-spacing:.005em!important;
     }
     .main-header .nav .brand-lockup .brand-subtitle>span:not(.brand-subtitle-dash){
       background-position:50% 50%!important;
