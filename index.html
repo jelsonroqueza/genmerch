@@ -4327,6 +4327,79 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 }
 </style>
 
+<style id="genmerch-notification-professional-overlay">
+/* Branded, responsive notification sheet with full-screen glass blur and close control. */
+.genmerch-notification-backdrop{
+ position:fixed!important;inset:0!important;z-index:19999!important;
+ background:rgba(24,16,12,.34)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(125%)!important;
+ backdrop-filter:blur(22px) saturate(125%)!important;
+ opacity:0;visibility:hidden;pointer-events:none;
+ transition:opacity .18s ease,visibility .18s ease;
+}
+.genmerch-notification-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
+.genmerch-notification-panel{
+ position:fixed!important;top:88px!important;right:clamp(12px,3vw,32px)!important;left:auto!important;
+ width:min(410px,calc(100vw - 24px))!important;max-width:calc(100vw - 24px)!important;
+ max-height:min(72vh,620px)!important;overflow:auto!important;overscroll-behavior:contain!important;
+ box-sizing:border-box!important;padding:0!important;
+ background:rgba(255,253,250,.96)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(135%)!important;backdrop-filter:blur(24px) saturate(135%)!important;
+ border:1px solid rgba(239,218,207,.95)!important;border-radius:20px!important;
+ box-shadow:0 22px 70px rgba(39,22,15,.24),0 3px 12px rgba(39,22,15,.08)!important;
+ z-index:20000!important;transform:translateY(-6px);opacity:0;
+ transition:opacity .18s ease,transform .18s ease;
+}
+.genmerch-notification-panel.open{display:block!important;opacity:1;transform:translateY(0)}
+.genmerch-notification-panel .genmerch-notification-head{
+ position:sticky!important;top:0!important;z-index:2!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;
+ padding:16px 16px 13px!important;
+ background:rgba(255,253,250,.97)!important;
+ -webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;
+ border-bottom:1px solid #f0e5df!important;
+}
+.genmerch-notification-title-wrap{display:flex;align-items:center;gap:9px;min-width:0}
+.genmerch-notification-title-mark{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:linear-gradient(135deg,#fff2c2,#ffe5a0);font-size:19px}
+.genmerch-notification-panel .genmerch-notification-head strong{font-size:17px!important;font-weight:850!important;letter-spacing:-.025em;color:#211b19!important}
+.genmerch-notification-head-actions{display:flex;align-items:center;gap:7px}
+.genmerch-notification-panel .genmerch-notification-refresh{border:1px solid #f0ded4!important;background:#fff5f0!important;color:#bf3021!important;border-radius:10px!important;padding:8px 10px!important;font-size:12px!important;font-weight:800!important;white-space:nowrap}
+.genmerch-notification-close{
+ display:grid!important;place-items:center!important;width:34px!important;height:34px!important;flex:0 0 34px!important;
+ border:1px solid #eee0d8!important;border-radius:50%!important;background:#fff!important;
+ color:#51443d!important;font-size:23px!important;font-weight:400!important;line-height:1!important;padding:0!important;
+ box-shadow:0 1px 3px rgba(30,20,10,.05)!important;cursor:pointer!important
+}
+.genmerch-notification-close:hover{background:#fff0eb!important;color:#bd2d1d!important}
+.genmerch-notification-panel .genmerch-notification-item{gap:11px!important;padding:14px 16px!important;border-bottom:1px solid #f2ebe6!important}
+.genmerch-notification-panel .genmerch-notification-icon{width:40px!important;height:40px!important;flex:0 0 40px!important;background:linear-gradient(145deg,#fff3e4,#ffebd5)!important}
+.genmerch-notification-panel .genmerch-notification-copy strong{font-size:13px!important;font-weight:800!important;color:#24201d!important}
+.genmerch-notification-panel .genmerch-notification-copy p{font-size:12px!important;line-height:1.5!important;color:#71645d!important}
+.genmerch-notification-panel .genmerch-notification-time{font-size:10px!important;color:#96877f!important}
+.genmerch-notification-panel .genmerch-notification-empty{padding:28px 22px!important;color:#74675f!important;font-size:13px!important}
+.genmerch-notification-panel .genmerch-notification-footer{
+ margin:12px 14px 14px!important;padding:12px!important;
+ background:linear-gradient(100deg,#fff0e9,#fff6ef)!important;border:1px solid #f7ddd1!important;
+ color:#bd3020!important;border-radius:12px!important;font-size:13px!important;font-weight:850!important
+}
+@media(max-width:760px){
+ .genmerch-notification-panel{
+   top:50%!important;left:50%!important;right:auto!important;
+   width:calc(100vw - 28px)!important;max-width:440px!important;
+   max-height:min(70dvh,600px)!important;border-radius:20px!important;
+   transform:translate(-50%,-47%)!important
+ }
+ .genmerch-notification-panel.open{transform:translate(-50%,-50%)!important}
+ .genmerch-notification-panel .genmerch-notification-head{padding:13px 12px 11px!important;gap:6px!important}
+ .genmerch-notification-title-mark{width:30px;height:30px;flex-basis:30px;border-radius:9px}
+ .genmerch-notification-panel .genmerch-notification-head strong{font-size:15px!important}
+ .genmerch-notification-panel .genmerch-notification-refresh{padding:7px 8px!important;font-size:11px!important}
+ .genmerch-notification-close{width:31px!important;height:31px!important;flex-basis:31px!important}
+ .genmerch-notification-panel .genmerch-notification-item{padding:12px!important}
+ .genmerch-notification-panel .genmerch-notification-footer{margin:10px 11px 12px!important}
+}
+@media(prefers-reduced-motion:reduce){.genmerch-notification-backdrop,.genmerch-notification-panel{transition:none!important}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -11123,18 +11196,24 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     if(badge){badge.textContent=String(Math.min(items.length,99));badge.hidden=!items.length;}
     if(button)button.setAttribute('aria-label',items.length?'Order notifications, '+items.length+' updates':'Order notifications');
     if(!panel)return;
-    var html='<div class="genmerch-notification-head"><strong>Notifications</strong><button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button></div>';
+    var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions"><button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
     if(guest) html+='<div class="genmerch-notification-empty">Sign in to see order updates linked to your account.<br>Guest orders can be checked from Track Order.</div>';
     else if(!items.length) html+='<div class="genmerch-notification-empty">No order updates yet. New progress updates will appear here as your order changes.</div>';
     else items.forEach(function(n){html+='<div class="genmerch-notification-item"><div class="genmerch-notification-icon">'+esc(n.icon)+'</div><div class="genmerch-notification-copy"><strong>'+esc(n.title)+'</strong><p>'+esc(n.message)+'</p><span class="genmerch-notification-time">'+esc(n.order_number)+' · '+esc(timeLabel(n.created_at))+'</span></div></div>';});
     html+='<a href="javascript:void(0)" class="genmerch-notification-footer" onclick="openCustomerOrders();closeGenmerchNotifications()">View All Orders & Tracking</a>';
     panel.innerHTML=html;
   }
-  window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');};
+  window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.remove('open');};
   window.toggleGenmerchNotifications=async function(){
-    if(!panel){panel=document.createElement('section');panel.className='genmerch-notification-panel';panel.id='genmerchNotificationPanel';panel.setAttribute('aria-label','Order notifications');document.body.appendChild(panel);document.addEventListener('click',function(e){if(panel&&!panel.contains(e.target)&&!e.target.closest('#genmerchNotificationButton'))panel.classList.remove('open');});}
-    panel.classList.toggle('open');
-    if(panel.classList.contains('open'))await window.loadGenmerchNotifications();
+    if(!panel){
+      var backdrop=document.createElement('div');backdrop.className='genmerch-notification-backdrop';backdrop.id='genmerchNotificationBackdrop';backdrop.setAttribute('aria-hidden','true');backdrop.addEventListener('click',window.closeGenmerchNotifications);document.body.appendChild(backdrop);
+      panel=document.createElement('section');panel.className='genmerch-notification-panel';panel.id='genmerchNotificationPanel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','Order notifications');document.body.appendChild(panel);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeGenmerchNotifications();});
+      document.addEventListener('click',function(e){if(panel&&!panel.contains(e.target)&&!e.target.closest('#genmerchNotificationButton'))window.closeGenmerchNotifications();});
+    }
+    var willOpen=!panel.classList.contains('open');
+    if(willOpen){panel.classList.add('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.add('open');await window.loadGenmerchNotifications();}
+    else window.closeGenmerchNotifications();
   };
   window.loadGenmerchNotifications=async function(){
     var client;
