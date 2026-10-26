@@ -2792,6 +2792,7 @@
     .partner-form-status{margin:11px 0 0;padding:10px 12px;border-radius:9px;font-size:.78rem;line-height:1.5}
     .partner-form-status[hidden]{display:none!important}
     .partner-form-status.success{background:#eefaf0;border:1px solid #b9e6c0;color:#17672c}
+    .partner-form-status.warning{background:#fff8e5;border:1px solid #f0d28a;color:#765400}
     .partner-form-status.error{background:#fff1ef;border:1px solid #ffc8bf;color:#9b2114}
     .partner-honeypot{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
     @media(max-width:720px){.footer-details-grid{grid-template-columns:minmax(0,1fr);gap:12px}.footer-info-card{padding:18px}.footer-partner-contact{grid-template-columns:1fr}.footer-partner-contact p:last-child{grid-column:auto}}
@@ -8225,8 +8226,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           throw new Error('We could not submit your application right now. Please email negosyonipinoy@yahoo.com.ph or call 09750634497.');
         }
         if(!data.ok)throw new Error(data.message||'We could not submit your application right now. Please try again or contact us directly.');
-        status.hidden=false;status.className='partner-form-status success';
-        status.textContent='Thank you! Your GENMERCH partner application was submitted successfully. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. Our team will review your details and contact you using your preferred method.';
+        const applicationReference=String(data.reference_id||'GENMERCH PARTNER');
+        const confirmationAccepted=data.applicant_email_status==='accepted_by_resend';
+        status.hidden=false;
+        status.className='partner-form-status '+(confirmationAccepted?'success':'warning');
+        status.textContent=confirmationAccepted
+          ?'Thank you! Your GENMERCH partner application was received. A confirmation email has been accepted for sending to '+email+'. Please check your inbox and spam/junk folder. Reference: '+applicationReference+'. Our team will review your details and contact you using your preferred method.'
+          :'Your application has been received and saved, but we could not send the confirmation email. Please check your email address and spam/junk folder, or contact negosyonipinoy@yahoo.com.ph with reference '+applicationReference+'. You do not need to submit the application again.';
         form.reset();$('partnerFormStartedAt').value=String(Date.now());
       }catch(error){
         status.hidden=false;status.className='partner-form-status error';
