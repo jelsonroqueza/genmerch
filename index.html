@@ -3978,18 +3978,38 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
 
   <style id="genmerch-sticky-header-final">
-    /* Keep the red-boxed GENMERCH storefront header visible while scrolling. */
-    header.site-header {
-      position: sticky !important;
-      top: 0 !important;
-      z-index: 1200 !important;
-      width: 100%;
-      align-self: stretch;
+    /*
+      Reliable scroll-pinned GENMERCH logo/actions row.
+      A small script toggles this class when the row reaches the top.
+    */
+    .site-header .main-header .nav.genmerch-sticky-fixed {
+      position: fixed !important;
+      top: env(safe-area-inset-top, 0px) !important;
+      left: clamp(8px, 2vw, 28px) !important;
+      right: clamp(8px, 2vw, 28px) !important;
+      width: auto !important;
+      max-width: 1600px !important;
+      margin: 0 auto !important;
+      z-index: 9999 !important;
+      background: #fff !important;
+      box-shadow: 0 5px 18px rgba(0,0,0,.16) !important;
+      border-radius: 0 0 14px 14px !important;
+      isolation: isolate;
     }
-    @supports (position: sticky) {
-      header.site-header {
-        position: -webkit-sticky !important;
-        position: sticky !important;
+    .genmerch-sticky-nav-spacer {
+      display: block !important;
+      width: 100% !important;
+      height: 0;
+      pointer-events: none;
+    }
+    @media (max-width: 900px) {
+      .site-header .main-header .nav.genmerch-sticky-fixed {
+        left: 0 !important;
+        right: 0 !important;
+        max-width: 100% !important;
+        border-radius: 0 0 12px 12px !important;
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
       }
     }
   </style>
@@ -10768,5 +10788,50 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       });
     }
   </script>
+
+  <script id="genmerch-sticky-header-controller">
+    (function () {
+      function initGenmerchStickyHeader() {
+        var navRow = document.querySelector('.site-header .main-header .nav');
+        if (!navRow || navRow.dataset.stickyControllerReady === 'true') return;
+        navRow.dataset.stickyControllerReady = 'true';
+
+        var spacer = document.createElement('div');
+        spacer.className = 'genmerch-sticky-nav-spacer';
+        spacer.setAttribute('aria-hidden', 'true');
+        navRow.parentNode.insertBefore(spacer, navRow);
+
+        var ticking = false;
+        function updateStickyHeader() {
+          ticking = false;
+          if (!navRow.isConnected || !spacer.isConnected) return;
+          var shouldStick = spacer.getBoundingClientRect().top <= 0;
+          if (shouldStick) {
+            spacer.style.height = navRow.offsetHeight + 'px';
+            navRow.classList.add('genmerch-sticky-fixed');
+          } else {
+            navRow.classList.remove('genmerch-sticky-fixed');
+            spacer.style.height = '0px';
+          }
+        }
+        function scheduleUpdate() {
+          if (ticking) return;
+          ticking = true;
+          window.requestAnimationFrame(updateStickyHeader);
+        }
+        window.addEventListener('scroll', scheduleUpdate, { passive: true });
+        window.addEventListener('resize', scheduleUpdate, { passive: true });
+        window.addEventListener('orientationchange', scheduleUpdate, { passive: true });
+        window.addEventListener('load', scheduleUpdate, { once: true });
+        scheduleUpdate();
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGenmerchStickyHeader, { once: true });
+      } else {
+        initGenmerchStickyHeader();
+      }
+    })();
+  </script>
+
 </body>
 </html>
