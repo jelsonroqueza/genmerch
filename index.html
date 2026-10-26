@@ -8896,20 +8896,32 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       yesButton.disabled=true;yesButton.textContent='Deleting…';noButton.disabled=true;closeButton.disabled=true;
       sellerFeedback('sellerPermanentDeleteFeedback','','');
       showCenteredActionStatus('Please Wait','loading');
-      let deletionSucceeded=false,cleanupWarning='';
+      let deletionSucceeded=false,cleanupWarning='',deletionClient=null,storagePaths=[];
       try{
         const client=await getSellerAdminClient(false);
+        deletionClient=client;
         const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
         if(imageResult.error)throw imageResult.error;
-        const storagePaths=Array.from(new Set((imageResult.data||[]).map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean)));
+        const imageRows=imageResult.data||[];
+        storagePaths=Array.from(new Set(imageRows.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean)));
+        if(storagePaths.length!==imageRows.length){
+          throw new Error('Could not identify every product photo in cloud Storage. The product was not deleted; refresh the gallery and try again.');
+        }
         const result=await client.rpc('permanently_delete_genmerch_product',{p_product_id:productId});
         if(result.error)throw result.error;
         deletionSucceeded=true;
         const resultData=result.data&&typeof result.data==='object'?result.data:{};
         const confirmedName=String(resultData.deleted_product_name||productName);
         if(storagePaths.length){
-          const removal=await client.storage.from(SELLER_IMAGE_BUCKET).remove(storagePaths);
-          if(removal.error)cleanupWarning=' The product record and gallery rows were deleted, but one or more uploaded photo files could not be removed from Storage.';
+          try{
+            await sellerRemoveStorageObjects(client,storagePaths);
+          }catch(firstCleanupError){
+            try{
+              await sellerRemoveStorageObjects(client,storagePaths);
+            }catch(secondCleanupError){
+              cleanupWarning=' Cloud Storage cleanup could not be verified after retries. '+(secondCleanupError.message||firstCleanupError.message||'Please retry cleanup.');
+            }
+          }
         }
         if(sellerEditingProductId&&String(sellerEditingProductId)===productId)resetSellerProductForm();
         sellerPermanentDeleteBusy=false;
@@ -8921,8 +8933,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         await loadSellerInventoryAnalytics();
         const successMessage='Permanently deleted "'+confirmedName+'". Order history and inventory movement snapshots were preserved.'+cleanupWarning;
         sellerFeedback('sellerDeletedFeedback',successMessage,cleanupWarning?'error':'success');
-        showCenteredActionStatus(cleanupWarning?'Deleted Successfully! Some uploaded photo files may need cleanup.':'Deleted Successfully!','success',cleanupWarning?2600:1650);
-        showToast('Product permanently deleted.');
+        showCenteredActionStatus(cleanupWarning?'Product deleted; cloud cleanup needs attention.':'Deleted Successfully!',cleanupWarning?'error':'success',cleanupWarning?3200:1650);
+        showToast(cleanupWarning?'Product deleted; cloud photo cleanup needs attention.':'Product permanently deleted.');
       }catch(error){
         if(deletionSucceeded){
           sellerPermanentDeleteBusy=false;
@@ -9053,6 +9065,30 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     function sellerStoragePathFromPublicUrl(value){
       try{const url=new URL(String(value||'')),marker='/storage/v1/object/public/'+SELLER_IMAGE_BUCKET+'/',index=url.pathname.indexOf(marker);if(index<0)return '';const path=decodeURIComponent(url.pathname.slice(index+marker.length));return path.startsWith('products/')?path:'';}catch(_){return '';}
     }
+    async function sellerRemoveStorageObjects(client,paths){
+      let pending=Array.from(new Set((paths||[]).filter(path=>typeof path==='string'&&path.startsWith('products/'))));
+      let lastError='';
+      for(let attempt=1;attempt<=3&&pending.length;attempt++){
+        const removal=await client.storage.from(SELLER_IMAGE_BUCKET).remove(pending);
+        if(removal.error)lastError=removal.error.message||String(removal.error);
+        const stillPresent=[];
+        for(const path of pending){
+          const slash=path.lastIndexOf('/'),folder=slash>=0?path.slice(0,slash):'',fileName=slash>=0?path.slice(slash+1):path;
+          const listing=await client.storage.from(SELLER_IMAGE_BUCKET).list(folder,{limit:1000});
+          if(listing.error){
+            stillPresent.push(path);
+            lastError=listing.error.message||String(listing.error);
+          }else if((listing.data||[]).some(item=>item.name===fileName)){
+            stillPresent.push(path);
+            lastError='Storage still lists '+fileName+' after a delete attempt.';
+          }
+        }
+        pending=stillPresent;
+        if(!pending.length)return;
+        if(attempt<3)await new Promise(resolve=>window.setTimeout(resolve,250*attempt));
+      }
+      throw new Error('Cloud Storage cleanup could not be verified for '+pending.length+' product photo file(s). '+lastError);
+    }
     async function sellerUploadFiles(client,productId,photoEntries,startOrder,uploadedPaths){
       const rows=[];
       for(let i=0;i<photoEntries.length;i++){
@@ -9075,7 +9111,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       event.preventDefault();if(!sellerCentreIsUnlocked)return;
       showCenteredActionStatus('Saving product details, please wait...','loading');
       const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
-      const editingId=sellerEditingProductId,wasEditing=Boolean(editingId),uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false;
+      const editingId=sellerEditingProductId,wasEditing=Boolean(editingId),uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false,galleryCleanupWarning='';
       try{
         const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
@@ -9133,12 +9169,15 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           await sellerApplySelectedSizes(client,productId,sellerEditingProductSku||'GM-'+sellerSlugify(name).toUpperCase(),categoryName,selectedSizes,desiredVariantColors);
           editGalleryCommitComplete=true;
           const oldPaths=removedImagesToRestore.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean);
-          if(oldPaths.length){const removeObjects=await client.storage.from(SELLER_IMAGE_BUCKET).remove(oldPaths);if(removeObjects.error)console.warn('Some replaced gallery files could not be deleted from Storage:',removeObjects.error.message);}
-          resetSellerProductForm();sellerFeedback('sellerProductFeedback','Product details and gallery saved to Supabase.','success');
+          if(oldPaths.length){
+            try{await sellerRemoveStorageObjects(client,oldPaths);}
+            catch(storageError){galleryCleanupWarning=' Product details were saved, but cloud cleanup for one or more removed gallery photos could not be verified. '+(storageError.message||'Please review Storage cleanup.');}
+          }
+          resetSellerProductForm();sellerFeedback('sellerProductFeedback',galleryCleanupWarning?'Product details were saved, but photo cleanup needs attention.'+galleryCleanupWarning:'Product details and gallery saved to Supabase.',galleryCleanupWarning?'error':'success');
         }
         sellerInventoryLoaded=false;await loadSellerProducts();await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
         sellerHideOverlay('sellerProductEditorOverlay');
-        showCenteredActionStatus(wasEditing?'Product updated successfully!':'Product added successfully!','success',1600);
+        showCenteredActionStatus(galleryCleanupWarning?'Gallery saved; cloud photo cleanup needs attention.':(wasEditing?'Product updated successfully!':'Product added successfully!'),galleryCleanupWarning?'error':'success',galleryCleanupWarning?3200:1600);
       }catch(error){
         if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
