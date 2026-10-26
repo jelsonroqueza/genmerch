@@ -11653,7 +11653,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   // Set the existing branded model artwork as a poster so there is no black/empty frame
   // while the MP4 is loading or if the browser declines autoplay.
   const existingModelImage=hero.querySelector('.hero-models-photo');
-  if(existingModelImage&&existingModelImage.src)video.poster=existingModelImage.src;
+  // Respect the dedicated, lightweight branded poster set in the video markup.
+  if(!video.poster&&existingModelImage&&existingModelImage.src)video.poster=existingModelImage.src;
   updateAudioButton();
   video.preload='auto';
   video.load();
