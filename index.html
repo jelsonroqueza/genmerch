@@ -4095,6 +4095,29 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
   </style>
 
+<style id="genmerch-order-notifications-ui">
+.site-header .header-actions .genmerch-notification-button{position:relative!important;cursor:pointer!important}
+.genmerch-bell-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.genmerch-bell-svg{width:30px;height:30px;filter:drop-shadow(0 2px 2px #a86b0030);transform-origin:50% 10%;animation:genmerch-bell-wiggle 3.6s ease-in-out infinite}
+.genmerch-notification-badge{position:absolute;top:-4px;right:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:12px;background:#e9272d;color:#fff;font-size:10px;font-weight:900;line-height:17px;text-align:center;box-shadow:0 1px 3px #0002}
+@keyframes genmerch-bell-wiggle{0%,84%,100%{transform:rotate(0)}86%{transform:rotate(16deg)}88%{transform:rotate(-14deg)}90%{transform:rotate(10deg)}92%{transform:rotate(-7deg)}94%{transform:rotate(0)}}
+.genmerch-notification-panel{position:fixed;top:84px;right:clamp(8px,3vw,32px);width:min(390px,calc(100vw - 20px));max-height:min(72vh,620px);overflow:auto;background:#fff;border:1px solid #f0ddd3;border-radius:16px;box-shadow:0 16px 48px #1d110f30;z-index:20000;padding:14px;display:none}
+.genmerch-notification-panel.open{display:block}
+.genmerch-notification-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 2px 12px;border-bottom:1px solid #f1e6e0}
+.genmerch-notification-head strong{font-size:18px;color:#211b19}
+.genmerch-notification-refresh{border:0;background:#fff2ed;color:#d92b19;border-radius:20px;padding:7px 10px;font-weight:800}
+.genmerch-notification-item{display:flex;gap:12px;padding:14px 4px;border-bottom:1px solid #f3ece8}
+.genmerch-notification-icon{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;background:#fff0df;font-size:21px}
+.genmerch-notification-copy{min-width:0;flex:1}
+.genmerch-notification-copy strong{display:block;font-size:14px;color:#211b19;margin:1px 0 4px}
+.genmerch-notification-copy p{font-size:13px;line-height:1.5;color:#655b56;margin:0;overflow-wrap:anywhere}
+.genmerch-notification-time{display:block;font-size:11px;color:#8c817b;margin-top:5px}
+.genmerch-notification-empty{padding:24px 10px;text-align:center;color:#776b65;font-size:13px;line-height:1.6}
+.genmerch-notification-footer{display:block;text-align:center;margin-top:12px;padding:11px;background:#fff0ec;color:#d92b19;border-radius:10px;font-weight:800;text-decoration:none}
+@media(max-width:760px){.genmerch-notification-panel{top:76px;right:8px}}
+@media(prefers-reduced-motion:reduce){.genmerch-bell-svg{animation:none}}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -4125,6 +4148,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           <span class="brand-type"><span class="brand-word"><span>GEN</span><b>MERCH</b></span></span><span class="genmerch-header-tagline">Suot Apparel</span>
         </button>
         <div class="header-actions">
+          <button class="header-action genmerch-notification-button" id="genmerchNotificationButton" type="button" onclick="toggleGenmerchNotifications()" aria-label="Order notifications" title="Order notifications">
+  <span class="header-icon genmerch-bell-wrap"><svg class="genmerch-bell-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M25 22H7c2-2.1 3-4.5 3-9a6 6 0 0 1 12 0c0 4.5 1 6.9 3 9Z" fill="#f9c933" stroke="#9a6500" stroke-width="1.4"/><path d="M13 25a3 3 0 0 0 6 0" fill="none" stroke="#9a6500" stroke-width="2" stroke-linecap="round"/><path d="M5 9c.3-2.4 1.3-4.2 3-5.5M27 9c-.3-2.4-1.3-4.2-3-5.5" fill="none" stroke="#ff6b00" stroke-width="2" stroke-linecap="round"/></svg><span id="genmerchNotificationBadge" class="genmerch-notification-badge" hidden>0</span></span>
+  <small>Notifications</small>
+</button>
+
           <button class="header-action wishlist-header-button" type="button" onclick="openWishlist()" aria-label="Open wishlist" title="View saved products">
             <span class="header-icon wishlist-header-icon"><svg class="genmerch-premium-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="genmerchHeaderHeartGradient" x1="4" y1="3" x2="20" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff5364"/><stop offset=".52" stop-color="#f21f37"/><stop offset="1" stop-color="#c90d28"/></linearGradient></defs><path class="genmerch-heart-silhouette" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/><path class="genmerch-heart-glint" d="M5.2 7.5a3.2 3.2 0 0 1 3.25-1.55" fill="none" stroke="#fff" stroke-width="1.15" stroke-linecap="round" opacity=".82"/></svg><span class="wishlist-badge" id="wishlistBadge" aria-live="polite" hidden>0</span></span>
             <small>Wishlist</small>
@@ -10869,6 +10897,84 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       });
     }
   </script>
+
+  <script id="genmerch-order-notifications-controller">
+(function(){
+  var panel=null, channel=null, refreshTimer=null;
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function timeLabel(value){var d=new Date(value);if(!value||isNaN(d.getTime()))return '';var delta=Math.max(0,Date.now()-d.getTime());if(delta<60000)return 'Just now';if(delta<3600000)return Math.floor(delta/60000)+' min ago';if(delta<86400000)return Math.floor(delta/3600000)+' hours ago';return Math.floor(delta/86400000)+' days ago';}
+  function statusInfo(status,payment){
+    var map={pending:['🧾','Order Placed','Your order has been received and is awaiting confirmation.'],confirmed:['✅','Order Confirmed','Your order has been confirmed.'],processing:['📦','Preparing Your Order','Your order is being prepared.'],shipped:['🚚','Order Shipped','Your order has been shipped.'],out_for_delivery:['🛵','Out for Delivery','Your order is out for delivery.'],delivered:['🎉','Order Delivered','Your order has been marked delivered.'],cancelled:['❌','Order Cancelled','Your order has been cancelled.'],refunded:['💳','Order Refunded','Your order has been marked refunded.']};
+    var result=map[String(status||'pending').toLowerCase()]||['🔔','Order Update','Your order status has been updated.'];
+    if(String(payment||'').toLowerCase()==='paid')return ['💳','Payment Received','We have received your payment.'];
+    return result;
+  }
+  function render(items,guest){
+    var badge=document.getElementById('genmerchNotificationBadge'),button=document.getElementById('genmerchNotificationButton');
+    if(badge){badge.textContent=String(Math.min(items.length,99));badge.hidden=!items.length;}
+    if(button)button.setAttribute('aria-label',items.length?'Order notifications, '+items.length+' updates':'Order notifications');
+    if(!panel)return;
+    var html='<div class="genmerch-notification-head"><strong>Notifications</strong><button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button></div>';
+    if(guest) html+='<div class="genmerch-notification-empty">Sign in to see order updates linked to your account.<br>Guest orders can be checked from Track Order.</div>';
+    else if(!items.length) html+='<div class="genmerch-notification-empty">No order updates yet. New progress updates will appear here as your order changes.</div>';
+    else items.forEach(function(n){html+='<div class="genmerch-notification-item"><div class="genmerch-notification-icon">'+esc(n.icon)+'</div><div class="genmerch-notification-copy"><strong>'+esc(n.title)+'</strong><p>'+esc(n.message)+'</p><span class="genmerch-notification-time">'+esc(n.order_number)+' · '+esc(timeLabel(n.created_at))+'</span></div></div>';});
+    html+='<a href="javascript:void(0)" class="genmerch-notification-footer" onclick="openCustomerOrders();closeGenmerchNotifications()">View All Orders & Tracking</a>';
+    panel.innerHTML=html;
+  }
+  window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');};
+  window.toggleGenmerchNotifications=async function(){
+    if(!panel){panel=document.createElement('section');panel.className='genmerch-notification-panel';panel.id='genmerchNotificationPanel';panel.setAttribute('aria-label','Order notifications');document.body.appendChild(panel);document.addEventListener('click',function(e){if(panel&&!panel.contains(e.target)&&!e.target.closest('#genmerchNotificationButton'))panel.classList.remove('open');});}
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open'))await window.loadGenmerchNotifications();
+  };
+  window.loadGenmerchNotifications=async function(){
+    var client;
+    try{
+      if(typeof getCustomerAuthClient!=='function')throw new Error('Sign-in service unavailable');
+      client=getCustomerAuthClient();
+      var s=await client.auth.getSession(),session=s.data&&s.data.session;
+      if(!session||!session.user){render([],true);return;}
+      var result=await client.from('orders').select('id,order_number,status,payment_status,updated_at,created_at').eq('user_id',session.user.id).order('updated_at',{ascending:false}).limit(30);
+      if(result.error)throw result.error;
+      var orders=result.data||[],items=[];
+      orders.forEach(function(o){
+        var info=statusInfo(o.status,o.payment_status);
+        items.push({icon:info[0],title:info[1],message:info[2],order_number:o.order_number,created_at:o.updated_at||o.created_at});
+      });
+      var ids=orders.map(function(o){return o.id;});
+      if(ids.length){
+        var hist=await client.from('order_status_history').select('id,order_id,to_status,note,created_at').in('order_id',ids).order('created_at',{ascending:false}).limit(40);
+        if(!hist.error){
+          var byId={};orders.forEach(function(o){byId[o.id]=o.order_number;});
+          (hist.data||[]).forEach(function(h){var info=statusInfo(h.to_status,'');items.push({icon:info[0],title:info[1],message:h.note||info[2],order_number:byId[h.order_id]||'Order update',created_at:h.created_at});});
+        }
+      }
+      items.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
+      var unique=[],seen={};items.forEach(function(n){var key=n.order_number+'|'+n.title+'|'+n.created_at;if(!seen[key]){seen[key]=true;unique.push(n);}});
+      render(unique.slice(0,12),false);
+    }catch(error){render([],true);if(panel)panel.insertAdjacentHTML('beforeend','<div class="genmerch-notification-empty">Could not load notifications right now. Please try again.</div>');}
+  };
+  function init(){
+    var button=document.getElementById('genmerchNotificationButton');if(!button)return;
+    window.loadGenmerchNotifications();
+    if(window.supabase&&typeof window.supabase.createClient==='function'){
+      try{
+        var client=getCustomerAuthClient();
+        client.auth.getSession().then(function(r){var u=r.data&&r.data.session&&r.data.session.user;if(!u)return;
+          if(channel)client.removeChannel(channel);
+          channel=client.channel('genmerch-order-notifications-'+u.id)
+            .on('postgres_changes',{event:'*',schema:'public',table:'orders',filter:'user_id=eq.'+u.id},function(){window.loadGenmerchNotifications();})
+            .on('postgres_changes',{event:'INSERT',schema:'public',table:'order_status_history'},function(){window.loadGenmerchNotifications();})
+            .subscribe();
+        }).catch(function(){});
+      }catch(_){}
+    }
+    if(refreshTimer)clearInterval(refreshTimer);
+    refreshTimer=setInterval(function(){if(document.visibilityState==='visible')window.loadGenmerchNotifications();},60000);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 
   <script id="genmerch-sticky-header-controller">
     (function () {
