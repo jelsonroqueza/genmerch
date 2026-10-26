@@ -11667,7 +11667,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!videoActive&&!document.hidden&&heroInView)showVideoSlide();
     },80);
     window.setTimeout(function(){
-      if(!videoActive&&!playPending&&video.paused&&!reducedMotion){
+      // Do not let a mobile play() promise stay pending forever and hide the fallback.
+      // If the video is still paused after the startup window, show the branded poster and
+      // a visible play button even if the browser has not settled its play() promise.
+      if(!videoActive&&video.paused&&!reducedMotion){
         hero.classList.remove('hero--video-active');
         showLaunchPrompt();
       }
