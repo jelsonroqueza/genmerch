@@ -4271,7 +4271,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
 
   .hero-video-audio-toggle{
-    position:absolute;z-index:3;right:clamp(9px,1.5vw,20px);bottom:clamp(9px,1.5vw,20px);
+    position:absolute;z-index:3;right:clamp(9px,1.5vw,20px);top:clamp(9px,1.5vw,20px);bottom:auto;
     display:inline-flex;align-items:center;justify-content:center;gap:7px;
     max-width:calc(100% - 18px);min-height:42px;padding:9px 13px;
     border:1px solid rgba(255,255,255,.32);border-radius:999px;
@@ -4292,7 +4292,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   .hero.hero-video-autoplay-blocked .hero-video-launch-button{display:inline-flex}
   .hero.hero--video-active .hero-video-launch-button{display:none!important}
   @media(max-width:760px){
-    .hero-video-audio-toggle{right:9px;bottom:9px;min-height:44px;padding:10px 12px;font-size:12px}
+    .hero-video-audio-toggle{right:9px;top:9px;bottom:auto;min-height:44px;padding:10px 12px;font-size:12px}
     .hero-video-launch-button{left:50%;right:auto;bottom:10px;transform:translateX(50%);min-height:46px;white-space:nowrap}
     .hero.hero-video-autoplay-blocked .hero-video-launch-button{left:50%;transform:translateX(-50%)}
   }
