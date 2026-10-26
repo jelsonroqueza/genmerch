@@ -4244,10 +4244,18 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     background:linear-gradient(110deg,#fff0df 0%,#ff8b27 42%,#ff4a17 65%,#25100c 100%);
     transition:opacity .55s ease,transform .55s ease,visibility .55s ease;
   }
-  .hero-video-main{
-    display:block;width:100%;height:100%;max-width:100%;max-height:100%;
+  .hero-video-poster{
+    position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;
     object-fit:contain;object-position:center center;background:transparent;
   }
+  .hero-video-main{
+    position:relative;z-index:1;display:block;width:100%;height:100%;max-width:100%;max-height:100%;
+    object-fit:contain;object-position:center center;background:transparent;opacity:0;
+  }
+  .hero-video-stage.hero-video-playing .hero-video-main{opacity:1}
+  .hero-video-stage.hero-video-playing .hero-video-poster{opacity:0}
+  .hero-video-poster{transition:opacity .2s ease}
+  .hero-video-audio-toggle{z-index:5}
   .hero.hero--video-active{
     display:block!important;position:relative;min-height:0!important;
     height:clamp(360px,40vw,680px);padding:0!important;overflow:hidden;
@@ -4568,6 +4576,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   <main class="container">
     <section class="hero">
       <div class="hero-video-stage" id="genmerchHeroVideoStage" aria-label="GENMERCH — Suot Apparel promotional video">
+        <img class="hero-video-poster" id="genmerchHeroVideoPoster" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-poster.jpg" alt="GENMERCH — Suot Apparel promotional banner" fetchpriority="high" decoding="async">
         <video class="hero-video-main" id="genmerchHeroVideo" poster="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-poster.jpg" muted playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel promotional video">
           <source src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-720p.mp4" type="video/mp4">
           Your browser does not support HTML video. The standard GENMERCH hero banner is shown instead.
@@ -11419,6 +11428,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 (function(){
   const hero=document.querySelector('.hero');
   const video=document.getElementById('genmerchHeroVideo');
+  const videoStage=document.getElementById('genmerchHeroVideoStage');
   const audioButton=document.getElementById('genmerchHeroAudioToggle');
   const launchButton=document.getElementById('genmerchHeroVideoLaunch');
   if(!hero||!video||!audioButton||!launchButton)return;
@@ -11492,12 +11502,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       playPending=false;
       if(attempt!==playAttempt)return false;
       videoActive=true;
+      videoStage.classList.add('hero-video-playing');
       hideLaunchPrompt();
       return true;
     }catch(error){
       playPending=false;
       videoActive=false;
       video.pause();
+      videoStage.classList.remove('hero-video-playing');
       // If a mobile browser blocks autoplay, preserve the branded static hero and
       // expose a clear tap-to-play action instead of leaving an invisible video stage.
       hero.classList.remove('hero--video-active');
@@ -11519,7 +11531,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     playPending=false;
     hero.classList.remove('hero--video-active');
     video.pause();
-    try{video.currentTime=0;}catch(_){}
+    videoStage.classList.remove('hero-video-playing');
+    try{video.currentTime=0;}catch(_){} 
     video.muted=true;
     video.defaultMuted=true;
     soundEnabled=false;
@@ -11532,6 +11545,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     const attempt=playAttempt;
     hero.classList.remove('hero-video-autoplay-blocked');
     hero.classList.add('hero--video-active');
+    videoStage.classList.remove('hero-video-playing');
     launchButton.hidden=true;
     video.playsInline=true;
     video.setAttribute('playsinline','');
@@ -11550,9 +11564,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         playPending=false;
         if(attempt!==playAttempt)return;
         videoActive=true;
+        videoStage.classList.add('hero-video-playing');
       }).catch(()=>{
         playPending=false;
         videoActive=false;
+        videoStage.classList.remove('hero-video-playing');
         hero.classList.remove('hero--video-active');
         showLaunchPrompt();
       });
@@ -11603,11 +11619,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     scheduleVideo(2200);
   });
+  video.addEventListener('playing',function(){videoStage.classList.add('hero-video-playing');});
   video.addEventListener('ended',function(){
+    videoStage.classList.remove('hero-video-playing');
     showStaticSlide();
   });
   video.addEventListener('error',function(){
     clearCycleTimer();
+    videoStage.classList.remove('hero-video-playing');
     playAttempt++;
     videoActive=false;
     playPending=false;
