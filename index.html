@@ -4512,6 +4512,44 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
  .genmerch-notification-panel .genmerch-notification-close{width:27px!important;height:27px!important;flex-basis:27px!important;font-size:19px!important}
 }
 </style>
+<style id="genmerch-suot-apparel-alignment-balance">
+/* Align SUOT APPAREL optically with the GENMERCH wordmark without changing the icon row. */
+.site-header .main-header .nav .brand-lockup{
+  align-items:center!important;
+  justify-content:center!important;
+  gap:clamp(6px,1.15vw,12px)!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word{
+  display:inline-block!important;flex:0 0 auto!important;
+  margin:0!important;padding:0!important;line-height:.98!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+  display:inline-block!important;flex:0 1 auto!important;align-self:center!important;
+  position:relative!important;top:-.035em!important;
+  margin:0!important;padding:0 0 4px!important;
+  line-height:1!important;white-space:nowrap!important;
+  transform:none!important;
+}
+@media(max-width:760px){
+ .site-header .main-header .nav .brand-lockup{
+   align-items:center!important;gap:clamp(5px,1.1vw,8px)!important;
+   max-width:100%!important;
+ }
+ .site-header .main-header .nav .brand-lockup .brand-word{
+   font-size:clamp(1.14rem,4.65vw,1.55rem)!important;line-height:.98!important;
+ }
+ .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+   font-size:clamp(.68rem,2.95vw,.98rem)!important;
+   line-height:1!important;top:-.035em!important;padding-bottom:3px!important;
+   letter-spacing:-.045em!important;
+ }
+}
+@media(max-width:390px){
+ .site-header .main-header .nav .brand-lockup{gap:4px!important}
+ .site-header .main-header .nav .brand-lockup .brand-word{font-size:clamp(1.04rem,4.35vw,1.2rem)!important}
+ .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{font-size:clamp(.61rem,2.65vw,.72rem)!important;padding-bottom:2px!important}
+}
+</style>
 </head>
 <body>
   <header class="site-header">
