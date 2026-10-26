@@ -6780,14 +6780,40 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let customerOrdersBadgePollTimer=null;
     let customerOrdersBadgeRefreshSequence=0;
 
-    function markGenmerchHeaderBadgesRead(){
-      try{sessionStorage.setItem('genmerchHeaderBadgesRead','1');}catch(_){}
-      ['customerOrdersBadge','customerRateBadge','genmerchNotificationBadge'].forEach(function(id){
-        const badge=document.getElementById(id);
-        if(badge)badge.hidden=true;
-      });
+    let genmerchHeaderReadAt=null;
+    async function getGenmerchHeaderReadAt(client,userId,forceRefresh){
+      if(!client||!userId)return null;
+      if(!forceRefresh&&genmerchHeaderReadAt&&genmerchHeaderReadAt.userId===userId)return genmerchHeaderReadAt.readAt;
+      const result=await client.from('customer_header_read_state').select('read_at').eq('user_id',userId).maybeSingle();
+      if(result.error)throw result.error;
+      const readAt=result.data&&result.data.read_at?result.data.read_at:null;
+      genmerchHeaderReadAt={userId:userId,readAt:readAt};
+      return readAt;
+    }
+    async function markGenmerchHeaderBadgesRead(){
       const button=document.getElementById('customerOrdersMarkRead');
-      if(button){button.classList.add('is-read');button.textContent='✓ All caught up';button.setAttribute('aria-label','All header badges marked as read');}
+      try{
+        const client=getCustomerAuthClient();
+        const sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user)throw new Error('Please sign in to sync read status.');
+        const userId=String(session.user.id);
+        const stamp=new Date().toISOString();
+        const saved=await client.from('customer_header_read_state').upsert({user_id:userId,read_at:stamp,updated_at:stamp},{onConflict:'user_id'}).select('read_at').single();
+        if(saved.error)throw saved.error;
+        genmerchHeaderReadAt={userId:userId,readAt:saved.data.read_at};
+        await Promise.all([
+          refreshCustomerOrdersBadge(session).catch(error=>console.warn('Orders badge refresh after mark read failed.',error)),
+          refreshCustomerRateBadge().catch(error=>console.warn('Rate badge refresh after mark read failed.',error)),
+          window.loadGenmerchNotifications?window.loadGenmerchNotifications():Promise.resolve()
+        ]);
+        if(button){button.classList.add('is-read');button.textContent='✓ All caught up';button.setAttribute('aria-label','All header badges marked as read');}
+      }catch(error){
+        console.error('GENMERCH could not save header read status to Supabase.',error);
+        if(button){button.classList.remove('is-read');button.textContent='Try again';}
+        alert('Hindi na-save ang read status sa database. Pakisubukan ulit.');
+      }
     }
     window.markGenmerchHeaderBadgesRead=markGenmerchHeaderBadgesRead;
     function setCustomerOrdersBadgeCount(value){
@@ -6809,7 +6835,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!userId){customerOrdersBadgeRefreshSequence++;setCustomerOrdersBadgeCount(0);return;}
       const sequence=++customerOrdersBadgeRefreshSequence;
       const client=getCustomerAuthClient();
-      const result=await client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',userId);
+      const readAt=await getGenmerchHeaderReadAt(client,userId);
+      let query=client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',userId);
+      if(readAt)query=query.gt('created_at',readAt);
+      const result=await query;
       if(result.error)throw result.error;
       const activeUserId=customerAuthCurrentSession&&customerAuthCurrentSession.user&&customerAuthCurrentSession.user.id
         ?String(customerAuthCurrentSession.user.id):'';
@@ -11068,7 +11097,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       try{
         const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession(),session=sessionResult.data&&sessionResult.data.session;
         if(!session||!session.user){badge.hidden=true;return;}
-        const ordersResult=await client.from('orders').select('id',{count:'exact'}).eq('user_id',session.user.id).eq('status','delivered').limit(100);
+        const readAt=await getGenmerchHeaderReadAt(client,String(session.user.id));
+        let ordersQuery=client.from('orders').select('id',{count:'exact'}).eq('user_id',session.user.id).eq('status','delivered');
+        if(readAt)ordersQuery=ordersQuery.gt('updated_at',readAt);
+        const ordersResult=await ordersQuery.limit(100);
         if(ordersResult.error)throw ordersResult.error;
         const ids=(ordersResult.data||[]).map(row=>row.id);
         if(!ids.length){badge.hidden=true;return;}
@@ -11410,8 +11442,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
       items.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
       var unique=[],seen={};items.forEach(function(n){var key=n.order_number+'|'+n.title+'|'+n.created_at;if(!seen[key]){seen[key]=true;unique.push(n);}});
-      var wasRead=false;try{wasRead=sessionStorage.getItem('genmerchNotificationsRead:'+activeUserId)==='1';}catch(_){}
-      unique.forEach(function(n){n.read=wasRead;});
+      var notificationReadAt=null;
+      try{notificationReadAt=await getGenmerchHeaderReadAt(client,String(activeUserId));}catch(readError){console.warn('GENMERCH notification read state could not load from Supabase.',readError);}
+      unique.forEach(function(n){n.read=!!(notificationReadAt&&new Date(n.created_at||0).getTime()<=new Date(notificationReadAt).getTime());});
       render(unique.slice(0,12),false);
     }catch(error){render([],true);if(panel)panel.insertAdjacentHTML('beforeend','<div class="genmerch-notification-empty">Could not load notifications right now. Please try again.</div>');}
   };
