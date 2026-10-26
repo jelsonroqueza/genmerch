@@ -6790,6 +6790,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       genmerchHeaderReadAt={userId:userId,readAt:readAt};
       return readAt;
     }
+    window.getGenmerchHeaderReadAt=getGenmerchHeaderReadAt;
     async function markGenmerchHeaderBadgesRead(){
       const button=document.getElementById('customerOrdersMarkRead');
       try{
@@ -11443,7 +11444,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       items.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
       var unique=[],seen={};items.forEach(function(n){var key=n.order_number+'|'+n.title+'|'+n.created_at;if(!seen[key]){seen[key]=true;unique.push(n);}});
       var notificationReadAt=null;
-      try{notificationReadAt=await getGenmerchHeaderReadAt(client,String(activeUserId));}catch(readError){console.warn('GENMERCH notification read state could not load from Supabase.',readError);}
+      try{notificationReadAt=await window.getGenmerchHeaderReadAt(client,String(activeUserId));}catch(readError){console.warn('GENMERCH notification read state could not load from Supabase.',readError);}
       unique.forEach(function(n){n.read=!!(notificationReadAt&&new Date(n.created_at||0).getTime()<=new Date(notificationReadAt).getTime());});
       render(unique.slice(0,12),false);
     }catch(error){render([],true);if(panel)panel.insertAdjacentHTML('beforeend','<div class="genmerch-notification-empty">Could not load notifications right now. Please try again.</div>');}
