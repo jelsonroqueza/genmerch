@@ -4234,6 +4234,42 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
 </style>
 
+<style id="genmerch-responsive-hero-video">
+  /* Responsive GENMERCH hero video carousel: original static hero remains as a safe fallback. */
+  .hero{position:relative}
+  .hero-video-stage{
+    position:absolute;inset:0;z-index:20;width:100%;height:100%;
+    display:block;overflow:hidden;visibility:hidden;opacity:0;
+    transform:translateX(2%);pointer-events:none;
+    background:linear-gradient(110deg,#fff0df 0%,#ff8b27 42%,#ff4a17 65%,#25100c 100%);
+    transition:opacity .55s ease,transform .55s ease,visibility .55s ease;
+  }
+  .hero-video-main{
+    display:block;width:100%;height:100%;max-width:100%;max-height:100%;
+    object-fit:contain;object-position:center center;background:transparent;
+  }
+  .hero.hero--video-active{
+    display:block!important;position:relative;min-height:0!important;
+    height:clamp(360px,40vw,680px);padding:0!important;overflow:hidden;
+    background:linear-gradient(110deg,#fff0df 0%,#ff8b27 42%,#ff4a17 65%,#25100c 100%);
+  }
+  .hero.hero--video-active>.hero-video-stage{
+    visibility:visible;opacity:1;transform:translateX(0);pointer-events:auto;
+  }
+  .hero.hero--video-active>.hero-copy,
+  .hero.hero--video-active>.hero-art{
+    visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+  }
+  .hero.hero--video-active + .trust-strip{display:none!important}
+  @media(max-width:760px){
+    .hero.hero--video-active{height:clamp(260px,72vw,420px);min-height:0!important}
+    .hero-video-stage{background:linear-gradient(180deg,#fff0df 0%,#ff7d24 48%,#24100b 100%)}
+    .hero-video-main{object-fit:contain;object-position:center center}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero-video-stage{transition:none}
+  }
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -4483,6 +4519,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
   <main class="container">
     <section class="hero">
+      <div class="hero-video-stage" id="genmerchHeroVideoStage" aria-label="GENMERCH — Suot Apparel promotional video">
+        <video class="hero-video-main" id="genmerchHeroVideo" muted playsinline preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel, Comfort. Style. For Every You.">
+          <source src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026.mp4" type="video/mp4">
+          Your browser does not support HTML video. The standard GENMERCH hero banner is shown instead.
+        </video>
+      </div>
       <div class="hero-copy">
         <div class="hero-brand-lockup" aria-label="GENMERCH">
           <img class="hero-cart hero-cart-image" src="/assets/genmerch-cart-actual.webp?v=20261026-no-circle" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
@@ -11323,5 +11365,85 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       });
     }
   </script>
+<script id="genmerch-hero-video-carousel">
+(function(){
+  const hero=document.querySelector('.hero');
+  const video=document.getElementById('genmerchHeroVideo');
+  if(!hero||!video)return;
+  const reducedMotion=Boolean(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let cycleTimer=null;
+  let firstReady=false;
+  let videoActive=false;
+  let previousVisibility=document.hidden;
+
+  function clearCycleTimer(){
+    if(cycleTimer!==null){window.clearTimeout(cycleTimer);cycleTimer=null;}
+  }
+  function scheduleVideo(delay){
+    clearCycleTimer();
+    if(reducedMotion||document.hidden)return;
+    cycleTimer=window.setTimeout(showVideoSlide,Math.max(1000,Number(delay)||7000));
+  }
+  async function showVideoSlide(){
+    cycleTimer=null;
+    if(reducedMotion||document.hidden){scheduleVideo(3000);return;}
+    hero.classList.add('hero--video-active');
+    try{
+      video.muted=true;
+      video.playsInline=true;
+      video.currentTime=0;
+      const playback=video.play();
+      if(playback&&typeof playback.then==='function')await playback;
+      videoActive=true;
+    }catch(error){
+      videoActive=false;
+      hero.classList.remove('hero--video-active');
+      video.pause();
+      scheduleVideo(12000);
+    }
+  }
+  function showStaticSlide(){
+    clearCycleTimer();
+    videoActive=false;
+    hero.classList.remove('hero--video-active');
+    video.pause();
+    try{video.currentTime=0;}catch(_){}
+    scheduleVideo(7500);
+  }
+  video.addEventListener('canplay',function(){
+    if(firstReady)return;
+    firstReady=true;
+    scheduleVideo(6500);
+  });
+  video.addEventListener('ended',showStaticSlide);
+  video.addEventListener('error',function(){
+    clearCycleTimer();
+    videoActive=false;
+    hero.classList.remove('hero--video-active');
+    video.pause();
+  });
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){
+      clearCycleTimer();
+      if(videoActive)showStaticSlide();
+      else video.pause();
+      previousVisibility=true;
+      return;
+    }
+    if(previousVisibility){previousVisibility=false;if(firstReady)scheduleVideo(3000);else video.load();}
+  });
+  if(reducedMotion){
+    video.preload='none';
+    return;
+  }
+  // Load in the background while the original branded hero remains visible.
+  video.preload='auto';
+  video.load();
+  // Fallback if canplay is slow: keep the original hero rather than showing an empty frame.
+  window.setTimeout(function(){
+    if(!firstReady){video.preload='auto';video.load();}
+  },3000);
+})();
+</script>
 </body>
 </html>
