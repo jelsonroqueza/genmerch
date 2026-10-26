@@ -11088,6 +11088,37 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }).join('');
       if(panel&&!panel.hidden)list.scrollTop=0;
     }
+    // Uploaded GENMERCH notification sound (compressed from the user's supplied audio).
+    const CUSTOMER_NOTIFICATION_SOUND_SRC='data:audio/ogg;base64,T2dnUwACAAAAAAAAAABezjgHAAAAAEDGoyMBE09wdXNIZWFkAQE4AYA+AAAAAABPZ2dnUwAAAAAAAAAAAAAF7OOAcBAAAAjysHvAE9T3B1c1RhZ3MMAAAATGF2ZjYxLjcuMTAzAQAAAB0AAABlbmNvZGVyPUxhdmM2MS4xOS4xMDEgbGlib3B1c09nZ1MAAIC7AAAAAAAAXs44BwIAAAAg2KOrMh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eS0EUC+RVxnTZiAAAAAAAAAAAAAAAAAAAAAAAAAAAS0ELBtVLV0oBSGhTL0Bpv/xicgAAAAAAAAAAAAAASwGGAmmyqhXkGvjDfwkyOSb3wvJpFHJ9tFstj5hMSwGAsRoie83PBeOo0ly47BmuPtlcID38H2sW3IeNSwGcuqQiIrK4JwuWXFMzvFOAvpzB++FmfOzxnkr+SwGdAKbvKakOj3hPMw/uj0gS3c/RyqqSjeAGeFxQSJyeavpz6Mx7z3/IXR59XNCxFEDCt6EX4ubTukWAS0EApaU8oSCwMQPN3mX/UuS6z/6/NslEnyoy4Tx3SwG/o8y+H9KamlIH5SLjBOgDJ/64/pwF69aHcnbAS0EAhavxow9cvL/g0R9k+Cw0ZmJ4oE7I5/q0x7RASIXV6L0V/1qMjaTK+9HBTeeDYbqxHvkvk0Uq1VDoSwG89gN5G9nq+tQ0wYRTkckPfl7UWwU1RTM9OXUUSLz7UB8Uv1J7zY+41ep2AE55oA7IM2lKE5aojD/gSLzI2b9dSzk0eZ1GYwyUUCYekKvAKrbOWsSSuqOmSLzEzTbvQEhzAUyxJlNEuQMvky9ssfbJKkGY2A2oSLxASXl1FUAxwm9HYzCFFlpgOkmx3KNyB5Hm9XWgSLocHZY9eiJfZbCLPjXP5de2kHt6GeHSAPOLclqQSLDRnmeN7LvGrpHlJgocSfbJiarK7xfqkVJO3gcgS0ECrP40sK4uxSLH2HphxYCTbkysjOclaba6wAAASKpB5TqBIWcadIf2jEQYI726g8q67dq+UuuwSM3uSK6kbpUd5Ajq9jN334gG0iXZUtqfmA4WjrG9QA/gSwGynzEPCbo9adgwFyokTn+yBipAZ1YODo7KxoI8SLcH76qqmfHlM7LzuhL+N4JxVu2D5dSFaIdCK0RMSLrQTCRuKmgazdyH+w3cIaEjtw8GF4Fo7YNIfumgSLv1gx7HKpXFZhm+fpzUnOkiFvolbg1RSKRSYdxgSwG7jKrvyI8anvNagCn+boaQSo1n3FnDJyu4X8lQS0EDu3XwQSQ8Wac8uVFZTmXzn40JpUFh+CrQAAAAS0EBu0OWtLhmij6GdO7uKPXit6YA/un7U5wtIvwASwG5jOfsMlhnbsY4+4UeS/Ng3Hyln2nMrGW8plZgS0ECux9vXVJNa5m1njNhw+ITfe2L96GnTFnJWwAASwG6a5tTlJIQaksKf9PGrIh2ZLsJ9Q5uCRKHUuKgSwGFMWQo4frHkhrr0C6DJZk7PS2ofoL/QXnLvVUfSwGExff3LaCf90z2hFZWVaypyq4E5C1Qr0GFW+bsSISAG07imnV5nqEni9B1xEYF9z4POUVhlHKRyrugSwEF6spRb2COPbKTUZpTUutaH8/sGwnJLbir6qWASDYpERZoYh9X2NSxkkOSP1IgLCfWWTRN1aSng89AS0ECBEJJi38LiDGvGDJb68tfnK1BaW5s2RGHRgAASwEDq+shQXtiDcN9fR5LI2htuKJAgdcwiKL9/uYgSIEWX0kigQunUFBdVC8NfCoS/LF1S41kCVz3RkRASwGEKCuqLYyVvkQk0N0eXGPaRIdUuVIXqqBdKK+oS0EAl6E1KWnvhXTthTkJtmKH/xB7hpr52oQdRGq4SJfT/SkTW1YIP5aaa1cWLS/V4rpkcngMB1heiqPQSwGX446CSjIOTJ41Mn0Jh9Z8GbP6LyRQl6YgrjdoSwGXvuwLnq/18z5ZjywckgNfDnB2z855QNBVWN0USJc+Q5KGkHRZ+YFYnoOY0vD9fE6XMoe5KXtkn3MYS0EAlutlke+enGc5leKV/0VTgZmkY/4Xgfv2u+naSwGWnauLLXS1LtaCIsbcTkbyk4ChoSShBeQ74+UlS0ECliRt25UbH3AizHYPUUJpKh3Xk71/g+exNAAASJWbZpwL/FATqJ77NtFlvC98yRgBR5+KI+15bW5wSwGEgsCQiFjFiG2cZehP+JVIQLAvyT0huuSU9JNqT2dnUwAE+gQBAAAAAABezjgHAwAAANXtZtEUHh4eHh4eHh4eHh4eHh4eHh4eHh5IknvCeHI2/4cMYAe+f1L+2hg8tNJyMjZLe7R19sNIkVhJYhhkzo0jpTl01uJ+EFI67okfxQFZAqVyjxBIjx9iyNBJheSAt3xsJ19OebUsCQYydnaizF1UjgJLQQKN7jtluJDb7+kILR7wUHdXUkOqX44sgqY0AABLATcqrp4x/wCaaQXQzKR74cFEsuigOxcU4YEUdaBINGWcjnzEPI/g/3bodu43YDNO5lPN4f9dC1RkmtBIiTYkSWsWJzh58ECJ7X/BZpZQgsqw6KON7WaJhlBLQQCCtXz4IhOXzaOlfVFS0islmNa5g0tj4quXPYBLQQCShqUtwhv2+R3a4WYaBPkGnJhlZqPbioy5RDBIj5YLnEHXSkROiouN8EaVTFNQA3hWtJ+82p/c7fRLAYJLtru3MduxqFjQusuK8zsyyVT9MqX1B4rUN8BLQQCPY00shKHJeXSelHwZMbkoZsWgCe2BanMAo0BLQQOC8KnWwbKGqAtly4qv8yTfEqVpQOw6/0AAAABLQQODlTR6ttiMs9XSA8DxKwHkK+9TvH/qt34AAABLQQeDDzh86vGS73LcDbeZxroYvzUOsAAAAAAAAABIkOVj8Ssf3mPvkj7vq9Xgeei+/8jnx/es0jTt2cRLQQA9BDeSipf5JPQucutrPxxeaVGGEQjWZwwjn2hLAZD7ZVQjUqvol04Uym1JiSZEBwryIHOgrFTS8axIg5EHwWsc64Fm/lOuKClW89sNDtWSjQWt8ScHzrBLAYQmZX8yxtIjMUCXc+bFOefY+rqzVyQeZroEWyA=';
+    let customerNotificationAudio=null;
+    let customerNotificationAudioUnlocked=false;
+    let customerNotificationsLastIds=null;
+    let customerNotificationsLastUserId='';
+    function unlockCustomerNotificationAudio(){
+      if(customerNotificationAudioUnlocked)return;
+      try{
+        customerNotificationAudio=new Audio(CUSTOMER_NOTIFICATION_SOUND_SRC);
+        customerNotificationAudio.preload='auto';
+        const audio=customerNotificationAudio;
+        audio.muted=true;
+        const promise=audio.play();
+        if(promise&&typeof promise.then==='function'){
+          promise.then(()=>{audio.pause();audio.currentTime=0;audio.muted=false;customerNotificationAudioUnlocked=true;})
+            .catch(()=>{audio.muted=false;});
+        }else{audio.pause();audio.currentTime=0;audio.muted=false;customerNotificationAudioUnlocked=true;}
+      }catch(_){}
+    }
+    function playCustomerNotificationSound(){
+      if(!customerNotificationAudioUnlocked||!customerNotificationAudio)return;
+      try{
+        const audio=customerNotificationAudio.cloneNode();
+        audio.volume=0.8;
+        const promise=audio.play();
+        if(promise&&typeof promise.catch==='function')promise.catch(()=>{});
+      }catch(_){}
+    }
+    document.addEventListener('pointerdown',unlockCustomerNotificationAudio,{once:true,capture:true});
+    document.addEventListener('keydown',unlockCustomerNotificationAudio,{once:true,capture:true});
     async function refreshCustomerNotifications(silent=false){
       if(customerNotificationsRefreshBusy)return;
       customerNotificationsRefreshBusy=true;
@@ -11099,15 +11130,24 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const user=session&&session.user;
         if(!user){
           customerNotificationsUserId='';
+          customerNotificationsLastUserId='';
+          customerNotificationsLastIds=null;
           customerNotificationsRows=[];
           renderCustomerNotifications();
           return;
         }
-        customerNotificationsUserId=String(user.id);
+        const nextUserId=String(user.id);
+        if(customerNotificationsLastUserId!==nextUserId){
+          customerNotificationsLastUserId=nextUserId;
+          customerNotificationsLastIds=null;
+        }
+        customerNotificationsUserId=nextUserId;
         const ordersResult=await client.from('orders').select('id,order_number,status,payment_status,updated_at,created_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(40);
         if(ordersResult.error)throw ordersResult.error;
         const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
         if(!orders.length){
+          const hadBaseline=customerNotificationsLastIds!==null;
+          customerNotificationsLastIds=new Set();
           customerNotificationsRows=[];
           renderCustomerNotifications();
           return;
@@ -11149,6 +11189,16 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           rows.push({id:'payment:'+String(order.id)+':paid',orderId:String(order.id),orderNumber:String(order.order_number||''),status:'payment_received',description:'Payment received for this order.',trackingNumber:'',createdAt:order.updated_at||order.created_at});
         });
         rows.sort((a,b)=>(Date.parse(b.createdAt||'')||0)-(Date.parse(a.createdAt||'')||0));
+        const currentIds=new Set(rows.map(row=>String(row.id)));
+        if(customerNotificationsLastIds===null){
+          // First sync only establishes a baseline; it never plays sounds for old notifications.
+          customerNotificationsLastIds=currentIds;
+        }else{
+          let hasNewNotification=false;
+          currentIds.forEach(id=>{if(!customerNotificationsLastIds.has(id))hasNewNotification=true;});
+          if(hasNewNotification)playCustomerNotificationSound();
+          customerNotificationsLastIds=currentIds;
+        }
         customerNotificationsRows=rows;
         renderCustomerNotifications();
       }catch(error){
