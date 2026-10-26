@@ -3976,6 +3976,24 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
   </style>
 
+
+  <style id="genmerch-sticky-header-final">
+    /* Keep the red-boxed GENMERCH storefront header visible while scrolling. */
+    header.site-header {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1200 !important;
+      width: 100%;
+      align-self: stretch;
+    }
+    @supports (position: sticky) {
+      header.site-header {
+        position: -webkit-sticky !important;
+        position: sticky !important;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <header class="site-header">
