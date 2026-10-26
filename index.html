@@ -7977,6 +7977,94 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       return 'https://shopgenmerch.com/';
     }
 
+    // Native Google Sheets export uses a short-lived Google OAuth provider token.
+    // The token stays in this browser tab only; no Google token is written to the database.
+    const GM_SHEETS_TOKEN_KEY='genmerchGoogleSheetsProviderToken';
+    const GM_SHEETS_TOKEN_AT_KEY='genmerchGoogleSheetsProviderTokenAt';
+    const GM_SHEETS_SCOPE_READY_KEY='genmerchGoogleSheetsDriveFileScopeReady';
+    const GM_SHEETS_OAUTH_PENDING_KEY='genmerchGoogleSheetsOAuthPending';
+    const GM_SHEETS_OAUTH_USER_KEY='genmerchGoogleSheetsOAuthExpectedUser';
+    function sellerSheetsSessionValue(key){
+      try{return window.sessionStorage.getItem(key)||'';}catch(_){return '';}
+    }
+    function sellerSheetsSetSessionValue(key,value){
+      try{if(value)window.sessionStorage.setItem(key,String(value));else window.sessionStorage.removeItem(key);}catch(_){}
+    }
+    function sellerCaptureGoogleSheetsSessionToken(event,session){
+      if(event==='SIGNED_OUT'){
+        [GM_SHEETS_TOKEN_KEY,GM_SHEETS_TOKEN_AT_KEY,GM_SHEETS_SCOPE_READY_KEY,GM_SHEETS_OAUTH_PENDING_KEY,GM_SHEETS_OAUTH_USER_KEY].forEach(key=>sellerSheetsSetSessionValue(key,''));
+        return;
+      }
+      if(!session||!session.provider_token)return;
+      const pending=sellerSheetsSessionValue(GM_SHEETS_OAUTH_PENDING_KEY)==='1';
+      const expectedUserId=sellerSheetsSessionValue(GM_SHEETS_OAUTH_USER_KEY);
+      const actualUserId=String(session.user&&session.user.id||'');
+      if(pending&&expectedUserId&&actualUserId!==expectedUserId){
+        [GM_SHEETS_TOKEN_KEY,GM_SHEETS_TOKEN_AT_KEY,GM_SHEETS_SCOPE_READY_KEY,GM_SHEETS_OAUTH_PENDING_KEY,GM_SHEETS_OAUTH_USER_KEY].forEach(key=>sellerSheetsSetSessionValue(key,''));
+        window.setTimeout(()=>showToast('Google authorization returned a different GENMERCH account. Reopen Seller Centre with the authorized admin account.'),900);
+        return;
+      }
+      sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_KEY,session.provider_token);
+      sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_AT_KEY,String(Date.now()));
+      if(pending){
+        sellerSheetsSetSessionValue(GM_SHEETS_SCOPE_READY_KEY,'1');
+        sellerSheetsSetSessionValue(GM_SHEETS_OAUTH_PENDING_KEY,'');
+        sellerSheetsSetSessionValue(GM_SHEETS_OAUTH_USER_KEY,'');
+        window.setTimeout(()=>{
+          sellerFeedback('sellerInventoryFeedback','Google Sheets access connected. Click Google Sheets Export again to create your live report.','success');
+          showToast('Google Sheets connected. Click Export again to create the report.');
+        },1200);
+      }
+    }
+    async function sellerStartGoogleSheetsAuthorization(client,userId){
+      sellerSheetsSetSessionValue(GM_SHEETS_OAUTH_PENDING_KEY,'1');
+      sellerSheetsSetSessionValue(GM_SHEETS_OAUTH_USER_KEY,String(userId||''));
+      try{
+        const {data,error}=await client.auth.signInWithOAuth({
+          provider:'google',
+          options:{
+            redirectTo:getCustomerAuthRedirectUrl(),
+            scopes:'https://www.googleapis.com/auth/drive.file',
+            queryParams:{access_type:'offline',prompt:'consent',include_granted_scopes:'true'},
+            skipBrowserRedirect:true
+          }
+        });
+        if(error)throw error;
+        if(!data||!data.url)throw new Error('Google did not return an authorization URL. Please try again.');
+        showCenteredActionStatus('Connecting Google Sheets access…','loading');
+        window.location.assign(data.url);
+      }catch(error){
+        [GM_SHEETS_OAUTH_PENDING_KEY,GM_SHEETS_OAUTH_USER_KEY].forEach(key=>sellerSheetsSetSessionValue(key,''));
+        throw error;
+      }
+    }
+    async function sellerGoogleSheetsApiRequest(url,token,options={}){
+      const response=await fetch(url,{
+        ...options,
+        headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...(options.headers||{})}
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok){
+        const message=String(data&&data.error&&data.error.message||'Google Sheets API request failed ('+response.status+').');
+        const error=new Error(message);
+        error.status=response.status;
+        error.apiError=data&&data.error?data.error:{};
+        throw error;
+      }
+      return data;
+    }
+    function sellerGoogleSheetLinkFeedback(message,url){
+      sellerFeedback('sellerInventoryFeedback',message,url?'success':'error');
+      const node=$('sellerInventoryFeedback');
+      if(node&&url){
+        node.appendChild(document.createTextNode(' '));
+        const link=document.createElement('a');
+        link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open Google Sheet';
+        link.style.fontWeight='800';link.style.textDecoration='underline';
+        node.appendChild(link);
+      }
+    }
+
     // Send one welcome email to newly-created accounts, never on every ordinary sign-in.
     const customerWelcomeEmailAttemptAtByUserId=new Map();
     const CUSTOMER_WELCOME_EMAIL_WINDOW_MS=72*60*60*1000;
@@ -8018,6 +8106,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       });
       if(!customerAuthSubscription){
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
+          sellerCaptureGoogleSheetsSessionToken(event,session);
           updateCustomerAuthScreen(session);
           window.setTimeout(()=>syncCustomerOrdersBadgeRealtime(session),0);
           window.setTimeout(()=>maybeSendCustomerWelcomeEmail(session),0);
@@ -9699,17 +9788,42 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     async function exportSellerGoogleSheetsReport(){
       if(!sellerCentreIsUnlocked){showToast('Unlock Seller Centre before exporting inventory.');return;}
-      // Open Sheets synchronously from the user click so popup blockers are less likely to block it.
+      const cachedToken=sellerSheetsSessionValue(GM_SHEETS_TOKEN_KEY);
+      const tokenAge=Date.now()-(Number(sellerSheetsSessionValue(GM_SHEETS_TOKEN_AT_KEY))||0);
+      const scopeReady=sellerSheetsSessionValue(GM_SHEETS_SCOPE_READY_KEY)==='1';
+      const tokenFresh=Boolean(cachedToken&&tokenAge>=0&&tokenAge<50*60*1000);
+      // Open a tab directly in the click gesture so browser popup blockers are less likely to block the final Sheet link.
       let googleSheetsTab=null;
-      try{googleSheetsTab=window.open('https://sheets.new/','_blank');}catch(openError){console.warn('Google Sheets tab could not be opened automatically.',openError);}
+      if(scopeReady&&tokenFresh){try{googleSheetsTab=window.open('about:blank','_blank');}catch(openError){console.warn('Google Sheets tab could not be opened automatically.',openError);}}
       const button=$('sellerExportGoogleSheetsButton');
-      if(button){button.disabled=true;button.textContent='Preparing Sheets…';}
-      showCenteredActionStatus('Preparing Google Sheets export, please wait...','loading');
-      sellerFeedback('sellerInventoryFeedback','Preparing a fresh Google Sheets-compatible report from Supabase…','');
+      if(button){button.disabled=true;button.textContent='Connecting Sheets…';}
+      showCenteredActionStatus('Preparing Google Sheets report, please wait…','loading');
+      sellerFeedback('sellerInventoryFeedback','Checking admin access and Google Sheets authorization…','');
+      let spreadsheetUrl='';
       try{
         const client=await getSellerAdminClient(false);
-        const [xlsx,productsResult,variantsResult,categoriesResult,ordersResult,movementsResult]=await Promise.all([
-          sellerEnsureXlsxLibrary(),
+        const sessionResult=await client.auth.getSession();
+        if(sessionResult.error)throw sessionResult.error;
+        const session=sessionResult.data&&sessionResult.data.session;
+        if(!session||!session.user)throw new Error('Your GENMERCH admin session expired. Sign in again and retry.');
+        if(!isAuthorizedSellerAdmin(session.user))throw new Error('Only an authorized GENMERCH admin can export this report.');
+
+        let providerToken='';
+        const liveToken=String(session.provider_token||'');
+        const cachedScopeToken=sellerSheetsSessionValue(GM_SHEETS_TOKEN_KEY);
+        const savedAt=Number(sellerSheetsSessionValue(GM_SHEETS_TOKEN_AT_KEY))||0;
+        const savedScope=sellerSheetsSessionValue(GM_SHEETS_SCOPE_READY_KEY)==='1';
+        if(savedScope&&cachedScopeToken&&Date.now()-savedAt<50*60*1000)providerToken=cachedScopeToken;
+        else if(savedScope&&liveToken){providerToken=liveToken;sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_KEY,liveToken);sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_AT_KEY,String(Date.now()));}
+        if(!providerToken){
+          if(googleSheetsTab){try{googleSheetsTab.close();}catch(_){}googleSheetsTab=null;}
+          sellerFeedback('sellerInventoryFeedback','One-time setup: connect Google Sheets access in the Google consent screen. You will return here afterwards; then click Export again.','');
+          await sellerStartGoogleSheetsAuthorization(client,session.user.id);
+          return;
+        }
+
+        if(button){button.textContent='Reading Supabase…';}
+        const [productsResult,variantsResult,categoriesResult,ordersResult,movementsResult]=await Promise.all([
           client.from('products').select('id,name,category_id,sku,base_price,compare_at_price,location,is_active,is_demo,created_at').order('name',{ascending:true}).limit(5000),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active,created_at,updated_at').order('product_id',{ascending:true}).order('size_label',{ascending:true}).limit(10000),
           client.from('categories').select('id,name'),
@@ -9810,40 +9924,138 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
           'Inventory reserved':order.inventory_reserved===true?'Yes':'No',
           'Inventory released':order.inventory_released===true?'Yes':'No'
         }));
-        const workbook=xlsx.utils.book_new();
-        const summarySheet=xlsx.utils.aoa_to_sheet(summaryRows);
-        summarySheet['!cols']=[{wch:34},{wch:28},{wch:72}];
-        xlsx.utils.book_append_sheet(workbook,summarySheet,'Summary');
-        const inventorySheet=xlsx.utils.json_to_sheet(inventoryRows.length?inventoryRows:[{'Product name':'No inventory records'}]);
-        inventorySheet['!cols']=[{wch:38},{wch:34},{wch:20},{wch:22},{wch:38},{wch:32},{wch:16},{wch:18},{wch:20},{wch:16},{wch:20},{wch:18},{wch:18},{wch:20},{wch:14},{wch:25},{wch:24},{wch:24}];
-        inventorySheet['!autofilter']={ref:xlsx.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(0,inventoryRows.length),c:17}})};
-        inventorySheet['!freeze']={xSplit:0,ySplit:1};
-        xlsx.utils.book_append_sheet(workbook,inventorySheet,'Inventory');
-        const movementSheet=xlsx.utils.json_to_sheet(movementRows.length?movementRows:[{'Movement type':'No inventory movements recorded'}]);
-        movementSheet['!cols']=[{wch:38},{wch:25},{wch:34},{wch:22},{wch:30},{wch:16},{wch:18},{wch:24},{wch:16},{wch:15},{wch:15},{wch:22},{wch:55},{wch:38}];
-        xlsx.utils.book_append_sheet(workbook,movementSheet,'Stock Movements');
-        const ordersSheet=xlsx.utils.json_to_sheet(orderRows.length?orderRows:[{'Order number':'No orders recorded'}]);
-        ordersSheet['!cols']=[{wch:38},{wch:22},{wch:25},{wch:28},{wch:20},{wch:32},{wch:18},{wch:18},{wch:20},{wch:18},{wch:19},{wch:18}];
-        xlsx.utils.book_append_sheet(workbook,ordersSheet,'Orders');
-        workbook.Props={Title:'GENMERCH Inventory & Analytics',Subject:'Inventory, stock movements, and orders report',Author:'GENMERCH Seller Centre',CreatedDate:exportedAt};
-        const stamp=exportedAt.toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).replace(/[^0-9-]/g,'')||exportedAt.toISOString().slice(0,10);
-        const fileName='GENMERCH_Google_Sheets_Import_'+stamp+'.xlsx';
-        xlsx.writeFile(workbook,fileName);
-        const successMessage='Workbook downloaded ('+inventoryRows.length+' variant(s), '+movements.length+' stock movement(s), '+orders.length+' order(s)). Google Sheets has been opened in a new tab. In that tab, choose File → Import → Upload and select '+fileName+'. Choose “Replace spreadsheet” to import the Summary, Inventory, Stock Movements, and Orders tabs together.';
-        sellerFeedback('sellerInventoryFeedback',successMessage,'success');
-        showCenteredActionStatus('Workbook downloaded','success',5200,'A Google Sheets tab was opened. In that tab, use File → Import → Upload and select '+fileName+'. Import the workbook to bring in all four report tabs.');
-        showToast(googleSheetsTab?'Google Sheets opened. Import the downloaded workbook there.':'Workbook downloaded. Open sheets.new and import the file.');
+        const inventoryHeaders=['Product ID','Product name','Category','Product SKU','Variant ID','Variant SKU','Size','Color','Selling price (PHP)','Stock quantity','Stock value (PHP)','Product status','Variant status','Inventory status','Demo product','Location','Created at','Last updated'];
+        const movementHeaders=['Movement ID','Date (Philippines time)','Product name','Product SKU','Variant SKU','Size','Color','Movement type','Quantity change','Stock before','Stock after','Order number','Reason','Actor user ID'];
+        const orderHeaders=['Order ID','Order number','Order date (Philippines time)','Customer name','Customer phone','Customer email','Status','Payment status','Payment method','Total (PHP)','Inventory reserved','Inventory released'];
+        function valuesForSheet(headers,rows,emptyLabel){
+          return [headers].concat(rows.length?rows.map(row=>headers.map(header=>row[header]===undefined||row[header]===null?'':row[header])):[[emptyLabel]]);
+        }
+        const summaryValues=summaryRows.map(row=>row.length?row:['']);
+        const inventoryValues=valuesForSheet(inventoryHeaders,inventoryRows,'No inventory records yet');
+        const movementValues=valuesForSheet(movementHeaders,movementRows,'No stock movements recorded');
+        const orderValues=valuesForSheet(orderHeaders,orderRows,'No orders recorded');
+
+        const nowStamp=exportedAt.toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).replace(/[^0-9-]/g,'')||exportedAt.toISOString().slice(0,10);
+        const spreadsheetTitle='GENMERCH Inventory & Analytics — '+nowStamp;
+        if(button){button.textContent='Creating Google Sheet…';}
+        let spreadsheet;
+        try{
+          spreadsheet=await sellerGoogleSheetsApiRequest('https://sheets.googleapis.com/v4/spreadsheets',providerToken,{
+            method:'POST',
+            body:JSON.stringify({
+              properties:{title:spreadsheetTitle},
+              sheets:[
+                {properties:{title:'Summary',gridProperties:{frozenRowCount:5,hideGridlines:true}}},
+                {properties:{title:'Inventory',gridProperties:{frozenRowCount:1,hideGridlines:true}}},
+                {properties:{title:'Stock Movements',gridProperties:{frozenRowCount:1,hideGridlines:true}}},
+                {properties:{title:'Orders',gridProperties:{frozenRowCount:1,hideGridlines:true}}}
+              ]
+            })
+          });
+          spreadsheetUrl=String(spreadsheet.spreadsheetUrl||'');
+          if(!spreadsheet.spreadsheetId||!spreadsheetUrl)throw new Error('Google created a report response without a spreadsheet link. Please check Google Drive.');
+        }catch(apiError){
+          const message=String(apiError&&apiError.message||'');
+          const normalized=message.toLowerCase();
+          if(apiError&&(apiError.status===401||normalized.includes('insufficient authentication scopes')||normalized.includes('insufficientpermissions')||normalized.includes('access_token_scope_insufficient'))){
+            sellerSheetsSetSessionValue(GM_SHEETS_SCOPE_READY_KEY,'');
+            sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_KEY,'');
+            sellerSheetsSetSessionValue(GM_SHEETS_TOKEN_AT_KEY,'');
+            if(googleSheetsTab){try{googleSheetsTab.close();}catch(_){}googleSheetsTab=null;}
+            sellerFeedback('sellerInventoryFeedback','Google needs permission to create a Sheet. Reconnecting Google access…','');
+            await sellerStartGoogleSheetsAuthorization(client,session.user.id);
+            return;
+          }
+          if(normalized.includes('has not been used in project')||normalized.includes('api has not been used')||normalized.includes('is disabled')){
+            throw new Error('Google Sheets API is not enabled for the Google Cloud project connected to GENMERCH. Enable Google Sheets API in Google Cloud Console, then retry. Details: '+message);
+          }
+          throw apiError;
+        }
+
+        const sheetIds=new Map((spreadsheet.sheets||[]).map(sheet=>[String(sheet.properties&&sheet.properties.title||''),sheet.properties&&sheet.properties.sheetId]));
+        const valueRanges=[
+          {range:'Summary!A1',majorDimension:'ROWS',values:summaryValues},
+          {range:'Inventory!A1',majorDimension:'ROWS',values:inventoryValues},
+          {range:"'Stock Movements'!A1",majorDimension:'ROWS',values:movementValues},
+          {range:'Orders!A1',majorDimension:'ROWS',values:orderValues}
+        ];
+        if(button){button.textContent='Writing report data…';}
+        try{
+          await sellerGoogleSheetsApiRequest('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(spreadsheet.spreadsheetId)+'/values:batchUpdate',providerToken,{
+            method:'POST',
+            body:JSON.stringify({valueInputOption:'RAW',data:valueRanges})
+          });
+        }catch(writeError){
+          if(googleSheetsTab){try{googleSheetsTab.location.href=spreadsheetUrl;}catch(_){}}
+          const text=String(writeError&&writeError.message||'Could not write the report rows to Google Sheets.');
+          sellerGoogleSheetLinkFeedback('Google created the spreadsheet, but writing its report data failed: '+text,spreadsheetUrl);
+          showCenteredActionStatus('Google Sheet created, data write needs attention','error',5000,text);
+          return;
+        }
+
+        const formattingRequests=[];
+        ['Inventory','Stock Movements','Orders'].forEach(title=>{
+          const sheetId=sheetIds.get(title);
+          const columns=title==='Inventory'?inventoryHeaders.length:(title==='Stock Movements'?movementHeaders.length:orderHeaders.length);
+          const rowCount=title==='Inventory'?inventoryValues.length:(title==='Stock Movements'?movementValues.length:orderValues.length);
+          if(sheetId===undefined)return;
+          formattingRequests.push({
+            repeatCell:{
+              range:{sheetId,startRowIndex:0,endRowIndex:1},
+              cell:{userEnteredFormat:{backgroundColor:{red:0.93,green:0.20,blue:0.12},textFormat:{foregroundColor:{red:1,green:1,blue:1},bold:true},wrapStrategy:'WRAP'}},
+              fields:'userEnteredFormat(backgroundColor,textFormat,wrapStrategy)'
+            }
+          });
+          formattingRequests.push({
+            setBasicFilter:{filter:{range:{sheetId,startRowIndex:0,endRowIndex:Math.max(1,rowCount),startColumnIndex:0,endColumnIndex:columns}}}
+          });
+        });
+        if(sheetIds.has('Summary')){
+          formattingRequests.push({
+            repeatCell:{
+              range:{sheetId:sheetIds.get('Summary'),startRowIndex:4,endRowIndex:5,startColumnIndex:0,endColumnIndex:3},
+              cell:{userEnteredFormat:{backgroundColor:{red:0.93,green:0.20,blue:0.12},textFormat:{foregroundColor:{red:1,green:1,blue:1},bold:true},wrapStrategy:'WRAP'}},
+              fields:'userEnteredFormat(backgroundColor,textFormat,wrapStrategy)'
+            }
+          });
+        }
+        let formattingNote='';
+        if(formattingRequests.length){
+          try{
+            await sellerGoogleSheetsApiRequest('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(spreadsheet.spreadsheetId)+':batchUpdate',providerToken,{
+              method:'POST',body:JSON.stringify({requests:formattingRequests})
+            });
+          }catch(formatError){
+            console.warn('The Google Sheet was written successfully, but some optional formatting could not be applied.',formatError);
+            formattingNote=' The data is complete; optional table formatting could not be applied.';
+          }
+        }
+        if(googleSheetsTab){
+          try{googleSheetsTab.location.href=spreadsheetUrl;}catch(_){try{googleSheetsTab.close();}catch(__){}window.open(spreadsheetUrl,'_blank','noopener,noreferrer');}
+        }else{
+          try{window.open(spreadsheetUrl,'_blank','noopener,noreferrer');}catch(_){}
+        }
+        const successMessage='Google Sheet created successfully: '+spreadsheetTitle+'. Tabs: Summary, Inventory, Stock Movements, and Orders. Rows exported — '+inventoryRows.length+' inventory variants, '+movementRows.length+' stock movements, '+orderRows.length+' orders.'+formattingNote;
+        sellerGoogleSheetLinkFeedback(successMessage,spreadsheetUrl);
+        showCenteredActionStatus('Google Sheet created successfully!','success',2600,'Your report was saved directly to Google Drive.');
+        showToast('Google Sheet created in your Google Drive.');
       }catch(error){
         console.error('GENMERCH Google Sheets export failed.',error);
-        sellerFeedback('sellerInventoryFeedback',error.message||'Could not prepare the Google Sheets-compatible report. Please retry.','error');
-        showCenteredActionStatus(error.message||'Google Sheets export failed. Please try again.','error',2400);
-        showToast('Google Sheets export failed. Please try again.');
+        if(googleSheetsTab){try{googleSheetsTab.close();}catch(_){}}
+        const message=String(error&&error.message||'Google Sheets export failed. Please retry.');
+        if(message.toLowerCase().includes('permission')||message.toLowerCase().includes('access_denied')||message.toLowerCase().includes('not enabled')||message.toLowerCase().includes('oauth')){
+          sellerFeedback('sellerInventoryFeedback',message+' If this is the first export, complete Google authorization and ensure the Google Sheets API is enabled.','error');
+        }else{
+          sellerFeedback('sellerInventoryFeedback',message,'error');
+        }
+        showCenteredActionStatus('Google Sheets export failed','error',4200,message);
+        showToast('Google Sheets export failed. Please check the Seller Centre message.');
       }finally{
         if(button){button.disabled=false;button.textContent='▦ Google Sheets Export';}
       }
     }
 
-    async function loadSellerInventoryAnalytics(){
+        async function loadSellerInventoryAnalytics(){
       if(!sellerCentreIsUnlocked)return;
       sellerFeedback('sellerInventoryFeedback','','');
       sellerSetLoadingRow('sellerInventoryTableBody',7,'Loading inventory from Supabase…');
