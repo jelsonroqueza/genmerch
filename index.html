@@ -3961,7 +3961,80 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
 
 
-  </style>
+  
+  /* Animated GENMERCH - Suot Apparel brand signature in the site header. */
+  @keyframes gmHeaderBrandSubtitleReveal{
+    0%{opacity:0;transform:translateX(13px);filter:blur(2px);letter-spacing:.12em}
+    72%{opacity:1;filter:blur(0)}
+    100%{opacity:1;transform:translateX(0);filter:blur(0);letter-spacing:.035em}
+  }
+  @keyframes gmHeaderBrandUnderlineSweep{
+    0%,100%{transform:scaleX(.38);opacity:.48}
+    52%{transform:scaleX(1);opacity:1}
+  }
+  .main-header .nav .brand-lockup .brand-subtitle{
+    position:relative!important;
+    display:inline-flex!important;
+    flex:0 0 auto!important;
+    align-items:baseline!important;
+    gap:clamp(4px,.45vw,7px)!important;
+    margin:0 0 0 clamp(8px,1vw,15px)!important;
+    padding:4px 1px 7px!important;
+    color:#464646!important;
+    font-size:clamp(.72rem,.98vw,.98rem)!important;
+    font-family:inherit!important;
+    font-style:normal!important;
+    font-weight:780!important;
+    letter-spacing:.035em!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    opacity:0;
+    animation:gmHeaderBrandSubtitleReveal .95s cubic-bezier(.2,.75,.2,1) .18s both;
+  }
+  .main-header .nav .brand-lockup .brand-subtitle-dash{
+    color:#f12d24!important;
+    font-weight:950!important;
+  }
+  .main-header .nav .brand-lockup .brand-subtitle::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:1px;
+    height:2px;
+    border-radius:3px;
+    background:linear-gradient(90deg,#f12d24 0%,#ff9b75 52%,#f12d24 100%);
+    transform-origin:left center;
+    animation:gmHeaderBrandUnderlineSweep 3.4s ease-in-out 1.1s infinite;
+  }
+  @media (min-width:481px) and (max-width:900px){
+    .main-header .nav .brand-lockup .brand-subtitle{
+      margin-left:clamp(5px, .7vw, 9px)!important;
+      gap:4px!important;
+      font-size:clamp(.64rem,1.08vw,.78rem)!important;
+      letter-spacing:.005em!important;
+    }
+  }
+  @media (max-width:600px){
+    .main-header .nav .brand-lockup .brand-subtitle{
+      margin-left:6px!important;
+      gap:3px!important;
+      padding-bottom:6px!important;
+      font-size:clamp(.58rem,2.5vw,.73rem)!important;
+      letter-spacing:0!important;
+      white-space:nowrap!important;
+    }
+  }
+  @media(prefers-reduced-motion:reduce){
+    .main-header .nav .brand-lockup .brand-subtitle,
+    .main-header .nav .brand-lockup .brand-subtitle::after{
+      animation:none!important;
+      transition:none!important;
+      filter:none!important;
+      opacity:1!important;
+      transform:none!important;
+    }
+  }
+
+</style>
 
 </head>
 <body>
@@ -3989,8 +4062,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     </div>
     <div class="main-header">
       <div class="nav">
-        <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH Home">
+        <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH - Suot Apparel Home">
           <span class="brand-type"><span class="brand-word"><span>GEN</span><b>MERCH</b></span></span>
+          <span class="brand-subtitle" aria-hidden="true"><span class="brand-subtitle-dash">-</span><span>Suot Apparel</span></span>
         </button>
         <div class="header-actions">
           <button class="header-action wishlist-header-button" type="button" onclick="openWishlist()" aria-label="Open wishlist" title="View saved products">
