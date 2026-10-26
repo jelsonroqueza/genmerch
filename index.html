@@ -4550,6 +4550,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{font-size:clamp(.61rem,2.65vw,.72rem)!important;padding-bottom:2px!important}
 }
 </style>
+<style id="genmerch-orders-mark-all-read">
+.customer-orders-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.customer-orders-mark-read{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:1px solid #f2d8cd!important;border-radius:10px!important;background:#fff5f0!important;color:#b83222!important;padding:9px 11px!important;font-size:12px!important;font-weight:800!important;line-height:1.2!important;white-space:nowrap!important;cursor:pointer!important}
+.customer-orders-mark-read:hover{background:#ffe9df!important}
+.customer-orders-mark-read.is-read{background:#edf8ef!important;border-color:#cfe8d2!important;color:#28713b!important}
+@media(max-width:600px){.customer-orders-head-actions{gap:6px!important}.customer-orders-mark-read{padding:7px 8px!important;font-size:10px!important}.customer-orders-refresh{padding:7px 8px!important}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -5300,7 +5307,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       <div class="customer-orders-content">
         <div class="customer-orders-account-banner" id="customerOrdersAccountBanner"></div>
         <section class="customer-my-orders-section">
-          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Use the status tabs to find an order quickly. Payment and delivery statuses are tracked separately.</p></div><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div>
+          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Use the status tabs to find an order quickly. Payment and delivery statuses are tracked separately.</p></div><div class="customer-orders-head-actions"><button class="customer-orders-mark-read" id="customerOrdersMarkRead" type="button" onclick="markGenmerchHeaderBadgesRead()">✓ Mark all as read</button><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div></div>
           <div class="customer-orders-filter-sticky">
             <nav class="customer-orders-filter-tabs" id="customerOrdersFilterTabs" aria-label="Filter orders by status" role="tablist">
               <button type="button" class="customer-order-filter-tab active" role="tab" aria-selected="true" data-customer-order-filter="all"><span>All Orders</span><b id="customerOrderCountAll">0</b></button>
@@ -6773,6 +6780,16 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     let customerOrdersBadgePollTimer=null;
     let customerOrdersBadgeRefreshSequence=0;
 
+    function markGenmerchHeaderBadgesRead(){
+      try{sessionStorage.setItem('genmerchHeaderBadgesRead','1');}catch(_){}
+      ['customerOrdersBadge','customerRateBadge','genmerchNotificationBadge'].forEach(function(id){
+        const badge=document.getElementById(id);
+        if(badge)badge.hidden=true;
+      });
+      const button=document.getElementById('customerOrdersMarkRead');
+      if(button){button.classList.add('is-read');button.textContent='✓ All caught up';button.setAttribute('aria-label','All header badges marked as read');}
+    }
+    window.markGenmerchHeaderBadgesRead=markGenmerchHeaderBadgesRead;
     function setCustomerOrdersBadgeCount(value){
       const badge=$('customerOrdersBadge');
       if(!badge)return;
