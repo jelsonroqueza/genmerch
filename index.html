@@ -11403,6 +11403,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   if(!hero||!video||!audioButton||!launchButton)return;
 
   const reducedMotion=Boolean(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const mobileVideoMode=Boolean((window.matchMedia&&window.matchMedia('(max-width: 760px)').matches)||(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches));
   let cycleTimer=null;
   let firstReady=false;
   let videoActive=false;
@@ -11443,7 +11444,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
   function scheduleVideo(delay){
     clearCycleTimer();
-    if(reducedMotion||document.hidden||!heroInView)return;
+    if(reducedMotion||document.hidden||!heroInView||videoActive)return;
     cycleTimer=window.setTimeout(showVideoSlide,Math.max(400,Number(delay)||3000));
   }
   function waitForVisibleFrame(){
@@ -11472,6 +11473,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }catch(error){
       videoActive=false;
       video.pause();
+      // If a mobile browser blocks autoplay, preserve the branded static hero and
+      // expose a clear tap-to-play action instead of leaving an invisible video stage.
       hero.classList.remove('hero--video-active');
       showLaunchPrompt();
       return false;
@@ -11562,7 +11565,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       showLaunchPrompt();
       return;
     }
-    // Give the browser a short, visible static-banner lead-in before the autoplay attempt.
+    // Mobile browsers may defer loading a hidden video until it is visibly presented.
+    // The mobile startup path below starts playback without waiting for this event.
+    if(mobileVideoMode){
+      if(!videoActive&&!document.hidden&&heroInView)scheduleVideo(150);
+      return;
+    }
     scheduleVideo(2200);
   });
   video.addEventListener('ended',function(){
@@ -11609,13 +11617,33 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     showLaunchPrompt();
     return;
   }
-  // Retry buffering once if a mobile browser has not produced canplay yet.
-  video.load();
-  window.setTimeout(function(){
-    if(!firstReady&&video.error==null)video.load();
-    else if(!firstReady&&video.error)showLaunchPrompt();
-  },3500);
+  // Set the existing branded model artwork as a poster so there is no black/empty frame
+  // while the MP4 is loading or if the browser declines autoplay.
+  const existingModelImage=hero.querySelector('.hero-models-photo');
+  if(existingModelImage&&existingModelImage.src)video.poster=existingModelImage.src;
   updateAudioButton();
+  video.preload='auto';
+  video.load();
+
+  if(mobileVideoMode){
+    // Mobile fix: reveal the media element's stage before requesting playback. Some
+    // mobile browsers will not fetch/play media while its parent remains visibility:hidden.
+    hero.classList.add('hero--video-active');
+    window.setTimeout(function(){
+      if(!videoActive&&!document.hidden&&heroInView)showVideoSlide();
+    },80);
+    window.setTimeout(function(){
+      if(!videoActive&&video.paused&&!reducedMotion){
+        hero.classList.remove('hero--video-active');
+        showLaunchPrompt();
+      }
+    },2800);
+  }else{
+    window.setTimeout(function(){
+      if(!firstReady&&video.error==null)video.load();
+      else if(!firstReady&&video.error)showLaunchPrompt();
+    },3500);
+  }
 })();
 </script>
 </body>
