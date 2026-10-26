@@ -9699,6 +9699,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     async function exportSellerGoogleSheetsReport(){
       if(!sellerCentreIsUnlocked){showToast('Unlock Seller Centre before exporting inventory.');return;}
+      // Open Sheets synchronously from the user click so popup blockers are less likely to block it.
+      let googleSheetsTab=null;
+      try{googleSheetsTab=window.open('https://sheets.new/','_blank');}catch(openError){console.warn('Google Sheets tab could not be opened automatically.',openError);}
       const button=$('sellerExportGoogleSheetsButton');
       if(button){button.disabled=true;button.textContent='Preparing Sheets…';}
       showCenteredActionStatus('Preparing Google Sheets export, please wait...','loading');
@@ -9824,11 +9827,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         xlsx.utils.book_append_sheet(workbook,ordersSheet,'Orders');
         workbook.Props={Title:'GENMERCH Inventory & Analytics',Subject:'Inventory, stock movements, and orders report',Author:'GENMERCH Seller Centre',CreatedDate:exportedAt};
         const stamp=exportedAt.toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).replace(/[^0-9-]/g,'')||exportedAt.toISOString().slice(0,10);
-        xlsx.writeFile(workbook,'GENMERCH_Google_Sheets_Import_'+stamp+'.xlsx');
-        const successMessage='Google Sheets-compatible workbook downloaded: '+inventoryRows.length+' variant(s), '+movements.length+' stock movement(s), '+orders.length+' order(s). Open or import the .xlsx file in Google Sheets.';
+        const fileName='GENMERCH_Google_Sheets_Import_'+stamp+'.xlsx';
+        xlsx.writeFile(workbook,fileName);
+        const successMessage='Workbook downloaded ('+inventoryRows.length+' variant(s), '+movements.length+' stock movement(s), '+orders.length+' order(s)). Google Sheets has been opened in a new tab. In that tab, choose File → Import → Upload and select '+fileName+'. Choose “Replace spreadsheet” to import the Summary, Inventory, Stock Movements, and Orders tabs together.';
         sellerFeedback('sellerInventoryFeedback',successMessage,'success');
-        showCenteredActionStatus('Google Sheets export ready!','success',2400,'The workbook can be opened or imported in Google Sheets.');
-        showToast('Google Sheets-compatible export downloaded.');
+        showCenteredActionStatus('Workbook downloaded','success',5200,'A Google Sheets tab was opened. In that tab, use File → Import → Upload and select '+fileName+'. Import the workbook to bring in all four report tabs.');
+        showToast(googleSheetsTab?'Google Sheets opened. Import the downloaded workbook there.':'Workbook downloaded. Open sheets.new and import the file.');
       }catch(error){
         console.error('GENMERCH Google Sheets export failed.',error);
         sellerFeedback('sellerInventoryFeedback',error.message||'Could not prepare the Google Sheets-compatible report. Please retry.','error');
