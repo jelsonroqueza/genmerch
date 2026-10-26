@@ -4269,6 +4269,33 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   @media(prefers-reduced-motion:reduce){
     .hero-video-stage{transition:none}
   }
+
+  .hero-video-audio-toggle{
+    position:absolute;z-index:3;right:clamp(9px,1.5vw,20px);bottom:clamp(9px,1.5vw,20px);
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    max-width:calc(100% - 18px);min-height:42px;padding:9px 13px;
+    border:1px solid rgba(255,255,255,.32);border-radius:999px;
+    background:rgba(28,19,16,.78);color:#fff;font:800 13px/1.2 system-ui,-apple-system,sans-serif;
+    box-shadow:0 4px 16px rgba(0,0,0,.22);cursor:pointer;touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;backdrop-filter:blur(8px);
+  }
+  .hero-video-audio-toggle:focus-visible,.hero-video-launch-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .hero-video-launch-button{
+    position:absolute;z-index:22;right:clamp(10px,2vw,24px);bottom:clamp(10px,2vw,24px);
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:46px;padding:11px 17px;border:0;border-radius:999px;
+    background:linear-gradient(110deg,#ff2118,#ff591a);color:#fff;
+    box-shadow:0 8px 26px rgba(95,27,8,.28);font:900 14px/1.2 system-ui,-apple-system,sans-serif;
+    cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .hero-video-launch-button[hidden]{display:none!important}
+  .hero.hero-video-autoplay-blocked .hero-video-launch-button{display:inline-flex}
+  .hero.hero--video-active .hero-video-launch-button{display:none!important}
+  @media(max-width:760px){
+    .hero-video-audio-toggle{right:9px;bottom:9px;min-height:44px;padding:10px 12px;font-size:12px}
+    .hero-video-launch-button{left:50%;right:auto;bottom:10px;transform:translateX(50%);min-height:46px;white-space:nowrap}
+    .hero.hero-video-autoplay-blocked .hero-video-launch-button{left:50%;transform:translateX(-50%)}
+  }
 </style>
 </head>
 <body>
@@ -4520,11 +4547,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   <main class="container">
     <section class="hero">
       <div class="hero-video-stage" id="genmerchHeroVideoStage" aria-label="GENMERCH — Suot Apparel promotional video">
-        <video class="hero-video-main" id="genmerchHeroVideo" muted playsinline preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel, Comfort. Style. For Every You.">
+        <video class="hero-video-main" id="genmerchHeroVideo" muted playsinline webkit-playsinline autoplay preload="auto" disablepictureinpicture aria-label="GENMERCH — Suot Apparel promotional video">
           <source src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/genmerch-hero-videos/genmerch-hero-promo-20261026-720p.mp4" type="video/mp4">
           Your browser does not support HTML video. The standard GENMERCH hero banner is shown instead.
         </video>
+        <button class="hero-video-audio-toggle" id="genmerchHeroAudioToggle" type="button" aria-label="Turn video sound on" aria-pressed="false">🔇 Tap for sound</button>
       </div>
+      <button class="hero-video-launch-button" id="genmerchHeroVideoLaunch" type="button" hidden>▶ Play promo video</button>
       <div class="hero-copy">
         <div class="hero-brand-lockup" aria-label="GENMERCH">
           <img class="hero-cart hero-cart-image" src="/assets/genmerch-cart-actual.webp?v=20261026-no-circle" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
@@ -11369,80 +11398,224 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 (function(){
   const hero=document.querySelector('.hero');
   const video=document.getElementById('genmerchHeroVideo');
-  if(!hero||!video)return;
+  const audioButton=document.getElementById('genmerchHeroAudioToggle');
+  const launchButton=document.getElementById('genmerchHeroVideoLaunch');
+  if(!hero||!video||!audioButton||!launchButton)return;
+
   const reducedMotion=Boolean(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   let cycleTimer=null;
   let firstReady=false;
   let videoActive=false;
-  let previousVisibility=document.hidden;
+  let heroInView=true;
+  let pageWasHidden=Boolean(document.hidden);
+  let soundEnabled=false;
+  let playAttempt=0;
+
+  // Apply muted inline playback before attempting autoplay; this is required by many mobile browsers.
+  video.muted=true;
+  video.defaultMuted=true;
+  video.setAttribute('muted','');
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
+  video.setAttribute('autoplay','');
+  video.playsInline=true;
+  video.preload='auto';
 
   function clearCycleTimer(){
     if(cycleTimer!==null){window.clearTimeout(cycleTimer);cycleTimer=null;}
   }
+  function updateAudioButton(){
+    audioButton.textContent=soundEnabled?'🔊 Sound on · Tap to mute':'🔇 Tap for sound';
+    audioButton.setAttribute('aria-label',soundEnabled?'Mute promotional video':'Turn promotional video sound on');
+    audioButton.setAttribute('aria-pressed',String(soundEnabled));
+    audioButton.title=soundEnabled?'Tap to mute the video':'Tap to enable video sound';
+  }
+  function showLaunchPrompt(){
+    hero.classList.add('hero-video-autoplay-blocked');
+    launchButton.hidden=false;
+  }
+  function hideLaunchPrompt(){
+    hero.classList.remove('hero-video-autoplay-blocked');
+    launchButton.hidden=true;
+  }
+  function canAttemptPlayback(){
+    return !document.hidden&&heroInView&&hero.isConnected;
+  }
   function scheduleVideo(delay){
     clearCycleTimer();
-    if(reducedMotion||document.hidden)return;
-    cycleTimer=window.setTimeout(showVideoSlide,Math.max(1000,Number(delay)||7000));
+    if(reducedMotion||document.hidden||!heroInView)return;
+    cycleTimer=window.setTimeout(showVideoSlide,Math.max(400,Number(delay)||3000));
+  }
+  function waitForVisibleFrame(){
+    return new Promise(resolve=>{
+      requestAnimationFrame(()=>requestAnimationFrame(resolve));
+    });
+  }
+  async function startAutoplay(){
+    const attempt=++playAttempt;
+    if(!canAttemptPlayback()||reducedMotion)return false;
+    // The stage must be visible before calling play() on iOS/Safari.
+    hero.classList.add('hero--video-active');
+    await waitForVisibleFrame();
+    if(attempt!==playAttempt||!canAttemptPlayback())return false;
+    video.muted=true;
+    video.defaultMuted=true;
+    soundEnabled=false;
+    updateAudioButton();
+    try{
+      const result=video.play();
+      if(result&&typeof result.then==='function')await result;
+      if(attempt!==playAttempt)return false;
+      videoActive=true;
+      hideLaunchPrompt();
+      return true;
+    }catch(error){
+      videoActive=false;
+      video.pause();
+      hero.classList.remove('hero--video-active');
+      showLaunchPrompt();
+      return false;
+    }
   }
   async function showVideoSlide(){
     cycleTimer=null;
-    if(reducedMotion||document.hidden){scheduleVideo(3000);return;}
-    hero.classList.add('hero--video-active');
-    try{
-      video.muted=true;
-      video.playsInline=true;
-      video.currentTime=0;
-      const playback=video.play();
-      if(playback&&typeof playback.then==='function')await playback;
-      videoActive=true;
-    }catch(error){
-      videoActive=false;
-      hero.classList.remove('hero--video-active');
-      video.pause();
-      scheduleVideo(12000);
-    }
+    if(!canAttemptPlayback()){scheduleVideo(1800);return;}
+    const started=await startAutoplay();
+    if(!started&&canAttemptPlayback())showLaunchPrompt();
   }
   function showStaticSlide(){
     clearCycleTimer();
+    playAttempt++;
     videoActive=false;
     hero.classList.remove('hero--video-active');
     video.pause();
     try{video.currentTime=0;}catch(_){}
+    video.muted=true;
+    video.defaultMuted=true;
+    soundEnabled=false;
+    updateAudioButton();
     scheduleVideo(7500);
   }
+  function beginFromUserGesture(withSound){
+    clearCycleTimer();
+    playAttempt++;
+    const attempt=playAttempt;
+    hero.classList.remove('hero-video-autoplay-blocked');
+    hero.classList.add('hero--video-active');
+    launchButton.hidden=true;
+    video.playsInline=true;
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
+    soundEnabled=Boolean(withSound);
+    video.muted=!soundEnabled;
+    video.defaultMuted=!soundEnabled;
+    if(soundEnabled)video.removeAttribute('muted');else video.setAttribute('muted','');
+    updateAudioButton();
+    try{video.currentTime=0;}catch(_){}
+    // Call play() immediately in the trusted click handler so mobile browsers preserve user activation.
+    const result=video.play();
+    if(result&&typeof result.then==='function'){
+      result.then(()=>{
+        if(attempt!==playAttempt)return;
+        videoActive=true;
+      }).catch(()=>{
+        videoActive=false;
+        hero.classList.remove('hero--video-active');
+        showLaunchPrompt();
+      });
+    }else{
+      videoActive=true;
+    }
+  }
+  audioButton.addEventListener('click',function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    if(!videoActive||video.paused){
+      beginFromUserGesture(true);
+      return;
+    }
+    soundEnabled=!soundEnabled;
+    video.muted=!soundEnabled;
+    video.defaultMuted=!soundEnabled;
+    if(soundEnabled)video.removeAttribute('muted');else video.setAttribute('muted','');
+    updateAudioButton();
+    if(soundEnabled){
+      const result=video.play();
+      if(result&&typeof result.catch==='function')result.catch(function(){soundEnabled=false;video.muted=true;updateAudioButton();});
+    }
+  });
+  launchButton.addEventListener('click',function(event){
+    event.preventDefault();
+    beginFromUserGesture(true);
+  });
+
+  video.addEventListener('loadedmetadata',function(){
+    if(!firstReady&&video.readyState>=1){
+      // Keep the existing hero visible while video data buffers.
+      if(!reducedMotion)video.preload='auto';
+    }
+  });
   video.addEventListener('canplay',function(){
     if(firstReady)return;
     firstReady=true;
-    scheduleVideo(6500);
+    if(reducedMotion){
+      showLaunchPrompt();
+      return;
+    }
+    // Give the browser a short, visible static-banner lead-in before the autoplay attempt.
+    scheduleVideo(2200);
   });
-  video.addEventListener('ended',showStaticSlide);
+  video.addEventListener('ended',function(){
+    showStaticSlide();
+  });
   video.addEventListener('error',function(){
     clearCycleTimer();
+    playAttempt++;
     videoActive=false;
     hero.classList.remove('hero--video-active');
     video.pause();
+    showLaunchPrompt();
   });
   document.addEventListener('visibilitychange',function(){
     if(document.hidden){
       clearCycleTimer();
-      if(videoActive)showStaticSlide();
-      else video.pause();
-      previousVisibility=true;
+      pageWasHidden=true;
+      if(videoActive)showStaticSlide();else video.pause();
       return;
     }
-    if(previousVisibility){previousVisibility=false;if(firstReady)scheduleVideo(3000);else video.load();}
+    if(pageWasHidden){
+      pageWasHidden=false;
+      if(firstReady)scheduleVideo(800);
+      else video.load();
+    }
   });
+
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      const entry=entries[0];
+      heroInView=Boolean(entry&&entry.isIntersecting&&entry.intersectionRatio>0.05);
+      if(!heroInView){
+        clearCycleTimer();
+        if(videoActive){video.pause();videoActive=false;}
+      }else if(firstReady&&!videoActive&&!document.hidden){
+        scheduleVideo(1200);
+      }
+    },{threshold:[0,0.05,0.25]});
+    observer.observe(hero);
+  }
   if(reducedMotion){
-    video.preload='none';
+    video.preload='metadata';
+    video.load();
+    showLaunchPrompt();
     return;
   }
-  // Load in the background while the original branded hero remains visible.
-  video.preload='auto';
+  // Retry buffering once if a mobile browser has not produced canplay yet.
   video.load();
-  // Fallback if canplay is slow: keep the original hero rather than showing an empty frame.
   window.setTimeout(function(){
-    if(!firstReady){video.preload='auto';video.load();}
-  },3000);
+    if(!firstReady&&video.error==null)video.load();
+    else if(!firstReady&&video.error)showLaunchPrompt();
+  },3500);
+  updateAudioButton();
 })();
 </script>
 </body>
