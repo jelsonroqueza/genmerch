@@ -8903,10 +8903,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
         if(imageResult.error)throw imageResult.error;
         const imageRows=imageResult.data||[];
-        storagePaths=Array.from(new Set(imageRows.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean)));
-        if(storagePaths.length!==imageRows.length){
+        const imagePaths=Array.from(new Set(imageRows.map(image=>sellerStoragePathFromPublicUrl(image.image_url)).filter(Boolean)));
+        if(imagePaths.length!==imageRows.length){
           throw new Error('Could not identify every product photo in cloud Storage. The product was not deleted; refresh the gallery and try again.');
         }
+        const folderListing=await client.storage.from(SELLER_IMAGE_BUCKET).list('products/'+productId,{limit:1000});
+        if(folderListing.error)throw new Error('Could not inspect the product photo folder in cloud Storage. The product was not deleted. '+folderListing.error.message);
+        const folderPaths=(folderListing.data||[]).filter(item=>item&&item.name).map(item=>'products/'+productId+'/'+item.name);
+        storagePaths=Array.from(new Set(imagePaths.concat(folderPaths)));
         const result=await client.rpc('permanently_delete_genmerch_product',{p_product_id:productId});
         if(result.error)throw result.error;
         deletionSucceeded=true;
