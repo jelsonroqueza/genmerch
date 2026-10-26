@@ -1361,6 +1361,7 @@
 
 .seller-order-actions{display:flex;flex-direction:column;gap:6px;min-width:118px}
 .seller-order-advance-button{min-height:30px;padding:7px 9px;font-size:.7rem;white-space:nowrap}
+.seller-order-delete-button{min-height:32px;padding:7px 10px;font-size:.72rem;letter-spacing:.06em}
 @media(max-width:650px){.seller-order-actions{min-width:105px}}
 
  .seller-category-add-row{display:flex;gap:7px;margin-top:8px;align-items:stretch}.seller-category-add-row input{min-width:0;flex:1}.seller-category-add-row button{white-space:nowrap;flex:0 0 auto}.genmerch-price-before{display:inline-block;margin-right:5px;color:#897d76;text-decoration:line-through;font-size:.82em;font-weight:650}.genmerch-promo-caption{display:inline-flex;align-items:center;width:fit-content;max-width:100%;margin:2px 0 7px;padding:4px 7px;border-radius:5px;background:#fff0eb;color:#d72d17;font-size:.7rem;font-weight:850;line-height:1.35;overflow-wrap:anywhere}@media(max-width:480px){.seller-category-add-row{flex-direction:column}.seller-category-add-row button{width:100%}}
@@ -9970,7 +9971,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             }else{
               action='<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Complete'))+'</span>';
             }
-            return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+settlePayment+cancel+'</div></td>';
+            const deleteButton='<button class="seller-danger-button seller-order-delete-button" type="button" data-seller-delete-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'" aria-label="Permanently delete order '+orderNumber+'">DELETE</button>';
+            return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+settlePayment+cancel+deleteButton+'</div></td>';
           }
           let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
           if(col[1]==='status'){
@@ -10009,6 +10011,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         button.textContent=(detail.hidden?'View ':'Hide ')+rowItems.length+' item(s)';
       }));
       body.querySelectorAll('[data-seller-cancel-order]').forEach(button=>button.addEventListener('click',()=>cancelSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
+      body.querySelectorAll('[data-seller-delete-order]').forEach(button=>button.addEventListener('click',()=>deleteSellerOrder(button.dataset.orderId,button.dataset.orderNumber,button)));
       body.querySelectorAll('[data-seller-advance-order]').forEach(button=>button.addEventListener('click',()=>advanceSellerOrderStatus(button.dataset.orderId,button.dataset.orderNumber,button.dataset.nextStatus,button)));
       body.querySelectorAll('[data-seller-mark-shipped]').forEach(button=>button.addEventListener('click',()=>markSellerOrderShipped(button.dataset.orderId,button.dataset.orderNumber,button)));
       body.querySelectorAll('[data-seller-complete-order]').forEach(button=>button.addEventListener('click',()=>completeSellerOrderDelivery(button.dataset.orderId,button.dataset.orderNumber,button)));
@@ -10071,6 +10074,53 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         if(button){button.disabled=false;button.textContent='Cancel order';}
       }
     }
+
+
+    async function deleteSellerOrder(orderId,orderNumber,button){
+      if(!sellerCentreIsUnlocked)return;
+      const displayNumber=String(orderNumber||orderId||'').trim();
+      const warning='Permanently DELETE order '+displayNumber+'?\n\nThis removes it from Orders and sales analytics, along with its linked customer order history, shipment and payment records. If stock is still reserved, the database will return the item quantities to Inventory and record a Stock Movement.\n\nOnly use this for a test/demo order or an incorrect record. Do not delete an order if real merchandise was delivered or a real payment must be retained/refunded.';
+      if(!window.confirm(warning))return;
+      const typedOrderNumber=window.prompt('To confirm permanent deletion, type the exact order number:\n'+displayNumber,'');
+      if(typedOrderNumber===null)return;
+      if(typedOrderNumber.trim()!==displayNumber){
+        window.alert('The order number did not match. Nothing was deleted.');
+        return;
+      }
+      if(button){button.disabled=true;button.textContent='Deleting…';}
+      showCenteredActionStatus('Deleting the order and reconciling inventory…','loading');
+      try{
+        const client=await getSellerAdminClient(false);
+        const result=await client.rpc('delete_genmerch_order',{
+          p_order_id:orderId,
+          p_confirmation_order_number:typedOrderNumber.trim(),
+          p_reason:'Test/demo order or incorrect sales record deleted by Seller Centre administrator'
+        });
+        if(result.error)throw result.error;
+        const details=Array.isArray(result.data)?result.data[0]:result.data;
+        if(!details)throw new Error('The database did not confirm deletion. Refresh Orders and verify the record before retrying.');
+        sellerOrdersLoaded=false;sellerInventoryLoaded=false;
+        await loadSellerOrders();
+        await loadSellerInventoryAnalytics();
+        await loadSellerProducts();
+        await loadSupabaseCatalog();renderCategoryFilters();renderProducts();
+        const restored=Math.max(0,Number(details.restored_stock_units)||0);
+        const stockMessage=restored
+          ?restored+' stock unit(s) returned to Inventory and recorded in Stock Movements.'
+          :'No stock was added back because there was no active reservation or the stock had already been released.';
+        sellerFeedback('sellerOrdersFeedback','Order '+displayNumber+' permanently deleted. Orders and sales analytics have been refreshed. '+stockMessage+' The admin deletion audit was saved.','success');
+        sellerFeedback('sellerInventoryFeedback','Order '+displayNumber+' deleted. '+stockMessage+' Inventory metrics and stock movement history refreshed.','success');
+        showCenteredActionStatus('Order deleted. Sales analytics and inventory refreshed.','success',2100);
+      }catch(error){
+        const message=error&&error.message?error.message:'Order deletion failed. No changes were committed.';
+        sellerFeedback('sellerOrdersFeedback',message,'error');
+        showCenteredActionStatus(message,'error',2400);
+      }finally{
+        if(isCenteredActionStatusLoading())hideCenteredActionStatus();
+        if(button){button.disabled=false;button.textContent='DELETE';}
+      }
+    }
+
 
     function sellerSetDashboardCollapsed(collapsed){
       const isCollapsed=Boolean(collapsed),grid=$('sellerInventoryMetrics'),collapseButton=$('sellerCollapseDashboardButton'),expandButton=$('sellerExpandDashboardButton');
