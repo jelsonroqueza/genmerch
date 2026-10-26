@@ -11614,8 +11614,10 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!heroInView){
         clearCycleTimer();
         if(videoActive){video.pause();videoActive=false;}
-      }else if(firstReady&&!videoActive&&!document.hidden){
-        scheduleVideo(1200);
+      }else if(!videoActive&&!playPending&&!document.hidden){
+        // Do not wait for canplay on mobile: some browsers defer that event until
+        // after the hero is visible and a playback attempt has been made.
+        if(mobileVideoMode||firstReady)scheduleVideo(mobileVideoMode?180:1200);
       }
     },{threshold:[0,0.05,0.25]});
     observer.observe(hero);
