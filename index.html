@@ -6788,6 +6788,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(result.error)throw result.error;
       const readAt=result.data&&result.data.read_at?result.data.read_at:null;
       genmerchHeaderReadAt={userId:userId,readAt:readAt};
+      const readButton=document.getElementById('customerOrdersMarkRead');
+      if(readButton&&readAt){readButton.classList.add('is-read');readButton.textContent='✓ All caught up';readButton.setAttribute('aria-label','Header badges are synced as read');}
       return readAt;
     }
     window.getGenmerchHeaderReadAt=getGenmerchHeaderReadAt;
