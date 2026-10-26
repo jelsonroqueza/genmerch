@@ -4457,6 +4457,11 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
  .site-header .main-header .nav .brand-lockup .brand-word b{background:none!important;color:#f12d16!important;-webkit-text-fill-color:#f12d16!important}
 }
 </style>
+<style id="genmerch-notification-mark-read-style">
+.genmerch-notification-mark-read{border:1px solid #f0ded4!important;background:#fff!important;color:#8f2c20!important;border-radius:10px!important;padding:8px 10px!important;font-size:12px!important;font-weight:800!important;white-space:nowrap!important;cursor:pointer!important}
+.genmerch-notification-mark-read:hover{background:#fff0e9!important;border-color:#f2c7b7!important}
+@media(max-width:760px){.genmerch-notification-mark-read{padding:7px 8px!important;font-size:10px!important}.genmerch-notification-head-actions{gap:5px!important}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -11239,7 +11244,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 
   <script id="genmerch-order-notifications-controller">
 (function(){
-  var panel=null, channel=null, refreshTimer=null;
+  var panel=null, channel=null, refreshTimer=null, currentItems=[], activeUserId='guest';
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function timeLabel(value){var d=new Date(value);if(!value||isNaN(d.getTime()))return '';var delta=Math.max(0,Date.now()-d.getTime());if(delta<60000)return 'Just now';if(delta<3600000)return Math.floor(delta/60000)+' min ago';if(delta<86400000)return Math.floor(delta/3600000)+' hours ago';return Math.floor(delta/86400000)+' days ago';}
   function statusInfo(status,payment){
@@ -11249,17 +11254,20 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     return result;
   }
   function render(items,guest){
+    currentItems=items.slice();
     var badge=document.getElementById('genmerchNotificationBadge'),button=document.getElementById('genmerchNotificationButton');
-    if(badge){badge.textContent=String(Math.min(items.length,99));badge.hidden=!items.length;}
-    if(button)button.setAttribute('aria-label',items.length?'Order notifications, '+items.length+' updates':'Order notifications');
+    var unread=guest?0:items.filter(function(n){return !n.read;}).length;
+    if(badge){badge.textContent=String(Math.min(unread,99));badge.hidden=!unread;}
+    if(button)button.setAttribute('aria-label',unread?'Order notifications, '+unread+' unread updates':'Order notifications');
     if(!panel)return;
-    var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions"><button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
+    var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions">'+(!guest&&items.length?'<button class="genmerch-notification-mark-read" type="button" onclick="markAllGenmerchNotificationsRead()">Mark all as read</button>':'')+'<button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
     if(guest) html+='<div class="genmerch-notification-empty">Sign in to see order updates linked to your account.<br>Guest orders can be checked from Track Order.</div>';
     else if(!items.length) html+='<div class="genmerch-notification-empty">No order updates yet. New progress updates will appear here as your order changes.</div>';
     else items.forEach(function(n){html+='<div class="genmerch-notification-item"><div class="genmerch-notification-icon">'+esc(n.icon)+'</div><div class="genmerch-notification-copy"><strong>'+esc(n.title)+'</strong><p>'+esc(n.message)+'</p><span class="genmerch-notification-time">'+esc(n.order_number)+' · '+esc(timeLabel(n.created_at))+'</span></div></div>';});
     html+='<a href="javascript:void(0)" class="genmerch-notification-footer" onclick="openCustomerOrders();closeGenmerchNotifications()">View All Orders & Tracking</a>';
     panel.innerHTML=html;
   }
+  window.markAllGenmerchNotificationsRead=function(){currentItems=currentItems.map(function(n){n.read=true;return n;});try{sessionStorage.setItem('genmerchNotificationsRead:'+activeUserId,'1');}catch(_){}render(currentItems,activeUserId==='guest');};
   window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.remove('open');};
   window.toggleGenmerchNotifications=async function(){
     if(!panel){
@@ -11278,7 +11286,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(typeof getCustomerAuthClient!=='function')throw new Error('Sign-in service unavailable');
       client=getCustomerAuthClient();
       var s=await client.auth.getSession(),session=s.data&&s.data.session;
-      if(!session||!session.user){render([],true);return;}
+      if(!session||!session.user){activeUserId='guest';render([],true);return;}
+      activeUserId=session.user.id;
       var result=await client.from('orders').select('id,order_number,status,payment_status,updated_at,created_at').eq('user_id',session.user.id).order('updated_at',{ascending:false}).limit(30);
       if(result.error)throw result.error;
       var orders=result.data||[],items=[];
@@ -11296,6 +11305,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       }
       items.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
       var unique=[],seen={};items.forEach(function(n){var key=n.order_number+'|'+n.title+'|'+n.created_at;if(!seen[key]){seen[key]=true;unique.push(n);}});
+      var wasRead=false;try{wasRead=sessionStorage.getItem('genmerchNotificationsRead:'+activeUserId)==='1';}catch(_){}
+      unique.forEach(function(n){n.read=wasRead;});
       render(unique.slice(0,12),false);
     }catch(error){render([],true);if(panel)panel.insertAdjacentHTML('beforeend','<div class="genmerch-notification-empty">Could not load notifications right now. Please try again.</div>');}
   };
