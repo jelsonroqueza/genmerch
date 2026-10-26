@@ -6677,7 +6677,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!badge)return;
       const count=wishlistProductIds.length;
       badge.textContent=count>99?'99+':String(count);
-      badge.hidden=count===0;
+      var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=count===0||headerBadgesRead;
       const button=badge.closest('button');
       if(button)button.setAttribute('aria-label',count?'Open wishlist, '+count+' saved product'+(count===1?'':'s'):'Open wishlist');
     }
@@ -11105,7 +11105,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const orderMap=new Map(orders.map(row=>[String(row.id),row]));
         const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
         const items=(itemsResult.data||[]).filter(row=>row.product_id&&!reviewed.has(String(row.id)));
-        const badge=$('customerRateBadge');if(badge){badge.textContent=items.length>99?'99+':String(items.length);badge.hidden=items.length===0;}
+        const badge=$('customerRateBadge');if(badge){badge.textContent=items.length>99?'99+':String(items.length);var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=items.length===0||headerBadgesRead;}
         if(!items.length){body.innerHTML='<div class="customer-orders-empty"><strong>You are all caught up!</strong>Every delivered product from your account has already been reviewed.</div>';return;}
         body.innerHTML='<p style="margin:0 0 12px;color:#756b64;font-size:.78rem;line-height:1.5">Each delivered product can receive its own review. Your rating starts at 5 stars, and you can change it before submitting.</p>'+items.map(item=>{
           const order=orderMap.get(String(item.order_id))||{},image=safeCatalogImageUrl(item.image_url_snapshot||'');
@@ -11362,7 +11362,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     currentItems=items.slice();
     var badge=document.getElementById('genmerchNotificationBadge'),button=document.getElementById('genmerchNotificationButton');
     var unread=guest?0:items.filter(function(n){return !n.read;}).length;
-    if(badge){badge.textContent=String(Math.min(unread,99));badge.hidden=!unread;}
+    if(badge){badge.textContent=String(Math.min(unread,99));var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=!unread||headerBadgesRead;}
     if(button)button.setAttribute('aria-label',unread?'Order notifications, '+unread+' unread updates':'Order notifications');
     if(!panel)return;
     var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions">'+(!guest&&items.length?'<button class="genmerch-notification-mark-read" type="button" onclick="markAllGenmerchNotificationsRead()">Mark all as read</button>':'')+'<button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
