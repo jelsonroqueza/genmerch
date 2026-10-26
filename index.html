@@ -8896,10 +8896,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       yesButton.disabled=true;yesButton.textContent='Deleting…';noButton.disabled=true;closeButton.disabled=true;
       sellerFeedback('sellerPermanentDeleteFeedback','','');
       showCenteredActionStatus('Please Wait','loading');
-      let deletionSucceeded=false,cleanupWarning='',deletionClient=null,storagePaths=[];
+      let deletionSucceeded=false,cleanupWarning='',storagePaths=[];
       try{
         const client=await getSellerAdminClient(false);
-        deletionClient=client;
         const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
         if(imageResult.error)throw imageResult.error;
         const imageRows=imageResult.data||[];
