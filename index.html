@@ -4557,6 +4557,9 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 .customer-orders-mark-read.is-read{background:#edf8ef!important;border-color:#cfe8d2!important;color:#28713b!important}
 @media(max-width:600px){.customer-orders-head-actions{gap:6px!important}.customer-orders-mark-read{padding:7px 8px!important;font-size:10px!important}.customer-orders-refresh{padding:7px 8px!important}}
 </style>
+<style id="genmerch-cross-device-wishlist-refresh">
+.genmerch-notification-mark-read:disabled{opacity:.65!important;cursor:wait!important}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -6677,7 +6680,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!badge)return;
       const count=wishlistProductIds.length;
       badge.textContent=count>99?'99+':String(count);
-      var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=count===0||headerBadgesRead;
+      var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=count===0;
       const button=badge.closest('button');
       if(button)button.setAttribute('aria-label',count?'Open wishlist, '+count+' saved product'+(count===1?'':'s'):'Open wishlist');
     }
@@ -11140,7 +11143,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         const orderMap=new Map(orders.map(row=>[String(row.id),row]));
         const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
         const items=(itemsResult.data||[]).filter(row=>row.product_id&&!reviewed.has(String(row.id)));
-        const badge=$('customerRateBadge');if(badge){badge.textContent=items.length>99?'99+':String(items.length);var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=items.length===0||headerBadgesRead;}
+        const badge=$('customerRateBadge');if(badge){badge.textContent=items.length>99?'99+':String(items.length);var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=items.length===0;}
         if(!items.length){body.innerHTML='<div class="customer-orders-empty"><strong>You are all caught up!</strong>Every delivered product from your account has already been reviewed.</div>';return;}
         body.innerHTML='<p style="margin:0 0 12px;color:#756b64;font-size:.78rem;line-height:1.5">Each delivered product can receive its own review. Your rating starts at 5 stars, and you can change it before submitting.</p>'+items.map(item=>{
           const order=orderMap.get(String(item.order_id))||{},image=safeCatalogImageUrl(item.image_url_snapshot||'');
@@ -11397,7 +11400,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     currentItems=items.slice();
     var badge=document.getElementById('genmerchNotificationBadge'),button=document.getElementById('genmerchNotificationButton');
     var unread=guest?0:items.filter(function(n){return !n.read;}).length;
-    if(badge){badge.textContent=String(Math.min(unread,99));var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=!unread||headerBadgesRead;}
+    if(badge){badge.textContent=String(Math.min(unread,99));var headerBadgesRead=false;try{headerBadgesRead=sessionStorage.getItem('genmerchHeaderBadgesRead')==='1';}catch(_){}badge.hidden=!unread;}
     if(button)button.setAttribute('aria-label',unread?'Order notifications, '+unread+' unread updates':'Order notifications');
     if(!panel)return;
     var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions">'+(!guest&&items.length?'<button class="genmerch-notification-mark-read" type="button" onclick="markAllGenmerchNotificationsRead()">Mark all as read</button>':'')+'<button class="genmerch-notification-refresh" type="button" onclick="loadGenmerchNotifications()">Refresh ↻</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
@@ -11407,7 +11410,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     html+='<a href="javascript:void(0)" class="genmerch-notification-footer" onclick="openCustomerOrders();closeGenmerchNotifications()">View All Orders & Tracking</a>';
     panel.innerHTML=html;
   }
-  window.markAllGenmerchNotificationsRead=function(){currentItems=currentItems.map(function(n){n.read=true;return n;});try{sessionStorage.setItem('genmerchNotificationsRead:'+activeUserId,'1');}catch(_){}render(currentItems,activeUserId==='guest');};
+  window.markAllGenmerchNotificationsRead=async function(){if(activeUserId==='guest'){return;}var button=panel&&panel.querySelector('.genmerch-notification-mark-read');if(button){button.disabled=true;button.textContent='Saving…';}try{if(typeof window.markGenmerchHeaderBadgesRead!=='function')throw new Error('Read-status sync is unavailable');await window.markGenmerchHeaderBadgesRead();await window.loadGenmerchNotifications();}catch(error){console.error('Could not sync notification read state.',error);if(button){button.disabled=false;button.textContent='Mark all as read';}alert('Hindi na-sync ang notifications sa account mo. Pakisubukan ulit.');}};
   window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.remove('open');};
   window.toggleGenmerchNotifications=async function(){
     if(!panel){
@@ -11620,6 +11623,41 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
  });
  window.openGenmerchProductImageViewer=open;
  window.closeGenmerchProductImageViewer=close;
+})();
+</script>
+<script id="genmerch-wishlist-cross-device-sync">
+(function(){
+ let timer=null, channel=null, activeUid='';
+ async function refreshWishlistForCurrentUser(){
+   if(document.visibilityState!=='visible'||typeof syncWishlistForCustomerSession!=='function')return;
+   try{await syncWishlistForCustomerSession(undefined,true);}catch(e){console.warn('Wishlist cross-device refresh failed.',e);}
+ }
+ async function bindWishlistSync(){
+   if(typeof getCustomerAuthClient!=='function')return;
+   try{
+     const client=getCustomerAuthClient();
+     const result=await client.auth.getSession();
+     const user=result.data&&result.data.session&&result.data.session.user;
+     const uid=user?String(user.id):'';
+     if(uid!==activeUid){
+       activeUid=uid;
+       if(channel){try{await client.removeChannel(channel);}catch(_){}channel=null;}
+       if(uid){
+         channel=client.channel('genmerch-wishlist-sync-'+uid)
+           .on('postgres_changes',{event:'*',schema:'public',table:'customer_wishlist',filter:'user_id=eq.'+uid},function(){refreshWishlistForCurrentUser();})
+           .subscribe();
+       }
+       await refreshWishlistForCurrentUser();
+     }
+   }catch(e){console.warn('Wishlist realtime sync could not initialize.',e);}
+ }
+ function start(){
+   bindWishlistSync();
+   if(timer===null)timer=window.setInterval(function(){if(!document.hidden)bindWishlistSync();},25000);
+   document.addEventListener('visibilitychange',function(){if(!document.hidden){bindWishlistSync();refreshWishlistForCurrentUser();}});
+   window.addEventListener('focus',function(){bindWishlistSync();refreshWishlistForCurrentUser();});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
 </body>
