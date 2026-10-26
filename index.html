@@ -4182,6 +4182,43 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 }
 </style>
 
+<style id="genmerch-golden-bell-no-circle">
+/* The bell itself is the icon: no enclosing disc, ring, or button halo. */
+.site-header .header-actions .genmerch-notification-button,
+.site-header .main-header .nav .genmerch-notification-button,
+.genmerch-notification-button:hover,
+.genmerch-notification-button:focus,
+.genmerch-notification-button:focus-visible,
+.genmerch-notification-button:active{
+  background:transparent!important;
+  border-color:transparent!important;
+  outline:none!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.site-header .header-actions .genmerch-notification-button .genmerch-bell-wrap,
+.site-header .main-header .nav .genmerch-notification-button .genmerch-bell-wrap{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;
+  padding:0!important;margin:0!important;background:transparent!important;border:0!important;
+  border-radius:0!important;box-shadow:none!important;outline:none!important;overflow:visible!important;
+}
+.site-header .header-actions .genmerch-notification-button .genmerch-bell-svg,
+.site-header .main-header .nav .genmerch-notification-button .genmerch-bell-svg{
+  display:block!important;background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;outline:none!important;filter:drop-shadow(0 2px 2px rgba(125,78,0,.25))!important;
+  transform-origin:50% 12%!important;animation:genmerch-bell-wiggle 3.6s ease-in-out infinite!important;
+}
+@media(max-width:760px){
+ .site-header .main-header .nav .genmerch-notification-button{background:transparent!important;border:0!important;box-shadow:none!important}
+ .site-header .main-header .nav .genmerch-notification-button .genmerch-bell-wrap{width:100%!important}
+ .site-header .main-header .nav .genmerch-notification-button .genmerch-bell-svg{width:clamp(27px,7.2vw,34px)!important;height:clamp(27px,7.2vw,34px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .site-header .header-actions .genmerch-notification-button .genmerch-bell-svg{animation:none!important}
+}
+</style>
+
 </head>
 <body>
   <header class="site-header">
