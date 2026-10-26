@@ -4262,7 +4262,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
   .hero.hero--video-active + .trust-strip{display:none!important}
   @media(max-width:760px){
-    .hero.hero--video-active{height:clamp(260px,72vw,420px);min-height:0!important}
+    .hero.hero--video-active{height:clamp(205px,56.25vw,420px);min-height:0!important}
     .hero-video-stage{background:linear-gradient(180deg,#fff0df 0%,#ff7d24 48%,#24100b 100%)}
     .hero-video-main{object-fit:contain;object-position:center center}
   }
@@ -11407,6 +11407,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   let cycleTimer=null;
   let firstReady=false;
   let videoActive=false;
+  let playPending=false;
   let heroInView=true;
   let pageWasHidden=Boolean(document.hidden);
   let soundEnabled=false;
@@ -11444,7 +11445,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
   function scheduleVideo(delay){
     clearCycleTimer();
-    if(reducedMotion||document.hidden||!heroInView||videoActive)return;
+    if(reducedMotion||document.hidden||!heroInView||videoActive||playPending)return;
     cycleTimer=window.setTimeout(showVideoSlide,Math.max(400,Number(delay)||3000));
   }
   function waitForVisibleFrame(){
@@ -11463,14 +11464,17 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     video.defaultMuted=true;
     soundEnabled=false;
     updateAudioButton();
+    playPending=true;
     try{
       const result=video.play();
       if(result&&typeof result.then==='function')await result;
+      playPending=false;
       if(attempt!==playAttempt)return false;
       videoActive=true;
       hideLaunchPrompt();
       return true;
     }catch(error){
+      playPending=false;
       videoActive=false;
       video.pause();
       // If a mobile browser blocks autoplay, preserve the branded static hero and
@@ -11490,6 +11494,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     clearCycleTimer();
     playAttempt++;
     videoActive=false;
+    playPending=false;
     hero.classList.remove('hero--video-active');
     video.pause();
     try{video.currentTime=0;}catch(_){}
@@ -11516,12 +11521,15 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     updateAudioButton();
     try{video.currentTime=0;}catch(_){}
     // Call play() immediately in the trusted click handler so mobile browsers preserve user activation.
+    playPending=true;
     const result=video.play();
     if(result&&typeof result.then==='function'){
       result.then(()=>{
+        playPending=false;
         if(attempt!==playAttempt)return;
         videoActive=true;
       }).catch(()=>{
+        playPending=false;
         videoActive=false;
         hero.classList.remove('hero--video-active');
         showLaunchPrompt();
@@ -11580,6 +11588,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     clearCycleTimer();
     playAttempt++;
     videoActive=false;
+    playPending=false;
     hero.classList.remove('hero--video-active');
     video.pause();
     showLaunchPrompt();
@@ -11633,7 +11642,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       if(!videoActive&&!document.hidden&&heroInView)showVideoSlide();
     },80);
     window.setTimeout(function(){
-      if(!videoActive&&video.paused&&!reducedMotion){
+      if(!videoActive&&!playPending&&video.paused&&!reducedMotion){
         hero.classList.remove('hero--video-active');
         showLaunchPrompt();
       }
