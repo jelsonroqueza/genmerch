@@ -3844,6 +3844,121 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
 </style>
 
+
+  /* GENMERCH hero motion — polished, lightweight, and respectful of reduced-motion preferences. */
+  @keyframes gmHeroBrandIn{
+    0%{opacity:0;transform:translateY(22px) scale(.975);filter:blur(4px)}
+    70%{opacity:1;filter:blur(0)}
+    100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  }
+  @keyframes gmHeroWordInLeft{
+    0%{opacity:0;transform:translateX(-14px)}
+    100%{opacity:1;transform:translateX(0)}
+  }
+  @keyframes gmHeroWordInRight{
+    0%{opacity:0;transform:translateX(18px) skewX(-4deg)}
+    100%{opacity:1;transform:translateX(0) skewX(0)}
+  }
+  @keyframes gmHeroRise{
+    0%{opacity:0;transform:translateY(16px)}
+    100%{opacity:1;transform:translateY(0)}
+  }
+  @keyframes gmCartFloat{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-5px) rotate(-1deg)}
+  }
+  @keyframes gmHeroBenefitIcon{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-3px) rotate(-3deg)}
+  }
+  @keyframes gmHeroTaglineShimmer{
+    0%,28%{background-position:140% 0}
+    58%,100%{background-position:-140% 0}
+  }
+  @keyframes gmHeroShopGlow{
+    0%,100%{box-shadow:0 7px 18px rgba(242,45,20,.16)}
+    50%{box-shadow:0 10px 28px rgba(242,45,20,.30),0 0 0 4px rgba(255,76,22,.055)}
+  }
+  @keyframes gmHeroArrowNudge{
+    0%,72%,100%{transform:translateX(0)}
+    79%,86%{transform:translateX(4px)}
+  }
+  @keyframes gmHeroFlashGlow{
+    0%,100%{box-shadow:0 5px 16px rgba(160,70,24,.08)}
+    50%{box-shadow:0 8px 22px rgba(255,94,34,.17)}
+  }
+  .hero .hero-brand-lockup{
+    animation:gmHeroBrandIn .9s cubic-bezier(.2,.75,.2,1) .06s backwards;
+    transform-origin:center;
+  }
+  .hero .hero-cart-image{
+    animation:gmCartFloat 4.8s ease-in-out 1s infinite;
+    transform-origin:50% 60%;
+  }
+  .hero .hero-wordmark>span{
+    animation:gmHeroWordInLeft .68s cubic-bezier(.2,.75,.2,1) .19s backwards;
+  }
+  .hero .hero-wordmark>b{
+    animation:gmHeroWordInRight .76s cubic-bezier(.2,.75,.2,1) .29s backwards;
+  }
+  .hero .hero-tagline{
+    background-image:linear-gradient(110deg,#ffdfca 0%,#ffdfca 36%,#fff2e6 50%,#ffdfca 64%,#ffdfca 100%);
+    background-size:250% 100%;
+    animation:gmHeroRise .7s cubic-bezier(.2,.75,.2,1) .24s backwards,gmHeroTaglineShimmer 7.5s ease-in-out 1.55s infinite;
+  }
+  .hero .hero-benefits>span{
+    animation:gmHeroRise .62s cubic-bezier(.2,.75,.2,1) backwards;
+  }
+  .hero .hero-benefits>span:nth-child(1){animation-delay:.34s}
+  .hero .hero-benefits>span:nth-child(2){animation-delay:.44s}
+  .hero .hero-benefits>span:nth-child(3){animation-delay:.54s}
+  .hero .hero-benefits>span:nth-child(4){animation-delay:.64s}
+  .hero .hero-benefits>span>b{
+    animation:gmHeroBenefitIcon 3.8s ease-in-out 1.2s infinite;
+    transform-origin:center;
+  }
+  .hero .hero-benefits>span:nth-child(2)>b{animation-delay:1.45s}
+  .hero .hero-benefits>span:nth-child(3)>b{animation-delay:1.7s}
+  .hero .hero-benefits>span:nth-child(4)>b{animation-delay:1.95s}
+  .hero .shop-now{
+    transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+    animation:gmHeroRise .72s cubic-bezier(.2,.75,.2,1) .62s backwards,gmHeroShopGlow 4.4s ease-in-out 1.7s infinite;
+  }
+  .hero .shop-now:hover{
+    transform:translateY(-3px) scale(1.015);
+    filter:saturate(1.08);
+    box-shadow:0 12px 30px rgba(242,45,20,.27);
+  }
+  .hero .shop-now:active{transform:translateY(0) scale(.99)}
+  .hero .shop-now span{
+    display:inline-block;
+    animation:gmHeroArrowNudge 3.6s ease-in-out 1.8s infinite;
+  }
+  .hero .flash-deals-banner{
+    animation:gmHeroRise .72s cubic-bezier(.2,.75,.2,1) .77s backwards,gmHeroFlashGlow 5s ease-in-out 2s infinite;
+  }
+  .hero .hero-art{
+    animation:gmHeroRise .85s cubic-bezier(.2,.75,.2,1) .28s backwards;
+  }
+  @media(hover:hover) and (prefers-reduced-motion:no-preference){
+    .hero .hero-brand-lockup{transition:filter .25s ease}
+    .hero .hero-brand-lockup:hover{filter:drop-shadow(0 9px 15px rgba(242,45,20,.12))}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero .hero-brand-lockup,
+    .hero .hero-cart-image,
+    .hero .hero-wordmark>span,
+    .hero .hero-wordmark>b,
+    .hero .hero-tagline,
+    .hero .hero-benefits>span,
+    .hero .hero-benefits>span>b,
+    .hero .shop-now,
+    .hero .shop-now span,
+    .hero .flash-deals-banner,
+    .hero .hero-art{animation:none!important;transition:none!important;filter:none!important}
+    .hero .hero-tagline{background-image:none!important;background-size:auto!important}
+  }
+
 </head>
 <body>
   <header class="site-header">
