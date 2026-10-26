@@ -11486,6 +11486,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   }
   async function showVideoSlide(){
     cycleTimer=null;
+    if(videoActive||playPending)return;
     if(!canAttemptPlayback()){scheduleVideo(1800);return;}
     const started=await startAutoplay();
     if(!started&&canAttemptPlayback())showLaunchPrompt();
@@ -11602,7 +11603,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
     if(pageWasHidden){
       pageWasHidden=false;
-      if(firstReady)scheduleVideo(800);
+      if(mobileVideoMode||firstReady)scheduleVideo(mobileVideoMode?180:800);
       else video.load();
     }
   });
