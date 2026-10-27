@@ -2132,21 +2132,36 @@
 }
 .customer-auth-overlay{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(13,13,13,.58);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .customer-auth-overlay.open{display:flex}
-.customer-logout-confirm-overlay{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(13,13,13,.64);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-.customer-logout-confirm-overlay.open{display:flex}
-.customer-logout-confirm-modal{width:min(420px,100%);padding:26px 24px 22px;background:#fff;border:1px solid #f3d4cc;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.3);color:#171717;text-align:center}
-.customer-logout-confirm-icon{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 14px;border-radius:50%;background:#fff0e9;color:#d92a1d;font-size:1.55rem;font-weight:950}
-.customer-logout-confirm-modal h2{margin:0 0 9px;font-size:1.12rem;line-height:1.3;font-weight:900}
-.customer-logout-confirm-modal p{margin:0;color:#666;font-size:.9rem;line-height:1.55}
-.customer-logout-confirm-actions{display:flex;gap:10px;margin-top:23px}
-.customer-logout-confirm-actions button{flex:1;min-height:44px;padding:10px 13px;border-radius:8px;font:inherit;font-size:.85rem;font-weight:850;cursor:pointer}
-.customer-logout-cancel{border:1px solid #d9d3d0;background:#fff;color:#332d2a}
-.customer-logout-cancel:hover{background:#f7f5f4}
-.customer-logout-accept{border:1px solid #f22925;background:#f22925;color:#fff}
-.customer-logout-accept:hover:not(:disabled){background:#d91d1a;border-color:#d91d1a}
-.customer-logout-confirm-actions button:focus-visible{outline:3px solid rgba(242,41,37,.3);outline-offset:2px}
-.customer-logout-confirm-actions button:disabled{opacity:.55;cursor:not-allowed}
-@media(max-width:420px){.customer-logout-confirm-modal{padding:23px 18px 18px}.customer-logout-confirm-actions{flex-direction:column-reverse}} 
+.customer-logout-confirm-overlay,.customer-logout-success-overlay{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;padding:clamp(14px,3vw,24px);background:radial-gradient(ellipse at 15% 12%,rgba(255,109,66,.22),transparent 34%),linear-gradient(135deg,rgba(42,30,27,.82),rgba(30,29,29,.88));-webkit-backdrop-filter:blur(12px) saturate(112%);backdrop-filter:blur(12px) saturate(112%)}
+.customer-logout-confirm-overlay.open,.customer-logout-success-overlay.open{display:flex}
+.customer-logout-success-overlay{z-index:1110}
+.customer-logout-confirm-modal,.customer-logout-success-modal{width:min(440px,100%);max-height:min(90vh,90dvh);overflow-y:auto;padding:clamp(23px,5vw,32px);border:1px solid rgba(255,255,255,.9);border-radius:22px;background:linear-gradient(180deg,#fffdf9 0%,#fffaf5 54%,#fff 100%);box-shadow:0 34px 100px rgba(19,13,11,.4),0 8px 28px rgba(66,36,25,.16),inset 0 1px 0 rgba(255,255,255,.95);color:#302a28;text-align:center}
+.customer-logout-confirm-icon,.customer-logout-success-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 17px;border:1px solid rgba(255,255,255,.94);border-radius:19px;background:linear-gradient(145deg,#fff4e8,#ffe1c7);box-shadow:0 9px 24px rgba(117,63,36,.12),inset 0 1px 0 #fff;color:#d74a25;font-size:1.65rem;font-weight:950}
+.customer-logout-success-icon{border-color:#d3ead9;border-radius:50%;background:linear-gradient(145deg,#e7f8ed,#cfeedd);color:#16834a;font-size:1.85rem}
+.customer-logout-confirm-modal h2,.customer-logout-success-modal h2{margin:0 0 9px;color:#332e2d;font-size:clamp(1.18rem,4vw,1.38rem);line-height:1.25;font-weight:950;letter-spacing:-.025em;text-wrap:balance}
+.customer-logout-confirm-modal>p,.customer-logout-success-modal>p{margin:0;color:#746a64;font-size:.9rem;line-height:1.6;text-wrap:pretty}
+.customer-logout-email-field{display:block;margin:18px 0 12px;text-align:left}
+.customer-logout-email-field label{display:block;margin:0 0 7px;color:#4e413b;font-size:.79rem;font-weight:850}
+#customerLogoutEmailInput{display:block;box-sizing:border-box;width:100%;min-height:48px;padding:12px 14px;border:1px solid #decfc5;border-radius:11px;background:#fff;color:#332b27;font:inherit;font-size:.92rem;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
+#customerLogoutEmailInput::placeholder{color:#a99a91}
+#customerLogoutEmailInput:focus{border-color:#f2794b;box-shadow:0 0 0 4px rgba(242,121,75,.13)}
+#customerLogoutEmailInput:disabled{background:#f6f1ed;color:#81766f}
+.customer-logout-confirm-modal .customer-logout-feedback{min-height:0;margin:7px 0 0;color:#b83227;font-size:.78rem;line-height:1.45;text-align:left}
+.customer-logout-confirm-modal .customer-logout-feedback.success{color:#147943}
+.customer-logout-confirm-modal .customer-logout-feedback[hidden]{display:none}
+.customer-logout-preserve-note{margin-top:14px;padding:12px 13px;border:1px solid #f0e0d4;border-radius:12px;background:linear-gradient(145deg,#fff8f1,#fffdf9);color:#76665d;font-size:.78rem;line-height:1.55;text-align:left}
+.customer-logout-preserve-note strong{display:block;margin-bottom:3px;color:#5b3b2e;font-size:.8rem}
+.customer-logout-confirm-actions,.customer-logout-success-actions{display:flex;gap:10px;margin-top:22px}
+.customer-logout-confirm-actions button,.customer-logout-success-actions button{flex:1;min-width:0;min-height:46px;padding:11px 13px;border-radius:11px;font:inherit;font-size:.82rem;font-weight:900;line-height:1.25;cursor:pointer;transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease}
+.customer-logout-confirm-actions button:hover:not(:disabled),.customer-logout-success-actions button:hover:not(:disabled){transform:translateY(-1px)}
+.customer-logout-cancel,.customer-logout-success-secondary{border:1px solid #e1d4ca;background:#fff;color:#493d36}
+.customer-logout-cancel:hover:not(:disabled),.customer-logout-success-secondary:hover:not(:disabled){background:#fff7f0;border-color:#d8bdae}
+.customer-logout-accept,.customer-logout-success-primary{border:1px solid #f04b2d;background:linear-gradient(105deg,#ff702c 0%,#f52b25 100%);box-shadow:0 7px 16px rgba(239,64,39,.17);color:#fff}
+.customer-logout-accept:hover:not(:disabled),.customer-logout-success-primary:hover:not(:disabled){box-shadow:0 9px 20px rgba(239,64,39,.24)}
+.customer-logout-confirm-actions button:focus-visible,.customer-logout-success-actions button:focus-visible{outline:3px solid rgba(242,92,47,.3);outline-offset:3px}
+.customer-logout-confirm-actions button:disabled,.customer-logout-success-actions button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+@media(max-width:420px){.customer-logout-confirm-modal,.customer-logout-success-modal{padding:24px 18px 20px;border-radius:19px}.customer-logout-confirm-actions,.customer-logout-success-actions{flex-direction:column-reverse;gap:9px}.customer-logout-confirm-actions button,.customer-logout-success-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.customer-logout-confirm-overlay,.customer-logout-success-overlay,.customer-logout-confirm-modal *,.customer-logout-success-modal *{animation:none!important;transition:none!important}}
 .customer-auth-modal{width:min(480px,100%);max-height:min(92vh,92dvh);overflow-y:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.28);color:#171717}
 .customer-auth-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:22px 22px 18px;border-bottom:1px solid #eee}
 .customer-auth-head h2{margin:0;font-size:1.2rem;line-height:1.3;font-weight:900}
@@ -6846,12 +6861,33 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
   <div class="customer-logout-confirm-overlay" id="customerLogoutConfirmOverlay" aria-hidden="true">
     <section class="customer-logout-confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="customerLogoutConfirmTitle" aria-describedby="customerLogoutConfirmMessage">
-      <div class="customer-logout-confirm-icon" aria-hidden="true">!</div>
-      <h2 id="customerLogoutConfirmTitle">Log out of GENMERCH?</h2>
-      <p id="customerLogoutConfirmMessage">Are you sure you want to log out of your account? You may need to sign in again to access your account details and saved items.</p>
+      <div class="customer-logout-confirm-icon" aria-hidden="true">↗</div>
+      <h2 id="customerLogoutConfirmTitle">Confirm Your Sign Out</h2>
+      <p id="customerLogoutConfirmMessage">For your account’s protection, please enter the complete email address you use to sign in before continuing.</p>
+      <div class="customer-logout-email-field">
+        <label for="customerLogoutEmailInput">Account email address</label>
+        <input id="customerLogoutEmailInput" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="Enter your full email address" aria-describedby="customerLogoutFeedback">
+        <p class="customer-logout-feedback" id="customerLogoutFeedback" role="status" aria-live="polite" hidden></p>
+      </div>
+      <div class="customer-logout-preserve-note">
+        <strong>Your saved items are safe.</strong>
+        Your wishlist, order history, and account information will not be deleted by signing out. Sign back in with the same account to access them again.
+      </div>
       <div class="customer-logout-confirm-actions">
-        <button class="customer-logout-cancel" id="customerLogoutCancelButton" type="button">Stay signed in</button>
-        <button class="customer-logout-accept" id="customerLogoutConfirmButton" type="button">Yes, log out</button>
+        <button class="customer-logout-cancel" id="customerLogoutCancelButton" type="button">Keep Me Signed In</button>
+        <button class="customer-logout-accept" id="customerLogoutConfirmButton" type="button">Confirm Logout</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="customer-logout-success-overlay" id="customerLogoutSuccessOverlay" aria-hidden="true">
+    <section class="customer-logout-success-modal" role="dialog" aria-modal="true" aria-labelledby="customerLogoutSuccessTitle" aria-describedby="customerLogoutSuccessMessage">
+      <div class="customer-logout-success-icon" aria-hidden="true">✓</div>
+      <h2 id="customerLogoutSuccessTitle">Logout Successful!</h2>
+      <p id="customerLogoutSuccessMessage">You’re securely signed out of GENMERCH. You can sign in again anytime using the same account. Keep your password private and secure.</p>
+      <div class="customer-logout-success-actions">
+        <button class="customer-logout-success-secondary" id="customerLogoutSuccessSignInButton" type="button">Sign In Again</button>
+        <button class="customer-logout-success-primary" id="customerLogoutSuccessContinueButton" type="button">Continue Shopping</button>
       </div>
     </section>
   </div>
@@ -10755,12 +10791,37 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         }
       }
     });
+    function setCustomerLogoutFeedback(message,type=''){
+      const node=$('customerLogoutFeedback');
+      if(!node)return;
+      node.textContent=message||'';
+      node.className='customer-logout-feedback'+(type?' '+type:'');
+      node.hidden=!message;
+    }
+    function customerLogoutEmailMatches(){
+      const session=customerAuthCurrentSession;
+      const expected=String(session&&session.user&&session.user.email||'').trim().toLowerCase();
+      const entered=String($('customerLogoutEmailInput').value||'').trim().toLowerCase();
+      return Boolean(expected&&entered&&entered===expected);
+    }
     function openCustomerLogoutConfirmation(){
       if(customerAuthBusy)return;
+      const session=customerAuthCurrentSession;
+      if(!session||!session.user||!String(session.user.email||'').trim()){
+        setCustomerAuthMessage('We could not verify the email address for this session. Please refresh and sign in again.','error');
+        return;
+      }
       const overlay=$('customerLogoutConfirmOverlay');
+      $('customerLogoutEmailInput').value='';
+      $('customerLogoutEmailInput').disabled=false;
+      $('customerLogoutCancelButton').disabled=false;
+      $('customerLogoutConfirmButton').disabled=false;
+      $('customerLogoutConfirmButton').textContent='Confirm Logout';
+      setCustomerLogoutFeedback('');
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden','false');
-      $('customerLogoutCancelButton').focus();
+      document.body.style.overflow='hidden';
+      $('customerLogoutEmailInput').focus();
     }
     function closeCustomerLogoutConfirmation(restoreFocus=true){
       const overlay=$('customerLogoutConfirmOverlay');
@@ -10771,37 +10832,84 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(trigger&&!trigger.disabled)trigger.focus();
       }
     }
+    function openCustomerLogoutSuccess(){
+      const overlay=$('customerLogoutSuccessOverlay');
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      $('customerLogoutSuccessContinueButton').focus();
+    }
+    function closeCustomerLogoutSuccess(restoreFocus=true){
+      const overlay=$('customerLogoutSuccessOverlay');
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      if(!$('cartModal').classList.contains('open')&&!$('productOverlay').classList.contains('open')&&!$('customerAuthOverlay').classList.contains('open')){
+        document.body.style.overflow='';
+      }
+      if(restoreFocus){
+        const trigger=$('customerAccountButton');
+        if(trigger&&typeof trigger.focus==='function')trigger.focus();
+      }
+    }
     async function performCustomerSignOut(){
-      const button=$('customerAuthSignOut');
       if(customerAuthBusy)return;
+      if(!customerLogoutEmailMatches()){
+        setCustomerLogoutFeedback('The email address does not match your signed-in account. Please check and try again.','error');
+        $('customerLogoutEmailInput').focus();
+        return;
+      }
+      const button=$('customerAuthSignOut');
+      const confirmButton=$('customerLogoutConfirmButton');
+      const cancelButton=$('customerLogoutCancelButton');
+      const emailInput=$('customerLogoutEmailInput');
       customerAuthBusy=true;
       button.disabled=true;
-      button.textContent='Logging out…';
-      setCustomerAuthMessage('Signing you out…');
+      button.textContent='Signing Out…';
+      confirmButton.disabled=true;
+      confirmButton.textContent='Signing out…';
+      cancelButton.disabled=true;
+      emailInput.disabled=true;
+      setCustomerLogoutFeedback('Verifying your session and signing you out securely…','success');
       try{
         const client=getCustomerAuthClient();
         const {error}=await client.auth.signOut();
         if(error)throw error;
+        closeCustomerLogoutConfirmation(false);
         updateCustomerAuthScreen(null);
         $('customerPassword').value='';
         $('customerFullName').value='';
         setCustomerAuthMode('signin');
-        setCustomerAuthMessage('You have signed out.','success');
+        closeCustomerAuth();
+        openCustomerLogoutSuccess();
       }catch(error){
-        setCustomerAuthMessage(error.message||'Could not sign out.','error');
+        console.error('GENMERCH could not complete customer sign out.',error);
+        setCustomerLogoutFeedback('We couldn’t complete your sign out right now. Check your connection and try again.','error');
       }finally{
         customerAuthBusy=false;
         button.disabled=false;
         button.textContent='Log Out';
+        cancelButton.disabled=false;
+        emailInput.disabled=false;
+        confirmButton.disabled=false;
+        confirmButton.textContent='Confirm Logout';
       }
     }
     $('customerAuthSignOut').addEventListener('click',openCustomerLogoutConfirmation);
-    $('customerLogoutCancelButton').addEventListener('click',()=>closeCustomerLogoutConfirmation());
-    $('customerLogoutConfirmButton').addEventListener('click',()=>{
-      if(customerAuthBusy)return;
-      closeCustomerLogoutConfirmation(false);
-      performCustomerSignOut();
+    $('customerLogoutEmailInput').addEventListener('input',()=>{
+      if(customerLogoutEmailMatches()){
+        setCustomerLogoutFeedback('Email confirmed. You may continue.','success');
+      }else{
+        setCustomerLogoutFeedback('');
+      }
     });
+    $('customerLogoutEmailInput').addEventListener('keydown',event=>{
+      if(event.key==='Enter'){
+        event.preventDefault();
+        performCustomerSignOut();
+      }
+    });
+    $('customerLogoutCancelButton').addEventListener('click',()=>closeCustomerLogoutConfirmation());
+    $('customerLogoutConfirmButton').addEventListener('click',()=>performCustomerSignOut());
     $('customerLogoutConfirmOverlay').addEventListener('click',event=>{
       if(event.target===$('customerLogoutConfirmOverlay')){event.preventDefault();event.stopPropagation();}
     });
@@ -10810,7 +10918,20 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         event.preventDefault();
         event.stopPropagation();
         closeCustomerLogoutConfirmation();
+      }else if(event.key==='Escape'&&$('customerLogoutSuccessOverlay').classList.contains('open')){
+        event.preventDefault();
+        event.stopPropagation();
+        closeCustomerLogoutSuccess();
       }
+    });
+    $('customerLogoutSuccessContinueButton').addEventListener('click',()=>closeCustomerLogoutSuccess());
+    $('customerLogoutSuccessSignInButton').addEventListener('click',()=>{
+      closeCustomerLogoutSuccess(false);
+      setCustomerAuthMode('signin');
+      openCustomerAuth();
+    });
+    $('customerLogoutSuccessOverlay').addEventListener('click',event=>{
+      if(event.target===$('customerLogoutSuccessOverlay')){event.preventDefault();event.stopPropagation();}
     });
     function initializeCustomerAuth(){
       const callbackAtStart=isCustomerAuthCallbackUrl();
