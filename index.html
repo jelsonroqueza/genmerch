@@ -5890,6 +5890,66 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       .genmerch-notification-panel .genmerch-notification-sound{font-size:9px!important;padding:6px 5px!important;min-height:29px!important;}
     }
   </style>
+
+  <!-- GENMERCH branding: static, crisp Lexend wordmark; header scroll behavior remains unchanged. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style id="genmerch-static-lexend-brand-preview">
+    .site-header .main-header .nav .brand-lockup,
+    .site-header .main-header .nav .brand-lockup .brand-type,
+    .site-header .main-header .nav .brand-lockup .brand-word,
+    .site-header .main-header .nav .brand-lockup .brand-word span,
+    .site-header .main-header .nav .brand-lockup .brand-word b,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline {
+      font-family: "Lexend", sans-serif !important;
+      font-weight: 900 !important;
+      font-synthesis: none !important;
+      text-rendering: geometricPrecision !important;
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      animation: none !important;
+      transition: none !important;
+      filter: none !important;
+      text-shadow: none !important;
+      opacity: 1 !important;
+    }
+    .site-header .main-header .nav .brand-lockup .brand-word,
+    .site-header .main-header .nav .brand-lockup .brand-word span,
+    .site-header .main-header .nav .brand-lockup .brand-word b,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline {
+      color: #f31532 !important;
+      -webkit-text-fill-color: #f31532 !important;
+      -webkit-text-stroke: 0 !important;
+      background: none !important;
+      background-image: none !important;
+      letter-spacing: .005em !important;
+    }
+    .site-header .main-header .nav .brand-lockup .brand-word::before,
+    .site-header .main-header .nav .brand-lockup .brand-word::after,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after {
+      content: none !important;
+      display: none !important;
+      animation: none !important;
+      transition: none !important;
+      background: none !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+    @media (max-width: 760px) {
+      .site-header .main-header .nav .brand-lockup .brand-word,
+      .site-header .main-header .nav .brand-lockup .brand-word span,
+      .site-header .main-header .nav .brand-lockup .brand-word b,
+      .site-header .main-header .nav .brand-lockup .genmerch-header-tagline {
+        font-weight: 900 !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
