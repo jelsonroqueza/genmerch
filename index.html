@@ -4883,13 +4883,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 </style>
 
 <style id="genmerch-premium-customer-auth">
-/* Premium GENMERCH customer sign-in / account creation presentation */
+/* Warm, elegant GENMERCH sign-in and account creation experience */
 #customerAuthOverlay{
   padding:clamp(12px,3vw,24px);
   background:
-    radial-gradient(ellipse at 13% 14%,rgba(242,45,34,.23),transparent 35%),
-    radial-gradient(ellipse at 88% 82%,rgba(211,128,69,.17),transparent 32%),
-    linear-gradient(135deg,rgba(18,20,22,.78),rgba(47,36,31,.76) 52%,rgba(19,21,23,.82));
+    radial-gradient(ellipse at 12% 12%,rgba(255,109,66,.24),transparent 34%),
+    radial-gradient(ellipse at 87% 82%,rgba(235,181,132,.22),transparent 34%),
+    linear-gradient(135deg,rgba(48,34,30,.86),rgba(67,50,42,.83) 48%,rgba(30,29,29,.88));
   -webkit-backdrop-filter:blur(13px) saturate(115%);
   backdrop-filter:blur(13px) saturate(115%);
 }
@@ -4899,140 +4899,209 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   width:min(492px,100%);
   max-height:min(92vh,92dvh);
   overflow:auto;
-  border:1px solid rgba(255,255,255,.82);
-  border-radius:21px;
-  background:linear-gradient(180deg,#fff 0%,#fffdfb 68%,#fff8f4 100%);
-  box-shadow:0 34px 100px rgba(0,0,0,.38),0 8px 28px rgba(28,18,15,.16),inset 0 1px 0 rgba(255,255,255,.9);
-  color:#242323;
-  scrollbar-color:#c9b9b2 transparent;
+  border:1px solid rgba(255,255,255,.84);
+  border-radius:22px;
+  background:linear-gradient(180deg,#fffdf9 0%,#fffaf5 52%,#fff 100%);
+  box-shadow:0 34px 100px rgba(19,13,11,.40),0 8px 28px rgba(66,36,25,.16),inset 0 1px 0 rgba(255,255,255,.9);
+  color:#2b2827;
+  scrollbar-color:#d1b7a8 transparent;
   scrollbar-width:thin;
 }
 #customerAuthOverlay .customer-auth-head{
   position:relative;
   display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
+  align-items:center;
+  justify-content:center;
+  min-height:204px;
   overflow:hidden;
-  padding:21px 22px 20px;
+  padding:24px 42px 22px;
   border:0;
-  border-bottom:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid rgba(212,116,77,.18);
   background:
-    radial-gradient(ellipse at 12% 0%,rgba(242,46,36,.32),transparent 48%),
-    radial-gradient(ellipse at 100% 100%,rgba(177,91,52,.20),transparent 42%),
-    linear-gradient(120deg,#181a1c 0%,#292725 55%,#1c1c1d 100%);
-  color:#fff;
+    radial-gradient(ellipse at 50% 4%,rgba(255,255,255,.88),transparent 50%),
+    radial-gradient(ellipse at 0% 0%,rgba(255,113,63,.82),transparent 41%),
+    radial-gradient(ellipse at 100% 0%,rgba(255,196,142,.94),transparent 45%),
+    linear-gradient(140deg,#f6b28c 0%,#f4dfc9 43%,#ead9cb 68%,#ffd2ae 100%);
+  text-align:center;
 }
+#customerAuthOverlay .customer-auth-head:before,
 #customerAuthOverlay .customer-auth-head:after{
   position:absolute;
-  right:22px;
-  bottom:0;
-  left:22px;
-  height:2px;
-  border-radius:2px;
-  background:linear-gradient(90deg,#ff3025 0%,#f65a3b 42%,rgba(246,90,59,0) 100%);
+  z-index:-0;
+  width:164px;
+  height:164px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:42px;
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,0));
   content:"";
   pointer-events:none;
 }
+#customerAuthOverlay .customer-auth-head:before{top:-112px;left:-50px;transform:rotate(35deg)}
+#customerAuthOverlay .customer-auth-head:after{right:-67px;bottom:-116px;transform:rotate(35deg)}
 #customerAuthOverlay .customer-auth-head-brand{
+  position:relative;
+  z-index:1;
   display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:14px;
+  justify-content:center;
+  gap:8px;
+  width:100%;
   min-width:0;
 }
 #customerAuthOverlay .customer-auth-brand-logo{
   display:grid;
   place-items:center;
-  flex:0 0 66px;
-  width:66px;
-  height:62px;
+  flex:0 0 auto;
+  width:94px;
+  height:76px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.76);
-  border-radius:14px;
-  background:linear-gradient(145deg,#fff 0%,#f6f1ed 100%);
-  box-shadow:0 7px 20px rgba(0,0,0,.22),inset 0 1px 0 #fff;
+  border:1px solid rgba(255,255,255,.94);
+  border-radius:19px;
+  background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(255,249,241,.94));
+  box-shadow:0 9px 24px rgba(117,63,36,.14),inset 0 1px 0 #fff;
 }
 #customerAuthOverlay .customer-auth-brand-logo img{
   display:block;
-  width:58px;
-  height:52px;
+  width:84px;
+  height:68px;
   object-fit:contain;
 }
-#customerAuthOverlay .customer-auth-brand-copy{min-width:0;padding-top:1px}
+#customerAuthOverlay .customer-auth-brand-copy{min-width:0;padding-top:0}
 #customerAuthOverlay .customer-auth-eyebrow{
-  display:block;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  max-width:100%;
   margin:0 0 6px;
-  color:#ffb9a9;
-  font-size:.61rem;
-  font-weight:900;
-  letter-spacing:.14em;
+  padding:5px 10px;
+  border:1px solid rgba(235,83,48,.12);
+  border-radius:999px;
+  background:rgba(255,250,244,.52);
+  color:#b7442b;
+  font-size:.57rem;
+  font-weight:950;
+  letter-spacing:.13em;
   line-height:1.3;
 }
 #customerAuthOverlay .customer-auth-head h2{
   margin:0;
-  color:#fff;
-  font-size:clamp(1.08rem,3vw,1.24rem);
-  font-weight:900;
-  letter-spacing:-.025em;
-  line-height:1.25;
+  color:#332e2d;
+  font-size:clamp(1.16rem,3.5vw,1.34rem);
+  font-weight:950;
+  letter-spacing:-.035em;
+  line-height:1.2;
+  text-wrap:balance;
 }
 #customerAuthOverlay .customer-auth-head p{
-  margin:5px 0 0;
-  color:rgba(255,255,255,.70);
+  max-width:330px;
+  margin:6px auto 0;
+  color:#776d67;
   font-size:.79rem;
-  line-height:1.45;
+  line-height:1.48;
+  text-wrap:balance;
 }
 #customerAuthOverlay .customer-auth-close{
+  position:absolute;
+  z-index:2;
+  top:13px;
+  right:13px;
   display:grid;
   place-items:center;
   flex:0 0 32px;
   width:32px;
   height:32px;
-  margin:-3px -3px 0 0;
-  border:1px solid rgba(255,255,255,.17);
+  margin:0;
+  border:1px solid rgba(135,79,52,.16);
   border-radius:50%;
-  background:rgba(255,255,255,.09);
-  color:#fff;
+  background:rgba(255,255,255,.58);
+  color:#49413d;
   font-size:1.35rem;
+  line-height:1;
   transition:background .18s ease,border-color .18s ease,transform .18s ease;
   cursor:pointer;
 }
 #customerAuthOverlay .customer-auth-close:hover{
   transform:rotate(90deg);
-  border-color:rgba(255,255,255,.36);
-  background:rgba(255,255,255,.17);
+  border-color:rgba(135,79,52,.3);
+  background:rgba(255,255,255,.92);
 }
 #customerAuthOverlay .customer-auth-body{
-  padding:22px 22px 21px;
+  padding:19px 22px 21px;
   background:
-    radial-gradient(ellipse at 100% 0%,rgba(241,43,37,.035),transparent 38%),
-    linear-gradient(180deg,#fff 0%,#fffdfa 100%);
+    radial-gradient(ellipse at 100% 0%,rgba(241,113,62,.05),transparent 36%),
+    linear-gradient(180deg,#fffaf6 0%,#fff 60%);
+}
+#customerAuthOverlay .customer-auth-benefits{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin:0 0 19px;
+}
+#customerAuthOverlay .customer-auth-benefit{
+  display:flex;
+  min-width:0;
+  min-height:79px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  padding:8px 5px 9px;
+  border:1px solid #f0e2d8;
+  border-radius:12px;
+  background:linear-gradient(155deg,rgba(255,255,255,.95),rgba(250,239,229,.72));
+  box-shadow:0 2px 7px rgba(91,51,32,.025),inset 0 1px 0 rgba(255,255,255,.95);
+  text-align:center;
+}
+#customerAuthOverlay .customer-auth-benefit-icon{
+  display:grid;
+  place-items:center;
+  width:27px;
+  height:27px;
+  margin-bottom:1px;
+  border-radius:9px;
+  background:linear-gradient(145deg,#fff0dc,#ffdac0);
+  font-size:1rem;
+  line-height:1;
+}
+#customerAuthOverlay .customer-auth-benefit strong{
+  max-width:100%;
+  color:#403530;
+  font-size:.68rem;
+  font-weight:900;
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+#customerAuthOverlay .customer-auth-benefit small{
+  color:#8c7e76;
+  font-size:.61rem;
+  line-height:1.3;
 }
 #customerAuthOverlay .customer-auth-tabs{
   gap:5px;
-  margin:0 0 20px;
+  margin:0 0 19px;
   padding:5px;
-  border:1px solid #eee7e3;
+  border:1px solid #eee1d8;
   border-radius:11px;
-  background:#f5f1ee;
+  background:#f4ece6;
 }
 #customerAuthOverlay .customer-auth-tab{
-  min-height:42px;
+  min-height:41px;
   border:1px solid transparent;
   border-radius:8px;
-  color:#716b68;
+  color:#7a6d66;
   transition:background .18s ease,color .18s ease,box-shadow .18s ease;
 }
 #customerAuthOverlay .customer-auth-tab.active{
-  border-color:#f0e8e3;
-  background:linear-gradient(180deg,#fff 0%,#fffaf7 100%);
-  color:#242323;
-  box-shadow:0 2px 7px rgba(49,30,22,.09);
+  border-color:#f0e4db;
+  background:linear-gradient(180deg,#fff 0%,#fffaf6 100%);
+  color:#342e2a;
+  box-shadow:0 2px 7px rgba(73,43,28,.09);
 }
-#customerAuthOverlay .customer-auth-field{margin:0 0 16px}
+#customerAuthOverlay .customer-auth-field{margin:0 0 15px}
 #customerAuthOverlay .customer-auth-field label{
   margin:0 0 7px;
-  color:#302b29;
+  color:#39312d;
   font-size:.81rem;
   font-weight:850;
   letter-spacing:.005em;
@@ -5040,63 +5109,63 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 #customerAuthOverlay .customer-auth-field input{
   height:47px;
   padding:0 14px;
-  border:1px solid #e1d9d4;
+  border:1px solid #e2d5cc;
   border-radius:9px;
-  background:linear-gradient(180deg,#fff 0%,#fdfbf9 100%);
-  color:#252322;
+  background:linear-gradient(180deg,#fff 0%,#fdfaf7 100%);
+  color:#292523;
   box-shadow:inset 0 1px 2px rgba(42,27,20,.025);
   transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
 }
 #customerAuthOverlay .customer-auth-field input:focus{
-  border-color:#ed3a2d;
+  border-color:#ef633e;
   outline:0;
   background:#fff;
-  box-shadow:0 0 0 3px rgba(237,58,45,.12),0 2px 7px rgba(36,24,18,.035);
+  box-shadow:0 0 0 3px rgba(239,99,62,.12),0 2px 7px rgba(36,24,18,.035);
 }
-#customerAuthOverlay .customer-auth-field input::placeholder{color:#aaa19c}
+#customerAuthOverlay .customer-auth-field input::placeholder{color:#aa9e95}
 #customerAuthOverlay .customer-auth-password-toggle{
-  border:1px solid #eee6e1;
-  background:#f8f3ef;
-  color:#423b37;
+  border:1px solid #eee0d6;
+  background:#f9efe8;
+  color:#51433b;
 }
-#customerAuthOverlay .customer-auth-password-toggle:hover{background:#f0e6df}
-#customerAuthOverlay .customer-auth-help{color:#89817c;font-size:.73rem}
+#customerAuthOverlay .customer-auth-password-toggle:hover{background:#f2e2d7}
+#customerAuthOverlay .customer-auth-help{color:#91857d;font-size:.73rem}
 #customerAuthOverlay .customer-auth-send{
-  min-height:46px;
-  border:1px solid #ed2e25;
-  border-radius:9px;
-  background:linear-gradient(115deg,#f63128 0%,#e9211b 100%);
-  box-shadow:0 5px 13px rgba(227,37,29,.17),inset 0 1px 0 rgba(255,255,255,.18);
+  min-height:47px;
+  border:1px solid #ed3828;
+  border-radius:10px;
+  background:linear-gradient(105deg,#ff7a24 0%,#ff4027 48%,#ec161b 100%);
+  box-shadow:0 6px 15px rgba(238,57,35,.18),inset 0 1px 0 rgba(255,255,255,.22);
   color:#fff;
-  font-weight:900;
+  font-weight:950;
   transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
 }
 #customerAuthOverlay .customer-auth-send:hover:not(:disabled){
   transform:translateY(-1px);
-  box-shadow:0 8px 17px rgba(227,37,29,.23);
+  box-shadow:0 9px 18px rgba(238,57,35,.23);
   filter:saturate(1.08);
 }
 #customerAuthOverlay .customer-auth-send:active:not(:disabled){transform:translateY(0)}
 #customerAuthOverlay .customer-auth-divider{
-  margin:20px 0;
-  color:#a19a95;
-  font-size:.68rem;
-  letter-spacing:.14em;
+  margin:19px 0;
+  color:#a4978f;
+  font-size:.67rem;
+  letter-spacing:.15em;
 }
 #customerAuthOverlay .customer-auth-divider:before,
-#customerAuthOverlay .customer-auth-divider:after{background:linear-gradient(90deg,transparent,#e8dfda,transparent)}
+#customerAuthOverlay .customer-auth-divider:after{background:linear-gradient(90deg,transparent,#e8ddd5,transparent)}
 #customerAuthOverlay .customer-auth-google{
   min-height:47px;
-  border:1px solid #e2d9d3;
-  border-radius:9px;
-  background:linear-gradient(180deg,#fff 0%,#faf7f4 100%);
-  color:#302b29;
+  border:1px solid #e5d8ce;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff 0%,#fbf5f0 100%);
+  color:#372f2b;
   box-shadow:0 2px 5px rgba(45,29,21,.035);
   transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
 }
 #customerAuthOverlay .customer-auth-google:hover{
   transform:translateY(-1px);
-  border-color:#d2c1b8;
+  border-color:#d8c5b9;
   background:#fff;
   box-shadow:0 5px 12px rgba(45,29,21,.07);
 }
@@ -5108,26 +5177,37 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 #customerAuthOverlay .customer-auth-message.error{border-color:#ffd4ce;background:#fff1ef;color:#a71d19}
 #customerAuthOverlay .customer-auth-message.success{border-color:#cdeed4;background:#eefaf0;color:#176b30}
 #customerAuthOverlay .customer-auth-privacy{
-  margin-top:17px;
-  color:#9a918b;
+  margin-top:16px;
+  color:#9a8d84;
   font-size:.69rem;
 }
 #customerAuthOverlay button:focus-visible{
-  outline:3px solid rgba(242,49,40,.35);
+  outline:3px solid rgba(239,81,49,.34);
   outline-offset:3px;
 }
 @media(max-width:520px){
   #customerAuthOverlay{padding:10px}
-  #customerAuthOverlay .customer-auth-modal{width:100%;max-height:min(94vh,94dvh);border-radius:17px}
-  #customerAuthOverlay .customer-auth-head{padding:17px 15px 17px}
-  #customerAuthOverlay .customer-auth-head-brand{gap:10px}
-  #customerAuthOverlay .customer-auth-brand-logo{flex-basis:53px;width:53px;height:53px;border-radius:12px}
-  #customerAuthOverlay .customer-auth-brand-logo img{width:47px;height:44px}
-  #customerAuthOverlay .customer-auth-eyebrow{font-size:.52rem;letter-spacing:.1em;margin-bottom:5px}
-  #customerAuthOverlay .customer-auth-head h2{font-size:1.05rem}
-  #customerAuthOverlay .customer-auth-head p{font-size:.73rem}
-  #customerAuthOverlay .customer-auth-close{flex-basis:29px;width:29px;height:29px}
-  #customerAuthOverlay .customer-auth-body{padding:18px 16px 18px}
+  #customerAuthOverlay .customer-auth-modal{width:100%;max-height:min(94vh,94dvh);border-radius:18px}
+  #customerAuthOverlay .customer-auth-head{min-height:190px;padding:22px 35px 20px}
+  #customerAuthOverlay .customer-auth-head-brand{gap:7px}
+  #customerAuthOverlay .customer-auth-brand-logo{width:82px;height:67px;border-radius:16px}
+  #customerAuthOverlay .customer-auth-brand-logo img{width:73px;height:60px}
+  #customerAuthOverlay .customer-auth-eyebrow{max-width:100%;font-size:.51rem;letter-spacing:.095em;margin-bottom:4px}
+  #customerAuthOverlay .customer-auth-head h2{font-size:1.08rem}
+  #customerAuthOverlay .customer-auth-head p{font-size:.74rem}
+  #customerAuthOverlay .customer-auth-close{top:10px;right:10px;flex-basis:29px;width:29px;height:29px}
+  #customerAuthOverlay .customer-auth-body{padding:16px 15px 18px}
+  #customerAuthOverlay .customer-auth-benefits{gap:6px;margin-bottom:16px}
+  #customerAuthOverlay .customer-auth-benefit{min-height:73px;padding:7px 3px}
+  #customerAuthOverlay .customer-auth-benefit strong{font-size:.62rem}
+  #customerAuthOverlay .customer-auth-benefit small{font-size:.57rem}
+  #customerAuthOverlay .customer-auth-tabs{margin-bottom:17px}
+}
+@media(max-width:360px){
+  #customerAuthOverlay .customer-auth-head{padding-left:28px;padding-right:28px}
+  #customerAuthOverlay .customer-auth-benefits{gap:4px}
+  #customerAuthOverlay .customer-auth-benefit strong{font-size:.58rem}
+  #customerAuthOverlay .customer-auth-benefit small{font-size:.53rem}
 }
 @media(prefers-reduced-motion:reduce){
   #customerAuthOverlay .customer-auth-close,
@@ -5972,6 +6052,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   <div class="customer-auth-overlay" id="customerAuthOverlay" aria-hidden="true">
     <section class="customer-auth-modal" role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
       <div class="customer-auth-head">
+        <button class="customer-auth-close" type="button" id="customerAuthClose" aria-label="Close login">×</button>
         <div class="customer-auth-head-brand">
           <span class="customer-auth-brand-logo">
             <img src="/assets/genmerch-cart-actual.webp?v=20261027-popup-logo" alt="GENMERCH logo" width="64" height="54">
@@ -5982,9 +6063,25 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <p id="customerAuthSubtitle">Sign in or create your customer account.</p>
           </div>
         </div>
-        <button class="customer-auth-close" type="button" id="customerAuthClose" aria-label="Close login">×</button>
       </div>
       <div class="customer-auth-body">
+        <div class="customer-auth-benefits" aria-label="GENMERCH account benefits">
+          <div class="customer-auth-benefit">
+            <span class="customer-auth-benefit-icon" aria-hidden="true">📦</span>
+            <strong>Order tracking</strong>
+            <small>Follow every step</small>
+          </div>
+          <div class="customer-auth-benefit">
+            <span class="customer-auth-benefit-icon" aria-hidden="true">🔔</span>
+            <strong>Live updates</strong>
+            <small>Stay in the loop</small>
+          </div>
+          <div class="customer-auth-benefit">
+            <span class="customer-auth-benefit-icon" aria-hidden="true">🛡️</span>
+            <strong>Secure account</strong>
+            <small>Your orders, yours</small>
+          </div>
+        </div>
         <div id="customerAuthMethods">
           <div class="customer-auth-tabs" role="tablist" aria-label="Customer account options">
             <button class="customer-auth-tab active" type="button" id="customerAuthSignInTab" role="tab" aria-selected="true" aria-controls="customerPasswordForm">Sign In</button>
