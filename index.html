@@ -8770,7 +8770,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       $('customerOrdersSearch').focus();
     });
     $('customerOrdersOverlay').addEventListener('click',event=>{
-      if(event.target===$('customerOrdersOverlay')){closeCustomerOrders();return;}
+      if(event.target===$('customerOrdersOverlay')){event.preventDefault();event.stopPropagation();return;}
       const resendEmailButton=event.target.closest('[data-resend-order-email]');
       if(resendEmailButton){resendCustomerOrderEmail(resendEmailButton);return;}
       const accountButton=event.target.closest('[data-confirm-account-received]');
@@ -8832,7 +8832,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     $('wishlistContinueButton').addEventListener('click',closeWishlist);
     $('wishlistSyncNowButton').addEventListener('click',syncCustomerDataNow);
     $('syncCustomerDataButton').addEventListener('click',syncCustomerDataNow);
-    $('wishlistOverlay').addEventListener('click',event=>{if(event.target===$('wishlistOverlay'))closeWishlist();});
+    $('wishlistOverlay').addEventListener('click',event=>{if(event.target===$('wishlistOverlay')){event.preventDefault();event.stopPropagation();}});
     $('wishlistItemsContainer').addEventListener('click',event=>{
       const remove=event.target.closest('[data-wishlist-remove]');
       if(remove){event.preventDefault();event.stopPropagation();removeWishlistProduct(remove.dataset.wishlistRemove);return;}
@@ -9714,7 +9714,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     $('openCartButton').addEventListener('click',openCart);
     $('closeCartButton').addEventListener('click',closeCart);
-    $('cartOverlay').addEventListener('click',closeCart);
+    $('cartOverlay').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeSizeSelector();closeCart();closeProduct();closeNotice();closeWishlist();closeCustomerOrders();}});
 
     document.querySelectorAll('[data-payment]').forEach(button=>button.addEventListener('click',()=>{
@@ -9828,7 +9828,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       catch(error){console.error('GENMERCH could not restore the pending checkout after sign-in.',error);openCheckoutAccountGate('You are signed in, but we could not reopen checkout automatically. Your cart and saved details have been kept—close this message and open your cart to continue.');return false;}
     }
     function openCustomerAuthFromCheckout(mode='signin',google=false){const saved=capturePendingCheckoutAuthDraft();if(google&&!saved)return;closeCheckoutAccountGate(false);openCustomerAuth();setCustomerAuthMode(mode==='signup'?'signup':'signin');if(google)window.setTimeout(()=>{const button=$('customerGoogleButton');if(button)button.click();},40);}
-    $('checkoutAccountGateClose').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateLater').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateOverlay').addEventListener('click',event=>{if(event.target===$('checkoutAccountGateOverlay'))closeCheckoutAccountGate(true);});
+    $('checkoutAccountGateClose').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateLater').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateOverlay').addEventListener('click',event=>{if(event.target===$('checkoutAccountGateOverlay')){event.preventDefault();event.stopPropagation();}});
     $('checkoutAccountGateGoogle').addEventListener('click',()=>openCustomerAuthFromCheckout('signin',true));$('checkoutAccountGateCreate').addEventListener('click',()=>openCustomerAuthFromCheckout('signup',false));$('checkoutAccountGateSignIn').addEventListener('click',()=>openCustomerAuthFromCheckout('signin',false));
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('checkoutAccountGateOverlay').classList.contains('open'))closeCheckoutAccountGate(true);});
 
@@ -10010,7 +10010,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       if(!$('cartModal').classList.contains('open'))document.body.style.overflow='';
     }
     $('closeNoticeButton').addEventListener('click',closeNotice);
-    $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay'))closeNotice();});
+    $('noticeOverlay').addEventListener('click',event=>{if(event.target===$('noticeOverlay')){event.preventDefault();event.stopPropagation();}});
     function openPartnerApplication(){
       const formContent = `
         <div class="partner-application-content">
@@ -10192,7 +10192,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     $('closeBusinessRegTop').addEventListener('click',closeBusinessRegInfo);
     $('closeBusinessRegButton').addEventListener('click',closeBusinessRegInfo);
-    $('businessRegOverlay').addEventListener('click',event=>{if(event.target===$('businessRegOverlay'))closeBusinessRegInfo();});
+    $('businessRegOverlay').addEventListener('click',event=>{if(event.target===$('businessRegOverlay')){event.preventDefault();event.stopPropagation();}});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('businessRegOverlay').classList.contains('open'))closeBusinessRegInfo();});
 
     function openDtiRegInfo(){
@@ -10215,7 +10215,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     $('closeDtiRegTop').addEventListener('click',closeDtiRegInfo);
     $('closeDtiRegButton').addEventListener('click',closeDtiRegInfo);
-    $('dtiRegOverlay').addEventListener('click',event=>{if(event.target===$('dtiRegOverlay'))closeDtiRegInfo();});
+    $('dtiRegOverlay').addEventListener('click',event=>{if(event.target===$('dtiRegOverlay')){event.preventDefault();event.stopPropagation();}});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('dtiRegOverlay').classList.contains('open'))closeDtiRegInfo();});
 
     // Customer email + password authentication using Supabase Auth v2.
@@ -10558,7 +10558,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     $('customerAuthClose').addEventListener('click',closeCustomerAuth);
     $('customerAuthOverlay').addEventListener('click',event=>{
-      if(event.target===$('customerAuthOverlay'))closeCustomerAuth();
+      if(event.target===$('customerAuthOverlay')){event.preventDefault();event.stopPropagation();}
     });
     $('customerAuthSignInTab').addEventListener('click',()=>setCustomerAuthMode('signin'));
     $('customerAuthCreateTab').addEventListener('click',()=>setCustomerAuthMode('signup'));
@@ -10756,7 +10756,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       performCustomerSignOut();
     });
     $('customerLogoutConfirmOverlay').addEventListener('click',event=>{
-      if(event.target===$('customerLogoutConfirmOverlay'))closeCustomerLogoutConfirmation();
+      if(event.target===$('customerLogoutConfirmOverlay')){event.preventDefault();event.stopPropagation();}
     });
     document.addEventListener('keydown',event=>{
       if(event.key==='Escape'&&$('customerLogoutConfirmOverlay').classList.contains('open')){
@@ -12613,8 +12613,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     SELLER_IMAGE_INPUT_IDS.forEach((id,index)=>{$(id).addEventListener('change',handleSellerImageSelection);$('sellerImageColor'+(index+1)).addEventListener('input',sellerRenderUploadPreviews);});
     $('sellerProductCategory').addEventListener('change',sellerHandleCategoryChange);$('sellerAddCustomCategoryButton').addEventListener('click',sellerAddCustomCategory);$('sellerCustomCategoryName').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();sellerAddCustomCategory();}});$('sellerSellingPrice').addEventListener('input',sellerUpdatePromotionPreview);$('sellerPromotionType').addEventListener('change',sellerUpdatePromotionPreview);
     $('sellerExistingGallery').addEventListener('change',event=>{if(event.target&&event.target.matches('[data-seller-remove-image]')){const state=sellerUpdateGalleryCount();if(state.total>SELLER_IMAGE_MAX_COUNT)sellerFeedback('sellerProductFeedback','Keep no more than 30 gallery photos in total. Mark existing photos for removal or choose fewer new photos.','error');else sellerFeedback('sellerProductFeedback','','');}});
-    $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay'))closeSellerPasscode();});
-    $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay'))closeSellerDashboard();});
+    $('sellerPasscodeOverlay').addEventListener('click',event=>{if(event.target===$('sellerPasscodeOverlay')){event.preventDefault();event.stopPropagation();}});
+    $('sellerDashboardOverlay').addEventListener('click',event=>{if(event.target===$('sellerDashboardOverlay')){event.preventDefault();event.stopPropagation();}});
     $('sellerProductEditorCloseButton').addEventListener('click',()=>closeSellerProductEditor(true));
     // Keep the product editor open when the user taps the dimmed backdrop.
     // Closing is explicit only: the X button, Cancel edit, or Escape key.
@@ -12627,7 +12627,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     $('sellerPermanentDeleteNoButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteCloseButton').addEventListener('click',()=>closeSellerPermanentDeleteConfirm());
     $('sellerPermanentDeleteYesButton').addEventListener('click',handleSellerPermanentDeleteProduct);
-    $('sellerPermanentDeleteOverlay').addEventListener('click',event=>{if(event.target===$('sellerPermanentDeleteOverlay'))closeSellerPermanentDeleteConfirm();});
+    $('sellerPermanentDeleteOverlay').addEventListener('click',event=>{if(event.target===$('sellerPermanentDeleteOverlay')){event.preventDefault();event.stopPropagation();}});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){if($('sellerPermanentDeleteOverlay').classList.contains('open'))closeSellerPermanentDeleteConfirm();else if($('sellerProductEditorOverlay').classList.contains('open'))closeSellerProductEditor(true);else if($('sellerDashboardOverlay').classList.contains('open'))closeSellerDashboard();else if($('sellerPasscodeOverlay').classList.contains('open'))closeSellerPasscode();}});
 
 
@@ -13023,10 +13023,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   window.closeGenmerchNotifications=function(){if(panel)panel.classList.remove('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.remove('open');};
   window.toggleGenmerchNotifications=async function(){
     if(!panel){
-      var backdrop=document.createElement('div');backdrop.className='genmerch-notification-backdrop';backdrop.id='genmerchNotificationBackdrop';backdrop.setAttribute('aria-hidden','true');backdrop.addEventListener('click',window.closeGenmerchNotifications);document.body.appendChild(backdrop);
+      var backdrop=document.createElement('div');backdrop.className='genmerch-notification-backdrop';backdrop.id='genmerchNotificationBackdrop';backdrop.setAttribute('aria-hidden','true');backdrop.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();});document.body.appendChild(backdrop);
       panel=document.createElement('section');panel.className='genmerch-notification-panel';panel.id='genmerchNotificationPanel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','Order notifications');document.body.appendChild(panel);
       document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeGenmerchNotifications();});
-      document.addEventListener('click',function(e){if(panel&&!panel.contains(e.target)&&!e.target.closest('#genmerchNotificationButton'))window.closeGenmerchNotifications();});
+      
     }
     var willOpen=!panel.classList.contains('open');
     if(willOpen){panel.classList.add('open');var backdrop=document.getElementById('genmerchNotificationBackdrop');if(backdrop)backdrop.classList.add('open');await window.loadGenmerchNotifications();}
