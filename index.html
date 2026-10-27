@@ -7962,7 +7962,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     let genmerchActionStatusTimer=null;
     let genmerchActionStatusToken=0;
     let genmerchActionStatusType='';
-    function showCenteredActionStatus(message,type='loading',duration=0,subtext=''){
+    function showCenteredActionStatus(message='Please wait...',type='loading',duration=0,subtext=''){
       const overlay=$('genmerchActionOverlay');if(!overlay)return;
       if(genmerchActionStatusTimer!==null){clearTimeout(genmerchActionStatusTimer);genmerchActionStatusTimer=null;}
       const token=++genmerchActionStatusToken;
@@ -9021,7 +9021,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
     }
     async function openProduct(id){
-      showCenteredActionStatus('Loading product details, please wait...','loading');
+      showCenteredActionStatus('Please wait...','loading');
       try { await refreshCatalogForLiveStock(); }
       catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showCenteredActionStatus('Unable to refresh live stock. Please try again.','error',1900);showToast('Unable to refresh live stock. Please try again.');return; }
       const p=products.find(item=>String(item.id)===String(id));if(!p){hideCenteredActionStatus();return;}
@@ -10598,7 +10598,13 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       submit.disabled=true;
       submit.textContent=customerAuthMode==='signup'?'Creating account…':'Signing in…';
       $('customerGoogleButton').disabled=true;
-      setCustomerAuthMessage(customerAuthMode==='signup'?'Creating your customer account…':'Signing you in…');
+      const useGenericSignInLoader=customerAuthMode==='signin';
+      if(useGenericSignInLoader){
+        setCustomerAuthMessage('');
+        showCenteredActionStatus('Please wait...','loading');
+      }else{
+        setCustomerAuthMessage('Creating your customer account…');
+      }
       try{
         let data,error;
         if(customerAuthMode==='signup'){
@@ -10650,6 +10656,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }catch(error){
         setCustomerAuthMessage(customerAuthFriendlyError(error,customerAuthMode),'error');
       }finally{
+        if(useGenericSignInLoader)hideCenteredActionStatus();
         customerAuthBusy=false;
         submit.disabled=false;
         submit.textContent=originalLabel;
@@ -10666,7 +10673,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       const passwordSubmit=$('customerPasswordSubmit');
       button.disabled=true;
       passwordSubmit.disabled=true;
-      setCustomerAuthMessage('Connecting securely to Google…');
+      setCustomerAuthMessage('');
+      showCenteredActionStatus('Please wait...','loading');
       let redirectStarted=false;
       try{
         const redirectTo=getCustomerAuthRedirectUrl();
@@ -10691,6 +10699,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         // Keep both buttons disabled until navigation starts. The destination page
         // initializes a fresh UI state after Google returns.
         if(!redirectStarted){
+          hideCenteredActionStatus();
           customerAuthBusy=false;
           button.disabled=false;
           passwordSubmit.disabled=false;
@@ -11561,7 +11570,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       if(deletedSelected)loadSellerProducts();
     }
     async function refreshSellerTab(){
-      showCenteredActionStatus('Refreshing page, please wait','loading');
+      showCenteredActionStatus('Please wait...','loading');
       try{
         if(sellerCurrentTab==='orders')await loadSellerOrders();
         else if(sellerCurrentTab==='inventory')await loadSellerInventoryAnalytics();
@@ -12929,8 +12938,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       if(!label||/^(×|x|close|close modal|cancel|no)$/i.test(label))return;
       if(control.matches('[aria-label^="Close"],[data-close-modal]'))return;
       const normalized=label.toLowerCase();
-      let message='Please wait, processing your request...';
-      if(normalized.includes('refresh'))message='Refreshing page, please wait';
+      let message='Please wait...';
+      if(normalized.includes('refresh'))message='Please wait...';
       else if(normalized.includes('delete')||normalized.includes('remove'))message='Please wait';
       else if(normalized.includes('add to cart'))message='Adding item to your cart, please wait...';
       showCenteredActionStatus(message,'loading',850);
