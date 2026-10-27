@@ -22,7 +22,8 @@ Deno.serve(async(req:Request)=>{
  const token=(req.headers.get("Authorization")||"").match(/^Bearer\s+(.+)$/i)?.[1]||"";
  let userId="",isAdmin=false;
  if(token){
-  const publicKey=Deno.env.get("SUPABASE_ANON_KEY")||"";
+  let publicKey=Deno.env.get("SUPABASE_ANON_KEY")||"";
+  if(!publicKey){try{const keyMap=JSON.parse(Deno.env.get("SUPABASE_PUBLISHABLE_KEYS")||"{}");publicKey=Deno.env.get(String(keyMap.default||""))||"";}catch{}}
   if(!publicKey)return reply(503,{ok:false,message:"Customer authentication key unavailable."});
   const userClient=createClient(url,publicKey,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:"Bearer "+token}}});
   const {data:user,error:userError}=await userClient.auth.getUser(token);
@@ -36,17 +37,20 @@ Deno.serve(async(req:Request)=>{
  const phone=String(body.customer_phone||"").trim();
  const validId=/^[0-9a-f-]{36}$/i.test(orderId);
  if(orderId&&!validId)return reply(400,{ok:false,message:"Invalid order ID."});
- if(!userId&&(!orderNumber||!phone))return reply(401,{ok:false,message:"Sign in or provide the guest order number and checkout mobile number."});
+ const normalizedProvidedPhone=normalizePhone(phone);
+ if(!userId&&(!orderNumber||!normalizedProvidedPhone))return reply(401,{ok:false,message:"Sign in or provide the guest order number and checkout mobile number."});
  const db=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
  try{
   let query=db.from("orders").select("id,order_number,user_id,customer_name,customer_email,receipt_email,customer_phone,status,payment_status,payment_method,total_amount,updated_at");
   query=validId?query.eq("id",orderId):query.eq("order_number",orderNumber);
   const {data:order,error:orderError}=await query.maybeSingle();
   if(orderError||!order)return reply(404,{ok:false,message:"Order not found. Check the order details and try again."});
+  const guestNumberMatches=Boolean(orderNumber)&&String(order.order_number||"").toLowerCase()===orderNumber.toLowerCase();
+  const guestPhoneMatches=Boolean(normalizedProvidedPhone)&&normalizePhone(order.customer_phone)===normalizedProvidedPhone;
   if(userId){
-   if(!isAdmin&&String(order.user_id||"")!==userId)return reply(403,{ok:false,message:"You cannot request an email for another customer's order."});
+   if(!isAdmin&&String(order.user_id||"")!==userId&&!(!order.user_id&&guestNumberMatches&&guestPhoneMatches))return reply(403,{ok:false,message:"You cannot request an email for another customer's order."});
   }else{
-   if(order.user_id||normalizePhone(order.customer_phone)!==normalizePhone(phone))return reply(403,{ok:false,message:"The guest order number and checkout mobile number did not match."});
+   if(order.user_id||!guestNumberMatches||!guestPhoneMatches)return reply(403,{ok:false,message:"The guest order number and checkout mobile number did not match."});
   }
   const currentStatus=String(order.status||"").toLowerCase(),paymentStatus=String(order.payment_status||"").toLowerCase();
   if(currentStatus!=="delivered"||paymentStatus!=="paid"){
