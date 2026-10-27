@@ -5892,6 +5892,21 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       word-break:break-word!important;
     }
   </style>
+  <style id="genmerch-notification-sound-control">
+    .genmerch-notification-panel .genmerch-notification-sound{
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      min-height:32px!important;padding:7px 9px!important;border:1px solid #f0ded4!important;
+      border-radius:10px!important;background:#fff8f3!important;color:#8e4c2f!important;
+      font-size:11px!important;font-weight:800!important;white-space:nowrap!important;cursor:pointer!important;
+    }
+    .genmerch-notification-panel .genmerch-notification-sound[aria-pressed="false"]{
+      background:#f5f3f1!important;color:#766b65!important;border-color:#e6ded8!important;
+    }
+    @media(max-width:600px){
+      .genmerch-notification-panel .genmerch-notification-head-actions{gap:5px!important;}
+      .genmerch-notification-panel .genmerch-notification-sound{font-size:9px!important;padding:6px 5px!important;min-height:29px!important;}
+    }
+  </style>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -12728,6 +12743,80 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       showToast('GENMERCH Store Rating: '+summary.average.toFixed(1)+'/5 from '+summary.count.toLocaleString('en-PH')+' published customer review'+(summary.count===1?'':'s')+'.');
     }
+    // Shared, browser-native chime for order and RATE notifications.
+    (function initGenmerchNotificationSound(){
+      const storageKey='genmerch.notificationSoundEnabled.v1';
+      let enabled=true,audioContext=null,audioUnlocked=false,lastChimeAt=0;
+      const playedEvents=new Map();
+      try{
+        const saved=localStorage.getItem(storageKey);
+        if(saved!==null)enabled=saved!=='false';
+      }catch(_){}
+      function updateButtons(){
+        document.querySelectorAll('.genmerch-notification-sound').forEach(button=>{
+          button.textContent=enabled?'🔊 Sound On':'🔇 Sound Off';
+          button.setAttribute('aria-pressed',String(enabled));
+          button.setAttribute('aria-label',enabled?'Turn notification sound off':'Turn notification sound on');
+          button.title=enabled?'Notification sound is on':'Notification sound is off';
+        });
+      }
+      function unlockAudio(){
+        if(!enabled)return;
+        try{
+          const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+          if(!AudioContextClass)return;
+          if(!audioContext)audioContext=new AudioContextClass();
+          if(audioContext.state==='running'){audioUnlocked=true;return;}
+          const resume=audioContext.resume();
+          if(resume&&typeof resume.then==='function'){
+            resume.then(()=>{audioUnlocked=audioContext&&audioContext.state==='running';}).catch(()=>{});
+          }else audioUnlocked=audioContext.state==='running';
+        }catch(_){}
+      }
+      ['pointerdown','touchstart','keydown'].forEach(type=>{
+        document.addEventListener(type,unlockAudio,{capture:true,passive:true});
+      });
+      window.isGenmerchNotificationSoundEnabled=function(){return enabled;};
+      window.toggleGenmerchNotificationSound=function(){
+        enabled=!enabled;
+        try{localStorage.setItem(storageKey,String(enabled));}catch(_){}
+        if(enabled)unlockAudio();
+        updateButtons();
+      };
+      window.playGenmerchNotificationChime=function(eventKey){
+        const key=String(eventKey||'').trim();
+        if(!enabled||!key||playedEvents.has(key))return;
+        const now=Date.now();
+        playedEvents.set(key,now);
+        if(playedEvents.size>250){
+          const cutoff=now-30*60*1000;
+          for(const [seenKey,seenAt] of playedEvents){if(seenAt<cutoff)playedEvents.delete(seenKey);}
+          while(playedEvents.size>200)playedEvents.delete(playedEvents.keys().next().value);
+        }
+        if(now-lastChimeAt<1800)return;
+        if(!audioContext||!audioUnlocked||audioContext.state!=='running')return;
+        lastChimeAt=now;
+        try{
+          const start=audioContext.currentTime;
+          const notes=[{frequency:880,offset:0},{frequency:1174.66,offset:0.13},{frequency:1567.98,offset:0.27}];
+          notes.forEach(note=>{
+            const oscillator=audioContext.createOscillator();
+            const gain=audioContext.createGain();
+            oscillator.type='sine';
+            oscillator.frequency.setValueAtTime(note.frequency,start+note.offset);
+            gain.gain.setValueAtTime(0.0001,start+note.offset);
+            gain.gain.exponentialRampToValueAtTime(0.075,start+note.offset+0.018);
+            gain.gain.exponentialRampToValueAtTime(0.0001,start+note.offset+0.24);
+            oscillator.connect(gain);gain.connect(audioContext.destination);
+            oscillator.start(start+note.offset);
+            oscillator.stop(start+note.offset+0.25);
+          });
+        }catch(error){console.warn('GENMERCH notification chime could not play.',error);}
+      };
+    })();
+
+    let customerRateBadgeLastUserId='';
+    let customerRateBadgeLastCount=null;
     let customerRateBadgeRefreshSequence=0;
     async function refreshCustomerRateBadge(sessionOverride){
       const badge=$('customerRateBadge');if(!badge)return;
@@ -12744,7 +12833,11 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         }
         const userId=session&&session.user&&session.user.id?String(session.user.id):'';
         if(!userId){
-          if(sequence===customerRateBadgeRefreshSequence){badge.textContent='0';badge.hidden=true;}
+          if(sequence===customerRateBadgeRefreshSequence){
+            customerRateBadgeLastUserId='';
+            customerRateBadgeLastCount=null;
+            badge.textContent='0';badge.hidden=true;
+          }
           return;
         }
         const ordersResult=await client.from('orders')
@@ -12757,6 +12850,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(sequence!==customerRateBadgeRefreshSequence)return;
         const ids=(ordersResult.data||[]).map(row=>row.id).filter(Boolean);
         if(!ids.length){
+          if(customerRateBadgeLastUserId!==userId){customerRateBadgeLastUserId=userId;customerRateBadgeLastCount=0;}
+          else customerRateBadgeLastCount=0;
           badge.textContent='0';badge.hidden=true;
           return;
         }
@@ -12772,6 +12867,16 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(activeUserId&&activeUserId!==userId)return;
         const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
         const count=(itemsResult.data||[]).filter(row=>row.product_id&&!reviewed.has(String(row.id))).length;
+        if(customerRateBadgeLastUserId!==userId){
+          customerRateBadgeLastUserId=userId;
+          customerRateBadgeLastCount=count;
+        }else{
+          const previousCount=customerRateBadgeLastCount;
+          customerRateBadgeLastCount=count;
+          if(previousCount!==null&&count>previousCount&&typeof window.playGenmerchNotificationChime==='function'){
+            window.playGenmerchNotificationChime('rate:'+userId+':'+count);
+          }
+        }
         badge.textContent=count>99?'99+':String(count);
         badge.hidden=count===0;
       }catch(error){
@@ -13049,7 +13154,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
   <script id="genmerch-order-notifications-controller">
 (function(){
-  var panel=null, channel=null, refreshTimer=null, currentItems=[], activeUserId='guest';
+  var panel=null, channel=null, refreshTimer=null, currentItems=[], activeUserId='guest',soundBaselineUserId='',soundBaselineReady=false,seenNotificationEvents=new Set();
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function timeLabel(value){var d=new Date(value);if(!value||isNaN(d.getTime()))return '';var delta=Math.max(0,Date.now()-d.getTime());if(delta<60000)return 'Just now';if(delta<3600000)return Math.floor(delta/60000)+' min ago';if(delta<86400000)return Math.floor(delta/3600000)+' hours ago';return Math.floor(delta/86400000)+' days ago';}
   function statusInfo(status,payment){
@@ -13059,13 +13164,36 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     return result;
   }
   function render(items,guest){
+    var soundUser=guest?'guest':String(activeUserId||'guest');
+    var freshEvents=[];
+    if(guest){
+      soundBaselineUserId='guest';soundBaselineReady=false;seenNotificationEvents=new Set();
+    }else if(!soundBaselineReady||soundBaselineUserId!==soundUser){
+      soundBaselineUserId=soundUser;soundBaselineReady=true;seenNotificationEvents=new Set();
+      items.forEach(function(n){if(n.eventKey)seenNotificationEvents.add(n.eventKey);});
+    }else{
+      items.forEach(function(n){
+        if(!n.eventKey)return;
+        if(!seenNotificationEvents.has(n.eventKey))freshEvents.push(n);
+        seenNotificationEvents.add(n.eventKey);
+      });
+      if(freshEvents.length&&typeof window.playGenmerchNotificationChime==='function'){
+        var soundKey='orders:'+soundUser+':'+freshEvents.map(function(n){return n.eventKey;}).sort().join(',');
+        window.playGenmerchNotificationChime(soundKey);
+      }
+      if(seenNotificationEvents.size>500){
+        var keep=new Set(items.map(function(n){return n.eventKey;}).filter(Boolean));
+        seenNotificationEvents=keep;
+      }
+    }
     currentItems=items.slice();
     var badge=document.getElementById('genmerchNotificationBadge'),button=document.getElementById('genmerchNotificationButton');
     var unread=guest?0:items.filter(function(n){return !n.read;}).length;
     if(badge){badge.textContent=String(Math.min(unread,99));badge.hidden=!unread;}
     if(button)button.setAttribute('aria-label',unread?'Order notifications, '+unread+' unread updates':'Order notifications');
     if(!panel)return;
-    var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions">'+(!guest?'<button class="genmerch-notification-mark-read" type="button" onclick="markAllGenmerchNotificationsRead()">Mark all as read</button>':'')+'<button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
+    var soundOn=typeof window.isGenmerchNotificationSoundEnabled==='function'?window.isGenmerchNotificationSoundEnabled():true;
+    var html='<div class="genmerch-notification-head"><div class="genmerch-notification-title-wrap"><span class="genmerch-notification-title-mark" aria-hidden="true">🔔</span><strong>Notifications</strong></div><div class="genmerch-notification-head-actions">'+(!guest?'<button class="genmerch-notification-mark-read" type="button" onclick="markAllGenmerchNotificationsRead()">Mark all as read</button>':'')+'<button class="genmerch-notification-sound" type="button" aria-pressed="'+String(soundOn)+'" aria-label="'+(soundOn?'Turn notification sound off':'Turn notification sound on')+'" title="'+(soundOn?'Notification sound is on':'Notification sound is off')+'" onclick="toggleGenmerchNotificationSound()">'+(soundOn?'🔊 Sound On':'🔇 Sound Off')+'</button><button class="genmerch-notification-close" type="button" aria-label="Close notifications" title="Close" onclick="closeGenmerchNotifications()">×</button></div></div>';
     if(guest) html+='<div class="genmerch-notification-empty">Sign in to see order updates linked to your account.<br>Guest orders can be checked from Track Order.</div>';
     else if(!items.length) html+='<div class="genmerch-notification-empty">No order updates yet. New progress updates will appear here as your order changes.</div>';
     else items.forEach(function(n){html+='<div class="genmerch-notification-item"><div class="genmerch-notification-icon">'+esc(n.icon)+'</div><div class="genmerch-notification-copy"><strong>'+esc(n.title)+'</strong><p>'+esc(n.message)+'</p><span class="genmerch-notification-time">'+esc(n.order_number)+' · '+esc(timeLabel(n.created_at))+'</span></div></div>';});
@@ -13098,14 +13226,14 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       var orders=result.data||[],items=[];
       orders.forEach(function(o){
         var info=statusInfo(o.status,o.payment_status);
-        items.push({icon:info[0],title:info[1],message:info[2],order_number:o.order_number,created_at:o.updated_at||o.created_at});
+        items.push({eventKey:'order:'+String(o.id)+':'+String(o.status||'')+':'+String(o.payment_status||'')+':'+String(o.updated_at||o.created_at||''),icon:info[0],title:info[1],message:info[2],order_number:o.order_number,created_at:o.updated_at||o.created_at});
       });
       var ids=orders.map(function(o){return o.id;});
       if(ids.length){
         var hist=await client.from('order_status_history').select('id,order_id,to_status,note,created_at').in('order_id',ids).order('created_at',{ascending:false}).limit(40);
         if(!hist.error){
           var byId={};orders.forEach(function(o){byId[o.id]=o.order_number;});
-          (hist.data||[]).forEach(function(h){var info=statusInfo(h.to_status,'');items.push({icon:info[0],title:info[1],message:h.note||info[2],order_number:byId[h.order_id]||'Order update',created_at:h.created_at});});
+          (hist.data||[]).forEach(function(h){var info=statusInfo(h.to_status,'');items.push({eventKey:'history:'+String(h.id),icon:info[0],title:info[1],message:h.note||info[2],order_number:byId[h.order_id]||'Order update',created_at:h.created_at});});
         }
       }
       items.sort(function(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);});
