@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { renderGenmerchEmail } from "./_shared/genmerch-email-template.ts";
 
 const ALLOWED_ORIGINS = new Set([
   "https://shopgenmerch.com",
@@ -27,36 +28,11 @@ function escapeHtml(value: unknown): string {
 }
 
 function buildWelcomeHtml(name: string, email: string): string {
-  const safeName = escapeHtml(name);
-  const safeEmail = escapeHtml(email);
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
-    '<body style="margin:0;padding:0;background:#f5f2f0;font-family:Arial,Helvetica,sans-serif;color:#29211d">' +
-    '<div style="display:none;max-height:0;overflow:hidden;opacity:0">Welcome to GENMERCH. Your account is ready.</div>' +
-    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f2f0;padding:26px 10px"><tr><td align="center">' +
-    '<table role="presentation" width="620" cellspacing="0" cellpadding="0" style="width:100%;max-width:620px;background:#fff;border:1px solid #ecdcd4;border-radius:14px;overflow:hidden">' +
-    '<tr><td style="padding:26px 28px;background:#f32c16;color:#fff">' +
-    '<div style="font-size:25px;line-height:1.2;font-weight:900;letter-spacing:-.4px">GENMERCH <span style="color:#ffe3dc">— Suot Apparel</span></div>' +
-    '<div style="margin-top:7px;font-size:13px;line-height:1.5">Your everyday style. Your way.</div></td></tr>' +
-    '<tr><td style="padding:28px">' +
-    '<div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#e9f8ef;color:#18713d;font-size:11px;font-weight:800;letter-spacing:.5px">ACCOUNT CREATED</div>' +
-    '<h1 style="margin:15px 0 10px;color:#29211d;font-size:25px;line-height:1.25">Welcome to GENMERCH, ' + safeName + '!</h1>' +
-    '<p style="margin:0 0 18px;color:#6f625b;font-size:15px;line-height:1.7">We’re glad you’re here. Your GENMERCH customer account is ready, so you can explore our collection and manage your orders in one place.</p>' +
-    '<div style="margin:20px 0;padding:17px 18px;border:1px solid #f0dfd7;border-radius:10px;background:#fffaf7">' +
-    '<div style="font-size:14px;font-weight:800;color:#30241f">Make the most of your account</div>' +
-    '<ul style="margin:11px 0 0;padding-left:19px;color:#6f625b;font-size:14px;line-height:1.85">' +
-    '<li>Browse our apparel and new arrivals.</li><li>Review orders linked to your account.</li><li>Follow order status and available shipping details.</li><li>Check the storefront for promotions when available.</li></ul></div>' +
-    '<table role="presentation" cellspacing="0" cellpadding="0" style="margin:23px 0"><tr><td style="border-radius:8px;background:#f32c16;text-align:center">' +
-    '<a href="https://shopgenmerch.com/" style="display:inline-block;padding:13px 24px;color:#fff;text-decoration:none;font-size:14px;font-weight:900">Explore GENMERCH</a>' +
-    '</td></tr></table>' +
-    '<p style="margin:0 0 14px;color:#6f625b;font-size:13px;line-height:1.7">Account email: <strong style="color:#2d221d">' + safeEmail + '</strong></p>' +
-    '<p style="margin:0;color:#6f625b;font-size:13px;line-height:1.7">Keep your password and verification codes private. GENMERCH will never ask you to send your password by email.</p>' +
-    '<p style="margin:23px 0 0;color:#51433d;font-size:14px;line-height:1.7">Thank you for joining us. We appreciate your support and look forward to being part of your everyday style.<br><strong>The GENMERCH Team</strong></p>' +
-    '</td></tr><tr><td style="padding:17px 28px;background:#fffaf7;border-top:1px solid #f0e5df;color:#8b7a70;font-size:12px;line-height:1.8">' +
-    '<strong style="color:#58453b">GENMERCH — Suot Apparel</strong><br>' +
-    '<a href="https://shopgenmerch.com/" style="color:#c92d1b">shopgenmerch.com</a><br>' +
-    '<a href="mailto:negosyonipinoy@gmail.com" style="color:#c92d1b">negosyonipinoy@gmail.com</a> · <a href="tel:09750634497" style="color:#c92d1b">09750634497</a><br>' +
-    'You received this service email because a GENMERCH account was created using this address.</td></tr></table></td></tr></table></body></html>';
+ const tiles='<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:20px;border-collapse:separate;border-spacing:7px"><tr><td width="50%" valign="top" style="padding:14px 10px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:9px;text-align:center"><div style="font-size:23px;color:#d10c22">▣</div><strong style="display:block;margin-top:6px;color:#202328;font-size:12px">Quality Merch</strong><div style="margin-top:4px;color:#626b75;font-size:11px;line-height:1.5">Explore styles you'll love.</div></td><td width="50%" valign="top" style="padding:14px 10px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:9px;text-align:center"><div style="font-size:23px;color:#d10c22">✓</div><strong style="display:block;margin-top:6px;color:#202328;font-size:12px">Secure Checkout</strong><div style="margin-top:4px;color:#626b75;font-size:11px;line-height:1.5">Shop with confidence.</div></td></tr><tr><td width="50%" valign="top" style="padding:14px 10px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:9px;text-align:center"><div style="font-size:23px;color:#d10c22">➜</div><strong style="display:block;margin-top:6px;color:#202328;font-size:12px">Order Updates</strong><div style="margin-top:4px;color:#626b75;font-size:11px;line-height:1.5">Follow order progress in My Orders.</div></td><td width="50%" valign="top" style="padding:14px 10px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:9px;text-align:center"><div style="font-size:23px;color:#d10c22">♡</div><strong style="display:block;margin-top:6px;color:#202328;font-size:12px">Your Account</strong><div style="margin-top:4px;color:#626b75;font-size:11px;line-height:1.5">Keep your account details up to date.</div></td></tr></table>';
+ return renderGenmerchEmail({preheader:"Welcome to GENMERCH. Your customer account is ready.",headline:"Welcome to GENMERCH!",icon:"♥",tone:"brand",greeting:"Hi "+String(name||"GENMERCH customer")+",",intro:"Thank you for creating an account with us. You're now part of our growing community of merch fans, and we're excited to have you here.",bodyHtml:tiles,actionLabel:"Start Shopping",actionUrl:"https://shopgenmerch.com/",actionNote:"Sign in any time to view your account, follow order updates, and manage your saved items.",noticeTitle:"Keep Your Account Secure",notice:"Never share your password or verification codes by email. GENMERCH will never ask you to send your password to customer support.",noticeTone:"info",footerNote:"This service email was sent to "+String(email||"")+" because a GENMERCH account was created using this address."});
 }
+
+
 function buildWelcomeText(name: string, email: string): string {
   return [
     "GENMERCH — Suot Apparel",
