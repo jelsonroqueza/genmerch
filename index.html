@@ -8156,6 +8156,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         updateWishlistBadge();renderProducts();updateWishlistDetailButton();
         if($('wishlistOverlay').classList.contains('open'))renderWishlist();
         const product=products.find(item=>String(item.id)===id);
+        if(!exists&&typeof window.playGenmerchNotificationChime==='function'){
+          window.playGenmerchNotificationChime('wishlist:add:'+(userId||'guest')+':'+id+':'+Date.now());
+        }
         showToast(exists?'Removed from Wishlist':(product?product.name+' added to Wishlist':'Added to Wishlist'));
       }catch(error){
         console.error('GENMERCH could not save Wishlist change.',error);
