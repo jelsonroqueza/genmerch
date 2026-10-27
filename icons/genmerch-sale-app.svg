@@ -1,29 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-<defs>
- <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf7"/><stop offset="1" stop-color="#ffe7d9"/></linearGradient>
- <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff6b45"/><stop offset=".48" stop-color="#f32424"/><stop offset="1" stop-color="#b90019"/></linearGradient>
- <linearGradient id="cart" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff2148"/><stop offset=".24" stop-color="#ff9b00"/><stop offset=".5" stop-color="#ffeb24"/><stop offset=".73" stop-color="#00c9c5"/><stop offset="1" stop-color="#f52242"/></linearGradient>
- <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#6e1820" flood-opacity=".24"/></filter>
-</defs>
-<rect x="14" y="14" width="484" height="484" rx="100" fill="url(#bg)" stroke="#fff" stroke-width="5" filter="url(#shadow)"/>
-<path d="M20 120V106Q20 20 106 20H280C160 61 79 119 20 236Z" fill="url(#red)"/>
-<path d="M16 366Q98 449 258 490H106Q18 490 16 402Z" fill="#f32424"/>
-<path d="M16 400Q116 485 258 490H406Q494 490 496 406V382Q411 455 258 490" fill="url(#red)"/>
-<g fill="none" stroke="url(#cart)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
- <path d="M178 202V156a52 52 0 0 1 104 0v46"/>
- <path d="M119 214h221v132"/>
- <path d="M119 214v42"/>
- <circle cx="178" cy="229" r="12" fill="#fff5e9" stroke-width="10"/>
- <circle cx="282" cy="229" r="12" fill="#fff5e9" stroke-width="10"/>
- <path d="M93 286h150" stroke-width="22"/>
- <path d="M115 328h151" stroke-width="22"/>
- <path d="M269 286l28 13 19 94q5 21 27 21h65"/>
- <path d="M283 299h130l-24 77q-5 17-24 17h-66"/>
- <path d="M324 301l-1 89M369 301l-3 86M294 330h105M300 359h95"/>
- <path d="M309 414h100"/>
- <circle cx="324" cy="437" r="13" fill="url(#cart)" stroke="none"/>
- <circle cx="398" cy="437" r="13" fill="url(#cart)" stroke="none"/>
-</g>
-<text x="256" y="461" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="900" font-style="italic" text-anchor="middle" letter-spacing="-2"><tspan fill="#191919">GEN</tspan><tspan fill="#ed2028">MERCH</tspan></text>
-<text x="256" y="484" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="4" fill="#171717">SUOT APPAREL</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 192 192">
+  <image href="/icons/genmerch-app-192.png?v=20261028-1" x="0" y="0" width="192" height="192" preserveAspectRatio="xMidYMid meet"/>
 </svg>
