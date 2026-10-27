@@ -5881,6 +5881,17 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 </style>
 
+
+  <style id="genmerch-customer-auth-email-display">
+    #customerAuthOverlay .customer-auth-email{
+      margin:-12px 0 17px!important;
+      color:#9b887c!important;
+      font-size:.72rem!important;
+      line-height:1.4!important;
+      overflow-wrap:anywhere!important;
+      word-break:break-word!important;
+    }
+  </style>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -6808,6 +6819,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           <div class="customer-auth-success-mark" aria-hidden="true">✓</div>
           <h3>You are signed in</h3>
           <p id="customerAuthIdentity"></p>
+          <p id="customerAuthEmail" class="customer-auth-email" hidden></p>
           <button class="customer-auth-send customer-auth-signout" type="button" id="customerAuthSignOut">Log Out</button>
         </div>
 
@@ -10527,6 +10539,12 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       $('customerAuthSignedIn').hidden=!signedIn;
       $('customerAuthMethods').hidden=signedIn;
+      const accountEmail=signedIn?String(user.email||'').trim():'';
+      const accountEmailNode=$('customerAuthEmail');
+      if(accountEmailNode){
+        accountEmailNode.textContent=accountEmail;
+        accountEmailNode.hidden=!accountEmail;
+      }
       if(signedIn){
         $('customerAuthIdentity').textContent=identity;
         $('customerAuthTitle').textContent='Your GENMERCH Account';
