@@ -1,8 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="34" fill="#ee4d2d"/>
-  <path d="M43 72h106l-8 84H51z" fill="#fff" opacity=".98"/>
-  <path d="M65 74V58a31 31 0 0 1 62 0v16" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
-  <path d="M75 111h42" stroke="#ee4d2d" stroke-width="9" stroke-linecap="round"/>
-  <path d="M108 98l13 13-13 13" fill="none" stroke="#ee4d2d" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="96" y="145" font-family="Arial,sans-serif" font-size="26" font-weight="900" text-anchor="middle" fill="#ee4d2d">GM</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17191f"/><stop offset=".55" stop-color="#050507"/><stop offset="1" stop-color="#280508"/></linearGradient>
+ <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff251c"/><stop offset=".28" stop-color="#ff8b18"/><stop offset=".52" stop-color="#ff321e"/><stop offset=".8" stop-color="#8b0711"/><stop offset="1" stop-color="#ff4b20"/></linearGradient>
+ <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2=".15"><stop stop-color="#ff183e"/><stop offset=".22" stop-color="#ff9a13"/><stop offset=".42" stop-color="#ffe72b"/><stop offset=".62" stop-color="#15ead1"/><stop offset=".82" stop-color="#b9f64a"/><stop offset="1" stop-color="#ff2638"/></linearGradient>
+ <linearGradient id="gen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#9da5b5"/></linearGradient>
+ <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+</defs>
+<rect width="512" height="512" rx="90" fill="#000"/>
+<rect x="25" y="25" width="462" height="462" rx="82" fill="url(#bg)" stroke="url(#rim)" stroke-width="5" filter="url(#glow)"/>
+<rect x="35" y="35" width="442" height="442" rx="74" fill="none" stroke="#ff5a32" stroke-opacity=".45" stroke-width="2"/>
+<g fill="none" stroke="url(#rainbow)" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+ <path d="M157 178V145H352V257" stroke-width="13"/>
+ <path d="M204 145V118a42 42 0 0 1 84 0v27" stroke-width="13"/>
+ <circle cx="204" cy="180" r="12" stroke-width="10"/><circle cx="288" cy="180" r="12" stroke-width="10"/>
+ <path d="M79 260H208" stroke-width="22"/><path d="M103 301H225" stroke-width="20"/>
+ <path d="M151 369Q160 389 182 389H340Q357 389 364 370L395 250H361" stroke-width="13"/>
+ <path d="M239 276L359 288L343 351Q340 363 328 363H250Z" stroke-width="13"/>
+ <path d="M248 303L350 313M252 333L342 343M285 282L280 359M321 286L313 360" stroke-width="8"/>
+ <path d="M368 385H324" stroke-width="12"/>
+ <circle cx="276" cy="414" r="16" fill="url(#rainbow)" stroke-width="5"/><circle cx="355" cy="414" r="16" fill="url(#rainbow)" stroke-width="5"/>
+</g>
+<path d="M72 433H440" stroke="url(#rim)" stroke-width="3" filter="url(#glow)"/>
+<text x="256" y="445" font-family="Arial,Helvetica,sans-serif" font-size="53" font-style="italic" font-weight="900" text-anchor="middle" letter-spacing="-2"><tspan fill="url(#gen)">GEN</tspan><tspan fill="#ff3529">MERCH</tspan></text>
 </svg>
