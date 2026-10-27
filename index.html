@@ -14601,5 +14601,20 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
 </style>
 
+
+<style id="genmerch-desktop-models-fit-v1">
+  /* Desktop only: show the entire three-model hero artwork without cropping. */
+  @media (min-width: 761px) {
+    main.container .hero > .hero-art {
+      background: #ff641c !important;
+    }
+    main.container .hero > .hero-art > .hero-models-photo {
+      object-fit: contain !important;
+      object-position: center bottom !important;
+      transform: none !important;
+    }
+  }
+</style>
+
 </body>
 </html>
