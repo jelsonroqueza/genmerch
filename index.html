@@ -13715,6 +13715,83 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
   @media(prefers-reduced-motion:reduce){.site-header{transition:none!important}}
 </style>
+<style id="genmerch-header-approved-typography">
+  /* Approved wordmark: matching type, size and weight; upright, balanced lockup. */
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+    font-family:Arial,Helvetica,sans-serif!important;
+    font-size:clamp(1.15rem,2.05vw,1.9rem)!important;
+    font-style:normal!important;
+    font-weight:900!important;
+    line-height:1!important;
+    letter-spacing:-.045em!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+  }
+  .site-header .main-header .nav .brand-lockup .brand-word span,
+  .site-header .main-header .nav .brand-lockup .brand-word b{
+    font-family:inherit!important;
+    font-size:inherit!important;
+    font-style:normal!important;
+    font-weight:900!important;
+    line-height:inherit!important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+    display:inline-flex!important;
+    align-items:center!important;
+    flex:0 1 auto!important;
+    position:static!important;
+    top:auto!important;
+    margin:0!important;
+    padding:0!important;
+    color:#171717!important;
+    background:none!important;
+    -webkit-text-fill-color:#171717!important;
+    animation:none!important;
+    transform:none!important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before{
+    content:"|"!important;
+    display:inline-block!important;
+    margin:0 .36em 0 .04em!important;
+    color:#888!important;
+    -webkit-text-fill-color:#888!important;
+    font:inherit!important;
+    line-height:1!important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
+    content:none!important;
+    display:none!important;
+    animation:none!important;
+    background:none!important;
+  }
+  .site-header .main-header .nav .brand-lockup{
+    align-items:center!important;
+    flex-wrap:nowrap!important;
+    white-space:nowrap!important;
+  }
+  .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
+  .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
+    font-size:clamp(1.15rem,2.05vw,1.9rem)!important;
+  }
+  @media(max-width:760px){
+    .site-header .main-header .nav .brand-lockup .brand-word,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+    .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
+    .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
+      font-size:clamp(1.04rem,4.35vw,1.22rem)!important;
+      letter-spacing:-.055em!important;
+    }
+    .site-header .main-header .nav .brand-lockup{
+      justify-content:center!important;
+      gap:clamp(4px,1vw,7px)!important;
+      max-width:100%!important;
+    }
+  }
+  @media(prefers-reduced-motion:reduce){
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{animation:none!important}
+  }
+</style>
 <script id="genmerch-smart-auto-hide-controller">
 (function(){
   'use strict';
