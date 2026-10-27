@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { renderGenmerchEmail } from "./_shared/genmerch-email-template.ts";
 
 const ALLOWED_ORIGINS = new Set([
   "https://jelsonroqueza.github.io",
@@ -38,49 +39,14 @@ function addressText(order: Record<string, unknown>): string {
     .filter((part) => String(part ?? "").trim()).map((part) => String(part)).join(", ");
 }
 function buildShipmentHtml(order: Record<string, unknown>, shipment: Record<string, unknown>, items: Array<Record<string, unknown>>, recipient: string): string {
-  const itemRows = items.map((item) => {
-    const option = [item.size_label ? "Size: " + String(item.size_label) : "", item.color_label ? "Color: " + String(item.color_label) : ""].filter(Boolean).join(" · ");
-    return '<tr><td style="padding:10px;border-bottom:1px solid #f0e2dc;font-size:13px;color:#3c3430"><strong>' + escapeHtml(item.product_name || "GENMERCH item") + '</strong>' +
-      (item.sku ? '<div style="margin-top:4px;color:#81766f;font-size:11px">SKU: ' + escapeHtml(item.sku) + '</div>' : "") +
-      (option ? '<div style="margin-top:4px;color:#81766f;font-size:11px">' + escapeHtml(option) + '</div>' : "") +
-      '<div style="margin-top:4px;color:#81766f;font-size:11px">Qty: ' + escapeHtml(item.quantity) + '</div></td>' +
-      '<td style="padding:10px;border-bottom:1px solid #f0e2dc;text-align:right;white-space:nowrap;font-size:12px;font-weight:700">' + escapeHtml(money(item.line_total)) + '</td></tr>';
-  }).join("");
-  const paymentStatus = String(order.payment_status ?? "pending").toLowerCase();
-  const paymentLine = paymentStatus === "paid" ? "Payment status: Paid." :
-    "Payment status: " + escapeHtml(paymentStatus.replace(/_/g, " ")) + ". This shipping email is not a payment receipt.";
-  const deliveryAddress = addressText(order);
-  const trackingUrl = String(shipment.tracking_url ?? "").trim();
-  const referenceLine = trackingUrl && /^https?:\/\//i.test(trackingUrl)
-    ? '<a href="' + escapeHtml(trackingUrl) + '" style="color:#f32b16;font-weight:800;text-decoration:none">' + escapeHtml(shipment.tracking_number) + '</a>'
-    : escapeHtml(shipment.tracking_number);
-  return '<!doctype html><html><body style="margin:0;padding:0;background:#f5f2f0;font-family:Arial,Helvetica,sans-serif;color:#282321">' +
-    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f2f0;padding:24px 10px"><tr><td align="center">' +
-    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#fff;border:1px solid #ecdcd4;border-radius:14px;overflow:hidden">' +
-    '<tr><td style="background:#f52d16;padding:22px 24px;color:#fff"><div style="font-size:21px;font-weight:900;letter-spacing:.1px">GENMERCH - Suot Apparel</div><div style="font-size:12px;margin-top:5px;opacity:.95">Your everyday style. Your order reference.</div></td></tr>' +
-    '<tr><td style="padding:24px"><h1 style="margin:0 0 10px;font-size:21px;color:#29221f">Your order is on its way!</h1>' +
-    '<p style="margin:0 0 18px;font-size:14px;line-height:1.7;color:#665b55">Hi ' + escapeHtml(order.customer_name) + ', your GENMERCH order has been marked as shipped. Keep this email and your delivery reference for tracking or when contacting the seller.</p>' +
-    '<div style="padding:16px;border:1px solid #ffc1b5;border-radius:10px;background:#fff8f5"><div style="font-size:10px;font-weight:800;color:#86746c;text-transform:uppercase;letter-spacing:.7px">Order number</div>' +
-    '<div style="margin-top:6px;font-size:21px;font-weight:900;color:#f32b16;overflow-wrap:anywhere">' + escapeHtml(order.order_number) + '</div>' +
-    '<div style="margin-top:8px;font-size:11px;color:#887870">Shipped: ' + escapeHtml(dateText(shipment.shipped_at || shipment.updated_at)) + ' (Philippine time)</div></div>' +
-    '<h2 style="margin:22px 0 10px;font-size:15px">Shipping details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #dce9f6;border-radius:10px;background:#f7fbff">' +
-    '<tr><td style="padding:12px 14px;font-size:12px;color:#627488;border-bottom:1px solid #e1eaf4">Courier / delivery service</td><td style="padding:12px 14px;font-size:13px;font-weight:800;text-align:right;border-bottom:1px solid #e1eaf4">' + escapeHtml(shipment.courier_name) + '</td></tr>' +
-    '<tr><td style="padding:12px 14px;font-size:12px;color:#627488;border-bottom:1px solid #e1eaf4">Delivery Reference #</td><td style="padding:12px 14px;font-size:13px;font-weight:900;text-align:right;overflow-wrap:anywhere;border-bottom:1px solid #e1eaf4">' + referenceLine + '</td></tr>' +
-    '<tr><td style="padding:12px 14px;font-size:12px;color:#627488">Shipment status</td><td style="padding:12px 14px;font-size:13px;font-weight:900;color:#0b6941;text-align:right">In Transit</td></tr></table>' +
-    '<h2 style="margin:22px 0 10px;font-size:15px">Order details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #ecdcd4;border-radius:9px;overflow:hidden">' +
-    '<tr style="background:#fff6f1"><th align="left" style="padding:10px;font-size:10px;color:#806b60;text-transform:uppercase">Item</th><th align="right" style="padding:10px;font-size:10px;color:#806b60;text-transform:uppercase">Amount</th></tr>' + itemRows + '</table>' +
-    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:10px"><tr><td style="padding:6px 0;font-size:12px;color:#736660">Items subtotal</td><td align="right" style="padding:6px 0;font-size:12px;font-weight:700">' + escapeHtml(money(order.subtotal)) + '</td></tr>' +
-    '<tr><td style="padding:6px 0;font-size:12px;color:#736660">Delivery fee</td><td align="right" style="padding:6px 0;font-size:12px;font-weight:700">' + escapeHtml(money(order.shipping_fee)) + '</td></tr>' +
-    '<tr><td style="padding:11px 0;border-top:1px solid #ecdcd4;font-size:15px;font-weight:900">Total order amount</td><td align="right" style="padding:11px 0;border-top:1px solid #ecdcd4;color:#f32b16;font-size:16px;font-weight:900">' + escapeHtml(money(order.total_amount)) + '</td></tr></table>' +
-    '<h2 style="margin:22px 0 10px;font-size:15px">Delivery information</h2><div style="padding:13px;border:1px solid #e9dfda;border-radius:9px;background:#fcfbfa;font-size:12px;line-height:1.8;color:#665b55">' +
-    '<div><strong>Recipient:</strong> ' + escapeHtml(order.customer_name) + '</div><div><strong>Mobile:</strong> ' + escapeHtml(order.customer_phone) + '</div><div><strong>Address:</strong> ' + escapeHtml(deliveryAddress) + '</div>' +
-    (order.shipping_landmark ? '<div><strong>Landmark:</strong> ' + escapeHtml(order.shipping_landmark) + '</div>' : "") +
-    (order.delivery_instructions ? '<div><strong>Delivery instructions:</strong> ' + escapeHtml(order.delivery_instructions) + '</div>' : "") + '</div>' +
-    '<div style="margin-top:16px;padding:13px;border:1px solid #f2d39d;border-radius:9px;background:#fff9ec;color:#785500;font-size:12px;line-height:1.7"><strong>Payment information</strong><div style="margin-top:5px">Payment method: ' + escapeHtml(order.payment_method || "Not specified") + '</div><div>' + paymentLine + '</div></div>' +
-    '<p style="margin:20px 0 0;font-size:12px;line-height:1.7;color:#6e625c">Please keep your order number and courier reference. Order status will continue to update in GENMERCH My Orders. If the reference does not work on the courier tracking page immediately, try again later or contact the seller.</p></td></tr>' +
-    '<tr><td style="padding:16px 24px;background:#faf7f5;border-top:1px solid #eee1da;color:#8c7d75;font-size:10px;line-height:1.6">This order update was sent to ' + escapeHtml(recipient) + ' by GENMERCH - Suot Apparel.</td></tr>' +
-    '</table></td></tr></table></body></html>';
+ const trackingUrl=String(shipment.tracking_url??"").trim(),validTrackingUrl=/^https?:\/\/[^\s"'<>]+$/i.test(trackingUrl),paymentStatus=String(order.payment_status??"pending").toLowerCase();
+ const row=(label:string,value:string)=>'<tr><td style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#68717c;font-size:12px">'+escapeHtml(label)+'</td><td align="right" style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#202328;font-size:12px;font-weight:800;overflow-wrap:anywhere">'+value+'</td></tr>';
+ const itemsHtml=items.map(item=>'<tr><td style="padding:10px;border-bottom:1px solid #e7eaee;font-size:13px;color:#202328"><strong>'+escapeHtml(item.product_name||"GENMERCH item")+'</strong><div style="margin-top:4px;color:#78818a;font-size:11px">'+[item.size_label?"Size: "+escapeHtml(item.size_label):"",item.color_label?"Color: "+escapeHtml(item.color_label):""].filter(Boolean).join(" · ")+'</div><div style="margin-top:4px;color:#78818a;font-size:11px">Qty: '+escapeHtml(item.quantity)+'</div></td><td align="right" style="padding:10px;border-bottom:1px solid #e7eaee;white-space:nowrap;font-size:12px;font-weight:700">'+escapeHtml(money(item.line_total))+'</td></tr>').join("");
+ const details='<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Shipping Details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e7eaee;border-radius:9px;border-collapse:separate;border-spacing:0;overflow:hidden">'+row("Order number",escapeHtml(order.order_number))+row("Courier",escapeHtml(shipment.courier_name||"Your selected courier"))+row("Tracking number",escapeHtml(shipment.tracking_number||"Not provided"))+row("Shipment status","In Transit")+row("Shipped on",escapeHtml(dateText(shipment.shipped_at||shipment.updated_at)))+row("Order total",escapeHtml(money(order.total_amount)))+'</table><h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Items in Your Order</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e7eaee;border-radius:9px;border-collapse:separate;border-spacing:0;overflow:hidden"><tr><th align="left" style="padding:10px;background:#f4f6f8;color:#626b75;font-size:10px">ITEM</th><th align="right" style="padding:10px;background:#f4f6f8;color:#626b75;font-size:10px">AMOUNT</th></tr>'+itemsHtml+'</table>';
+ return renderGenmerchEmail({preheader:"Your GENMERCH order "+String(order.order_number||"")+" is on its way.",headline:"Your Order Is on the Way!",icon:"➜",tone:"info",greeting:"Good news, "+String(order.customer_name||"GENMERCH customer")+"!",intro:"Your order has been handed to the courier and is now in transit to your delivery address.",bodyHtml:details,noticeTitle:"Payment Information",notice:paymentStatus==="paid"?"Payment status: Paid. This email is a shipping update, not a separate payment receipt.":"Payment status: "+paymentStatus.replace(/_/g," ")+". This shipping email is not a payment receipt.",noticeTone:paymentStatus==="paid"?"success":"warning",actionLabel:"Track My Order",actionUrl:validTrackingUrl?trackingUrl:"https://shopgenmerch.com/",actionNote:validTrackingUrl?"Use your tracking reference if the courier page asks for it.":"Sign in to GENMERCH and open My Orders for the latest status.",footerNote:"This order update was sent to "+String(recipient||"")+". Keep your order number and courier reference for support."});
 }
+
+
 function buildShipmentText(order: Record<string, unknown>, shipment: Record<string, unknown>, items: Array<Record<string, unknown>>, recipient: string): string {
   const itemLines = items.map((item) => {
     const options = [item.size_label ? "Size: " + String(item.size_label) : "", item.color_label ? "Color: " + String(item.color_label) : ""].filter(Boolean).join(" / ");
