@@ -14603,46 +14603,32 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-desktop-models-fit-v1">
-  /* Desktop: remove the clipped wedge, fit all three models, and fill the unused space with a soft photo backdrop. */
+  /* Desktop: full, uncropped model artwork over a real blurred duplicate layer. */
   @media (min-width: 761px) {
     main.container .hero > .hero-art {
       position: relative !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 0 !important;
-      height: 100% !important;
-      min-height: 0 !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      padding: 0 !important;
       overflow: hidden !important;
-      clip-path: none !important;
-      -webkit-clip-path: none !important;
       background: #ff641c !important;
       isolation: isolate !important;
     }
-
-    main.container .hero > .hero-art::before {
-      display: none !important;
-      content: none !important;
-    }
-
-    main.container .hero > .hero-art::after {
-      content: "" !important;
-      display: block !important;
+    main.container .hero > .hero-art > .genmerch-desktop-hero-backdrop {
       position: absolute !important;
       z-index: 0 !important;
       inset: -4% !important;
-      pointer-events: none !important;
-      background-image: var(--hero-models-backdrop, none) !important;
-      background-repeat: no-repeat !important;
-      background-position: center 58% !important;
-      background-size: cover !important;
-      filter: blur(17px) saturate(1.08) brightness(.88) !important;
-      transform: scale(1.06) !important;
+      display: block !important;
+      width: 108% !important;
+      height: 108% !important;
+      max-width: none !important;
+      object-fit: cover !important;
+      object-position: center 58% !important;
+      filter: blur(18px) saturate(1.08) brightness(.86) !important;
+      transform: scale(1.04) !important;
       opacity: 1 !important;
+      pointer-events: none !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
-
     main.container .hero > .hero-art > .hero-models-photo {
       position: absolute !important;
       z-index: 1 !important;
@@ -14661,25 +14647,46 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       mask-image: none !important;
     }
   }
+  @media (max-width: 760px) {
+    main.container .hero > .hero-art > .genmerch-desktop-hero-backdrop {
+      display: none !important;
+    }
+  }
 </style>
 
 <script id="genmerch-desktop-models-backdrop-v2">
 (function () {
-  function setDesktopHeroBackdrop() {
-    if (window.matchMedia && !window.matchMedia("(min-width: 761px)").matches) return;
+  var desktopQuery = window.matchMedia("(min-width: 761px)");
+  function syncDesktopHeroBackdrop() {
     var heroArt = document.querySelector("main.container .hero > .hero-art");
     var modelImage = heroArt && heroArt.querySelector(".hero-models-photo");
     if (!heroArt || !modelImage) return;
-    var imageSource = modelImage.currentSrc || modelImage.src;
-    if (imageSource) {
-      heroArt.style.setProperty("--hero-models-backdrop", 'url("' + imageSource + '")');
+    var backdrop = heroArt.querySelector(".genmerch-desktop-hero-backdrop");
+    if (!desktopQuery.matches) {
+      if (backdrop) backdrop.remove();
+      return;
     }
+    if (!backdrop) {
+      backdrop = modelImage.cloneNode(false);
+      backdrop.className = "genmerch-desktop-hero-backdrop";
+      backdrop.setAttribute("aria-hidden", "true");
+      backdrop.setAttribute("alt", "");
+      backdrop.setAttribute("tabindex", "-1");
+      backdrop.removeAttribute("id");
+      backdrop.draggable = false;
+      heroArt.insertBefore(backdrop, modelImage);
+    }
+    var originalSource = modelImage.currentSrc || modelImage.src;
+    if (originalSource && backdrop.src !== originalSource) backdrop.src = originalSource;
   }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setDesktopHeroBackdrop, { once: true });
+    document.addEventListener("DOMContentLoaded", syncDesktopHeroBackdrop, { once: true });
   } else {
-    setDesktopHeroBackdrop();
+    syncDesktopHeroBackdrop();
   }
+  window.addEventListener("resize", syncDesktopHeroBackdrop, { passive: true });
+  if (desktopQuery.addEventListener) desktopQuery.addEventListener("change", syncDesktopHeroBackdrop);
+  else if (desktopQuery.addListener) desktopQuery.addListener(syncDesktopHeroBackdrop);
 })();
 </script>
 
