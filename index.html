@@ -4594,6 +4594,31 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       .genmerch-notification-panel.open{transform:translate(-50%,-50%)!important}
     }
   </style>
+
+<style id="genmerch-checkout-account-gate">
+.checkout-account-gate-overlay{position:fixed;inset:0;z-index:850;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(24,20,19,.56);-webkit-backdrop-filter:blur(16px) saturate(118%);backdrop-filter:blur(16px) saturate(118%)}
+.checkout-account-gate-overlay.open{display:flex;animation:checkoutGateFadeIn .18s ease-out}@keyframes checkoutGateFadeIn{from{opacity:0}to{opacity:1}}
+.checkout-account-gate-modal{position:relative;width:min(510px,100%);max-height:min(92vh,92dvh);overflow-y:auto;background:linear-gradient(165deg,#fffdfa 0%,#fff9f3 62%,#fff3e9 100%);color:#241d19;border:1px solid rgba(255,255,255,.88);border-radius:24px;box-shadow:0 32px 100px rgba(22,13,8,.32),0 7px 24px rgba(238,77,45,.10);padding:24px;isolation:isolate}
+.checkout-account-gate-modal:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,#f6bf4f 0%,#f36e32 38%,#ee4d2d 72%,#b92e1b 100%);border-radius:24px 24px 0 0;z-index:-1}
+.checkout-account-gate-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.checkout-account-gate-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.checkout-account-gate-mark{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:14px;color:#fff;background:linear-gradient(145deg,#ff8b43,#ee4d2d 64%,#b92d1b);box-shadow:inset 0 1px 0 rgba(255,255,255,.36),0 7px 16px rgba(217,56,26,.22);font-weight:950;font-size:15px;letter-spacing:-1px}
+.checkout-account-gate-brand-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.checkout-account-gate-brand-copy strong{font-size:14px;font-weight:950;letter-spacing:.075em;color:#26201c}.checkout-account-gate-brand-copy small{font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.12em;color:#9b6a51}
+.checkout-account-gate-close{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:50%;border:1px solid #eaded4;background:rgba(255,255,255,.8);color:#5d4d44;font-size:23px;line-height:1;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}.checkout-account-gate-close:hover{background:#fff0e8;border-color:#f4c2ad;transform:rotate(4deg)}
+.checkout-account-gate-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #f3d7bd;border-radius:999px;background:linear-gradient(100deg,#fff5df,#fff0e8);color:#98502e;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.095em;margin-bottom:13px}.checkout-account-gate-eyebrow span{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#e79b23;box-shadow:0 0 0 3px #f7db9b80}
+.checkout-account-gate-modal h2{font-size:clamp(25px,5vw,31px);line-height:1.13;letter-spacing:-.045em;font-weight:950;color:#231a16;margin:0 0 11px}.checkout-account-gate-intro{font-size:14px;line-height:1.65;color:#716158;margin:0 0 19px;max-width:430px}
+.checkout-account-gate-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 20px}.checkout-account-gate-benefit{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;padding:11px 10px;border:1px solid #f0e2d6;border-radius:13px;background:rgba(255,255,255,.72);box-shadow:0 3px 10px rgba(72,42,25,.025)}
+.checkout-account-gate-benefit-icon{display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:#fff0db;font-size:16px}.checkout-account-gate-benefit strong{font-size:11px;line-height:1.25;font-weight:900;color:#342820}.checkout-account-gate-benefit small{font-size:10px;line-height:1.35;color:#89796f}
+.checkout-account-gate-actions{display:grid;gap:10px}.checkout-account-gate-google,.checkout-account-gate-create{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:54px;padding:12px 15px;border-radius:13px;font-size:14px;font-weight:900;line-height:1.2;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s,background .15s}
+.checkout-account-gate-google{border:1px solid #e8dcd2;background:linear-gradient(180deg,#fff 0%,#fffaf6 100%);color:#29221e;box-shadow:0 4px 0 #eaded5,0 8px 18px rgba(59,38,27,.05)}.checkout-account-gate-google:hover{transform:translateY(-1px);border-color:#d8b8a6;box-shadow:0 5px 0 #eaded5,0 12px 24px rgba(59,38,27,.09)}.checkout-account-gate-google:active,.checkout-account-gate-create:active{transform:translateY(1px)}.checkout-account-gate-google svg{width:21px;height:21px;flex:0 0 21px}
+.checkout-account-gate-google-label{display:flex;flex-direction:column;align-items:flex-start;gap:3px;flex:1}.checkout-account-gate-google-label strong{font-size:13px;font-weight:950}.checkout-account-gate-google-label small{font-size:10px;font-weight:650;color:#8d7a70}.checkout-account-gate-google-arrow{font-size:19px;color:#ac7b60;margin-left:auto}
+.checkout-account-gate-create{border:1px solid #dc4429;background:linear-gradient(110deg,#f65a34,#e83c24 70%,#cc311d);color:#fff;box-shadow:0 7px 17px rgba(217,56,26,.20),inset 0 1px 0 rgba(255,255,255,.24)}.checkout-account-gate-create:hover{background:linear-gradient(110deg,#f66a42,#e44229 70%,#bb2c1b);box-shadow:0 10px 22px rgba(217,56,26,.26);transform:translateY(-1px)}.checkout-account-gate-create-mark{display:grid;place-items:center;width:24px;height:24px;border:1px solid #ffffff55;border-radius:8px;background:#ffffff20;font-size:17px;line-height:1}
+.checkout-account-gate-signin{margin:17px 0 0;text-align:center;color:#78675d;font-size:12px;line-height:1.6}.checkout-account-gate-signin button{border:0;background:transparent;color:#c43820;font:inherit;font-weight:950;text-decoration:underline;text-underline-offset:3px;padding:2px 3px;cursor:pointer}.checkout-account-gate-signin button:hover{color:#8f2616}
+.checkout-account-gate-later{display:block;margin:12px auto 0;padding:7px 12px;border:0;background:transparent;color:#85756b;font-size:12px;font-weight:800;cursor:pointer}.checkout-account-gate-later:hover{color:#3f332c;text-decoration:underline;text-underline-offset:3px}
+.checkout-account-gate-message{margin-top:13px;padding:10px 12px;border:1px solid #f3c8b8;border-radius:10px;background:#fff0eb;color:#a8321e;font-size:12px;line-height:1.5;font-weight:700}.checkout-account-gate-message[hidden]{display:none!important}.checkout-account-gate-privacy{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:17px;padding-top:14px;border-top:1px solid #efe1d6;color:#9a8980;text-align:center;font-size:10px;line-height:1.4}.checkout-account-gate-privacy span{color:#a16e3e;font-size:12px}
+@media(max-width:520px){.checkout-account-gate-overlay{padding:12px}.checkout-account-gate-modal{padding:19px 16px 16px;border-radius:20px;max-height:min(92vh,92dvh)}.checkout-account-gate-top{margin-bottom:19px}.checkout-account-gate-mark{width:40px;height:40px;flex-basis:40px;border-radius:12px}.checkout-account-gate-brand-copy strong{font-size:12px}.checkout-account-gate-brand-copy small{font-size:9px}.checkout-account-gate-modal h2{font-size:25px}.checkout-account-gate-intro{font-size:13px;line-height:1.55}.checkout-account-gate-benefits{gap:6px;margin-bottom:16px}.checkout-account-gate-benefit{padding:9px 7px;gap:6px}.checkout-account-gate-benefit-icon{width:28px;height:28px;font-size:15px}.checkout-account-gate-benefit strong{font-size:10px}.checkout-account-gate-benefit small{font-size:9px}.checkout-account-gate-google,.checkout-account-gate-create{min-height:51px}}
+@media(max-width:360px){.checkout-account-gate-modal{padding:16px 12px 13px}.checkout-account-gate-benefit small{display:none}.checkout-account-gate-google-label strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.checkout-account-gate-overlay,.checkout-account-gate-modal *{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -5400,6 +5425,23 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     </section>
   </div>
 
+  
+  <div class="checkout-account-gate-overlay" id="checkoutAccountGateOverlay" aria-hidden="true">
+    <section class="checkout-account-gate-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutAccountGateTitle" aria-describedby="checkoutAccountGateIntro">
+      <div class="checkout-account-gate-top"><div class="checkout-account-gate-brand"><span class="checkout-account-gate-mark" aria-hidden="true">GM</span><span class="checkout-account-gate-brand-copy"><strong>GENMERCH</strong><small>SUOT APPAREL · SECURE CHECKOUT</small></span></div><button class="checkout-account-gate-close" type="button" id="checkoutAccountGateClose" aria-label="Close account prompt" title="Close">×</button></div>
+      <div class="checkout-account-gate-eyebrow"><span aria-hidden="true"></span> ACCOUNT REQUIRED</div>
+      <h2 id="checkoutAccountGateTitle">One quick step before your order.</h2>
+      <p class="checkout-account-gate-intro" id="checkoutAccountGateIntro">Sign in or create your free GENMERCH account to place your order, track its progress, and keep your updates connected to you.</p>
+      <div class="checkout-account-gate-benefits" aria-label="Customer account benefits"><div class="checkout-account-gate-benefit"><span class="checkout-account-gate-benefit-icon" aria-hidden="true">📦</span><strong>Order tracking</strong><small>Follow every step</small></div><div class="checkout-account-gate-benefit"><span class="checkout-account-gate-benefit-icon" aria-hidden="true">🔔</span><strong>Live updates</strong><small>Stay in the loop</small></div><div class="checkout-account-gate-benefit"><span class="checkout-account-gate-benefit-icon" aria-hidden="true">🔐</span><strong>Secure account</strong><small>Your orders, yours</small></div></div>
+      <div class="checkout-account-gate-actions">
+        <button class="checkout-account-gate-google" type="button" id="checkoutAccountGateGoogle"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11c-.5 2.5-1.9 4.6-4.1 6l6.6 5.1c3.9-3.6 6.1-8.9 6.1-14.8Z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4l-6.8 5.3C9.2 39.5 16 44 24 44Z"/><path fill="#FBBC05" d="M12.6 27.7a12 12 0 0 1 0-7.4l-6.8-5.3a20.1 20.1 0 0 0 0 18l6.8-5.3Z"/><path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4 16 4 9.2 8.5 5.8 15l6.8 5.3c1.6-4.8 6.1-8.2 11.4-8.2Z"/></svg><span class="checkout-account-gate-google-label"><strong>Continue with Google</strong><small>Fast, secure sign-in</small></span><span class="checkout-account-gate-google-arrow" aria-hidden="true">→</span></button>
+        <button class="checkout-account-gate-create" type="button" id="checkoutAccountGateCreate"><span class="checkout-account-gate-create-mark" aria-hidden="true">+</span>Create an account with email</button>
+      </div>
+      <p class="checkout-account-gate-signin">Already have an account? <button type="button" id="checkoutAccountGateSignIn">Sign in</button></p>
+      <p class="checkout-account-gate-message" id="checkoutAccountGateMessage" role="status" aria-live="polite" hidden></p><button class="checkout-account-gate-later" type="button" id="checkoutAccountGateLater">Maybe later</button>
+      <div class="checkout-account-gate-privacy"><span aria-hidden="true">◆</span> Your account keeps your order history and progress updates together.</div>
+    </section>
+  </div>
   <div class="customer-auth-overlay" id="customerAuthOverlay" aria-hidden="true">
     <section class="customer-auth-modal" role="dialog" aria-modal="true" aria-labelledby="customerAuthTitle">
       <div class="customer-auth-head">
@@ -8372,6 +8414,34 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       $(id).addEventListener('change',updateCart);
     });
 
+
+    const GENMERCH_CHECKOUT_AUTH_DRAFT_KEY='genmerch.checkoutAuthDraft.v1';
+    let checkoutAuthResumeInFlight=false;
+    function setCheckoutAccountGateMessage(message){const node=$('checkoutAccountGateMessage');if(!node)return;node.textContent=message||'';node.hidden=!message;}
+    function openCheckoutAccountGate(message=''){const overlay=$('checkoutAccountGateOverlay');if(!overlay)return;overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');setCheckoutAccountGateMessage(message);document.body.style.overflow='hidden';window.setTimeout(()=>{const first=$('checkoutAccountGateGoogle');if(first&&overlay.classList.contains('open'))first.focus({preventScroll:true});},0);}
+    function closeCheckoutAccountGate(clearPending=false){const overlay=$('checkoutAccountGateOverlay');if(overlay){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');}if(clearPending){try{sessionStorage.removeItem(GENMERCH_CHECKOUT_AUTH_DRAFT_KEY);}catch(_){}}if(($('cartModal')&&$('cartModal').classList.contains('open'))||($('customerAuthOverlay')&&$('customerAuthOverlay').classList.contains('open')))document.body.style.overflow='hidden';else document.body.style.overflow='';}
+    function capturePendingCheckoutAuthDraft(){
+      try{
+        if(typeof saveDraftState==='function')saveDraftState();
+        const snapshot={version:1,createdAt:Date.now(),draft:buildDraftSnapshot(),receiptEmail:String($('receiptEmail')&&$('receiptEmail').value||''),cartFallback:cart.slice(0,100).map(item=>({id:String(item.id||''),variantId:String(item.variantId||''),variantSku:String(item.variantSku||''),size:String(item.size||''),qty:Math.max(1,Math.min(999,Math.floor(Number(item.qty)||1))),name:String(item.name||''),price:Number(item.price)||0,image:String(item.image||''),cat:String(item.cat||''),color:String(item.color||''),off:String(item.off||''),availableStock:Math.max(0,Number(item.availableStock)||0)}))};
+        sessionStorage.setItem(GENMERCH_CHECKOUT_AUTH_DRAFT_KEY,JSON.stringify(snapshot));return true;
+      }catch(error){console.warn('GENMERCH could not preserve the pending checkout across sign-in.',error);setCheckoutAccountGateMessage('Your checkout is still open, but this browser could not save a temporary sign-in draft. Allow session storage, then try again so your details can be restored safely.');return false;}
+    }
+    function readPendingCheckoutAuthDraft(){try{const raw=sessionStorage.getItem(GENMERCH_CHECKOUT_AUTH_DRAFT_KEY);if(!raw)return null;const snapshot=JSON.parse(raw),age=Date.now()-Number(snapshot&&snapshot.createdAt||0);if(!snapshot||snapshot.version!==1||!snapshot.draft||snapshot.draft.schemaVersion!==1||!Number.isFinite(age)||age< -60000||age>60*60*1000){sessionStorage.removeItem(GENMERCH_CHECKOUT_AUTH_DRAFT_KEY);return null;}return snapshot;}catch(_){return null;}}
+    function restorePendingCheckoutCart(snapshot){
+      const saved=Array.isArray(snapshot&&snapshot.cartFallback)?snapshot.cartFallback:[];if(!saved.length)return;
+      cart=saved.filter(item=>item&&item.id).map(entry=>{const product=products.find(item=>String(item.id)===String(entry.id))||(catalogLoadState!=='connected'?LOCAL_DEMO_PRODUCTS.find(item=>String(item.id)===String(entry.id)):null);const variant=product&&Array.isArray(product.variants)?product.variants.find(item=>String(item.id)===String(entry.variantId||'')):null;const price=variant&&variant.price!=null?variant.price:(entry.price!=null?entry.price:(product&&product.price)||0);return {...(product||{}),...entry,id:String(entry.id),variantId:String(entry.variantId||''),variantSku:(variant&&variant.sku)||entry.variantSku||'',name:(product&&product.name)||entry.name||'GENMERCH item',price:Number(price)||0,image:entry.image||(product&&product.image)||'',size:String(entry.size||''),qty:Math.max(1,Math.min(999,Math.floor(Number(entry.qty)||1))),availableStock:variant?Math.max(0,Number(variant.stock)||0):Math.max(0,Number(entry.availableStock)||0)};});
+    }
+    async function resumePendingCheckoutAfterAuth(session,pendingSnapshot){
+      const snapshot=pendingSnapshot||readPendingCheckoutAuthDraft();if(!session||!session.user||!snapshot)return false;
+      try{try{await refreshCatalogForLiveStock();}catch(error){console.warn('GENMERCH catalogue refresh during checkout restoration failed.',error);}restoreDraftState(JSON.stringify(snapshot.draft));restorePendingCheckoutCart(snapshot);try{await restoreAddressReferenceContext();}catch(error){console.warn('GENMERCH address restoration during checkout sign-in failed.',error);}updateCart();closeCheckoutAccountGate(false);closeCustomerAuth();openCart();setCheckoutStep('delivery');if($('receiptEmail'))$('receiptEmail').value=String(snapshot.receiptEmail||'');checkoutReceiptEmailTouched=Boolean(snapshot.receiptEmail);saveDraftState();try{sessionStorage.removeItem(GENMERCH_CHECKOUT_AUTH_DRAFT_KEY);}catch(_){}showToast('Your checkout details are restored. You can place your order now.');return true;}
+      catch(error){console.error('GENMERCH could not restore the pending checkout after sign-in.',error);openCheckoutAccountGate('You are signed in, but we could not reopen checkout automatically. Your cart and saved details have been kept—close this message and open your cart to continue.');return false;}
+    }
+    function openCustomerAuthFromCheckout(mode='signin',google=false){const saved=capturePendingCheckoutAuthDraft();if(google&&!saved)return;closeCheckoutAccountGate(false);openCustomerAuth();setCustomerAuthMode(mode==='signup'?'signup':'signin');if(google)window.setTimeout(()=>{const button=$('customerGoogleButton');if(button)button.click();},40);}
+    $('checkoutAccountGateClose').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateLater').addEventListener('click',()=>closeCheckoutAccountGate(true));$('checkoutAccountGateOverlay').addEventListener('click',event=>{if(event.target===$('checkoutAccountGateOverlay'))closeCheckoutAccountGate(true);});
+    $('checkoutAccountGateGoogle').addEventListener('click',()=>openCustomerAuthFromCheckout('signin',true));$('checkoutAccountGateCreate').addEventListener('click',()=>openCustomerAuthFromCheckout('signup',false));$('checkoutAccountGateSignIn').addEventListener('click',()=>openCustomerAuthFromCheckout('signin',false));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('checkoutAccountGateOverlay').classList.contains('open'))closeCheckoutAccountGate(true);});
+
     const GENMERCH_PENDING_CHECKOUT_KEY='genmerch.pendingCheckout.v1';
     let checkoutSubmitting=false;
     function checkoutFeedback(message,type=''){
@@ -8396,6 +8466,12 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     async function submitLiveGenmerchOrder(){
       if(checkoutSubmitting)return;
       if(!cart.length){checkoutFeedback('Your cart is empty. Add a product before placing an order.','error');return;}
+      // Verify the live Supabase session before validating or submitting customer details.
+      let verifiedSession=null;
+      try{const authClient=getCustomerAuthClient();const sessionResult=await authClient.auth.getSession();if(sessionResult.error)throw sessionResult.error;verifiedSession=sessionResult.data&&sessionResult.data.session?sessionResult.data.session:null;}
+      catch(error){capturePendingCheckoutAuthDraft();openCheckoutAccountGate('We could not verify your sign-in session. Please sign in or create an account before placing your order.');return;}
+      if(!verifiedSession||!verifiedSession.user){capturePendingCheckoutAuthDraft();openCheckoutAccountGate();return;}
+      customerAuthCurrentSession=verifiedSession;updateCustomerAuthScreen(verifiedSession);
       let valid=true,firstInvalid=null;
       requiredFields.forEach(field=>{
         const input=$(field.id),fieldValid=field.valid(input.value.trim());
@@ -8943,7 +9019,19 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             resetDraftInMemory();
             updateCart();
           }else if(session&&session.user){
-            syncCustomerDraftForSession(session,true);
+            const pendingCheckoutDraft=readPendingCheckoutAuthDraft();
+            if(pendingCheckoutDraft){
+              if(!checkoutAuthResumeInFlight){
+                checkoutAuthResumeInFlight=true;
+                syncCustomerDraftForSession(session,true)
+                  .catch(error=>console.warn('GENMERCH account draft sync before checkout restoration failed.',error))
+                  .then(()=>resumePendingCheckoutAfterAuth(session,pendingCheckoutDraft))
+                  .catch(error=>console.error('GENMERCH checkout resume failed.',error))
+                  .finally(()=>{checkoutAuthResumeInFlight=false;});
+              }
+            }else{
+              syncCustomerDraftForSession(session,true);
+            }
           }
           if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open'))loadCustomerAccountOrders(true);
           if(event==='SIGNED_IN'&&session&&session.user&&(isCustomerAuthCallbackUrl()||hasPendingCustomerGoogleOAuth())){
