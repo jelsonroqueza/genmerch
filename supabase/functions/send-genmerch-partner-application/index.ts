@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { renderGenmerchEmail } from "./_shared/genmerch-email-template.ts";
 
 const ALLOWED_ORIGINS = new Set([
   "https://shopgenmerch.com",
@@ -46,39 +47,11 @@ function row(label: string, value: string): string {
     escapeHtml(value || "Not provided") + "</td></tr>";
 }
 function buildHtml(application: Record<string, string>, reference: string, submittedAt: string): string {
-  const rows = [
-    row("Application reference", reference),
-    row("Submitted on (Philippine time)", submittedAt),
-    row("Full name", application.full_name),
-    row("Business / brand name", application.business_name),
-    row("Email address", application.email),
-    row("Mobile number", application.phone),
-    row("City / province", application.location),
-    row("Partnership type", application.partner_type),
-    row("Business stage", application.business_stage),
-    row("Current selling channels", application.selling_channels),
-    row("Products of interest", application.interested_products),
-    row("Estimated monthly order volume", application.estimated_monthly_orders),
-    row("Website / social media", application.website_social),
-    row("Preferred contact method", application.preferred_contact),
-    row("Additional details", application.message),
-    row("Privacy consent", "Applicant agreed to the privacy notice."),
-  ].join("");
-  return `<!doctype html><html><body style="margin:0;background:#fbf7f3;font-family:Arial,Helvetica,sans-serif;color:#2d211d">
-    <div style="max-width:760px;margin:24px auto;background:#fff;border:1px solid #f0ddd3;border-radius:14px;overflow:hidden">
-      <div style="padding:20px 24px;background:linear-gradient(110deg,#ff3218,#ff551b);color:#fff">
-        <div style="font-size:12px;letter-spacing:2px;font-weight:800">GENMERCH — SUOT APPAREL</div>
-        <h1 style="font-size:23px;margin:9px 0 4px">New Partner Application</h1>
-        <p style="margin:0;font-size:14px">A customer has submitted a partnership inquiry through the official storefront.</p>
-      </div>
-      <div style="padding:20px 24px">
-        <p style="line-height:1.6">Review the applicant's details below. You can reply directly to this email thread to contact the applicant at <strong>${escapeHtml(application.email)}</strong>.</p>
-        <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px">${rows}</table>
-        <p style="font-size:12px;color:#79685f;line-height:1.5;margin-top:18px">This message was generated automatically by the GENMERCH Partner With Us form. Application details are stored in the private GENMERCH database for follow-up.</p>
-      </div>
-    </div>
-  </body></html>`;
+ const rows=[row("Application reference",reference),row("Submitted on (Philippine time)",submittedAt),row("Full name",application.full_name),row("Business / brand name",application.business_name),row("Email address",application.email),row("Mobile number",application.phone),row("City / province",application.location),row("Partnership type",application.partner_type),row("Business stage",application.business_stage),row("Current selling channels",application.selling_channels),row("Products of interest",application.interested_products),row("Estimated monthly order volume",application.estimated_monthly_orders),row("Website / social media",application.website_social),row("Preferred contact method",application.preferred_contact),row("Additional details",application.message),row("Privacy consent","Applicant agreed to the privacy notice.")].join("");
+ return renderGenmerchEmail({preheader:"A new GENMERCH Partner With Us application has been submitted.",headline:"New Partner Application",icon:"↗",tone:"brand",greeting:"GENMERCH Team",intro:"A customer has submitted a partnership inquiry through the official storefront. Review the details below and contact the applicant if needed.",bodyHtml:'<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Application Details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font-size:12px;border:1px solid #e7eaee">'+rows+'</table>',actionLabel:"Reply to Applicant",actionUrl:"mailto:"+application.email,actionNote:"Application reference: "+reference,noticeTitle:"Private Admin Notification",notice:"This email contains applicant-provided business and contact details. Handle the information according to GENMERCH's privacy and review process.",noticeTone:"info",footerNote:"This message was generated automatically by the GENMERCH Partner With Us form."});
 }
+
+
 function buildText(application: Record<string, string>, reference: string, submittedAt: string): string {
   return [
     "NEW GENMERCH PARTNER APPLICATION",
@@ -104,43 +77,15 @@ function buildText(application: Record<string, string>, reference: string, submi
 
 
 function buildApplicantConfirmationHtml(application: Record<string, string>, reference: string, submittedAt: string): string {
-  const name = escapeHtml(application.full_name);
-  const ref = escapeHtml(reference);
-  const partnerType = escapeHtml(application.partner_type);
-  const businessName = escapeHtml(application.business_name || "Not provided");
-  const date = escapeHtml(submittedAt);
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-    <body style="margin:0;padding:0;background:#fbf7f3;font-family:Arial,Helvetica,sans-serif;color:#2d211d">
-      <div style="display:none;max-height:0;overflow:hidden;opacity:0">GENMERCH has received your Partner With Us application.</div>
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#fbf7f3;padding:26px 10px"><tr><td align="center">
-        <table role="presentation" width="620" cellspacing="0" cellpadding="0" style="width:100%;max-width:620px;background:#fff;border:1px solid #f0ddd3;border-radius:14px;overflow:hidden">
-          <tr><td style="padding:25px 28px;background:#ff3218;color:#fff">
-            <div style="font-size:12px;letter-spacing:2px;font-weight:800">GENMERCH — SUOT APPAREL</div>
-            <h1 style="font-size:24px;line-height:1.25;margin:10px 0 5px">We received your application!</h1>
-            <p style="margin:0;font-size:14px;line-height:1.5">Thank you for your interest in partnering with GENMERCH.</p>
-          </td></tr>
-          <tr><td style="padding:26px 28px">
-            <p style="font-size:15px;line-height:1.7;margin:0 0 15px">Hi <strong>${name}</strong>,</p>
-            <p style="font-size:14px;line-height:1.75;color:#5f524b;margin:0 0 18px">This email confirms that we have successfully received your Partner With Us application. Our team will review the details and contact you using your preferred contact method.</p>
-            <div style="border:1px solid #f0dfd7;border-radius:10px;background:#fffaf7;padding:16px 18px;margin:18px 0">
-              <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#8a3a27;margin-bottom:9px">YOUR APPLICATION DETAILS</div>
-              <p style="font-size:14px;line-height:1.65;margin:6px 0"><strong>Reference number:</strong><br><span style="word-break:break-word;color:#e52f17">${ref}</span></p>
-              <p style="font-size:14px;line-height:1.65;margin:6px 0"><strong>Partnership type:</strong> ${partnerType}</p>
-              <p style="font-size:14px;line-height:1.65;margin:6px 0"><strong>Business / brand name:</strong> ${businessName}</p>
-              <p style="font-size:14px;line-height:1.65;margin:6px 0"><strong>Submitted on:</strong> ${date} (Philippine time)</p>
-            </div>
-            <h2 style="font-size:16px;color:#30241f;margin:22px 0 7px">What happens next?</h2>
-            <p style="font-size:14px;line-height:1.75;color:#5f524b;margin:0 0 14px">We will review your application and contact you if we need more information. Please keep your reference number and check your inbox, including spam or junk folders.</p>
-            <p style="font-size:13px;line-height:1.75;color:#5f524b;margin:0 0 18px"><strong>Please note:</strong> This confirms receipt only. It does not mean your application has been approved, and it does not guarantee a partnership, reseller pricing, or special terms.</p>
-            <p style="font-size:14px;line-height:1.7;color:#5f524b;margin:0">Questions? Contact <a href="mailto:negosyonipinoy@yahoo.com.ph" style="color:#df2f18;font-weight:700">negosyonipinoy@yahoo.com.ph</a> and include your reference number.</p>
-          </td></tr>
-          <tr><td style="padding:16px 28px;background:#fff3ee;border-top:1px solid #f0dfd7;color:#79685f;font-size:11px;line-height:1.6">
-            This is an automatic confirmation from the GENMERCH Partner With Us form.<br><a href="https://shopgenmerch.com/" style="color:#df2f18;font-weight:700">shopgenmerch.com</a> · GENMERCH — Suot Apparel
-          </td></tr>
-        </table>
-      </td></tr></table>
-    </body></html>`;
+ const name=escapeHtml(application.full_name),ref=escapeHtml(reference),partnerType=escapeHtml(application.partner_type),businessName=escapeHtml(application.business_name||"Not provided"),date=escapeHtml(submittedAt);
+ const body='<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Your Application Details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;border:1px solid #e7eaee">'+
+ '<tr><td style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#68717c;font-size:12px">Reference number</td><td align="right" style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#d10c22;font-size:12px;font-weight:800;overflow-wrap:anywhere">'+ref+'</td></tr>'+
+ '<tr><td style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#68717c;font-size:12px">Partnership type</td><td align="right" style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#202328;font-size:12px;font-weight:700">'+partnerType+'</td></tr>'+
+ '<tr><td style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#68717c;font-size:12px">Business / brand name</td><td align="right" style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#202328;font-size:12px;font-weight:700">'+businessName+'</td></tr>'+
+ '<tr><td style="padding:11px 13px;color:#68717c;font-size:12px">Submitted on</td><td align="right" style="padding:11px 13px;color:#202328;font-size:12px;font-weight:700">'+date+' (Philippine time)</td></tr></table><h2 style="margin:22px 0 8px;color:#202328;font-size:16px">What Happens Next?</h2><p style="margin:0;color:#505762;font-size:13px;line-height:1.75">Our team will review your application and contact you using your preferred contact method if more information is needed. Please keep your reference number and check your inbox, including spam or junk folders.</p>';
+ return renderGenmerchEmail({preheader:"GENMERCH has received your Partner With Us application.",headline:"Application Received!",icon:"↗",tone:"brand",greeting:"Hi "+String(application.full_name||"there")+",",intro:"Thank you for your interest in becoming a GENMERCH partner. We have successfully received your application.",bodyHtml:body,actionLabel:"Visit GENMERCH",actionUrl:"https://shopgenmerch.com/",actionNote:"Keep your application reference for future follow-ups.",noticeTitle:"What This Confirmation Means",notice:"This email confirms receipt only. It does not mean your application has been approved or guarantee a partnership, reseller pricing, or special terms.",noticeTone:"info",footerNote:"This is an automatic confirmation from the GENMERCH Partner With Us form. For questions, contact negosyonipinoy@yahoo.com.ph and include your reference number."});
 }
+
 
 function buildApplicantConfirmationText(application: Record<string, string>, reference: string, submittedAt: string): string {
   return [
