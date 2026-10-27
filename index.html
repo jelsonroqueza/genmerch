@@ -13591,6 +13591,13 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     will-change:auto!important;
     isolation:auto!important;
   }
+  /* The older mobile rule pinned this whole parent. Only the action/nav row may freeze. */
+  .site-header .main-header{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    isolation:auto!important;
+  }
   .site-header .main-header .nav.genmerch-sticky-fixed{
     position:fixed!important;
     top:env(safe-area-inset-top,0px)!important;
@@ -13603,10 +13610,19 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     background:#fff!important;
     box-shadow:0 7px 24px rgba(25,16,12,.16)!important;
     border-radius:14px!important;
-    transform:translate3d(0,0,0);
-    transition:transform .28s cubic-bezier(.22,.75,.25,1),box-shadow .28s ease!important;
+    transform:translate3d(0,0,0)!important;
+    transition:transform .28s cubic-bezier(.22,.75,.25,1),box-shadow .28s ease,opacity .28s ease!important;
+    opacity:1!important;
+    visibility:visible!important;
     will-change:transform;
     isolation:isolate;
+  }
+  /* Explicit reveal state wins against legacy nav transforms from earlier stylesheets. */
+  .site-header .main-header .nav.genmerch-sticky-fixed:not(.genmerch-sticky-hidden){
+    transform:translate3d(0,0,0)!important;
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
   }
   .site-header .main-header .nav.genmerch-sticky-fixed.genmerch-sticky-hidden{
     transform:translate3d(0,-125%,0)!important;
