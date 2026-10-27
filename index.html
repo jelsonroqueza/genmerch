@@ -13894,5 +13894,83 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 })();
 </script>
 
+
+<style id="genmerch-extra-bold-premium-branding">
+/* Brighter, heavier GENMERCH | SUOT APPAREL wordmark; motion stays within the existing logo box. */
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word{
+  font-family:"Arial Black",Arial,Helvetica,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:-.055em!important;
+  -webkit-text-stroke:.7px #111!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.12),0 0 14px rgba(255,38,56,.08)!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word span,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  -webkit-text-stroke:.7px #111!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word b,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b{
+  background:linear-gradient(100deg,#e30e28 0%,#ff243b 22%,#ff5a62 38%,#ed102b 54%,#c90022 73%,#ff354b 88%,#e30e28 100%)!important;
+  background-size:240% 100%!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:.45px #e91c35!important;
+  filter:drop-shadow(0 1px 0 rgba(174,0,24,.24))!important;
+  animation:gm-brand-red-lustre 4.4s ease-in-out infinite!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
+  font-family:"Arial Black",Arial,Helvetica,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:-.045em!important;
+  color:#f31532!important;
+  -webkit-text-fill-color:#f31532!important;
+  -webkit-text-stroke:.45px #f31532!important;
+  text-shadow:0 1px 0 rgba(163,0,22,.15),0 0 12px rgba(255,35,56,.12)!important;
+  animation:gm-apparel-bright-pulse 4.8s ease-in-out infinite!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before{
+  color:#555!important;
+  -webkit-text-fill-color:#555!important;
+  -webkit-text-stroke:0!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
+  background:linear-gradient(90deg,#b90024 0%,#ff2947 28%,#ffadad 48%,#f31335 68%,#b90024 100%)!important;
+  background-size:220% 100%!important;
+  box-shadow:0 1px 5px rgba(243,19,53,.22)!important;
+  animation:gm-apparel-underline-glow 3.6s ease-in-out infinite!important;
+}
+.site-header .main-header .nav .brand-lockup:hover .brand-word,
+.site-header .main-header .nav .brand-lockup:focus-visible .brand-word{
+  filter:drop-shadow(0 2px 7px rgba(243,19,53,.22))!important;
+}
+@keyframes gm-brand-red-lustre{
+  0%,100%{background-position:0% 50%;filter:drop-shadow(0 1px 0 rgba(174,0,24,.20))}
+  50%{background-position:100% 50%;filter:drop-shadow(0 1px 2px rgba(255,25,55,.34))}
+}
+@keyframes gm-apparel-bright-pulse{
+  0%,100%{text-shadow:0 1px 0 rgba(163,0,22,.15),0 0 8px rgba(255,35,56,.08)}
+  50%{text-shadow:0 1px 0 rgba(163,0,22,.18),0 0 15px rgba(255,35,56,.23)}
+}
+@keyframes gm-apparel-underline-glow{
+  0%,100%{background-position:0% 50%;opacity:.82}
+  50%{background-position:100% 50%;opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .site-header .main-header .nav .brand-lockup .brand-word b,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
+    animation:none!important;
+  }
+  .site-header .main-header .nav .brand-lockup .brand-word b{
+    background:#f31532!important;-webkit-text-fill-color:#f31532!important;
+  }
+}
+</style>
+
 </body>
 </html>
