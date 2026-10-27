@@ -13955,362 +13955,15 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 </script>
 
 
-<style id="genmerch-extra-bold-premium-branding">
-/* Brighter, heavier GENMERCH | SUOT APPAREL wordmark; motion stays within the existing logo box. */
-.site-header .main-header .nav .brand-lockup .brand-word,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word{
-  font-family:"Arial Black",Arial,Helvetica,sans-serif!important;
-  font-weight:900!important;
-  letter-spacing:-.055em!important;
-  -webkit-text-stroke:.7px #111!important;
-  text-shadow:0 1px 0 rgba(0,0,0,.12),0 0 14px rgba(255,38,56,.08)!important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word span,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span{
-  color:#111!important;
-  -webkit-text-fill-color:#111!important;
-  -webkit-text-stroke:.7px #111!important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word b,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b{
-  background:linear-gradient(100deg,#e30e28 0%,#ff243b 22%,#ff5a62 38%,#ed102b 54%,#c90022 73%,#ff354b 88%,#e30e28 100%)!important;
-  background-size:240% 100%!important;
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:.45px #e91c35!important;
-  filter:drop-shadow(0 1px 0 rgba(174,0,24,.24))!important;
-  animation:gm-brand-red-lustre 4.4s ease-in-out infinite!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
-  font-family:"Arial Black",Arial,Helvetica,sans-serif!important;
-  font-weight:900!important;
-  letter-spacing:-.045em!important;
-  color:#f31532!important;
-  -webkit-text-fill-color:#f31532!important;
-  -webkit-text-stroke:.45px #f31532!important;
-  text-shadow:0 1px 0 rgba(163,0,22,.15),0 0 12px rgba(255,35,56,.12)!important;
-  animation:gm-apparel-bright-pulse 4.8s ease-in-out infinite!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before{
-  color:#555!important;
-  -webkit-text-fill-color:#555!important;
-  -webkit-text-stroke:0!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
-  background:linear-gradient(90deg,#b90024 0%,#ff2947 28%,#ffadad 48%,#f31335 68%,#b90024 100%)!important;
-  background-size:220% 100%!important;
-  box-shadow:0 1px 5px rgba(243,19,53,.22)!important;
-  animation:gm-apparel-underline-glow 3.6s ease-in-out infinite!important;
-}
-.site-header .main-header .nav .brand-lockup:hover .brand-word,
-.site-header .main-header .nav .brand-lockup:focus-visible .brand-word{
-  filter:drop-shadow(0 2px 7px rgba(243,19,53,.22))!important;
-}
-@keyframes gm-brand-red-lustre{
-  0%,100%{background-position:0% 50%;filter:drop-shadow(0 1px 0 rgba(174,0,24,.20))}
-  50%{background-position:100% 50%;filter:drop-shadow(0 1px 2px rgba(255,25,55,.34))}
-}
-@keyframes gm-apparel-bright-pulse{
-  0%,100%{text-shadow:0 1px 0 rgba(163,0,22,.15),0 0 8px rgba(255,35,56,.08)}
-  50%{text-shadow:0 1px 0 rgba(163,0,22,.18),0 0 15px rgba(255,35,56,.23)}
-}
-@keyframes gm-apparel-underline-glow{
-  0%,100%{background-position:0% 50%;opacity:.82}
-  50%{background-position:100% 50%;opacity:1}
-}
-@media(prefers-reduced-motion:reduce){
-  .site-header .main-header .nav .brand-lockup .brand-word b,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
-    animation:none!important;
-  }
-  .site-header .main-header .nav .brand-lockup .brand-word b{
-    background:#f31532!important;-webkit-text-fill-color:#f31532!important;
-  }
-}
-</style>
+<!-- Removed obsolete animated branding style: genmerch-extra-bold-premium-branding -->
 
 
-<style id="genmerch-visible-brand-light-sweep">
-/* Clearly visible but elegant moving highlight across both parts of the brand wordmark. */
-.site-header .main-header .nav .brand-lockup .brand-word,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word{
-  filter:drop-shadow(0 1px 1px rgba(160,0,25,.20))!important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word::after,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::after{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  inset:-5% -2%!important;
-  z-index:3!important;
-  pointer-events:none!important;
-  background:linear-gradient(108deg,
-    transparent 0%,
-    transparent 35%,
-    rgba(255,255,255,0) 41%,
-    rgba(255,255,255,.20) 45%,
-    rgba(255,255,255,.96) 49%,
-    rgba(255,255,255,.38) 52%,
-    rgba(255,255,255,0) 58%,
-    transparent 64%)!important;
-  background-size:260% 100%!important;
-  background-position:155% 0!important;
-  mix-blend-mode:screen!important;
-  opacity:0!important;
-  animation:gm-visible-wordmark-sweep 3.8s cubic-bezier(.42,0,.2,1) infinite!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
-  background-image:linear-gradient(105deg,
-    #f31532 0%,
-    #ff3049 27%,
-    #ff6b79 39%,
-    #fff4f4 49%,
-    #ff4055 57%,
-    #e20a2d 76%,
-    #f31532 100%)!important;
-  background-size:260% 100%!important;
-  background-position:145% 50%!important;
-  background-clip:text!important;
-  -webkit-background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  animation:gm-visible-apparel-sweep 4.6s cubic-bezier(.42,0,.2,1) 1s infinite!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before{
-  color:#555!important;
-  -webkit-text-fill-color:#555!important;
-  background:none!important;
-  animation:none!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
-  background:linear-gradient(90deg,#c50024 0%,#ff5267 28%,#fff 50%,#ff4059 66%,#be0023 100%)!important;
-  background-size:240% 100%!important;
-  animation:gm-visible-underline-sweep 3.4s ease-in-out infinite!important;
-  box-shadow:0 1px 7px rgba(255,22,57,.42)!important;
-}
-@keyframes gm-visible-wordmark-sweep{
-  0%,10%{background-position:155% 0;opacity:0}
-  19%{opacity:.95}
-  46%{background-position:-80% 0;opacity:.82}
-  58%,100%{background-position:-80% 0;opacity:0}
-}
-@keyframes gm-visible-apparel-sweep{
-  0%,8%{background-position:145% 50%}
-  42%{background-position:-95% 50%}
-  60%,100%{background-position:-95% 50%}
-}
-@keyframes gm-visible-underline-sweep{
-  0%,100%{background-position:0% 50%;opacity:.76}
-  50%{background-position:100% 50%;opacity:1}
-}
-@media(prefers-reduced-motion:reduce){
-  .site-header .main-header .nav .brand-lockup .brand-word::after,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
-    animation:none!important;
-  }
-  .site-header .main-header .nav .brand-lockup .brand-word::after{
-    display:none!important;
-  }
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
-    background-image:none!important;
-    color:#f31532!important;
-    -webkit-text-fill-color:#f31532!important;
-  }
-}
-</style>
+<!-- Removed obsolete animated branding style: genmerch-visible-brand-light-sweep -->
 
 
-<style id="genmerch-professional-wordmark-motion-v2">
-/* High-visibility, polished motion applied directly to the GENMERCH / SUOT APPAREL lettering.
-   Disable the earlier white-on-white sweep overlay so it cannot wash out the actual text effects. */
-.site-header .main-header .nav .brand-lockup .brand-word::after,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::after{
-  content:none!important;
-  display:none!important;
-  animation:none!important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word{
-  transform-origin:50% 55%!important;
-  animation:gm-pro-brand-breathe 2.8s ease-in-out infinite!important;
-  will-change:transform,filter!important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word b,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b{
-  background-image:linear-gradient(105deg,
-    #b90024 0%,
-    #ed102d 17%,
-    #ff304a 31%,
-    #ffb0bb 43%,
-    #fff0f2 49%,
-    #ff5168 55%,
-    #e20b2b 69%,
-    #b90024 84%,
-    #ff2843 100%)!important;
-  background-size:320% 100%!important;
-  background-position:0% 50%!important;
-  background-clip:text!important;
-  -webkit-background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:.45px #ed1735!important;
-  animation:gm-pro-merch-sheen 2.6s cubic-bezier(.45,0,.2,1) infinite!important;
-  filter:drop-shadow(0 1px 0 rgba(155,0,25,.35))!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
-  background-image:linear-gradient(105deg,
-    #d00027 0%,
-    #fa1d3b 20%,
-    #ff6b7f 34%,
-    #fff4f5 47%,
-    #ff334f 54%,
-    #c90027 73%,
-    #f71938 88%,
-    #d00027 100%)!important;
-  background-size:300% 100%!important;
-  background-position:0% 50%!important;
-  background-clip:text!important;
-  -webkit-background-clip:text!important;
-  -webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:.45px #f31532!important;
-  text-shadow:0 1px 0 rgba(163,0,22,.18)!important;
-  animation:gm-pro-apparel-sheen 3.1s cubic-bezier(.45,0,.2,1) .25s infinite!important;
-  will-change:background-position,text-shadow!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before{
-  color:#555!important;
-  -webkit-text-fill-color:#555!important;
-  -webkit-text-stroke:0!important;
-  background:none!important;
-  text-shadow:none!important;
-  animation:none!important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after{
-  height:3px!important;
-  transform:scaleX(1)!important;
-  opacity:1!important;
-  background:linear-gradient(90deg,#bd0025 0%,#fa1740 24%,#fff 49%,#ff3c59 61%,#bd0025 100%)!important;
-  background-size:260% 100%!important;
-  animation:gm-pro-apparel-underline 2.2s ease-in-out infinite!important;
-  box-shadow:0 1px 7px rgba(255,20,56,.45)!important;
-}
-@keyframes gm-pro-brand-breathe{
-  0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(244,20,52,0))}
-  48%,58%{transform:scale(1.035);filter:drop-shadow(0 2px 5px rgba(244,20,52,.28))}
-}
-@keyframes gm-pro-merch-sheen{
-  0%{background-position:0% 50%;filter:drop-shadow(0 1px 0 rgba(155,0,25,.24))}
-  52%{background-position:100% 50%;filter:drop-shadow(0 1px 3px rgba(255,25,61,.48))}
-  100%{background-position:0% 50%;filter:drop-shadow(0 1px 0 rgba(155,0,25,.24))}
-}
-@keyframes gm-pro-apparel-sheen{
-  0%{background-position:0% 50%;text-shadow:0 1px 0 rgba(163,0,22,.16)}
-  50%{background-position:100% 50%;text-shadow:0 1px 0 rgba(163,0,22,.24),0 0 14px rgba(255,30,60,.26)}
-  100%{background-position:0% 50%;text-shadow:0 1px 0 rgba(163,0,22,.16)}
-}
-@keyframes gm-pro-apparel-underline{
-  0%,100%{background-position:0% 50%;opacity:.75}
-  50%{background-position:100% 50%;opacity:1}
-}
-@media(prefers-reduced-motion:reduce){
-  .site-header .main-header .nav .brand-lockup .brand-word,
-  .site-header .main-header .nav .brand-lockup .brand-word b,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
-    animation:none!important;
-    will-change:auto!important;
-  }
-  .site-header .main-header .nav .brand-lockup .brand-word::after{display:none!important}
-  .site-header .main-header .nav .brand-lockup .brand-word b{
-    background:#ed102d!important;-webkit-text-fill-color:#ed102d!important;
-  }
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
-    background:none!important;color:#f31532!important;-webkit-text-fill-color:#f31532!important;
-  }
-}
-</style>
+<!-- Removed obsolete animated branding style: genmerch-professional-wordmark-motion-v2 -->
 
-<style id="genmerch-final-visible-header-motion-fix">
-/* Final targeted fix: make the header wordmark motion visibly legible on mobile Safari.
-   Only the header brand is affected; no page-wide opacity, overlay, or layout animation. */
-.site-header .main-header .nav .brand-lockup .brand-word,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
-  display: inline-block !important;
-  transform-origin: 50% 55% !important;
-  animation: gm-final-brand-pulse 1.9s ease-in-out infinite !important;
-  will-change: transform, filter !important;
-}
-.site-header .main-header .nav .brand-lockup .brand-word b,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b {
-  background-image: linear-gradient(100deg, #c60025 0%, #f31535 22%, #ff8b9b 42%, #fff1f3 50%, #ff405e 58%, #c60025 78%, #f31535 100%) !important;
-  background-size: 280% 100% !important;
-  background-position: 0% 50% !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: gm-final-merch-shine 2.1s ease-in-out infinite !important;
-  filter: drop-shadow(0 1px 2px rgba(214, 0, 39, .34)) !important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-  background-image: linear-gradient(100deg, #d00027 0%, #ff2343 24%, #ff99a8 42%, #fff4f5 50%, #ff3a58 58%, #bd0026 78%, #f31535 100%) !important;
-  background-size: 280% 100% !important;
-  background-position: 0% 50% !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  text-shadow: 0 1px 0 rgba(163,0,22,.2), 0 0 8px rgba(255,35,65,.18) !important;
-  animation: gm-final-apparel-shine 2.4s ease-in-out infinite !important;
-  will-change: background-position, text-shadow !important;
-}
-.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after {
-  height: 3px !important;
-  transform-origin: left center !important;
-  background: linear-gradient(90deg, #c60025 0%, #ff3454 24%, #fff 48%, #ff3454 62%, #c60025 100%) !important;
-  background-size: 240% 100% !important;
-  animation: gm-final-underline-sweep 1.8s ease-in-out infinite !important;
-  box-shadow: 0 1px 7px rgba(255,20,56,.5) !important;
-  opacity: 1 !important;
-}
-@keyframes gm-final-brand-pulse {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(244,20,52,0)); }
-  50% { transform: scale(1.055); filter: drop-shadow(0 2px 5px rgba(244,20,52,.34)); }
-}
-@keyframes gm-final-merch-shine {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes gm-final-apparel-shine {
-  0%, 100% { background-position: 0% 50%; text-shadow: 0 1px 0 rgba(163,0,22,.18), 0 0 3px rgba(255,30,60,.10); }
-  50% { background-position: 100% 50%; text-shadow: 0 1px 0 rgba(163,0,22,.25), 0 0 12px rgba(255,30,60,.42); }
-}
-@keyframes gm-final-underline-sweep {
-  0%, 100% { background-position: 0% 50%; transform: scaleX(.55); }
-  50% { background-position: 100% 50%; transform: scaleX(1); }
-}
-/* The user explicitly wants the brand motion; keep this one small component animated
-   even when the device requests reduced motion. All other site motion rules remain unchanged. */
-@media (prefers-reduced-motion: reduce) {
-  .site-header .main-header .nav .brand-lockup .brand-word,
-  .site-header .main-header .nav .brand-lockup .brand-word b,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after {
-    animation-duration: 2.4s !important;
-    animation-timing-function: ease-in-out !important;
-    animation-iteration-count: infinite !important;
-    animation-play-state: running !important;
-    will-change: transform, background-position, filter, text-shadow !important;
-  }
-}
-</style>
+<!-- Removed obsolete animated branding style: genmerch-final-visible-header-motion-fix -->
 
 
 
@@ -14346,5 +13999,100 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 </style>
 
+
+<style id="genmerch-static-bold-lexend-brand-final">
+/* Static, crisp GENMERCH | SUOT APPAREL wordmark. This deliberately affects lettering only;
+   the sticky navigation's scroll/hide/reveal transitions remain untouched. */
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+.site-header .main-header .nav .brand-lockup .brand-word span,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span,
+.site-header .main-header .nav .brand-lockup .brand-word b,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b,
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  font-family:"Lexend",sans-serif!important;
+  font-style:normal!important;
+  font-weight:900!important;
+  font-synthesis:none!important;
+  font-kerning:normal!important;
+  text-rendering:geometricPrecision!important;
+  -webkit-font-smoothing:antialiased!important;
+  -moz-osx-font-smoothing:grayscale!important;
+  animation:none!important;
+  transition:none!important;
+  transform:none!important;
+  filter:none!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+  will-change:auto!important;
+  background:none!important;
+  background-image:none!important;
+  background-size:auto!important;
+  background-clip:border-box!important;
+  -webkit-background-clip:border-box!important;
+  opacity:1!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+  color:#151515!important;
+  -webkit-text-fill-color:#151515!important;
+  -webkit-text-stroke:0!important;
+  letter-spacing:-.025em!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word span,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span {
+  color:#151515!important;
+  -webkit-text-fill-color:#151515!important;
+  -webkit-text-stroke:0!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word b,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b {
+  color:#f31532!important;
+  -webkit-text-fill-color:#f31532!important;
+  -webkit-text-stroke:0!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  color:#f31532!important;
+  -webkit-text-fill-color:#f31532!important;
+  -webkit-text-stroke:0!important;
+  letter-spacing:-.025em!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
+  animation:none!important;
+  transition:none!important;
+  transform:none!important;
+  filter:none!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+  background:none!important;
+}
+/* The old animated underline is removed; retain the separator and existing layout. */
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after {
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  transition:none!important;
+  transform:none!important;
+  filter:none!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+  background:none!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word::before,
+.site-header .main-header .nav .brand-lockup .brand-word::after,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::before,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::after {
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  transition:none!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
+</style>
 </body>
 </html>
