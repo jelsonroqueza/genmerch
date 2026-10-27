@@ -3995,42 +3995,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   </style>
 
 
-  <style id="genmerch-sticky-header-final">
-    /*
-      Reliable scroll-pinned GENMERCH logo/actions row.
-      A small script toggles this class when the row reaches the top.
-    */
-    .site-header .main-header .nav.genmerch-sticky-fixed {
-      position: fixed !important;
-      top: env(safe-area-inset-top, 0px) !important;
-      left: clamp(8px, 2vw, 28px) !important;
-      right: clamp(8px, 2vw, 28px) !important;
-      width: auto !important;
-      max-width: 1600px !important;
-      margin: 0 auto !important;
-      z-index: 9999 !important;
-      background: #fff !important;
-      box-shadow: 0 5px 18px rgba(0,0,0,.16) !important;
-      border-radius: 0 0 14px 14px !important;
-      isolation: isolate;
-    }
-    .genmerch-sticky-nav-spacer {
-      display: block !important;
-      width: 100% !important;
-      height: 0;
-      pointer-events: none;
-    }
-    @media (max-width: 900px) {
-      .site-header .main-header .nav.genmerch-sticky-fixed {
-        left: 0 !important;
-        right: 0 !important;
-        max-width: 100% !important;
-        border-radius: 0 0 12px 12px !important;
-        border-top-left-radius: 0 !important;
-        border-top-right-radius: 0 !important;
-      }
-    }
-  </style>
+  
 
 
   <style id="genmerch-header-suot-apparel-restore">
@@ -13414,16 +13379,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 })();
 </script>
 
-  <script id="genmerch-sticky-header-controller">
-(function(){
-  /* The former independent fixed-row controller conflicted with smart auto-hide.
-     Keep the legacy controller dormant and remove any legacy spacer/class on load. */
-  var navRow=document.querySelector('.site-header .main-header .nav');
-  if(navRow)navRow.classList.remove('genmerch-sticky-fixed');
-  var spacer=document.querySelector('.genmerch-sticky-nav-spacer');
-  if(spacer)spacer.remove();
-})();
-</script>
+  
 
 <style id="genmerch-product-image-lightbox">
 #genmerchProductImageLightbox{
@@ -13625,14 +13581,15 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-smart-auto-hide-header">
-  /* One controller owns the entire storefront header; no independently fixed inner nav. */
+  /* A single sticky page header owns both hide-on-scroll-down and reveal-on-scroll-up. */
   .site-header{
     position:sticky!important;
     top:0!important;
-    z-index:1000!important;
+    z-index:10000!important;
     transform:translate3d(0,0,0);
-    transition:transform .24s ease,box-shadow .24s ease;
+    transition:transform .22s ease,box-shadow .22s ease;
     will-change:transform;
+    isolation:isolate;
   }
   .site-header.genmerch-header-hidden{
     transform:translate3d(0,-110%,0)!important;
@@ -13640,21 +13597,25 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     box-shadow:none!important;
   }
   .site-header.genmerch-header-compact .announcement-bar,
-  .site-header.genmerch-header-compact .main-header .search,
-  .site-header.genmerch-header-compact .desktop-links{display:none!important}
-  .site-header.genmerch-header-compact .main-header{
+  .site-header.genmerch-header-compact .desktop-links{
+    display:none!important;
+  }
+  .site-header .main-header{
     position:relative!important;
     top:auto!important;
+    z-index:auto!important;
+  }
+  .site-header.genmerch-header-compact .main-header{
     padding-top:5px!important;
     padding-bottom:5px!important;
   }
-  .site-header .main-header{position:relative!important;top:auto!important}
+  /* Disable the former independently-fixed inner row; the whole header is sticky now. */
   .site-header .main-header .nav.genmerch-sticky-fixed{
     position:relative!important;
     inset:auto!important;
+    top:auto!important;
     left:auto!important;
     right:auto!important;
-    top:auto!important;
     width:100%!important;
     max-width:none!important;
     margin:0!important;
@@ -13663,62 +13624,63 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     border-radius:0!important;
   }
   .genmerch-sticky-nav-spacer{display:none!important;height:0!important}
-  .site-header.genmerch-header-compact .main-header .nav{
-    min-height:0!important;
-    gap:10px!important;
-  }
-  .site-header.genmerch-header-compact .brand-word{
-    font-size:clamp(1.05rem,2.2vw,1.65rem)!important;
-  }
-  .site-header.genmerch-header-compact .genmerch-header-tagline{
-    font-size:clamp(.72rem,1.5vw,1.1rem)!important;
-    letter-spacing:1px!important;
-  }
-  .site-header.genmerch-header-compact .header-action{
-    padding-top:2px!important;
-    padding-bottom:2px!important;
-  }
-  .site-header.genmerch-header-compact .header-action .header-icon{
-    transform:scale(.9);
-    transform-origin:center;
-  }
+  .site-header.genmerch-header-compact .main-header .nav{min-height:0!important}
   @media(max-width:760px){
-    .site-header.genmerch-header-compact .main-header{padding:5px 10px!important}
+    .site-header.genmerch-header-compact .main-header{
+      padding:4px 6px 0!important;
+    }
+    /* Approved two-row mobile layout: brand first, all seven icons beneath. */
     .site-header.genmerch-header-compact .main-header .nav{
       display:grid!important;
-      grid-template-columns:minmax(0,1fr) auto!important;
-      gap:7px!important;
+      grid-template-columns:minmax(0,1fr)!important;
+      grid-template-rows:auto auto!important;
+      row-gap:6px!important;
+      column-gap:0!important;
+      padding:6px 5px 7px!important;
+      min-height:0!important;
+      box-sizing:border-box!important;
     }
-    .site-header.genmerch-header-compact .brand-lockup{
+    .site-header.genmerch-header-compact .main-header .nav .brand-lockup{
+      grid-column:1!important;
+      grid-row:1!important;
+      justify-self:center!important;
+      width:auto!important;
+      max-width:100%!important;
       min-width:0!important;
-      max-width:100%;
-      gap:4px!important;
+      flex-wrap:nowrap!important;
+      white-space:nowrap!important;
     }
-    .site-header.genmerch-header-compact .brand-word{
-      font-size:clamp(.95rem,4vw,1.25rem)!important;
-      letter-spacing:-.8px!important;
+    .site-header.genmerch-header-compact .main-header .nav .header-actions{
+      grid-column:1!important;
+      grid-row:2!important;
+      justify-self:stretch!important;
+      width:100%!important;
+      max-width:100%!important;
+      min-width:0!important;
+      display:grid!important;
+      grid-template-columns:repeat(7,minmax(0,1fr))!important;
+      align-items:start!important;
+      justify-content:stretch!important;
+      gap:0!important;
+      margin:0!important;
+      padding:0!important;
     }
-    .site-header.genmerch-header-compact .genmerch-header-tagline{
-      font-size:clamp(.58rem,2.5vw,.8rem)!important;
-      letter-spacing:.2px!important;
-    }
-    .site-header.genmerch-header-compact .header-actions{
-      gap:clamp(3px,1vw,7px)!important;
-    }
-    .site-header.genmerch-header-compact .header-action{
-      min-width:clamp(24px,6.3vw,32px)!important;
-    }
-    .site-header.genmerch-header-compact .header-action .header-icon{transform:scale(.82)}
-    .site-header.genmerch-header-compact .header-action small{
-      font-size:clamp(.42rem,1.55vw,.55rem)!important;
+    .site-header.genmerch-header-compact .main-header .nav .header-actions .header-action{
+      min-width:0!important;
+      max-width:none!important;
+      width:100%!important;
+      padding:2px 1px!important;
+      margin:0!important;
+      box-sizing:border-box!important;
     }
   }
   @media(prefers-reduced-motion:reduce){.site-header{transition:none!important}}
 </style>
 <style id="genmerch-header-approved-typography">
-  /* Approved wordmark: matching type, size and weight; upright, balanced lockup. */
+  /* Approved high-contrast wordmark: bold, bright, upright, and consistently sized. */
   .site-header .main-header .nav .brand-lockup .brand-word,
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+    display:inline-block!important;
     font-family:Arial,Helvetica,sans-serif!important;
     font-size:clamp(1.15rem,2.05vw,1.9rem)!important;
     font-style:normal!important;
@@ -13727,35 +13689,59 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     letter-spacing:-.045em!important;
     text-transform:uppercase!important;
     white-space:nowrap!important;
+    vertical-align:middle!important;
+    text-shadow:none!important;
   }
-  .site-header .main-header .nav .brand-lockup .brand-word span,
+  .site-header .main-header .nav .brand-lockup .brand-word{
+    flex:0 0 auto!important;
+    margin:0!important;
+    padding:0!important;
+    color:#171717!important;
+    -webkit-text-fill-color:#171717!important;
+  }
+  .site-header .main-header .nav .brand-lockup .brand-word span{
+    color:#171717!important;
+    -webkit-text-fill-color:#171717!important;
+    font:inherit!important;
+  }
   .site-header .main-header .nav .brand-lockup .brand-word b{
-    font-family:inherit!important;
-    font-size:inherit!important;
-    font-style:normal!important;
+    color:#f32232!important;
+    -webkit-text-fill-color:#f32232!important;
+    background:none!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
+    font:inherit!important;
     font-weight:900!important;
-    line-height:inherit!important;
+  }
+  .site-header .main-header .nav .brand-lockup .brand-word::after{
+    content:none!important;
+    display:none!important;
+    animation:none!important;
+    background:none!important;
   }
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
     display:inline-flex!important;
     align-items:center!important;
+    justify-content:flex-start!important;
     flex:0 1 auto!important;
     position:static!important;
     top:auto!important;
     margin:0!important;
     padding:0!important;
-    color:#171717!important;
+    color:#f32232!important;
+    -webkit-text-fill-color:#f32232!important;
     background:none!important;
-    -webkit-text-fill-color:#171717!important;
+    -webkit-background-clip:border-box!important;
+    background-clip:border-box!important;
     animation:none!important;
     transform:none!important;
   }
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before{
     content:"|"!important;
     display:inline-block!important;
-    margin:0 .36em 0 .04em!important;
-    color:#888!important;
-    -webkit-text-fill-color:#888!important;
+    margin:0 .34em 0 .04em!important;
+    color:#555!important;
+    -webkit-text-fill-color:#555!important;
     font:inherit!important;
     line-height:1!important;
   }
@@ -13769,6 +13755,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     align-items:center!important;
     flex-wrap:nowrap!important;
     white-space:nowrap!important;
+    gap:clamp(4px,1vw,9px)!important;
+    text-align:left!important;
   }
   .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
   .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
@@ -13779,7 +13767,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
     .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
     .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
-      font-size:clamp(1.04rem,4.35vw,1.22rem)!important;
+      font-size:clamp(.96rem,4vw,1.2rem)!important;
       letter-spacing:-.055em!important;
     }
     .site-header .main-header .nav .brand-lockup{
@@ -13804,26 +13792,19 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   var downDistance=0;
   var upDistance=0;
   var framePending=false;
-  var hideAfter=18;
-  var revealAfter=12;
-  var compactAfter=110;
+  var hideDistance=14;
+  var revealDistance=8;
+  var minimumHideY=100;
 
   function readScrollY(){
-    var scrollingElement=document.scrollingElement || document.documentElement;
-    return Math.max(0,window.scrollY||window.pageYOffset||(scrollingElement&&scrollingElement.scrollTop)||0);
+    var root=document.scrollingElement||document.documentElement;
+    return Math.max(0,window.scrollY||window.pageYOffset||(root&&root.scrollTop)||0);
   }
   function setState(next){
-    if(next===state)return;
+    if(state===next)return;
     state=next;
-    if(state==='full'){
-      header.classList.remove('genmerch-header-hidden','genmerch-header-compact');
-    }else if(state==='hidden'){
-      header.classList.add('genmerch-header-hidden');
-      header.classList.remove('genmerch-header-compact');
-    }else{
-      header.classList.remove('genmerch-header-hidden');
-      header.classList.add('genmerch-header-compact');
-    }
+    header.classList.toggle('genmerch-header-hidden',state==='hidden');
+    header.classList.toggle('genmerch-header-compact',state==='compact');
   }
   function update(){
     var y=readScrollY();
@@ -13836,14 +13817,14 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }else if(delta>0){
       downDistance+=delta;
       upDistance=0;
-      if(y>compactAfter && downDistance>=hideAfter){
+      if(y>minimumHideY && downDistance>=hideDistance){
         setState('hidden');
         downDistance=0;
       }
     }else if(delta<0){
       upDistance+=-delta;
       downDistance=0;
-      if(upDistance>=revealAfter && state!=='compact'){
+      if(upDistance>=revealDistance){
         setState('compact');
         upDistance=0;
       }
@@ -13859,14 +13840,15 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
 
   window.addEventListener('scroll',scheduleUpdate,{passive:true});
+  window.addEventListener('resize',scheduleUpdate,{passive:true});
   window.addEventListener('pageshow',function(){
     lastY=readScrollY();
     downDistance=0;
     upDistance=0;
-    if(lastY<=36)setState('full');
-    else setState('compact');
+    setState(lastY<=36?'full':'compact');
   });
-  window.addEventListener('resize',scheduleUpdate,{passive:true});
+
+  setState(lastY<=36?'full':'compact');
 })();
 </script>
 
