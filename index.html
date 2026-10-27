@@ -9290,7 +9290,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       if(product)setProductPurchaseStage(false,product);
     });
     $('closeProductModal').addEventListener('click',closeProduct);
-    $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay'))closeProduct();});
+    $('productOverlay').addEventListener('click',event=>{if(event.target===$('productOverlay')){event.preventDefault();event.stopPropagation();}});
 
     function cartLineKey(item){
       return `${item.id}|${item.variantId || ''}|${item.size}`;
@@ -9387,7 +9387,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     $('confirmSizeButton').addEventListener('click',confirmSizeSelection);
     $('closeSizeModal').addEventListener('click',closeSizeSelector);
     $('cancelSizeButton').addEventListener('click',closeSizeSelector);
-    $('sizeOverlay').addEventListener('click',event=>{if(event.target===$('sizeOverlay'))closeSizeSelector();});
+    $('sizeOverlay').addEventListener('click',event=>{if(event.target===$('sizeOverlay')){event.preventDefault();event.stopPropagation();}});
 
     function addToCart(id,size,variantId=null,requestedQty=1){
       const p=products.find(item=>String(item.id)===String(id));if(!p||!size)return false;
