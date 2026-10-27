@@ -5903,6 +5903,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
     const GENMERCH_DRAFT_OWNER_KEY = 'genmerch.customerDraft.ownerUserId.v1';
     const GENMERCH_DRAFT_UPDATED_AT_KEY = 'genmerch.customerDraft.updatedAt.v1';
+    let checkoutValidationAttempted=false;
     const GENMERCH_DRAFT_FIELD_IDS = [
       'custName', 'firstName', 'lastName', 'custPhone', 'streetAddress', 'province', 'city', 'barangay',
       'postalCode', 'landmark', 'specialInstructions'
@@ -6220,6 +6221,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
         button.classList.toggle('active', button.dataset.payment === selectedPayment);
       });
       document.querySelectorAll('.field-error').forEach(error => error.classList.remove('show'));
+      document.querySelectorAll('.field input[aria-invalid="true"],.field textarea[aria-invalid="true"]').forEach(input=>input.removeAttribute('aria-invalid'));
+      checkoutValidationAttempted=false;
       hideAllAddressSuggestions();
       isRestoringDraft = false;
     }
@@ -8677,7 +8680,6 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }));
     $('clearSavedDraftButton').addEventListener('click',clearSavedDraft);
 
-    let checkoutValidationAttempted=false;
     const checkoutEmailIsValid=value=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value||'').trim());
     const requiredFields=[
       {id:'firstName',error:'firstNameError',valid:isValidCheckoutNamePart},
