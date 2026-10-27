@@ -14178,3 +14178,80 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 </body>
 </html>
+
+
+<style id="genmerch-final-visible-header-motion-fix">
+/* Final targeted fix: make the header wordmark motion visibly legible on mobile Safari.
+   Only the header brand is affected; no page-wide opacity, overlay, or layout animation. */
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+  display: inline-block !important;
+  transform-origin: 50% 55% !important;
+  animation: gm-final-brand-pulse 1.9s ease-in-out infinite !important;
+  will-change: transform, filter !important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word b,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b {
+  background-image: linear-gradient(100deg, #c60025 0%, #f31535 22%, #ff8b9b 42%, #fff1f3 50%, #ff405e 58%, #c60025 78%, #f31535 100%) !important;
+  background-size: 280% 100% !important;
+  background-position: 0% 50% !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gm-final-merch-shine 2.1s ease-in-out infinite !important;
+  filter: drop-shadow(0 1px 2px rgba(214, 0, 39, .34)) !important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  background-image: linear-gradient(100deg, #d00027 0%, #ff2343 24%, #ff99a8 42%, #fff4f5 50%, #ff3a58 58%, #bd0026 78%, #f31535 100%) !important;
+  background-size: 280% 100% !important;
+  background-position: 0% 50% !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 0 1px 0 rgba(163,0,22,.2), 0 0 8px rgba(255,35,65,.18) !important;
+  animation: gm-final-apparel-shine 2.4s ease-in-out infinite !important;
+  will-change: background-position, text-shadow !important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after {
+  height: 3px !important;
+  transform-origin: left center !important;
+  background: linear-gradient(90deg, #c60025 0%, #ff3454 24%, #fff 48%, #ff3454 62%, #c60025 100%) !important;
+  background-size: 240% 100% !important;
+  animation: gm-final-underline-sweep 1.8s ease-in-out infinite !important;
+  box-shadow: 0 1px 7px rgba(255,20,56,.5) !important;
+  opacity: 1 !important;
+}
+@keyframes gm-final-brand-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(244,20,52,0)); }
+  50% { transform: scale(1.055); filter: drop-shadow(0 2px 5px rgba(244,20,52,.34)); }
+}
+@keyframes gm-final-merch-shine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes gm-final-apparel-shine {
+  0%, 100% { background-position: 0% 50%; text-shadow: 0 1px 0 rgba(163,0,22,.18), 0 0 3px rgba(255,30,60,.10); }
+  50% { background-position: 100% 50%; text-shadow: 0 1px 0 rgba(163,0,22,.25), 0 0 12px rgba(255,30,60,.42); }
+}
+@keyframes gm-final-underline-sweep {
+  0%, 100% { background-position: 0% 50%; transform: scaleX(.55); }
+  50% { background-position: 100% 50%; transform: scaleX(1); }
+}
+/* The user explicitly wants the brand motion; keep this one small component animated
+   even when the device requests reduced motion. All other site motion rules remain unchanged. */
+@media (prefers-reduced-motion: reduce) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .brand-word b,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after {
+    animation-duration: 2.4s !important;
+    animation-timing-function: ease-in-out !important;
+    animation-iteration-count: infinite !important;
+    animation-play-state: running !important;
+    will-change: transform, background-position, filter, text-shadow !important;
+  }
+}
+</style>
