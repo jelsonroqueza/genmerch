@@ -14065,7 +14065,14 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-professional-wordmark-motion-v2">
-/* High-visibility, polished motion applied directly to the GENMERCH / SUOT APPAREL lettering. */
+/* High-visibility, polished motion applied directly to the GENMERCH / SUOT APPAREL lettering.
+   Disable the earlier white-on-white sweep overlay so it cannot wash out the actual text effects. */
+.site-header .main-header .nav .brand-lockup .brand-word::after,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word{
   transform-origin:50% 55%!important;
@@ -14126,6 +14133,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after{
   height:3px!important;
+  transform:scaleX(1)!important;
+  opacity:1!important;
   background:linear-gradient(90deg,#bd0025 0%,#fa1740 24%,#fff 49%,#ff3c59 61%,#bd0025 100%)!important;
   background-size:260% 100%!important;
   animation:gm-pro-apparel-underline 2.2s ease-in-out infinite!important;
