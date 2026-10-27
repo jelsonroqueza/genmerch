@@ -5559,6 +5559,13 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 @media(prefers-reduced-motion:reduce){
   #customerAuthOverlay *{transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Remove the rotated decorative corner streaks from the auth header. */
+#customerAuthOverlay .customer-auth-head::before,
+#customerAuthOverlay .customer-auth-head::after {
+  content: none !important;
+  display: none !important;
+}
 </style>
 
 </head>
