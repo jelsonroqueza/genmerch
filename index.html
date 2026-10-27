@@ -14119,6 +14119,71 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 </style>
 
+<style id="genmerch-mobile-brand-fit-correction">
+/* Fit the complete brand lockup to narrow screens without clipping the final letters. */
+.site-header .main-header .nav .brand-lockup,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+  box-sizing:border-box!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  flex:0 1 auto!important;
+  gap:clamp(2px,.55vw,5px)!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-type,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-type {
+  min-width:0!important;
+  flex:0 1 auto!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  min-width:0!important;
+  max-width:100%!important;
+  flex:0 1 auto!important;
+  white-space:nowrap!important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
+  margin-left:0!important;
+  margin-right:.22em!important;
+}
+@media(max-width:760px) {
+  .site-header .main-header .nav .brand-lockup,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+    justify-content:center!important;
+    gap:clamp(2px,.55vw,4px)!important;
+  }
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    font-size:clamp(1.12rem,5.4vw,1.42rem)!important;
+    letter-spacing:-.065em!important;
+    line-height:1.04!important;
+  }
+}
+@media(max-width:390px) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    font-size:clamp(1.02rem,5.15vw,1.22rem)!important;
+    letter-spacing:-.07em!important;
+  }
+}
+@media(max-width:340px) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    font-size:1rem!important;
+    letter-spacing:-.075em!important;
+  }
+}
+</style>
+
 <style id="genmerch-brand-refresh-entrance">
 /* Replays on every full page load/refresh; transforms only the brand text, never the nav row. */
 @keyframes genmerchBrandRefreshEntrance {
