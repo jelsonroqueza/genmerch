@@ -5218,6 +5218,349 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
 }
 </style>
 
+<style id="genmerch-account-gate-inspired-auth">
+/* Warm, editorial account experience inspired by the account-required screen. */
+#customerAuthOverlay{
+  padding:clamp(12px,3vw,26px);
+  background:
+    radial-gradient(ellipse at 12% 9%,rgba(255,119,48,.28),transparent 35%),
+    radial-gradient(ellipse at 90% 86%,rgba(235,46,31,.20),transparent 37%),
+    linear-gradient(145deg,rgba(49,35,30,.91),rgba(76,53,43,.87) 48%,rgba(35,31,29,.93));
+  -webkit-backdrop-filter:blur(14px) saturate(112%);
+  backdrop-filter:blur(14px) saturate(112%);
+}
+#customerAuthOverlay .customer-auth-modal{
+  width:min(468px,100%);
+  max-height:min(92vh,92dvh);
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:20px;
+  background:linear-gradient(160deg,#f8f0e7 0%,#eee3d7 52%,#f7eee6 100%);
+  box-shadow:0 30px 90px rgba(15,10,8,.38),0 8px 28px rgba(40,23,16,.19),inset 0 1px 0 rgba(255,255,255,.95);
+  color:#332b28;
+  scrollbar-width:thin;
+  scrollbar-color:#cbb6a8 transparent;
+}
+#customerAuthOverlay .customer-auth-head{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:0;
+  padding:22px 24px 19px;
+  overflow:hidden;
+  border:0;
+  border-bottom:1px solid rgba(194,115,77,.2);
+  background:
+    radial-gradient(ellipse at 50% -12%,rgba(255,255,255,.96),transparent 59%),
+    radial-gradient(ellipse at 0% 100%,rgba(255,117,46,.20),transparent 44%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,190,126,.27),transparent 43%),
+    linear-gradient(145deg,#f7e8d7 0%,#f1e4d7 48%,#f9e9d8 100%);
+  color:#302725;
+  text-align:center;
+}
+#customerAuthOverlay .customer-auth-head:before,
+#customerAuthOverlay .customer-auth-head:after{
+  position:absolute;
+  pointer-events:none;
+  content:"";
+}
+#customerAuthOverlay .customer-auth-head:before{
+  inset:0 0 auto;
+  height:5px;
+  background:linear-gradient(90deg,#ff7a25 0%,#ff3b23 52%,#d91e1b 100%);
+}
+#customerAuthOverlay .customer-auth-head:after{
+  left:24px;
+  right:24px;
+  bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(226,82,46,.65),transparent);
+}
+#customerAuthOverlay .customer-auth-head-brand{
+  position:relative;
+  z-index:1;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+#customerAuthOverlay .customer-auth-brand-logo{
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  width:112px;
+  height:76px;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+#customerAuthOverlay .customer-auth-brand-logo img{
+  display:block;
+  width:108px;
+  height:76px;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 3px rgba(87,50,30,.10));
+}
+#customerAuthOverlay .customer-auth-brand-copy{width:100%;min-width:0;padding:0}
+#customerAuthOverlay .customer-auth-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:1px 0 9px;
+  padding:5px 11px;
+  border:1px solid rgba(245,111,48,.16);
+  border-radius:999px;
+  background:rgba(255,129,57,.10);
+  color:#d84a27;
+  font-size:.62rem;
+  font-weight:900;
+  letter-spacing:.13em;
+  line-height:1.35;
+}
+#customerAuthOverlay .customer-auth-head h2{
+  margin:0;
+  color:#332b2a;
+  font-size:clamp(1.28rem,4vw,1.55rem);
+  font-weight:950;
+  letter-spacing:-.045em;
+  line-height:1.18;
+  text-wrap:balance;
+}
+#customerAuthOverlay .customer-auth-head p{
+  max-width:340px;
+  margin:8px auto 0;
+  color:#786b65;
+  font-size:.83rem;
+  line-height:1.5;
+}
+#customerAuthOverlay .customer-auth-close{
+  position:absolute;
+  z-index:2;
+  top:13px;
+  right:13px;
+  display:grid;
+  place-items:center;
+  flex:0 0 31px;
+  width:31px;
+  height:31px;
+  margin:0;
+  border:1px solid rgba(110,81,66,.17);
+  border-radius:50%;
+  background:rgba(255,255,255,.52);
+  color:#65534a;
+  font-size:1.3rem;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+#customerAuthOverlay .customer-auth-close:hover{
+  transform:rotate(90deg);
+  border-color:rgba(216,74,39,.35);
+  background:#fff;
+}
+#customerAuthOverlay .customer-auth-body{
+  padding:20px 22px 19px;
+  background:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.36));
+}
+#customerAuthOverlay .customer-auth-benefits{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin:0 0 18px;
+}
+#customerAuthOverlay .customer-auth-benefit{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:12px 5px 11px;
+  border:1px solid rgba(208,160,132,.30);
+  border-radius:12px;
+  background:linear-gradient(145deg,rgba(255,255,255,.35),rgba(255,247,240,.20));
+  text-align:center;
+}
+#customerAuthOverlay .customer-auth-benefit-icon{
+  display:grid;
+  place-items:center;
+  min-height:29px;
+  font-size:1.4rem;
+  line-height:1;
+}
+#customerAuthOverlay .customer-auth-benefit strong{
+  color:#3d302b;
+  font-size:.69rem;
+  font-weight:900;
+  line-height:1.25;
+}
+#customerAuthOverlay .customer-auth-benefit small{
+  color:#83736a;
+  font-size:.62rem;
+  line-height:1.25;
+}
+#customerAuthOverlay .customer-auth-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  margin:0 0 18px;
+  padding:5px;
+  border:1px solid rgba(211,178,158,.35);
+  border-radius:11px;
+  background:rgba(218,198,182,.30);
+}
+#customerAuthOverlay .customer-auth-tab{
+  min-height:41px;
+  padding:9px 10px;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  color:#796a62;
+  font-size:.82rem;
+  font-weight:850;
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease;
+}
+#customerAuthOverlay .customer-auth-tab.active{
+  border-color:rgba(255,255,255,.85);
+  background:linear-gradient(180deg,#fffdfa,#fff7f0);
+  color:#382d29;
+  box-shadow:0 2px 7px rgba(78,45,27,.08);
+}
+#customerAuthOverlay .customer-auth-field{margin:0 0 15px}
+#customerAuthOverlay .customer-auth-field label{
+  display:block;
+  margin:0 0 7px;
+  color:#42332d;
+  font-size:.79rem;
+  font-weight:900;
+}
+#customerAuthOverlay .customer-auth-field input{
+  display:block;
+  width:100%;
+  height:46px;
+  padding:0 13px;
+  border:1px solid #ddcbbf;
+  border-radius:9px;
+  background:rgba(255,253,250,.79);
+  color:#332a26;
+  box-shadow:inset 0 1px 2px rgba(87,52,33,.025);
+  font:inherit;
+  font-size:.87rem;
+  outline:none;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+#customerAuthOverlay .customer-auth-field input:focus{
+  border-color:#f06436;
+  background:#fffdfa;
+  box-shadow:0 0 0 3px rgba(240,100,54,.13);
+}
+#customerAuthOverlay .customer-auth-field input::placeholder{color:#ad9d92}
+#customerAuthOverlay .customer-auth-password-toggle{
+  border:1px solid #ead7c9;
+  border-radius:7px;
+  background:#fff4eb;
+  color:#69483a;
+}
+#customerAuthOverlay .customer-auth-help{margin:7px 0 0;color:#8b7b71;font-size:.72rem}
+#customerAuthOverlay .customer-auth-send{
+  min-height:46px;
+  border:1px solid #ee3425;
+  border-radius:9px;
+  background:linear-gradient(105deg,#ff7428 0%,#ff3b22 48%,#e91d1b 100%);
+  box-shadow:0 6px 15px rgba(227,51,31,.19),inset 0 1px 0 rgba(255,255,255,.22);
+  color:#fff;
+  font-size:.86rem;
+  font-weight:900;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+#customerAuthOverlay .customer-auth-send:hover:not(:disabled){
+  transform:translateY(-1px);
+  box-shadow:0 9px 18px rgba(227,51,31,.23);
+  filter:saturate(1.06);
+}
+#customerAuthOverlay .customer-auth-send:active:not(:disabled){transform:translateY(0)}
+#customerAuthOverlay .customer-auth-divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:18px 0;
+  color:#a08e82;
+  font-size:.67rem;
+  font-weight:850;
+  letter-spacing:.14em;
+}
+#customerAuthOverlay .customer-auth-divider:before,
+#customerAuthOverlay .customer-auth-divider:after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:linear-gradient(90deg,transparent,#d9c5b7,transparent);
+}
+#customerAuthOverlay .customer-auth-google{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  min-height:46px;
+  padding:10px 13px;
+  border:1px solid #ddc8b9;
+  border-radius:9px;
+  background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,248,242,.75));
+  color:#3a2e29;
+  box-shadow:0 2px 5px rgba(76,45,28,.035);
+  font-size:.82rem;
+  font-weight:850;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+#customerAuthOverlay .customer-auth-google:hover{
+  transform:translateY(-1px);
+  border-color:#d9a98f;
+  background:#fffaf6;
+  box-shadow:0 5px 12px rgba(76,45,28,.07);
+}
+#customerAuthOverlay .customer-auth-message{
+  margin:14px 0 0;
+  padding:11px 12px;
+  border:1px solid #e4cfc1;
+  border-radius:9px;
+  background:rgba(255,255,255,.55);
+  color:#51413a;
+  font-size:.81rem;
+  line-height:1.5;
+}
+#customerAuthOverlay .customer-auth-message.error{border-color:#ffd0c6;background:#fff1ed;color:#a72a1c}
+#customerAuthOverlay .customer-auth-message.success{border-color:#c7e8cd;background:#eef9f0;color:#176b30}
+#customerAuthOverlay .customer-auth-privacy{
+  margin:16px 0 0;
+  color:#9b887c;
+  font-size:.67rem;
+  line-height:1.5;
+  text-align:center;
+}
+#customerAuthOverlay button:focus-visible{outline:3px solid rgba(236,77,43,.36);outline-offset:3px}
+@media(max-width:520px){
+  #customerAuthOverlay{padding:10px}
+  #customerAuthOverlay .customer-auth-modal{width:100%;max-height:min(94vh,94dvh);border-radius:17px}
+  #customerAuthOverlay .customer-auth-head{padding:20px 16px 17px}
+  #customerAuthOverlay .customer-auth-brand-logo{width:96px;height:66px}
+  #customerAuthOverlay .customer-auth-brand-logo img{width:94px;height:66px}
+  #customerAuthOverlay .customer-auth-eyebrow{font-size:.57rem;letter-spacing:.09em}
+  #customerAuthOverlay .customer-auth-head h2{font-size:1.28rem}
+  #customerAuthOverlay .customer-auth-head p{font-size:.78rem}
+  #customerAuthOverlay .customer-auth-body{padding:17px 15px 16px}
+  #customerAuthOverlay .customer-auth-benefits{gap:6px;margin-bottom:15px}
+  #customerAuthOverlay .customer-auth-benefit{padding:10px 3px 9px}
+  #customerAuthOverlay .customer-auth-benefit strong{font-size:.65rem}
+  #customerAuthOverlay .customer-auth-benefit small{font-size:.59rem}
+}
+@media(prefers-reduced-motion:reduce){
+  #customerAuthOverlay *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+
 </head>
 <body>
   <header class="site-header">
