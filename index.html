@@ -14001,8 +14001,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-static-bold-lexend-brand-final">
-/* Static, crisp GENMERCH | SUOT APPAREL wordmark. This deliberately affects lettering only;
-   the sticky navigation's scroll/hide/reveal transitions remain untouched. */
+/* Static, enlarged, crisp Lexend wordmark; no animation. Only brand lettering is changed. */
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
 .site-header .main-header .nav .brand-lockup .brand-word span,
@@ -14026,19 +14025,16 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   text-shadow:none!important;
   box-shadow:none!important;
   will-change:auto!important;
-  background:none!important;
-  background-image:none!important;
-  background-size:auto!important;
-  background-clip:border-box!important;
-  -webkit-background-clip:border-box!important;
   opacity:1!important;
 }
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+  font-size:clamp(2rem,3.45vw,3.05rem)!important;
+  line-height:1.08!important;
+  letter-spacing:-.035em!important;
   color:#151515!important;
   -webkit-text-fill-color:#151515!important;
   -webkit-text-stroke:0!important;
-  letter-spacing:-.025em!important;
 }
 .site-header .main-header .nav .brand-lockup .brand-word span,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span {
@@ -14054,10 +14050,19 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-  color:#f31532!important;
-  -webkit-text-fill-color:#f31532!important;
-  -webkit-text-stroke:0!important;
+  display:inline-block!important;
+  font-size:clamp(1.65rem,3.1vw,2.65rem)!important;
+  line-height:1.08!important;
   letter-spacing:-.025em!important;
+  font-weight:900!important;
+  background-image:linear-gradient(100deg,#e5092e 0%,#ff334d 28%,#d4145a 53%,#f4a62a 78%,#e5092e 100%)!important;
+  background-size:100% 100%!important;
+  background-repeat:no-repeat!important;
+  background-clip:text!important;
+  -webkit-background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:0!important;
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
@@ -14069,7 +14074,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   box-shadow:none!important;
   background:none!important;
 }
-/* The old animated underline is removed; retain the separator and existing layout. */
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after {
   content:none!important;
@@ -14092,6 +14096,28 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   transition:none!important;
   filter:none!important;
   box-shadow:none!important;
+}
+@media (max-width: 700px) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+    font-size:clamp(1.45rem,5.3vw,2.1rem)!important;
+    letter-spacing:-.04em!important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    font-size:clamp(1.15rem,4.7vw,1.8rem)!important;
+    letter-spacing:-.035em!important;
+  }
+}
+@media (max-width: 390px) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+    font-size:1.3rem!important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    font-size:1.02rem!important;
+  }
 }
 </style>
 </body>
