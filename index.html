@@ -14001,7 +14001,25 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-static-bold-lexend-brand-final">
-/* Static, enlarged, crisp Lexend wordmark; no animation. Only brand lettering is changed. */
+/* Responsive brand lockup: preserve the header layout while keeping both labels readable. */
+.site-header .main-header .nav .brand-lockup,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  gap:clamp(5px,.9vw,12px)!important;
+  white-space:nowrap!important;
+}
+.site-header .main-header .nav .brand-lockup .brand-type,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-type {
+  display:inline-flex!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+}
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
 .site-header .main-header .nav .brand-lockup .brand-word span,
@@ -14018,42 +14036,37 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   text-rendering:geometricPrecision!important;
   -webkit-font-smoothing:antialiased!important;
   -moz-osx-font-smoothing:grayscale!important;
-
-  transition:none!important;
-
-
   text-shadow:none!important;
   box-shadow:none!important;
-  will-change:auto!important;
-
+  -webkit-text-stroke:0!important;
 }
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
-  font-size:clamp(2rem,3.45vw,3.05rem)!important;
+  display:inline-block!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  font-size:clamp(1.5rem,2.75vw,2.55rem)!important;
   line-height:1.08!important;
-  letter-spacing:-.035em!important;
+  letter-spacing:-.045em!important;
   color:#151515!important;
   -webkit-text-fill-color:#151515!important;
-  -webkit-text-stroke:0!important;
 }
 .site-header .main-header .nav .brand-lockup .brand-word span,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word span {
-  color:#151515!important;
-  -webkit-text-fill-color:#151515!important;
-  -webkit-text-stroke:0!important;
+  color:#151515!important;-webkit-text-fill-color:#151515!important;
 }
 .site-header .main-header .nav .brand-lockup .brand-word b,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word b {
-  color:#f31532!important;
-  -webkit-text-fill-color:#f31532!important;
-  -webkit-text-stroke:0!important;
+  color:#f31532!important;-webkit-text-fill-color:#f31532!important;
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
   display:inline-block!important;
-  font-size:clamp(2rem,3.45vw,3.05rem)!important;
+  flex:0 1 auto!important;
+  min-width:0!important;
+  font-size:clamp(1.5rem,2.75vw,2.55rem)!important;
   line-height:1.08!important;
-  letter-spacing:-.025em!important;
+  letter-spacing:-.045em!important;
   font-weight:900!important;
   background-image:linear-gradient(100deg,#e5092e 0%,#ff334d 28%,#d4145a 53%,#f4a62a 78%,#e5092e 100%)!important;
   background-size:100% 100%!important;
@@ -14062,95 +14075,73 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   -webkit-background-clip:text!important;
   color:transparent!important;
   -webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:0!important;
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
-  animation:none!important;
-  transition:none!important;
-  transform:none!important;
-  filter:none!important;
-  text-shadow:none!important;
-  box-shadow:none!important;
-  background:none!important;
+  animation:none!important;transition:none!important;transform:none!important;filter:none!important;
+  text-shadow:none!important;box-shadow:none!important;background:none!important;
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after,
-.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after {
-  content:none!important;
-  display:none!important;
-  animation:none!important;
-  transition:none!important;
-  transform:none!important;
-  filter:none!important;
-  text-shadow:none!important;
-  box-shadow:none!important;
-  background:none!important;
-}
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::after,
 .site-header .main-header .nav .brand-lockup .brand-word::before,
 .site-header .main-header .nav .brand-lockup .brand-word::after,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::before,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word::after {
-  content:none!important;
-  display:none!important;
-  animation:none!important;
-  transition:none!important;
-  filter:none!important;
-  box-shadow:none!important;
+  content:none!important;display:none!important;animation:none!important;transition:none!important;
+  transform:none!important;filter:none!important;text-shadow:none!important;box-shadow:none!important;background:none!important;
 }
-@media (max-width: 700px) {
-  .site-header .main-header .nav .brand-lockup .brand-word,
-  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
-    font-size:clamp(1.45rem,5.3vw,2.1rem)!important;
-    letter-spacing:-.04em!important;
+/* Reflow only the brand sizing at smaller widths; do not touch navigation behavior. */
+@media (max-width:760px) {
+  .site-header .main-header .nav .brand-lockup,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+    gap:clamp(4px,1vw,7px)!important;
   }
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
   .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-    font-size:clamp(1.45rem,5.3vw,2.1rem)!important;
-    letter-spacing:-.035em!important;
+    font-size:clamp(.88rem,3.65vw,1.55rem)!important;
+    letter-spacing:-.055em!important;
   }
 }
-@media (max-width: 390px) {
-  .site-header .main-header .nav .brand-lockup .brand-word,
-  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
-    font-size:1.3rem!important;
+@media (max-width:390px) {
+  .site-header .main-header .nav .brand-lockup,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+    gap:4px!important;
   }
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
   .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-    font-size:1.3rem!important;
+    font-size:clamp(.78rem,3.45vw,.98rem)!important;
+    letter-spacing:-.06em!important;
   }
 }
 </style>
 
 <style id="genmerch-brand-refresh-entrance">
-/* Premium one-time entrance: replays naturally whenever the page is refreshed. */
+/* Replays on every full page load/refresh; transforms only the brand text, never the nav row. */
 @keyframes genmerchBrandRefreshEntrance {
-  0% { opacity: 0; transform: translate3d(0, 12px, 0) scale(.985); filter: blur(4px); }
-  68% { opacity: 1; transform: translate3d(0, -1px, 0) scale(1.002); filter: blur(0); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+  0% { opacity:0; transform:translate3d(0,8px,0); filter:blur(2px); }
+  75% { opacity:1; transform:translate3d(0,-1px,0); filter:blur(0); }
+  100% { opacity:1; transform:translate3d(0,0,0); filter:blur(0); }
 }
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
-  display: inline-block !important;
-  transform-origin: center center !important;
-  animation: genmerchBrandRefreshEntrance 920ms cubic-bezier(.2,.78,.22,1) 40ms both !important;
-  will-change: transform, opacity, filter !important;
+  animation:genmerchBrandRefreshEntrance 760ms cubic-bezier(.2,.72,.25,1) 60ms both!important;
+  transform-origin:center center!important;
 }
 .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-  transform-origin: center center !important;
-  animation: genmerchBrandRefreshEntrance 980ms cubic-bezier(.2,.78,.22,1) 150ms both !important;
-  will-change: transform, opacity, filter !important;
+  animation:genmerchBrandRefreshEntrance 820ms cubic-bezier(.2,.72,.25,1) 130ms both!important;
+  transform-origin:center center!important;
 }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion:reduce) {
   .site-header .main-header .nav .brand-lockup .brand-word,
   .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
   .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-    will-change: auto !important;
+    animation:none!important;opacity:1!important;transform:none!important;filter:none!important;
   }
 }
 </style>
