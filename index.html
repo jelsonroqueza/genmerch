@@ -8306,6 +8306,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const session=customerAuthCurrentSession;
         if(session&&session.user){
           refreshCustomerOrdersBadge(session).catch(error=>console.warn('GENMERCH Orders badge fallback refresh failed.',error));
+          refreshCustomerRateBadge(session).catch(error=>console.warn('GENMERCH RATE badge fallback refresh failed.',error));
         }
       },15000);
     }
@@ -8321,6 +8322,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       if(customerOrdersRealtimeChannel&&customerOrdersRealtimeUserId===userId){
         refreshCustomerOrdersBadge(session).catch(error=>console.warn('GENMERCH Orders badge refresh failed.',error));
+        refreshCustomerRateBadge(session).catch(error=>console.warn('GENMERCH RATE badge refresh failed.',error));
         startCustomerOrdersBadgePolling();
         return;
       }
@@ -8339,6 +8341,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             const activeSession=customerAuthCurrentSession;
             if(!activeSession||!activeSession.user||String(activeSession.user.id)!==userId)return;
             refreshCustomerOrdersBadge(activeSession).catch(error=>console.warn('GENMERCH realtime Orders badge update failed.',error));
+            refreshCustomerRateBadge(activeSession).catch(error=>console.warn('GENMERCH realtime RATE badge update failed.',error));
             if($('customerOrdersOverlay')&&$('customerOrdersOverlay').classList.contains('open')){
               loadCustomerAccountOrders(true);
             }
@@ -10412,6 +10415,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           sellerCaptureGoogleSheetsSessionToken(event,session);
           updateCustomerAuthScreen(session);
           window.setTimeout(()=>syncCustomerOrdersBadgeRealtime(session),0);
+          window.setTimeout(()=>refreshCustomerRateBadge(session),0);
           window.setTimeout(()=>maybeSendCustomerWelcomeEmail(session),0);
           syncWishlistForCustomerSession(session,true);
           if(event==='SIGNED_OUT'){
@@ -12724,27 +12728,55 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       showToast('GENMERCH Store Rating: '+summary.average.toFixed(1)+'/5 from '+summary.count.toLocaleString('en-PH')+' published customer review'+(summary.count===1?'':'s')+'.');
     }
-    async function refreshCustomerRateBadge(){
+    let customerRateBadgeRefreshSequence=0;
+    async function refreshCustomerRateBadge(sessionOverride){
       const badge=$('customerRateBadge');if(!badge)return;
+      const sequence=++customerRateBadgeRefreshSequence;
       try{
-        const client=getCustomerAuthClient(),sessionResult=await client.auth.getSession(),session=sessionResult.data&&sessionResult.data.session;
-        if(!session||!session.user){badge.hidden=true;return;}
-        const readAt=await getGenmerchHeaderReadAt(client,String(session.user.id));
-        let ordersQuery=client.from('orders').select('id',{count:'exact'}).eq('user_id',session.user.id).eq('status','delivered');
-        if(readAt)ordersQuery=ordersQuery.gt('updated_at',readAt);
-        const ordersResult=await ordersQuery.limit(100);
+        const client=getCustomerAuthClient();
+        let session;
+        if(arguments.length>0){
+          session=sessionOverride;
+        }else{
+          const sessionResult=await client.auth.getSession();
+          if(sessionResult.error)throw sessionResult.error;
+          session=sessionResult.data&&sessionResult.data.session;
+        }
+        const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+        if(!userId){
+          if(sequence===customerRateBadgeRefreshSequence){badge.textContent='0';badge.hidden=true;}
+          return;
+        }
+        const ordersResult=await client.from('orders')
+          .select('id,created_at')
+          .eq('user_id',userId)
+          .eq('status','delivered')
+          .order('created_at',{ascending:false})
+          .limit(100);
         if(ordersResult.error)throw ordersResult.error;
-        const ids=(ordersResult.data||[]).map(row=>row.id);
-        if(!ids.length){badge.hidden=true;return;}
+        if(sequence!==customerRateBadgeRefreshSequence)return;
+        const ids=(ordersResult.data||[]).map(row=>row.id).filter(Boolean);
+        if(!ids.length){
+          badge.textContent='0';badge.hidden=true;
+          return;
+        }
         const [itemsResult,reviewsResult]=await Promise.all([
-          client.from('order_items').select('id').in('order_id',ids),
-          client.from('product_reviews').select('order_item_id').eq('user_id',session.user.id)
+          client.from('order_items').select('id,product_id').in('order_id',ids),
+          client.from('product_reviews').select('order_item_id').eq('user_id',userId)
         ]);
-        if(itemsResult.error)throw itemsResult.error;if(reviewsResult.error)throw reviewsResult.error;
+        if(itemsResult.error)throw itemsResult.error;
+        if(reviewsResult.error)throw reviewsResult.error;
+        if(sequence!==customerRateBadgeRefreshSequence)return;
+        const activeSession=customerAuthCurrentSession;
+        const activeUserId=activeSession&&activeSession.user&&activeSession.user.id?String(activeSession.user.id):'';
+        if(activeUserId&&activeUserId!==userId)return;
         const reviewed=new Set((reviewsResult.data||[]).map(row=>String(row.order_item_id)));
-        const count=(itemsResult.data||[]).filter(row=>!reviewed.has(String(row.id))).length;
-        badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;
-      }catch(error){console.warn('GENMERCH review badge could not refresh.',error);}
+        const count=(itemsResult.data||[]).filter(row=>row.product_id&&!reviewed.has(String(row.id))).length;
+        badge.textContent=count>99?'99+':String(count);
+        badge.hidden=count===0;
+      }catch(error){
+        if(sequence===customerRateBadgeRefreshSequence)console.warn('GENMERCH review badge could not refresh.',error);
+      }
     }
     async function loadCustomerRateCenter(){
       const body=$('customerRateBody');
@@ -12955,7 +12987,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(authResult.error)throw authResult.error;
         customerAuthCurrentSession=authResult.data&&authResult.data.session&&authResult.data.session.user?authResult.data.session:null;
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
-        refreshCustomerRateBadge();
+        refreshCustomerRateBadge(customerAuthCurrentSession);
       }catch(error){
         console.warn('GENMERCH could not initialize the Orders badge from the customer session.',error);
       }
@@ -12972,16 +13004,19 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         syncWishlistForCustomerSession(undefined,true);
         syncCustomerDraftForSession(undefined,true);
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
+        refreshCustomerRateBadge(customerAuthCurrentSession);
       }
     });
     window.addEventListener('focus',()=>{
       if(!document.hidden&&customerAuthCurrentSession&&customerAuthCurrentSession.user){
         refreshCustomerOrdersBadge(customerAuthCurrentSession).catch(error=>console.warn('GENMERCH Orders badge focus refresh failed.',error));
+        refreshCustomerRateBadge(customerAuthCurrentSession).catch(error=>console.warn('GENMERCH RATE badge focus refresh failed.',error));
       }
     });
     window.addEventListener('online',()=>{
       if(customerAuthCurrentSession&&customerAuthCurrentSession.user){
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
+        refreshCustomerRateBadge(customerAuthCurrentSession);
       }
     });
     document.addEventListener('click',event=>{
