@@ -14252,5 +14252,39 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 </style>
 
+
+
+<style id="genmerch-brand-separator-spacing-fix">
+/* Give the brand separator breathing room without changing header layout or scroll behavior. */
+.site-header .main-header .nav .brand-lockup,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+  gap: clamp(10px, 1.35vw, 16px) !important;
+}
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+  letter-spacing: -.025em !important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  letter-spacing: -.025em !important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
+  margin: 0 .52em 0 .16em !important;
+  flex: 0 0 auto !important;
+}
+@media (max-width: 480px) {
+  .site-header .main-header .nav .brand-lockup,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup {
+    gap: 10px !important;
+  }
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::before,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline::before {
+    margin-right: .48em !important;
+    margin-left: .14em !important;
+  }
+}
+</style>
+
 </body>
 </html>
