@@ -10475,6 +10475,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           sellerCaptureGoogleSheetsSessionToken(event,session);
           updateCustomerAuthScreen(session);
+          if(event==='SIGNED_IN'&&session&&session.user&&typeof window.playGenmerchNotificationChime==='function'){
+            const welcomeKey='welcome:'+String(session.user.id||'customer')+':'+String(session.expires_at||Date.now());
+            window.setTimeout(()=>window.playGenmerchNotificationChime(welcomeKey,'welcome'),80);
+          }
           window.setTimeout(()=>syncCustomerOrdersBadgeRealtime(session),0);
           window.setTimeout(()=>refreshCustomerRateBadge(session),0);
           window.setTimeout(()=>maybeSendCustomerWelcomeEmail(session),0);
@@ -12917,7 +12921,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       };
       window.playGenmerchNotificationChime=function(eventKey,soundType){
         const key=String(eventKey||'').trim();
-        const profile=soundType==='cart'||soundType==='checkout'?soundType:'notification';
+        const profile=['cart','checkout','welcome'].includes(soundType)?soundType:'notification';
         if(!enabled||!key||playedEvents.has(key))return;
         const now=Date.now();
         playedEvents.set(key,now);
@@ -12926,7 +12930,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           for(const [seenKey,seenAt] of playedEvents){if(seenAt<cutoff)playedEvents.delete(seenKey);}
           while(playedEvents.size>200)playedEvents.delete(playedEvents.keys().next().value);
         }
-        const cooldownMs=profile==='cart'?150:profile==='checkout'?800:1800;
+        const cooldownMs=profile==='cart'?150:profile==='checkout'?800:profile==='welcome'?2200:1800;
         if(now-(lastChimeAtByType.get(profile)||0)<cooldownMs)return;
         if(!audioContext||!audioUnlocked||audioContext.state!=='running')return;
         lastChimeAtByType.set(profile,now);
@@ -12936,7 +12940,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             ?[{frequency:1174.66,offset:0,duration:0.14,volume:0.05},{frequency:1567.98,offset:0.085,duration:0.2,volume:0.06}]
             :profile==='checkout'
               ?[{frequency:783.99,offset:0,duration:0.22,volume:0.055},{frequency:987.77,offset:0.12,duration:0.22,volume:0.06},{frequency:1174.66,offset:0.24,duration:0.25,volume:0.065},{frequency:1567.98,offset:0.38,duration:0.32,volume:0.075}]
-              :[{frequency:880,offset:0,duration:0.24,volume:0.075},{frequency:1174.66,offset:0.13,duration:0.24,volume:0.075},{frequency:1567.98,offset:0.27,duration:0.24,volume:0.075}];
+              :profile==='welcome'
+                ?[{frequency:987.77,offset:0,duration:0.22,volume:0.042},{frequency:1318.51,offset:0.12,duration:0.3,volume:0.048}]
+                :[{frequency:880,offset:0,duration:0.24,volume:0.075},{frequency:1174.66,offset:0.13,duration:0.24,volume:0.075},{frequency:1567.98,offset:0.27,duration:0.24,volume:0.075}];
           notes.forEach(note=>{
             const oscillator=audioContext.createOscillator();
             const gain=audioContext.createGain();
