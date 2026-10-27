@@ -13581,11 +13581,11 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-smart-auto-hide-header">
-  /* A single sticky page header owns both hide-on-scroll-down and reveal-on-scroll-up. */
+  /* One sticky header: hide while scrolling down, reveal compact header while scrolling up. */
   .site-header{
     position:sticky!important;
     top:0!important;
-    z-index:10000!important;
+    z-index:80!important;
     transform:translate3d(0,0,0);
     transition:transform .22s ease,box-shadow .22s ease;
     will-change:transform;
@@ -13609,7 +13609,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     padding-top:5px!important;
     padding-bottom:5px!important;
   }
-  /* Disable the former independently-fixed inner row; the whole header is sticky now. */
   .site-header .main-header .nav.genmerch-sticky-fixed{
     position:relative!important;
     inset:auto!important;
@@ -13625,11 +13624,12 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
   .genmerch-sticky-nav-spacer{display:none!important;height:0!important}
   .site-header.genmerch-header-compact .main-header .nav{min-height:0!important}
+
+  /* All existing dialogs/overlays already use z-index > 80, so they stay above the header. */
+  .site-header .main-header .nav .header-actions{position:relative!important;z-index:auto!important}
+
   @media(max-width:760px){
-    .site-header.genmerch-header-compact .main-header{
-      padding:4px 6px 0!important;
-    }
-    /* Approved two-row mobile layout: brand first, all seven icons beneath. */
+    .site-header.genmerch-header-compact .main-header{padding:4px 6px 0!important}
     .site-header.genmerch-header-compact .main-header .nav{
       display:grid!important;
       grid-template-columns:minmax(0,1fr)!important;
@@ -13790,63 +13790,58 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   var state='full';
   var lastY=readScrollY();
   var downDistance=0;
-  var upDistance=0;
-  var framePending=false;
-  var hideDistance=14;
-  var revealDistance=8;
-  var minimumHideY=100;
 
   function readScrollY(){
-    var root=document.scrollingElement||document.documentElement;
+    var root=document.scrollingElement||document.documentElement||document.body;
     return Math.max(0,window.scrollY||window.pageYOffset||(root&&root.scrollTop)||0);
   }
+
   function setState(next){
-    if(state===next)return;
     state=next;
     header.classList.toggle('genmerch-header-hidden',state==='hidden');
     header.classList.toggle('genmerch-header-compact',state==='compact');
   }
-  function update(){
+
+  function onPageScroll(){
     var y=readScrollY();
     var delta=y-lastY;
 
     if(y<=36){
       downDistance=0;
-      upDistance=0;
-      setState('full');
+      if(state!=='full') setState('full');
     }else if(delta>0){
       downDistance+=delta;
-      upDistance=0;
-      if(y>minimumHideY && downDistance>=hideDistance){
+      if(y>100 && downDistance>=14 && state!=='hidden'){
         setState('hidden');
         downDistance=0;
       }
     }else if(delta<0){
-      upDistance+=-delta;
+      /* Reveal on the first real upward scroll delta; do not wait for another animation frame. */
       downDistance=0;
-      if(upDistance>=revealDistance){
-        setState('compact');
-        upDistance=0;
-      }
+      if(state==='hidden' || state==='full') setState('compact');
     }
 
     lastY=y;
-    framePending=false;
-  }
-  function scheduleUpdate(){
-    if(framePending)return;
-    framePending=true;
-    window.requestAnimationFrame(update);
   }
 
-  window.addEventListener('scroll',scheduleUpdate,{passive:true});
-  window.addEventListener('resize',scheduleUpdate,{passive:true});
+  /* Window covers normal page scrolling; capture-phase document listener covers iOS/root-scroller variants.
+     Reading the page scroll position makes nested modal scrolling a no-op here. */
+  window.addEventListener('scroll',onPageScroll,{passive:true});
+  document.addEventListener('scroll',onPageScroll,{capture:true,passive:true});
+  window.addEventListener('resize',function(){
+    lastY=readScrollY();
+    if(lastY<=36)setState('full');
+  },{passive:true});
   window.addEventListener('pageshow',function(){
     lastY=readScrollY();
     downDistance=0;
-    upDistance=0;
     setState(lastY<=36?'full':'compact');
   });
+  window.addEventListener('orientationchange',function(){
+    lastY=readScrollY();
+    downDistance=0;
+    setState(lastY<=36?'full':'compact');
+  },{passive:true});
 
   setState(lastY<=36?'full':'compact');
 })();
