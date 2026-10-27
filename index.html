@@ -9438,7 +9438,11 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       if(existing){existing.qty+=quantityToAdd;existing.image=getProductImageForColor(p,variant?variant.color:'')||existing.image;}
       else cart.push({...p,image:getProductImageForColor(p,variant?variant.color:'')||p.image,variantId:variant?variant.id:null,variantSku:variant?variant.sku:'',availableStock:variant?variant.stock:null,color:variant?String(variant.color||''):'',size,price:chosenPrice,qty:quantityToAdd});
-      updateCart();showCenteredActionStatus('Item added to your cart successfully!','success',1550);
+      updateCart();
+      if(typeof window.playGenmerchNotificationChime==='function'){
+        window.playGenmerchNotificationChime('cart:add:'+String(id)+':'+String(variant?variant.id||size:size)+':'+Date.now(),'cart');
+      }
+      showCenteredActionStatus('Item added to your cart successfully!','success',1550);
       return true;
     }
     async function changeQuantity(key,delta){
@@ -10015,6 +10019,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           paymentNote+
           emailConfirmationNote+
           '<p>Stock has been reserved for this order. Keep your order number for reference.</p>';
+        if(typeof window.playGenmerchNotificationChime==='function'){
+          window.playGenmerchNotificationChime('checkout:success:'+String(order.order_id||order.order_number),'checkout');
+        }
         showNotice('Order placed successfully',message);
         showCenteredActionStatus('Order placed successfully!','success',1700);
       }catch(error){
@@ -12749,7 +12756,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     // Shared, browser-native chime for order and RATE notifications.
     (function initGenmerchNotificationSound(){
       const storageKey='genmerch.notificationSoundEnabled.v1';
-      let enabled=true,audioContext=null,audioUnlocked=false,lastChimeAt=0;
+      let enabled=true,audioContext=null,audioUnlocked=false;
+      const lastChimeAtByType=new Map();
       const playedEvents=new Map();
       try{
         const saved=localStorage.getItem(storageKey);
@@ -12786,8 +12794,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(enabled)unlockAudio();
         updateButtons();
       };
-      window.playGenmerchNotificationChime=function(eventKey){
+      window.playGenmerchNotificationChime=function(eventKey,soundType){
         const key=String(eventKey||'').trim();
+        const profile=soundType==='cart'||soundType==='checkout'?soundType:'notification';
         if(!enabled||!key||playedEvents.has(key))return;
         const now=Date.now();
         playedEvents.set(key,now);
@@ -12796,23 +12805,29 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           for(const [seenKey,seenAt] of playedEvents){if(seenAt<cutoff)playedEvents.delete(seenKey);}
           while(playedEvents.size>200)playedEvents.delete(playedEvents.keys().next().value);
         }
-        if(now-lastChimeAt<1800)return;
+        const cooldownMs=profile==='cart'?150:profile==='checkout'?800:1800;
+        if(now-(lastChimeAtByType.get(profile)||0)<cooldownMs)return;
         if(!audioContext||!audioUnlocked||audioContext.state!=='running')return;
-        lastChimeAt=now;
+        lastChimeAtByType.set(profile,now);
         try{
           const start=audioContext.currentTime;
-          const notes=[{frequency:880,offset:0},{frequency:1174.66,offset:0.13},{frequency:1567.98,offset:0.27}];
+          const notes=profile==='cart'
+            ?[{frequency:1174.66,offset:0,duration:0.14,volume:0.05},{frequency:1567.98,offset:0.085,duration:0.2,volume:0.06}]
+            :profile==='checkout'
+              ?[{frequency:783.99,offset:0,duration:0.22,volume:0.055},{frequency:987.77,offset:0.12,duration:0.22,volume:0.06},{frequency:1174.66,offset:0.24,duration:0.25,volume:0.065},{frequency:1567.98,offset:0.38,duration:0.32,volume:0.075}]
+              :[{frequency:880,offset:0,duration:0.24,volume:0.075},{frequency:1174.66,offset:0.13,duration:0.24,volume:0.075},{frequency:1567.98,offset:0.27,duration:0.24,volume:0.075}];
           notes.forEach(note=>{
             const oscillator=audioContext.createOscillator();
             const gain=audioContext.createGain();
+            const duration=note.duration||0.24,peak=note.volume||0.075;
             oscillator.type='sine';
             oscillator.frequency.setValueAtTime(note.frequency,start+note.offset);
             gain.gain.setValueAtTime(0.0001,start+note.offset);
-            gain.gain.exponentialRampToValueAtTime(0.075,start+note.offset+0.018);
-            gain.gain.exponentialRampToValueAtTime(0.0001,start+note.offset+0.24);
+            gain.gain.exponentialRampToValueAtTime(peak,start+note.offset+0.018);
+            gain.gain.exponentialRampToValueAtTime(0.0001,start+note.offset+duration);
             oscillator.connect(gain);gain.connect(audioContext.destination);
             oscillator.start(start+note.offset);
-            oscillator.stop(start+note.offset+0.25);
+            oscillator.stop(start+note.offset+duration+0.01);
           });
         }catch(error){console.warn('GENMERCH notification chime could not play.',error);}
       };
