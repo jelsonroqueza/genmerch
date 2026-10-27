@@ -8640,6 +8640,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const client=getCustomerAuthClient();
         const result=await client.rpc('confirm_genmerch_order_received',{p_order_id:orderId});
         if(result.error)throw result.error;
+        await maybeSendGenmerchDeliverySurveyEmail(client,{order_id:orderId});
         await loadCustomerAccountOrders(true);
         showToast('Thank you! Order '+(orderNumber||'')+' is marked as received.');
       }catch(error){
@@ -8657,6 +8658,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const client=getCustomerAuthClient();
         const result=await client.rpc('confirm_genmerch_guest_order_received',{p_order_number:orderNumber,p_customer_phone:phone});
         if(result.error)throw result.error;
+        await maybeSendGenmerchDeliverySurveyEmail(client,{order_number:orderNumber,customer_phone:phone});
         await trackGuestOrder(orderNumber,phone,true);
         setGuestTrackMessage('Thank you! Receipt confirmed and your order is now marked as received.','success');
       }catch(error){
@@ -11661,6 +11663,34 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(button){button.disabled=false;button.textContent='Mark as Shipped';}
       }
     }
+    async function maybeSendGenmerchDeliverySurveyEmail(client,payload){
+      try{
+        const response=await client.functions.invoke('send-genmerch-delivery-survey-email',{body:payload||{}});
+        if(response.error)throw response.error;
+        const data=response.data||{};
+        if(!data.ok&&data.eligible!==false&&!data.already_sent)console.warn('GENMERCH delivery survey email was not sent.',data.message||'Unknown email error.');
+        else if(data.ok&&data.eligible&&data.delivery_status==='sent')console.info('GENMERCH delivery survey email accepted for '+String(data.recipient_email||'the customer')+'.');
+        return data;
+      }catch(error){console.warn('GENMERCH delivery survey email request failed.',error);return null;}
+    }
+    async function sendSellerRefundEmail(orderId,orderNumber,button){
+      if(!orderId)return;
+      if(!window.confirm('Send the refund notification for '+(orderNumber||'this order')+'? Only continue if the refund has already been confirmed in GENMERCH.'))return;
+      if(button){button.disabled=true;button.textContent='Sending Refund Email…';}
+      try{
+        const client=await getSellerAdminClient(false);
+        const response=await client.functions.invoke('send-genmerch-refund-email',{body:{order_id:orderId}});
+        if(response.error)throw response.error;
+        const data=response.data||{};
+        if(!data.ok&&!data.already_sent)throw new Error(data.message||'The email provider did not confirm sending the refund email.');
+        sellerFeedback('sellerOrdersFeedback',data.already_sent?'Refund email for '+(orderNumber||'this order')+' was already sent.':'Refund email sent to '+String(data.recipient_email||'the customer')+'.','success');
+        if(button){button.disabled=true;button.textContent='Refund Email Sent';}
+      }catch(error){
+        const message=error&&error.message?error.message:'Could not send the refund email.';
+        sellerFeedback('sellerOrdersFeedback',message,'error');showToast(message);
+        if(button){button.disabled=false;button.textContent='Send Refund Email';}
+      }
+    }
     async function completeSellerOrderDelivery(orderId,orderNumber,button){
       if(button&&button.disabled){sellerFeedback('sellerOrdersFeedback','Payment must be settled before completing delivery.','error');return;}
       if(!window.confirm('Mark '+(orderNumber||'this order')+' as completed? Payment must already be settled. This manual override will show Order Received to the customer.'))return;
@@ -11669,6 +11699,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const client=await getSellerAdminClient(false);
         const result=await client.rpc('complete_genmerch_order_delivery',{p_order_id:orderId});
         if(result.error)throw result.error;
+        await maybeSendGenmerchDeliverySurveyEmail(client,{order_id:orderId});
         sellerOrdersLoaded=false;
         await loadSellerOrders(true);
         sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' marked as completed.','success');
@@ -11690,6 +11721,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           p_note:'Seller Centre admin manually confirmed payment was received'
         });
         if(result.error)throw result.error;
+        await maybeSendGenmerchDeliverySurveyEmail(client,{order_id:orderId});
         sellerOrdersLoaded=false;
         await loadSellerOrders(true);
         sellerFeedback('sellerOrdersFeedback',(orderNumber||'Order')+' payment marked as Paid. Delivery completion is now available.','success');
@@ -11834,6 +11866,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             const settlePayment=canSettlePayment
               ?'<button class="seller-warning-button" type="button" data-seller-settle-payment data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Mark Payment Settled</button><div class="seller-payment-gate-note">Only mark Paid after funds are actually received.</div>'
               :'';
+            const canSendRefundEmail=status==='refunded'||paymentStatus==='refunded';
+            const refundEmail=canSendRefundEmail
+              ?'<button class="seller-secondary-button" type="button" data-seller-send-refund-email data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Send Refund Email</button>'
+              :'';
             const completeButton='<button class="seller-primary-button" type="button" data-seller-complete-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'"'+(paymentSettled?'':' disabled title="Payment must be settled before completion" aria-disabled="true"')+'>Mark as Completed</button>';
             let action='';
             if(status==='processing'){
@@ -11857,7 +11893,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             }else{
               action='<span class="seller-muted">'+sellerEscape(status==='cancelled'?'Cancelled':(status==='refunded'?'Refunded':'Complete'))+'</span>';
             }
-            return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+settlePayment+cancel+deleteTestDemo+'</div></td>';
+            return '<td><div class="seller-order-actions seller-order-actions-shipping">'+action+settlePayment+refundEmail+cancel+deleteTestDemo+'</div></td>';
           }
           let value=row[col[1]],display=value===null||value===undefined||value===''?'—':String(value);
           if(col[1]==='status'){
@@ -11901,6 +11937,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       body.querySelectorAll('[data-seller-mark-shipped]').forEach(button=>button.addEventListener('click',()=>markSellerOrderShipped(button.dataset.orderId,button.dataset.orderNumber,button)));
       body.querySelectorAll('[data-seller-complete-order]').forEach(button=>button.addEventListener('click',()=>completeSellerOrderDelivery(button.dataset.orderId,button.dataset.orderNumber,button)));
       body.querySelectorAll('[data-seller-settle-payment]').forEach(button=>button.addEventListener('click',()=>settleSellerOrderPayment(button.dataset.orderId,button.dataset.orderNumber,button)));
+      body.querySelectorAll('[data-seller-send-refund-email]').forEach(button=>button.addEventListener('click',()=>sendSellerRefundEmail(button.dataset.orderId,button.dataset.orderNumber,button)));
     }
     async function loadSellerOrders(silent=false){
       if(!sellerCentreIsUnlocked)return;
