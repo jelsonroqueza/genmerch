@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { renderGenmerchEmail } from "./_shared/genmerch-email-template.ts";
 
 const ALLOWED_ORIGINS = new Set([
   "https://jelsonroqueza.github.io",
@@ -47,93 +48,18 @@ function buildAddress(order: Record<string, unknown>): string {
   ].filter((part) => String(part ?? "").trim()).map((part) => String(part).trim()).join(", ");
 }
 function buildEmailHtml(order: Record<string, unknown>, items: Record<string, unknown>[], recipient: string): string {
-  const orderNumber = escapeHtml(order.order_number);
-  const customerName = escapeHtml(order.customer_name);
-  const address = escapeHtml(buildAddress(order));
-  const lines = items.map((item) => {
-    const title = escapeHtml(item.product_name || item.sku || "GENMERCH item");
-    const options = [
-      item.size_label ? "Size: " + escapeHtml(item.size_label) : "",
-      item.color_label ? "Color: " + escapeHtml(item.color_label) : "",
-      "Qty: " + escapeHtml(item.quantity),
-    ].filter(Boolean).join(" · ");
-    return `<tr>
-      <td style="padding:14px 10px;border-bottom:1px solid #f0e5df;vertical-align:top">
-        <div style="font-weight:700;color:#2c201b">${title}</div>
-        <div style="margin-top:5px;color:#786c65;font-size:13px">${options}</div>
-      </td>
-      <td style="padding:14px 10px;border-bottom:1px solid #f0e5df;text-align:right;white-space:nowrap;font-weight:700;color:#2c201b">${money(item.line_total ?? (Number(item.unit_price) * Number(item.quantity)))}</td>
-    </tr>`;
-  }).join("");
-  const paymentMethod = escapeHtml(order.payment_method || "Not specified");
-  const paymentStatus = String(order.payment_status || "pending").toLowerCase();
-  const paymentCopy = paymentStatus === "paid"
-    ? "Payment status: Paid. Keep this email as your order and payment reference."
-    : (String(order.payment_method || "").toUpperCase() === "COD"
-      ? "Payment status: Pending. Cash on Delivery is settled when payment is actually received and confirmed."
-      : `Payment status: Pending. ${paymentMethod} is your preferred payment method; no payment was charged automatically. The seller will coordinate the payment instructions with you.`);
-  const landmark = String(order.shipping_landmark || "").trim()
-    ? `<p style="margin:8px 0;color:#5e5049"><strong>Landmark:</strong> ${escapeHtml(order.shipping_landmark)}</p>`
-    : "";
-  const instructions = String(order.delivery_instructions || "").trim()
-    ? `<p style="margin:8px 0;color:#5e5049"><strong>Delivery instructions:</strong> ${escapeHtml(order.delivery_instructions)}</p>`
-    : "";
-  return `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f6f3f1;font-family:Arial,Helvetica,sans-serif;color:#29211d">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0">Your GENMERCH order details and order number ${orderNumber}.</div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3f1;padding:28px 10px">
-    <tr><td align="center">
-      <table role="presentation" width="620" cellspacing="0" cellpadding="0" style="width:100%;max-width:620px;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #eee1da">
-        <tr><td style="padding:26px 28px;background:#f32c16;color:#fff">
-          <div style="font-size:24px;line-height:1.2;font-weight:900;letter-spacing:-.4px">GENMERCH - Suot Apparel</div>
-          <div style="margin-top:7px;font-size:13px;line-height:1.5;opacity:.94">Your everyday style. Your order reference.</div>
-        </td></tr>
-        <tr><td style="padding:28px">
-          <h1 style="margin:0 0 10px;color:#29211d;font-size:23px">Thank you for your order, ${customerName}!</h1>
-          <p style="margin:0 0 20px;color:#6f625b;font-size:15px;line-height:1.65">We've saved your order in GENMERCH. Please keep this email for reference and use your order number whenever you contact the seller.</p>
-          <div style="padding:17px 18px;border:1px solid #ffb8a8;border-radius:10px;background:#fff7f3">
-            <div style="color:#80665a;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Order number</div>
-            <div style="margin-top:6px;color:#f12e17;font-size:25px;line-height:1.3;font-weight:900;overflow-wrap:anywhere">${orderNumber}</div>
-            <div style="margin-top:8px;color:#80665a;font-size:12px">Placed: ${escapeHtml(dateText(order.created_at))}</div>
-          </div>
-          <h2 style="margin:26px 0 10px;font-size:17px;color:#29211d">Order details</h2>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #f0e5df;border-radius:8px">
-            <tr><th align="left" style="padding:11px 10px;background:#fff6f1;font-size:12px;color:#6d5044">ITEM</th><th align="right" style="padding:11px 10px;background:#fff6f1;font-size:12px;color:#6d5044">AMOUNT</th></tr>
-            ${lines}
-          </table>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:14px;border-collapse:collapse">
-            <tr><td style="padding:7px 0;color:#6f625b">Items subtotal</td><td align="right" style="padding:7px 0;font-weight:700">${money(order.subtotal)}</td></tr>
-            <tr><td style="padding:7px 0;color:#6f625b">Delivery fee ${order.delivery_zone ? "(" + escapeHtml(order.delivery_zone) + ")" : ""}</td><td align="right" style="padding:7px 0;font-weight:700">${money(order.shipping_fee)}</td></tr>
-            <tr><td style="padding:13px 0;border-top:1px solid #e9ddd6;font-weight:900;font-size:17px">Total order amount</td><td align="right" style="padding:13px 0;border-top:1px solid #e9ddd6;color:#f12e17;font-weight:900;font-size:19px">${money(order.total_amount)}</td></tr>
-          </table>
-          <h2 style="margin:24px 0 9px;font-size:17px;color:#29211d">Delivery information</h2>
-          <div style="padding:14px 15px;border:1px solid #ece4de;border-radius:8px;background:#fcfbfa">
-            <p style="margin:0 0 8px;color:#5e5049"><strong>Recipient:</strong> ${customerName}</p>
-            <p style="margin:8px 0;color:#5e5049"><strong>Mobile:</strong> ${escapeHtml(order.customer_phone)}</p>
-            <p style="margin:8px 0;color:#5e5049"><strong>Address:</strong> ${address}</p>
-            ${landmark}${instructions}
-          </div>
-          <h2 style="margin:24px 0 9px;font-size:17px;color:#29211d">Payment instructions</h2>
-          <div style="padding:14px 15px;border-radius:8px;background:#fff8e8;border:1px solid #f1dca4;color:#6f5110;font-size:14px;line-height:1.65">
-            <p style="margin:0 0 6px"><strong>Preferred payment method:</strong> ${paymentMethod}</p>
-            <p style="margin:0">${escapeHtml(paymentCopy)}</p>
-          </div>
-          <div style="margin-top:23px;padding:15px;border-radius:9px;background:#fff4ef;border:1px solid #ffd2c4">
-            <div style="font-size:15px;font-weight:900;color:#aa2a16">Important: Save your order reference</div>
-            <p style="margin:7px 0 0;font-size:14px;line-height:1.65;color:#67483e">Please take a screenshot of the order confirmation screen and check this email for your reference. Keep your order number safe. You can open GENMERCH, sign in to your account, and select <strong>Orders</strong> to track progress.</p>
-          </div>
-          <p style="margin:22px 0 0;color:#6f625b;font-size:13px;line-height:1.6">This confirmation is not proof that payment has been received. Your payment and delivery statuses will update separately as the seller processes the order.</p>
-        </td></tr>
-        <tr><td style="padding:17px 28px;background:#fffaf7;border-top:1px solid #f0e5df;color:#8b7a70;font-size:12px;line-height:1.6">
-          <strong style="color:#58453b">GENMERCH - Suot Apparel</strong><br>
-          This message was sent to ${escapeHtml(recipient)} because this address was selected for order notifications. If you did not place this order, contact the store and do not make a payment.
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body></html>`;
+ const safeName=escapeHtml(order.customer_name||"GENMERCH customer"),safeNumber=escapeHtml(order.order_number),address=escapeHtml(buildAddress(order));
+ const row=(label:string,value:string)=>'<tr><td style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#68717c;font-size:13px">'+escapeHtml(label)+'</td><td align="right" style="padding:11px 13px;border-bottom:1px solid #e7eaee;color:#202328;font-size:13px;font-weight:700;overflow-wrap:anywhere">'+value+'</td></tr>';
+ const itemRows=items.map((item)=>'<tr><td style="padding:12px 10px;border-bottom:1px solid #e7eaee;vertical-align:top"><div style="font-size:13px;color:#202328;font-weight:700">'+escapeHtml(item.product_name||item.sku||"GENMERCH item")+'</div><div style="margin-top:4px;font-size:11px;color:#78818a">'+[item.size_label?"Size: "+escapeHtml(item.size_label):"",item.color_label?"Color: "+escapeHtml(item.color_label):"","Qty: "+escapeHtml(item.quantity)].filter(Boolean).join(" · ")+'</div></td><td align="right" style="padding:12px 10px;border-bottom:1px solid #e7eaee;white-space:nowrap;font-size:12px;font-weight:800">'+escapeHtml(money(item.line_total??Number(item.unit_price)*Number(item.quantity)))+'</td></tr>').join("");
+ const method=String(order.payment_method||"Not specified"),paymentStatus=String(order.payment_status||"pending").toLowerCase();
+ const paymentCopy=paymentStatus==="paid"?"Payment status is confirmed as PAID. Keep this email as your order reference.":(method.toUpperCase()==="COD"?"Payment is pending. Cash on Delivery is settled only when payment is received and confirmed.":"Payment is pending. "+method+" is your selected method; no payment was charged automatically. Follow the instructions agreed with the seller.");
+ const body='<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Order Details</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e7eaee;border-radius:9px;border-collapse:separate;border-spacing:0;overflow:hidden">'+row("Order number",safeNumber)+row("Order date",escapeHtml(dateText(order.created_at)))+row("Payment method",escapeHtml(method))+row("Items subtotal",escapeHtml(money(order.subtotal)))+row("Delivery fee",escapeHtml(money(order.shipping_fee)))+'<tr><td style="padding:13px;border-top:1px solid #d9dee4;font-size:14px;font-weight:900">Total Amount</td><td align="right" style="padding:13px;border-top:1px solid #d9dee4;color:#d10c22;font-size:17px;font-weight:900">'+escapeHtml(money(order.total_amount))+'</td></tr></table>'+
+ '<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Items in Your Order</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e7eaee;border-radius:9px;border-collapse:separate;border-spacing:0;overflow:hidden"><tr><th align="left" style="padding:10px;background:#f4f6f8;color:#626b75;font-size:10px">ITEM</th><th align="right" style="padding:10px;background:#f4f6f8;color:#626b75;font-size:10px">AMOUNT</th></tr>'+itemRows+'</table>'+
+ '<h2 style="margin:22px 0 10px;color:#202328;font-size:16px">Delivery Information</h2><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:12px 14px;background:#f8f9fa;border:1px solid #e7eaee;border-radius:9px;border-collapse:separate;border-spacing:0;font-size:12px;line-height:1.6">'+row("Recipient",safeName)+row("Mobile",escapeHtml(order.customer_phone))+row("Address",address)+(String(order.shipping_landmark||"").trim()?row("Landmark",escapeHtml(order.shipping_landmark)):"")+(String(order.delivery_instructions||"").trim()?row("Delivery instructions",escapeHtml(order.delivery_instructions)):"")+'</table>';
+ const progress='<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:22px;border-collapse:collapse"><tr><td align="center" style="width:25%;padding:8px 2px;color:#c80d21;font-size:11px;line-height:1.5;font-weight:800">●<br>Order Placed</td><td align="center" style="width:25%;padding:8px 2px;color:#9299a2;font-size:11px;line-height:1.5">○<br>Preparing</td><td align="center" style="width:25%;padding:8px 2px;color:#9299a2;font-size:11px;line-height:1.5">○<br>In Transit</td><td align="center" style="width:25%;padding:8px 2px;color:#9299a2;font-size:11px;line-height:1.5">○<br>Delivered</td></tr></table>';
+ return renderGenmerchEmail({preheader:"We received order "+String(order.order_number||"")+" and are preparing the next steps.",headline:"Order Placed Successfully!",icon:"✓",tone:"success",greeting:"Hi "+String(order.customer_name||"GENMERCH customer")+",",intro:"Thank you for your order! We've received your order details and your purchase is now being prepared.",bodyHtml:body,progressHtml:progress,noticeTitle:"Payment Information",notice:paymentCopy,noticeTone:paymentStatus==="paid"?"success":"warning",actionLabel:"View My Order",actionUrl:"https://shopgenmerch.com/",actionNote:"Sign in to GENMERCH and open My Orders to track your order status.",footerNote:"This message was sent to "+String(recipient||"")+" for order notifications. If you did not place this order, contact support."});
 }
+
 
 function buildEmailText(order: Record<string, unknown>, items: Record<string, unknown>[], recipient: string): string {
   const lines = items.map((item) => `- ${String(item.product_name || item.sku || "GENMERCH item")} | Size: ${String(item.size_label || "N/A")} | Color: ${String(item.color_label || "N/A")} | Qty: ${String(item.quantity)} | ${money(item.line_total ?? (Number(item.unit_price) * Number(item.quantity)))}`).join("\n");
