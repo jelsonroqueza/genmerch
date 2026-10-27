@@ -20,7 +20,8 @@ Deno.serve(async(req:Request)=>{
  if(!url||!secret)return reply(503,{ok:false,message:"Refund email service is not configured."});
  const token=(req.headers.get("Authorization")||"").match(/^Bearer\s+(.+)$/i)?.[1]||"";
  if(!token)return reply(401,{ok:false,message:"Administrator sign-in required."});
- const publicKey=Deno.env.get("SUPABASE_ANON_KEY")||"";
+ let publicKey=Deno.env.get("SUPABASE_ANON_KEY")||"";
+ if(!publicKey){try{const keyMap=JSON.parse(Deno.env.get("SUPABASE_PUBLISHABLE_KEYS")||"{}");publicKey=Deno.env.get(String(keyMap.default||""))||"";}catch{}}
  if(!publicKey)return reply(503,{ok:false,message:"Admin verification key unavailable."});
  const userClient=createClient(url,publicKey,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:"Bearer "+token}}});
  const {data:user,error:userError}=await userClient.auth.getUser(token);
