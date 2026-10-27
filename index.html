@@ -14018,14 +14018,14 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   text-rendering:geometricPrecision!important;
   -webkit-font-smoothing:antialiased!important;
   -moz-osx-font-smoothing:grayscale!important;
-  animation:none!important;
+
   transition:none!important;
-  transform:none!important;
-  filter:none!important;
+
+
   text-shadow:none!important;
   box-shadow:none!important;
   will-change:auto!important;
-  opacity:1!important;
+
 }
 .site-header .main-header .nav .brand-lockup .brand-word,
 .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
@@ -14120,5 +14120,40 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
 }
 </style>
+
+<style id="genmerch-brand-refresh-entrance">
+/* Premium one-time entrance: replays naturally whenever the page is refreshed. */
+@keyframes genmerchBrandRefreshEntrance {
+  0% { opacity: 0; transform: translate3d(0, 12px, 0) scale(.985); filter: blur(4px); }
+  68% { opacity: 1; transform: translate3d(0, -1px, 0) scale(1.002); filter: blur(0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+}
+.site-header .main-header .nav .brand-lockup .brand-word,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word {
+  display: inline-block !important;
+  transform-origin: center center !important;
+  animation: genmerchBrandRefreshEntrance 920ms cubic-bezier(.2,.78,.22,1) 40ms both !important;
+  will-change: transform, opacity, filter !important;
+}
+.site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+.site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+  transform-origin: center center !important;
+  animation: genmerchBrandRefreshEntrance 980ms cubic-bezier(.2,.78,.22,1) 150ms both !important;
+  will-change: transform, opacity, filter !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header .main-header .nav .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
+}
+</style>
+
 </body>
 </html>
