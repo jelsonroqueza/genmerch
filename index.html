@@ -8696,6 +8696,36 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       {id:'postalCode',error:'postalError',valid:value=>/^\d{4}$/.test(value)},
       {id:'receiptEmail',error:'receiptEmailError',valid:checkoutEmailIsValid}
     ];
+    // Capture-phase guard: block the submit event before any order handler can run.
+    // This is deliberately independent of the later submit handler as a fail-closed safeguard.
+    function guardCheckoutSubmit(event){
+      checkoutValidationAttempted=true;
+      syncCheckoutFullName();
+      let valid=true;
+      let firstInvalid=null;
+      requiredFields.forEach(field=>{
+        const input=$(field.id);
+        const error=$(field.error);
+        const value=String(input&&input.value||'').trim();
+        const fieldValid=Boolean(input)&&Boolean(field.valid(value));
+        if(error)error.classList.toggle('show',!fieldValid);
+        if(input)input.setAttribute('aria-invalid',String(!fieldValid));
+        if(!fieldValid){
+          valid=false;
+          if(!firstInvalid&&input)firstInvalid=input;
+        }
+      });
+      if(!valid){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        checkoutFeedback('Please complete all required fields. Check the red messages under each field before placing your order.','error');
+        if(firstInvalid)firstInvalid.focus({preventScroll:false});
+        return false;
+      }
+      return true;
+    }
+    $('checkoutForm').addEventListener('submit',guardCheckoutSubmit,true);
+
     ['firstName','lastName'].forEach(id=>{
       $(id).addEventListener('input',syncCheckoutFullName);
       $(id).addEventListener('change',syncCheckoutFullName);
