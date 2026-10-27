@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="genmerch-initial-loading">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -5589,8 +5589,92 @@ footer .genmerch-back-to-top:focus-visible{outline:3px solid rgba(229,43,34,.27)
 @media(prefers-reduced-motion:reduce){footer .genmerch-back-to-top{transition:none!important}}
 </style>
 
+<style id="genmerch-initial-loading-screen">
+html.genmerch-initial-loading,
+html.genmerch-initial-loading body{overflow:hidden!important}
+#genmerchInitialLoader{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  padding:24px;
+  background:#e9e9e9;
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:opacity .32s ease,visibility .32s ease;
+  isolation:isolate;
+}
+#genmerchInitialLoader.is-hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+#genmerchInitialLoader .genmerch-loader-mark{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:clamp(190px,40vw,270px);
+  aspect-ratio:1;
+}
+#genmerchInitialLoader .genmerch-loader-ring{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  transform-origin:50% 50%;
+  animation:genmerchLoaderRingRotate 1.15s linear infinite;
+  will-change:transform;
+}
+#genmerchInitialLoader .genmerch-loader-ring circle{
+  fill:none;
+  stroke:#d52a35;
+  stroke-width:2.9;
+  stroke-linecap:round;
+  stroke-dasharray:77 23;
+  stroke-dashoffset:0;
+}
+#genmerchInitialLoader .genmerch-loader-logo{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:76%;
+  height:76%;
+  object-fit:contain;
+  object-position:center;
+  transform:none!important;
+  animation:none!important;
+  filter:drop-shadow(0 3px 2px rgba(55,38,31,.045));
+}
+@keyframes genmerchLoaderRingRotate{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@media(max-width:520px){
+  #genmerchInitialLoader{padding:20px}
+  #genmerchInitialLoader .genmerch-loader-mark{width:clamp(176px,56vw,232px)}
+  #genmerchInitialLoader .genmerch-loader-ring circle{stroke-width:3.1}
+}
+@media(prefers-reduced-motion:reduce){
+  #genmerchInitialLoader .genmerch-loader-ring{animation-duration:3.5s}
+  #genmerchInitialLoader{transition:none}
+}
+</style>
+
 </head>
 <body>
+  <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
+    <div class="genmerch-loader-mark" aria-hidden="true">
+      <svg class="genmerch-loader-ring" viewBox="0 0 100 100" focusable="false">
+        <circle cx="50" cy="50" r="45"></circle>
+      </svg>
+      <img class="genmerch-loader-logo" src="/assets/genmerch-cart-actual.webp?v=20261027-popup-logo" alt="" width="220" height="220" fetchpriority="high" decoding="async">
+    </div>
+  </div>
   <header class="site-header">
     <div class="announcement-bar">
       <div class="announcement-inner">
@@ -12594,7 +12678,7 @@ footer .genmerch-back-to-top:focus-visible{outline:3px solid rgba(229,43,34,.27)
       await restoreSellerCentreAfterRefresh();
       await restoreAddressReferenceContext();
     }
-    initializeStorefront();
+    window.GENMERCH_INITIALIZATION_PROMISE=initializeStorefront();
 
     // Flush a final draft snapshot when the browser is backgrounded or about to navigate away.
     window.addEventListener('pagehide', saveDraftState);
@@ -12919,5 +13003,63 @@ footer .genmerch-back-to-top:focus-visible{outline:3px solid rgba(229,43,34,.27)
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
+<script id="genmerch-initial-loading-controller">
+(function(){
+  'use strict';
+  var overlay=document.getElementById('genmerchInitialLoader');
+  if(!overlay)return;
+  var startedAt=Date.now();
+  var minVisibleMs=420;
+  var safetyTimeoutMs=16000;
+  var pageLoaded=document.readyState==='complete';
+  var appReady=!window.GENMERCH_INITIALIZATION_PROMISE;
+  var hiding=false;
+  var dismissed=false;
+  var minTimer=null;
+  var removeTimer=null;
+
+  function dismiss(){
+    if(dismissed||hiding)return;
+    hiding=true;
+    var elapsed=Date.now()-startedAt;
+    var delay=Math.max(0,minVisibleMs-elapsed);
+    minTimer=window.setTimeout(function(){
+      if(dismissed)return;
+      overlay.classList.add('is-hidden');
+      document.documentElement.classList.remove('genmerch-initial-loading');
+      removeTimer=window.setTimeout(function(){
+        if(overlay&&overlay.isConnected)overlay.remove();
+        dismissed=true;
+      },360);
+    },delay);
+  }
+  function checkReady(){
+    if(pageLoaded&&appReady)dismiss();
+  }
+
+  if(!pageLoaded){
+    window.addEventListener('load',function(){pageLoaded=true;checkReady();},{once:true});
+  }
+  if(window.GENMERCH_INITIALIZATION_PROMISE&&typeof window.GENMERCH_INITIALIZATION_PROMISE.then==='function'){
+    Promise.resolve(window.GENMERCH_INITIALIZATION_PROMISE)
+      .catch(function(error){console.warn('GENMERCH startup finished with a recoverable initialization error.',error);})
+      .finally(function(){appReady=true;checkReady();});
+  }else{
+    appReady=true;
+    checkReady();
+  }
+
+  // Never leave a customer behind an overlay if a slow network request stalls startup.
+  window.setTimeout(function(){
+    if(dismissed)return;
+    if(minTimer!==null)window.clearTimeout(minTimer);
+    if(removeTimer!==null)window.clearTimeout(removeTimer);
+    overlay.classList.add('is-hidden');
+    document.documentElement.classList.remove('genmerch-initial-loading');
+    window.setTimeout(function(){if(overlay&&overlay.isConnected)overlay.remove();dismissed=true;},360);
+  },safetyTimeoutMs);
+})();
+</script>
+
 </body>
 </html>
