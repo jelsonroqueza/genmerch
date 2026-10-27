@@ -5616,7 +5616,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   position:relative;
   display:grid;
   place-items:center;
-  width:clamp(190px,40vw,270px);
+  width:clamp(128px,24vw,184px);
   aspect-ratio:1;
 }
 #genmerchInitialLoader .genmerch-loader-ring{
@@ -5656,12 +5656,228 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 }
 @media(max-width:520px){
   #genmerchInitialLoader{padding:20px}
-  #genmerchInitialLoader .genmerch-loader-mark{width:clamp(176px,56vw,232px)}
+  #genmerchInitialLoader .genmerch-loader-mark{width:clamp(116px,34vw,148px)}
   #genmerchInitialLoader .genmerch-loader-ring circle{stroke-width:3.1}
 }
 @media(prefers-reduced-motion:reduce){
   #genmerchInitialLoader .genmerch-loader-ring{animation-duration:3.5s}
   #genmerchInitialLoader{transition:none}
+}
+</style>
+
+<style id="genmerch-unified-adaptive-loaders">
+/* The first-page loader stays intentionally modest and scales with the viewport. */
+#genmerchInitialLoader .genmerch-loader-mark{width:clamp(128px,24vw,184px)}
+#genmerchInitialLoader .genmerch-loader-logo{width:74%;height:74%}
+@media(max-width:520px){
+  #genmerchInitialLoader .genmerch-loader-mark{width:clamp(116px,34vw,148px)}
+  #genmerchInitialLoader .genmerch-loader-logo{width:73%;height:73%}
+}
+
+/* Shared action loader: a small rotating red ring with a completely stationary logo. */
+.genmerch-action-overlay{
+  padding:14px!important;
+  background:rgba(232,232,232,.76)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(.92)!important;
+  backdrop-filter:blur(10px) saturate(.92)!important;
+}
+.genmerch-action-status-card{
+  width:min(344px,calc(100vw - 28px))!important;
+  min-height:0!important;
+  gap:10px!important;
+  padding:21px clamp(16px,4vw,23px)!important;
+  border:1px solid rgba(226,193,177,.8)!important;
+  border-radius:17px!important;
+  background:linear-gradient(150deg,#fff 0%,#fffaf6 58%,#f8eee7 100%)!important;
+  box-shadow:0 16px 48px rgba(58,39,29,.13),inset 0 1px 0 #fff!important;
+}
+.genmerch-action-spinner{
+  position:relative!important;
+  display:block;
+  flex:0 0 auto;
+  width:clamp(44px,12vw,54px)!important;
+  height:clamp(44px,12vw,54px)!important;
+  border:0!important;
+  border-radius:50%;
+  background:transparent!important;
+  animation:none!important;
+}
+.genmerch-action-spinner[hidden]{display:none!important}
+.genmerch-action-loader-ring{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  transform-origin:50% 50%;
+  animation:genmerchUnifiedRingRotate 1.05s linear infinite;
+  will-change:transform;
+}
+.genmerch-action-loader-ring circle{
+  fill:none;
+  stroke:#d52a35;
+  stroke-width:4;
+  stroke-linecap:round;
+  stroke-dasharray:77 23;
+}
+.genmerch-action-loader-logo{
+  position:absolute;
+  top:50%;
+  left:50%;
+  display:block;
+  width:69%;
+  height:69%;
+  object-fit:contain;
+  transform:translate(-50%,-50%)!important;
+  animation:none!important;
+  filter:drop-shadow(0 1px 1px rgba(55,38,31,.06));
+}
+.genmerch-action-status-icon{
+  width:42px!important;
+  height:42px!important;
+  font-size:1.42rem!important;
+}
+.genmerch-action-status-message{
+  margin:0;
+  color:#352a25;
+  font-size:clamp(.84rem,2.5vw,.94rem)!important;
+  font-weight:850;
+  line-height:1.45!important;
+  overflow-wrap:anywhere;
+}
+.genmerch-action-status-subtext{
+  margin:0!important;
+  color:#817168!important;
+  font-size:.73rem!important;
+  line-height:1.45;
+}
+@keyframes genmerchUnifiedRingRotate{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+/* Inline data loads use the same logo/ring language, scaled down for the available space. */
+.customer-orders-loading{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:5px;
+  min-height:88px;
+  padding:62px 12px 20px!important;
+  text-align:center;
+  color:#817168!important;
+}
+.customer-orders-loading::before,
+.genmerch-inline-loading::before{
+  position:absolute;
+  display:block;
+  content:"";
+  border:2px solid #e8d0c5;
+  border-top-color:#d52a35;
+  border-right-color:#e95b3c;
+  border-radius:50%;
+  animation:genmerchUnifiedRingRotate 1s linear infinite;
+  pointer-events:none;
+}
+.customer-orders-loading::before{
+  top:17px;
+  left:calc(50% - 18px);
+  width:36px;
+  height:36px;
+}
+.customer-orders-loading::after,
+.genmerch-inline-loading::after{
+  position:absolute;
+  display:block;
+  content:"";
+  background-image:url("/assets/genmerch-cart-actual.webp?v=20261027-popup-logo");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  pointer-events:none;
+}
+.customer-orders-loading::after{
+  top:24px;
+  left:calc(50% - 11px);
+  width:22px;
+  height:22px;
+}
+.genmerch-inline-loading{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  width:100%;
+  min-height:55px;
+  padding:34px 4px 5px!important;
+  text-align:center!important;
+  color:#817168!important;
+  font-size:.72rem!important;
+  line-height:1.4!important;
+}
+.genmerch-inline-loading::before{
+  top:1px;
+  left:calc(50% - 14px);
+  width:28px;
+  height:28px;
+}
+.genmerch-inline-loading::after{
+  top:6px;
+  left:calc(50% - 9px);
+  width:18px;
+  height:18px;
+}
+.wishlist-empty.genmerch-inline-loading{
+  padding:45px 15px 28px!important;
+  min-height:115px;
+}
+.wishlist-empty.genmerch-inline-loading::before{
+  top:5px;
+}
+.wishlist-empty.genmerch-inline-loading::after{
+  top:10px;
+}
+.wishlist-empty.genmerch-inline-loading h3{
+  color:#42332d;
+  font-size:.91rem;
+}
+.wishlist-empty.genmerch-inline-loading p{
+  margin:2px 0 0;
+  color:#84756b;
+  font-size:.75rem;
+}
+.card-sales-review.genmerch-inline-loading{
+  display:flex!important;
+  min-height:53px;
+  margin:6px 0 8px;
+  padding:30px 4px 2px!important;
+  font-size:.67rem!important;
+}
+@media(max-width:520px){
+  .genmerch-action-overlay{padding:12px!important}
+  .genmerch-action-status-card{
+    width:min(320px,calc(100vw - 24px))!important;
+    padding:18px 16px!important;
+    border-radius:15px!important;
+  }
+  .genmerch-action-spinner{
+    width:clamp(42px,12vw,48px)!important;
+    height:clamp(42px,12vw,48px)!important;
+  }
+  .customer-orders-loading{min-height:82px;padding-top:58px!important}
+  .customer-orders-loading::before{top:14px}
+  .customer-orders-loading::after{top:21px}
+}
+@media(prefers-reduced-motion:reduce){
+  .genmerch-action-loader-ring,
+  .customer-orders-loading::before,
+  .genmerch-inline-loading::before{animation-duration:2.6s!important}
+  .genmerch-action-status-card{animation:none!important}
 }
 </style>
 
@@ -6092,7 +6308,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
         <p class="product-description" id="productModalDescription"></p>
         <section class="genmerch-product-ratings" id="productModalRatings" aria-label="Product ratings and reviews">
-          <h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty">Loading customer reviews…</div>
+          <h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty genmerch-inline-loading">Loading customer reviews…</div>
         </section>
         <div class="product-modal-colors" id="productModalColorSelector" hidden>
           <span class="product-color-heading">Color: <strong id="productModalSelectedColor">—</strong></span>
@@ -6615,7 +6831,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
   <div class="genmerch-action-overlay" id="genmerchActionOverlay" aria-hidden="true" role="presentation">
     <div class="genmerch-action-status-card" role="status" aria-live="polite" aria-atomic="true">
-      <div class="genmerch-action-spinner" id="genmerchActionSpinner" aria-hidden="true"></div>
+      <div class="genmerch-action-spinner" id="genmerchActionSpinner" aria-hidden="true">
+        <svg class="genmerch-action-loader-ring" viewBox="0 0 100 100" focusable="false" aria-hidden="true"><circle cx="50" cy="50" r="45"></circle></svg>
+        <img class="genmerch-action-loader-logo" src="/assets/genmerch-cart-actual.webp?v=20261027-popup-logo" alt="" width="42" height="42" decoding="async">
+      </div>
       <div class="genmerch-action-status-icon" id="genmerchActionStatusIcon" aria-hidden="true" hidden>✓</div>
       <p class="genmerch-action-status-message" id="genmerchActionStatusMessage">Please wait, processing your request...</p>
       <p class="genmerch-action-status-subtext" id="genmerchActionStatusSubtext" hidden></p>
@@ -8593,7 +8812,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       $('wishlistOverlay').classList.add('open');
       $('wishlistOverlay').setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
-      $('wishlistItemsContainer').innerHTML='<div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Syncing your Wishlist…</h3><p>Loading saved products from your account.</p></div>';
+      $('wishlistItemsContainer').innerHTML='<div class="wishlist-empty genmerch-inline-loading"><h3>Syncing your Wishlist…</h3><p>Loading saved products from your account.</p></div>';
       await syncWishlistForCustomerSession(undefined,false);
       renderWishlist();
       if(wishlistCloudSyncError&&customerAuthCurrentSession&&customerAuthCurrentSession.user)showToast('Could not connect to your cloud Wishlist. Showing this device’s saved items for now.');
@@ -8674,7 +8893,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         const label=product.isDemo===false?'STORE':'DEMO ONLY';
         const stockText=tracked?(outOfStock?'Out of stock':product.totalStock+' in stock'):(product.sold||'Demo item');
         return '<article class="card" data-product-id="'+escapeHtml(product.id)+'" tabindex="0" aria-label="View '+escapeHtml(product.name)+'"><div class="card-img">'+visual+'<span class="discount">'+escapeHtml(product.off||'DEMO')+'</span></div>'+
-          '<div class="card-body"><div class="card-topline"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><button class="card-wishlist-button'+(isProductWishlisted(product.id)?' active':'')+'" type="button" data-wishlist-id="'+escapeHtml(product.id)+'" aria-label="'+(isProductWishlisted(product.id)?'Remove '+escapeHtml(product.name)+' from wishlist':'Add '+escapeHtml(product.name)+' to wishlist')+'" title="'+(isProductWishlisted(product.id)?'Saved to Wishlist':'Add to Wishlist')+'" aria-pressed="'+String(isProductWishlisted(product.id))+'"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div><div class="card-sales-review" data-card-sales-review="'+escapeHtml(product.id)+'" aria-label="Product sold count and customer ratings">Loading sales &amp; reviews…</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
+          '<div class="card-body"><div class="card-topline"><div class="product-type">'+escapeHtml(product.cat)+' · '+label+'</div><button class="card-wishlist-button'+(isProductWishlisted(product.id)?' active':'')+'" type="button" data-wishlist-id="'+escapeHtml(product.id)+'" aria-label="'+(isProductWishlisted(product.id)?'Remove '+escapeHtml(product.name)+' from wishlist':'Add '+escapeHtml(product.name)+' to wishlist')+'" title="'+(isProductWishlisted(product.id)?'Saved to Wishlist':'Add to Wishlist')+'" aria-pressed="'+String(isProductWishlisted(product.id))+'"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div><div class="card-title">'+escapeHtml(product.name)+'</div><div class="price">'+(product.promotionType==='percent'&&product.regularPrice>product.price?'<span class="genmerch-price-before">'+money(product.regularPrice)+'</span> ':'')+money(product.price)+'</div><div class="card-sales-review genmerch-inline-loading" data-card-sales-review="'+escapeHtml(product.id)+'" aria-label="Product sold count and customer ratings">Loading sales &amp; reviews…</div>'+(product.promotionType&&product.promotionType!=='none'?'<div class="genmerch-promo-caption">'+escapeHtml(product.promotionLabel||'Promotion')+'</div>':'')+'<div class="sold">'+escapeHtml(stockText)+'</div>'+
           '<button class="add-btn" data-add-id="'+escapeHtml(product.id)+'" type="button" '+(outOfStock?'disabled aria-label="Out of stock"':'')+'>'+(outOfStock?'Out of Stock':'+ Add to Cart')+'</button></div></article>';
       }).join('');
       loadProductCardSalesReviews(list);
@@ -12566,6 +12785,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     function renderProductCardSalesReviews(node,stats){
       if(!node)return;
+      node.classList.remove('genmerch-inline-loading');
       if(stats&&stats.unavailable){
         node.innerHTML='<span class="card-sales-unavailable">Sales &amp; reviews unavailable</span>';
         return;
