@@ -13581,108 +13581,73 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-smart-auto-hide-header">
-  /* One sticky header: hide while scrolling down, reveal compact header while scrolling up. */
+  /* Freeze ONLY the branded row and action icons, not the announcement or category navigation. */
   .site-header{
-    position:sticky!important;
-    top:0!important;
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    transform:none!important;
+    transition:none!important;
+    will-change:auto!important;
+    isolation:auto!important;
+  }
+  .site-header .main-header .nav.genmerch-sticky-fixed{
+    position:fixed!important;
+    top:env(safe-area-inset-top,0px)!important;
+    left:clamp(8px,2vw,28px)!important;
+    right:clamp(8px,2vw,28px)!important;
+    width:auto!important;
+    max-width:1600px!important;
+    margin:0 auto!important;
     z-index:80!important;
+    background:#fff!important;
+    box-shadow:0 7px 24px rgba(25,16,12,.16)!important;
+    border-radius:14px!important;
     transform:translate3d(0,0,0);
-    transition:transform .22s ease,box-shadow .22s ease;
+    transition:transform .28s cubic-bezier(.22,.75,.25,1),box-shadow .28s ease!important;
     will-change:transform;
     isolation:isolate;
   }
-  .site-header.genmerch-header-hidden{
-    transform:translate3d(0,-110%,0)!important;
+  .site-header .main-header .nav.genmerch-sticky-fixed.genmerch-sticky-hidden{
+    transform:translate3d(0,-125%,0)!important;
     pointer-events:none!important;
     box-shadow:none!important;
   }
-  .site-header.genmerch-header-compact .announcement-bar,
-  .site-header.genmerch-header-compact .desktop-links{
-    display:none!important;
-  }
-  .site-header .main-header{
-    position:relative!important;
-    top:auto!important;
-    z-index:auto!important;
-  }
-  .site-header.genmerch-header-compact .main-header{
-    padding-top:5px!important;
-    padding-bottom:5px!important;
-  }
-  .site-header .main-header .nav.genmerch-sticky-fixed{
-    position:relative!important;
-    inset:auto!important;
-    top:auto!important;
-    left:auto!important;
-    right:auto!important;
+  .genmerch-sticky-nav-spacer{
+    display:block!important;
     width:100%!important;
-    max-width:none!important;
+    height:0;
     margin:0!important;
+    padding:0!important;
+    border:0!important;
+    pointer-events:none!important;
+  }
+  /* Overlay/dialog z-indices in GENMERCH are above 80, so they cover the frozen row. */
+  .site-header .main-header .nav.genmerch-sticky-fixed .header-actions{
+    position:relative!important;
     z-index:auto!important;
-    box-shadow:none!important;
-    border-radius:0!important;
   }
-  .genmerch-sticky-nav-spacer{display:none!important;height:0!important}
-  .site-header.genmerch-header-compact .main-header .nav{min-height:0!important}
-
-  /* All existing dialogs/overlays already use z-index > 80, so they stay above the header. */
-  .site-header .main-header .nav .header-actions{position:relative!important;z-index:auto!important}
-
-  @media(max-width:760px){
-    .site-header.genmerch-header-compact .main-header{padding:4px 6px 0!important}
-    .site-header.genmerch-header-compact .main-header .nav{
-      display:grid!important;
-      grid-template-columns:minmax(0,1fr)!important;
-      grid-template-rows:auto auto!important;
-      row-gap:6px!important;
-      column-gap:0!important;
-      padding:6px 5px 7px!important;
-      min-height:0!important;
-      box-sizing:border-box!important;
-    }
-    .site-header.genmerch-header-compact .main-header .nav .brand-lockup{
-      grid-column:1!important;
-      grid-row:1!important;
-      justify-self:center!important;
+  @media(max-width:900px){
+    .site-header .main-header .nav.genmerch-sticky-fixed{
+      left:5px!important;
+      right:5px!important;
       width:auto!important;
-      max-width:100%!important;
-      min-width:0!important;
-      flex-wrap:nowrap!important;
-      white-space:nowrap!important;
-    }
-    .site-header.genmerch-header-compact .main-header .nav .header-actions{
-      grid-column:1!important;
-      grid-row:2!important;
-      justify-self:stretch!important;
-      width:100%!important;
-      max-width:100%!important;
-      min-width:0!important;
-      display:grid!important;
-      grid-template-columns:repeat(7,minmax(0,1fr))!important;
-      align-items:start!important;
-      justify-content:stretch!important;
-      gap:0!important;
-      margin:0!important;
-      padding:0!important;
-    }
-    .site-header.genmerch-header-compact .main-header .nav .header-actions .header-action{
-      min-width:0!important;
       max-width:none!important;
-      width:100%!important;
-      padding:2px 1px!important;
-      margin:0!important;
-      box-sizing:border-box!important;
+      border-radius:14px!important;
     }
   }
-  @media(prefers-reduced-motion:reduce){.site-header{transition:none!important}}
+  @media(prefers-reduced-motion:reduce){
+    .site-header .main-header .nav.genmerch-sticky-fixed{transition:none!important}
+  }
 </style>
 <style id="genmerch-header-approved-typography">
-  /* Approved high-contrast wordmark: bold, bright, upright, and consistently sized. */
+  /* Stronger, brighter approved logo wordmark, matching the screenshot. */
   .site-header .main-header .nav .brand-lockup .brand-word,
-  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
-    display:inline-block!important;
-    font-family:Arial,Helvetica,sans-serif!important;
-    font-size:clamp(1.15rem,2.05vw,1.9rem)!important;
+  .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+  .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
+    font-family:"Arial Black",Arial,Helvetica,sans-serif!important;
+    font-size:clamp(1.28rem,2.5vw,2.12rem)!important;
     font-style:normal!important;
     font-weight:900!important;
     line-height:1!important;
@@ -13693,24 +13658,29 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     text-shadow:none!important;
   }
   .site-header .main-header .nav .brand-lockup .brand-word{
+    display:inline-block!important;
     flex:0 0 auto!important;
     margin:0!important;
     padding:0!important;
-    color:#171717!important;
-    -webkit-text-fill-color:#171717!important;
+    color:#151515!important;
+    -webkit-text-fill-color:#151515!important;
+    -webkit-text-stroke:.45px #151515!important;
   }
   .site-header .main-header .nav .brand-lockup .brand-word span{
-    color:#171717!important;
-    -webkit-text-fill-color:#171717!important;
-    font:inherit!important;
+    color:#151515!important;
+    -webkit-text-fill-color:#151515!important;
+    -webkit-text-stroke:.45px #151515!important;
+    font-family:inherit!important;
+    font-weight:900!important;
   }
   .site-header .main-header .nav .brand-lockup .brand-word b{
-    color:#f32232!important;
-    -webkit-text-fill-color:#f32232!important;
+    color:#ff2638!important;
+    -webkit-text-fill-color:#ff2638!important;
+    -webkit-text-stroke:.55px #ff2638!important;
     background:none!important;
     -webkit-background-clip:border-box!important;
     background-clip:border-box!important;
-    font:inherit!important;
+    font-family:inherit!important;
     font-weight:900!important;
   }
   .site-header .main-header .nav .brand-lockup .brand-word::after{
@@ -13722,14 +13692,14 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
     display:inline-flex!important;
     align-items:center!important;
-    justify-content:flex-start!important;
     flex:0 1 auto!important;
     position:static!important;
     top:auto!important;
     margin:0!important;
     padding:0!important;
-    color:#f32232!important;
-    -webkit-text-fill-color:#f32232!important;
+    color:#ff2638!important;
+    -webkit-text-fill-color:#ff2638!important;
+    -webkit-text-stroke:.55px #ff2638!important;
     background:none!important;
     -webkit-background-clip:border-box!important;
     background-clip:border-box!important;
@@ -13740,9 +13710,11 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     content:"|"!important;
     display:inline-block!important;
     margin:0 .34em 0 .04em!important;
-    color:#555!important;
-    -webkit-text-fill-color:#555!important;
-    font:inherit!important;
+    color:#5b5b5b!important;
+    -webkit-text-fill-color:#5b5b5b!important;
+    -webkit-text-stroke:0!important;
+    font-family:Arial,Helvetica,sans-serif!important;
+    font-weight:900!important;
     line-height:1!important;
   }
   .site-header .main-header .nav .brand-lockup .genmerch-header-tagline::after{
@@ -13758,22 +13730,25 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     gap:clamp(4px,1vw,9px)!important;
     text-align:left!important;
   }
-  .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
-  .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
-    font-size:clamp(1.15rem,2.05vw,1.9rem)!important;
-  }
   @media(max-width:760px){
     .site-header .main-header .nav .brand-lockup .brand-word,
     .site-header .main-header .nav .brand-lockup .genmerch-header-tagline,
-    .site-header.genmerch-header-compact .main-header .nav .brand-lockup .brand-word,
-    .site-header.genmerch-header-compact .main-header .nav .brand-lockup .genmerch-header-tagline{
-      font-size:clamp(.96rem,4vw,1.2rem)!important;
+    .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .brand-word,
+    .site-header .main-header .nav.genmerch-sticky-fixed .brand-lockup .genmerch-header-tagline{
+      font-size:clamp(1.02rem,4.35vw,1.36rem)!important;
       letter-spacing:-.055em!important;
     }
     .site-header .main-header .nav .brand-lockup{
       justify-content:center!important;
       gap:clamp(4px,1vw,7px)!important;
       max-width:100%!important;
+    }
+  }
+  @media(max-width:340px){
+    .site-header .main-header .nav .brand-lockup .brand-word,
+    .site-header .main-header .nav .brand-lockup .genmerch-header-tagline{
+      font-size:clamp(.95rem,4.1vw,1.05rem)!important;
+      letter-spacing:-.06em!important;
     }
   }
   @media(prefers-reduced-motion:reduce){
@@ -13783,67 +13758,123 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 <script id="genmerch-smart-auto-hide-controller">
 (function(){
   'use strict';
-  var header=document.querySelector('.site-header');
-  if(!header || header.dataset.smartAutoHideReady==='true') return;
-  header.dataset.smartAutoHideReady='true';
+  var navRow=document.querySelector('.site-header .main-header .nav');
+  if(!navRow || navRow.dataset.smartAutoHideReady==='true')return;
+  navRow.dataset.smartAutoHideReady='true';
 
-  var state='full';
+  var mainHeader=navRow.parentElement;
+  if(!mainHeader)return;
+
+  /* Spacer keeps the page layout stable when this one row becomes position:fixed. */
+  var spacer=document.querySelector('.genmerch-sticky-nav-spacer');
+  if(!spacer){
+    spacer=document.createElement('div');
+    spacer.className='genmerch-sticky-nav-spacer';
+    spacer.setAttribute('aria-hidden','true');
+    navRow.parentNode.insertBefore(spacer,navRow);
+  }
+
+  var pinned=navRow.classList.contains('genmerch-sticky-fixed');
+  var state=navRow.classList.contains('genmerch-sticky-hidden')?'hidden':'visible';
   var lastY=readScrollY();
   var downDistance=0;
+  var framePending=false;
+  var topInset=0;
+  var hideDistance=18;
 
   function readScrollY(){
     var root=document.scrollingElement||document.documentElement||document.body;
     return Math.max(0,window.scrollY||window.pageYOffset||(root&&root.scrollTop)||0);
   }
-
-  function setState(next){
-    state=next;
-    header.classList.toggle('genmerch-header-hidden',state==='hidden');
-    header.classList.toggle('genmerch-header-compact',state==='compact');
+  function setVisible(){
+    state='visible';
+    navRow.classList.remove('genmerch-sticky-hidden');
+    navRow.classList.add('genmerch-sticky-revealed');
   }
+  function setHidden(){
+    state='hidden';
+    navRow.classList.add('genmerch-sticky-hidden');
+    navRow.classList.remove('genmerch-sticky-revealed');
+  }
+  function pinRow(){
+    if(pinned)return;
+    spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    navRow.classList.add('genmerch-sticky-fixed');
+    navRow.classList.remove('genmerch-sticky-hidden');
+    navRow.classList.add('genmerch-sticky-revealed');
+    pinned=true;
+    state='visible';
+    downDistance=0;
+  }
+  function unpinRow(){
+    if(!pinned)return;
+    navRow.classList.remove('genmerch-sticky-fixed','genmerch-sticky-hidden','genmerch-sticky-revealed');
+    spacer.style.height='0px';
+    pinned=false;
+    state='visible';
+    downDistance=0;
+  }
+  function update(){
+    framePending=false;
+    if(!navRow.isConnected||!spacer.isConnected)return;
 
-  function onPageScroll(){
     var y=readScrollY();
     var delta=y-lastY;
+    var spacerTop=spacer.getBoundingClientRect().top;
+    var atOrPastTop=spacerTop<=topInset;
 
-    if(y<=36){
-      downDistance=0;
-      if(state!=='full') setState('full');
-    }else if(delta>0){
-      downDistance+=delta;
-      if(y>100 && downDistance>=14 && state!=='hidden'){
-        setState('hidden');
+    if(!pinned && atOrPastTop){
+      pinRow();
+      /* Do not instantly hide on the same frame the row first reaches its sticky point. */
+    }else if(pinned && !atOrPastTop){
+      unpinRow();
+    }else if(pinned){
+      if(delta<0){
+        /* Reveal immediately as soon as customer starts scrolling upward. */
         downDistance=0;
+        setVisible();
+      }else if(delta>0){
+        downDistance+=delta;
+        if(downDistance>=hideDistance && state!=='hidden'){
+          setHidden();
+          downDistance=0;
+        }
       }
-    }else if(delta<0){
-      /* Reveal on the first real upward scroll delta; do not wait for another animation frame. */
-      downDistance=0;
-      if(state==='hidden' || state==='full') setState('compact');
     }
 
     lastY=y;
   }
+  function schedule(){
+    if(framePending)return;
+    framePending=true;
+    window.requestAnimationFrame(update);
+  }
 
-  /* Window covers normal page scrolling; capture-phase document listener covers iOS/root-scroller variants.
-     Reading the page scroll position makes nested modal scrolling a no-op here. */
-  window.addEventListener('scroll',onPageScroll,{passive:true});
-  document.addEventListener('scroll',onPageScroll,{capture:true,passive:true});
+  window.addEventListener('scroll',schedule,{passive:true});
+  document.addEventListener('scroll',schedule,{capture:true,passive:true});
   window.addEventListener('resize',function(){
+    if(pinned)spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
     lastY=readScrollY();
-    if(lastY<=36)setState('full');
+    schedule();
+  },{passive:true});
+  window.addEventListener('orientationchange',function(){
+    lastY=readScrollY();
+    downDistance=0;
+    if(pinned)spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    schedule();
   },{passive:true});
   window.addEventListener('pageshow',function(){
     lastY=readScrollY();
     downDistance=0;
-    setState(lastY<=36?'full':'compact');
+    schedule();
   });
-  window.addEventListener('orientationchange',function(){
-    lastY=readScrollY();
-    downDistance=0;
-    setState(lastY<=36?'full':'compact');
-  },{passive:true});
 
-  setState(lastY<=36?'full':'compact');
+  /* A fresh load begins with the row in its original position, not fixed over the hero. */
+  navRow.classList.remove('genmerch-sticky-fixed','genmerch-sticky-hidden','genmerch-sticky-revealed');
+  spacer.style.height='0px';
+  pinned=false;
+  state='visible';
+  schedule();
 })();
 </script>
 
