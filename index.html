@@ -5452,12 +5452,14 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
             <span class="field-error" id="postalError">Enter a 4-digit postal code.</span>
           </div>
           <div class="field full">
-            <label for="landmark">Landmark / Directions (optional)</label>
-            <input id="landmark" name="landmark" type="text" placeholder="Nearby landmark or directions for the rider">
+            <label for="landmark">Landmark / Directions *</label>
+            <input id="landmark" name="landmark" type="text" placeholder="Enter a landmark or type N/A if none" required aria-describedby="landmarkError">
+            <span class="field-error" id="landmarkError" aria-live="polite">Enter a landmark or type N/A if none applies.</span>
           </div>
           <div class="field full">
-            <label for="specialInstructions">Special Instructions (optional)</label>
-            <textarea id="specialInstructions" name="specialInstructions" placeholder="Delivery notes, gate instructions, preferred drop-off point, or other details"></textarea>
+            <label for="specialInstructions">Special Instructions *</label>
+            <textarea id="specialInstructions" name="specialInstructions" placeholder="Enter delivery instructions or type N/A if none" required aria-describedby="specialInstructionsError"></textarea>
+            <span class="field-error" id="specialInstructionsError" aria-live="polite">Enter delivery instructions or type N/A if none applies.</span>
           </div>
         </div>
         <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
@@ -8686,6 +8688,8 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
       {id:'lastName',error:'lastNameError',valid:isValidCheckoutNamePart},
       {id:'custPhone',error:'phoneError',valid:value=>/^09\d{9}$/.test(value)},
       {id:'streetAddress',error:'streetError',valid:value=>value.length>2},
+      {id:'landmark',error:'landmarkError',valid:value=>value.length>0},
+      {id:'specialInstructions',error:'specialInstructionsError',valid:value=>value.length>0},
       {id:'province',error:'provinceError',valid:value=>value.length>0},
       {id:'city',error:'cityError',valid:value=>value.length>0},
       {id:'barangay',error:'barangayError',valid:value=>value.length>0},
