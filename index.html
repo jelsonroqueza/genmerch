@@ -7094,18 +7094,20 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       return mapped.length;
     }
 
-    // Refresh cloud inventory before customers view a product or commit a cart action.
+    // Refresh live inventory without forcing every caller to block or repaint the storefront.
     let liveCatalogRefreshPromise = null;
-    async function refreshCatalogForLiveStock() {
-      if (liveCatalogRefreshPromise) return liveCatalogRefreshPromise;
-      liveCatalogRefreshPromise = (async () => {
-        await loadSupabaseCatalog();
-        renderCategoryFilters();
-        renderProducts();
+    async function refreshCatalogForLiveStock(renderUI=true) {
+      const pending = liveCatalogRefreshPromise || (liveCatalogRefreshPromise = loadSupabaseCatalog());
+      try {
+        await pending;
+        if (renderUI) {
+          renderCategoryFilters();
+          renderProducts();
+        }
         return true;
-      })();
-      try { return await liveCatalogRefreshPromise; }
-      finally { liveCatalogRefreshPromise = null; }
+      } finally {
+        if (liveCatalogRefreshPromise === pending) liveCatalogRefreshPromise = null;
+      }
     }
 
     // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
@@ -8167,6 +8169,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     let wishlistCloudSyncWarning = '';
     let wishlistLastLoadedStorageKey = '';
     let wishlistCloudRefreshTimer = null;
+    const wishlistWriteChains = new Map();
+    const wishlistWriteVersions = new Map();
+    const wishlistConfirmedSavedState = new Map();
     function getWishlistStorageKey(session=customerAuthCurrentSession){
       const userId=session&&session.user&&session.user.id?String(session.user.id):'';
       return userId?'genmerch:wishlist:user:'+encodeURIComponent(userId):WISHLIST_GUEST_STORAGE_KEY;
@@ -8274,60 +8279,106 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       button.classList.toggle('active',Boolean(saved));
       button.setAttribute('aria-pressed',String(Boolean(saved)));
     }
-    async function toggleProductWishlist(productId){
-      if(productId===null||productId===undefined||String(productId)==='')return;
-      await syncWishlistForCustomerSession(undefined,false);
-      if(wishlistCloudSyncError){showToast('Wishlist could not sync with your account. Check your internet connection and try again.');return;}
-      const id=String(productId),session=customerAuthCurrentSession,userId=session&&session.user&&session.user.id?String(session.user.id):'';
-      const key=getWishlistStorageKey(session),exists=wishlistProductIds.includes(id);
-      const next=exists?wishlistProductIds.filter(value=>value!==id):[...wishlistProductIds,id];
+    async function setWishlistProductSaved(productId,shouldSave,successMessage=''){
+      const id=String(productId||'');
+      if(!id)return;
+      shouldSave=Boolean(shouldSave);
+      const session=customerAuthCurrentSession;
+      const userId=session&&session.user&&session.user.id?String(session.user.id):'';
+      const key=getWishlistStorageKey(session);
+      const currentlySaved=wishlistProductIds.includes(id);
+      if(currentlySaved===shouldSave){
+        updateWishlistBadge();
+        updateWishlistDetailButton();
+        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+        return;
+      }
+
+      const nextIds=shouldSave
+        ?[...new Set([...wishlistProductIds,id])]
+        :wishlistProductIds.filter(value=>String(value)!==id);
+      if(!writeWishlistIds(key,nextIds))return;
+
+      // Update the customer-facing UI before waiting for Supabase.
+      wishlistProductIds=nextIds;
+      wishlistLastLoadedStorageKey=key;
+      updateWishlistBadge();
+      renderProducts();
+      updateWishlistDetailButton();
+      if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+      const product=products.find(item=>String(item.id)===id);
+      showToast(successMessage||(shouldSave?(product?product.name+' added to Wishlist':'Added to Wishlist'):'Removed from Wishlist'));
+
+      if(!userId){
+        updateWishlistSyncStatus('Saved on this device only. Sign in to sync your Wishlist across devices.','local');
+        if(shouldSave&&typeof window.playGenmerchNotificationChime==='function'){
+          window.playGenmerchNotificationChime('wishlist:add:guest:'+id+':'+Date.now());
+        }
+        return;
+      }
+
+      const queueKey=userId+':'+id;
+      if(!wishlistConfirmedSavedState.has(queueKey))wishlistConfirmedSavedState.set(queueKey,currentlySaved);
+      const version=(wishlistWriteVersions.get(queueKey)||0)+1;
+      wishlistWriteVersions.set(queueKey,version);
+      updateWishlistSyncStatus('Saving Wishlist change to your GENMERCH account…','local');
+
+      const previousWrite=wishlistWriteChains.get(queueKey)||Promise.resolve();
+      const operation=previousWrite.catch(()=>{}).then(async()=>{
+        const client=getCustomerAuthClient();
+        const result=shouldSave
+          ?await client.from('customer_wishlist').upsert(
+              {user_id:userId,product_id:id},
+              {onConflict:'user_id,product_id',ignoreDuplicates:true}
+            )
+          :await client.from('customer_wishlist').delete().eq('user_id',userId).eq('product_id',id);
+        if(result.error)throw result.error;
+        wishlistConfirmedSavedState.set(queueKey,shouldSave);
+        if(wishlistWriteVersions.get(queueKey)===version){
+          updateWishlistSyncStatus('✓ Saved to your GENMERCH account · '+wishlistProductIds.length+' product(s).','success');
+          if(shouldSave&&typeof window.playGenmerchNotificationChime==='function'){
+            window.playGenmerchNotificationChime('wishlist:add:'+userId+':'+id+':'+Date.now());
+          }
+        }
+      });
+      wishlistWriteChains.set(queueKey,operation);
+      operation.then(()=>{
+        if(wishlistWriteChains.get(queueKey)===operation)wishlistWriteChains.delete(queueKey);
+      },()=>{
+        if(wishlistWriteChains.get(queueKey)===operation)wishlistWriteChains.delete(queueKey);
+      });
+
       try{
-        if(userId){
-          const client=getCustomerAuthClient();
-          const result=exists
-            ?await client.from('customer_wishlist').delete().eq('user_id',userId).eq('product_id',id)
-            :await client.from('customer_wishlist').upsert({user_id:userId,product_id:id},{onConflict:'user_id,product_id',ignoreDuplicates:true});
-          if(result.error)throw result.error;
-        }
-        if(!writeWishlistIds(key,next))throw new Error('Could not save wishlist to this browser.');
-        wishlistProductIds=next;
-        wishlistLastLoadedStorageKey=key;
-        updateWishlistSyncStatus(userId?'✓ Saved to your GENMERCH account · '+next.length+' product(s).':'Saved on this device only. Sign in to sync across devices.','success');
-        updateWishlistBadge();renderProducts();updateWishlistDetailButton();
-        if($('wishlistOverlay').classList.contains('open'))renderWishlist();
-        const product=products.find(item=>String(item.id)===id);
-        if(!exists&&typeof window.playGenmerchNotificationChime==='function'){
-          window.playGenmerchNotificationChime('wishlist:add:'+(userId||'guest')+':'+id+':'+Date.now());
-        }
-        showToast(exists?'Removed from Wishlist':(product?product.name+' added to Wishlist':'Added to Wishlist'));
+        await operation;
       }catch(error){
         console.error('GENMERCH could not save Wishlist change.',error);
-        showToast(userId?'Could not sync this Wishlist change to your account. Please retry.':'Could not save the Wishlist item on this browser.');
-        await syncWishlistForCustomerSession(undefined,true);
+        // If a newer toggle exists, let its queued write decide the final state.
+        if(wishlistWriteVersions.get(queueKey)!==version)return;
+        const confirmed=Boolean(wishlistConfirmedSavedState.get(queueKey));
+        const rollbackIds=wishlistProductIds.filter(value=>String(value)!==id);
+        if(confirmed)rollbackIds.push(id);
+        const uniqueRollbackIds=[...new Set(rollbackIds)];
+        if(writeWishlistIds(key,uniqueRollbackIds)){
+          wishlistProductIds=uniqueRollbackIds;
+          wishlistLastLoadedStorageKey=key;
+        }
+        updateWishlistSyncStatus('Cloud sync failed. Your last confirmed Wishlist state was restored. Please try again.','error');
+        updateWishlistBadge();
+        renderProducts();
+        updateWishlistDetailButton();
+        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+        showToast('Could not sync this Wishlist change. Your previous saved state was restored.');
       }
     }
+    async function toggleProductWishlist(productId){
+      const id=String(productId||'');
+      if(!id)return;
+      return setWishlistProductSaved(id,!wishlistProductIds.includes(id));
+    }
     async function removeWishlistProduct(productId){
-      const id=String(productId);
-      await syncWishlistForCustomerSession(undefined,false);
-      if(wishlistCloudSyncError){showToast('Wishlist could not sync with your account. Check your internet connection and try again.');return;}
-      const session=customerAuthCurrentSession,userId=session&&session.user&&session.user.id?String(session.user.id):'';
-      const key=getWishlistStorageKey(session),next=wishlistProductIds.filter(value=>value!==id);
-      try{
-        if(userId){
-          const client=getCustomerAuthClient();
-          const result=await client.from('customer_wishlist').delete().eq('user_id',userId).eq('product_id',id);
-          if(result.error)throw result.error;
-        }
-        if(!writeWishlistIds(key,next))throw new Error('Could not update the local wishlist cache.');
-        wishlistProductIds=next;
-        wishlistLastLoadedStorageKey=key;
-        updateWishlistSyncStatus(userId?'✓ Saved to your GENMERCH account · '+next.length+' product(s).':'Saved on this device only. Sign in to sync across devices.','success');
-        updateWishlistBadge();renderProducts();updateWishlistDetailButton();renderWishlist();
-      }catch(error){
-        console.error('GENMERCH could not remove Wishlist item.',error);
-        showToast(userId?'Could not sync the Wishlist removal to your account. Please retry.':'Could not remove this Wishlist item.');
-        await syncWishlistForCustomerSession(undefined,true);
-      }
+      const id=String(productId||'');
+      if(!id)return;
+      return setWishlistProductSaved(id,false);
     }
     function renderWishlist(){
       const container=$('wishlistItemsContainer');
@@ -9192,11 +9243,21 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         }
       }
     }
-    async function openProduct(id){
-      showCenteredActionStatus('Please wait...','loading');
-      try { await refreshCatalogForLiveStock(); }
-      catch(error) { console.error('GENMERCH could not refresh live stock before opening product details.',error);showCenteredActionStatus('Unable to refresh live stock. Please try again.','error',1900);showToast('Unable to refresh live stock. Please try again.');return; }
-      const p=products.find(item=>String(item.id)===String(id));if(!p){hideCenteredActionStatus();return;}
+    function openProduct(id,skipBackgroundRefresh=false){
+      const p=products.find(item=>String(item.id)===String(id));
+      if(!p){
+        refreshCatalogForLiveStock().then(()=>{
+          if(products.some(item=>String(item.id)===String(id)))openProduct(id,true);
+          else showToast('This product is no longer available. Please refresh the catalogue.');
+        }).catch(error=>{
+          console.warn('GENMERCH catalogue refresh failed while opening product details.',error);
+          showToast('Product details are temporarily unavailable. Please try again.');
+        });
+        return;
+      }
+      if(!skipBackgroundRefresh){
+        refreshCatalogForLiveStock(false).catch(error=>console.warn('GENMERCH background stock refresh failed.',error));
+      }
       openProductDetailId=p.id;
       updateWishlistDetailButton(p.id);
       productDetailSelectedSize='';
@@ -9252,7 +9313,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       loadProductSalesStats(p.id);
       loadProductReviews(p.id);
       refreshCustomerRateBadge();
-      hideCenteredActionStatus();
     }
     function setProductPurchaseStage(expanded,product){
       productOptionsExpanded=Boolean(expanded);
@@ -9486,10 +9546,21 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       $('sizeSelectionHint').textContent=Array.isArray(product.variants)?(inStock?'Select an available size before adding this product to your cart.':'All sizes for '+(colorForHint?colorForHint+' ':'')+'are currently out of stock.'):'No size selected yet.';
       $('confirmSizeButton').disabled=true;
     }
-    async function openSizeSelector(id){
-      try { await refreshCatalogForLiveStock(); }
-      catch(error) { console.error('GENMERCH could not refresh live stock before opening size selector.',error);showToast('Unable to refresh live stock. Please try again.');return; }
-      const product=products.find(item=>String(item.id)===String(id));if(!product)return;
+    function openSizeSelector(id,skipBackgroundRefresh=false){
+      const product=products.find(item=>String(item.id)===String(id));
+      if(!product){
+        refreshCatalogForLiveStock().then(()=>{
+          if(products.some(item=>String(item.id)===String(id)))openSizeSelector(id,true);
+          else showToast('This product is no longer available. Please refresh the catalogue.');
+        }).catch(error=>{
+          console.warn('GENMERCH catalogue refresh failed while opening size selection.',error);
+          showToast('Size options are temporarily unavailable. Please try again.');
+        });
+        return;
+      }
+      if(!skipBackgroundRefresh){
+        refreshCatalogForLiveStock(false).catch(error=>console.warn('GENMERCH background stock refresh failed.',error));
+      }
       pendingSizeProductId=product.id;pendingSelectedSize='';pendingSelectedVariantId=null;
       $('sizeProductName').textContent=product.name;
       const colorMapping=getProductColorMapping(product);
@@ -10399,7 +10470,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     let customerAuthClient = null;
     let customerAuthSubscription = null;
     let customerAuthCurrentSession = null;
-    let customerAuthSuccessCloseTimer = null;
     let customerAuthBusy = false;
     let customerAuthMode = 'signin';
     const CUSTOMER_GOOGLE_OAUTH_PENDING_KEY = 'genmerchGoogleOAuthPendingAt';
@@ -10620,14 +10690,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             const overlay=$('customerAuthOverlay');
             if(overlay&&overlay.classList.contains('open')){
               setCustomerAuthMessage('Successfully signed in.','success');
-              if(customerAuthSuccessCloseTimer)clearTimeout(customerAuthSuccessCloseTimer);
-              customerAuthSuccessCloseTimer=setTimeout(()=>{
-                closeCustomerAuth();
-                showToast('Signed in as '+identity);
-              },800);
-            }else{
-              showToast('Signed in as '+identity);
+              closeCustomerAuth();
             }
+            showToast('Signed in as '+identity);
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
           }
         });
@@ -10808,13 +10873,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       submit.disabled=true;
       submit.textContent=customerAuthMode==='signup'?'Creating account…':'Signing in…';
       $('customerGoogleButton').disabled=true;
-      const useGenericSignInLoader=customerAuthMode==='signin';
-      if(useGenericSignInLoader){
-        setCustomerAuthMessage('');
-        showCenteredActionStatus('Please wait...','loading');
-      }else{
-        setCustomerAuthMessage('Creating your customer account…');
-      }
+      setCustomerAuthMessage(customerAuthMode==='signup'?'Creating your customer account…':'Signing in…');
       try{
         let data,error;
         if(customerAuthMode==='signup'){
@@ -10852,12 +10911,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         if(data&&data.session&&data.user){
           updateCustomerAuthScreen(data.session);
           setCustomerAuthMessage(customerAuthMode==='signup'?'Your GENMERCH account was created successfully.':'Welcome back! You are signed in.','success');
-          if(customerAuthSuccessCloseTimer)clearTimeout(customerAuthSuccessCloseTimer);
           const identity=getCustomerAuthIdentity(data.user);
-          customerAuthSuccessCloseTimer=setTimeout(()=>{
-            closeCustomerAuth();
-            showToast((customerAuthMode==='signup'?'Account created. Signed in as ':'Signed in as ')+identity);
-          },800);
+          const successToast=(customerAuthMode==='signup'?'Account created. Signed in as ':'Signed in as ')+identity;
+          if($('customerAuthOverlay').classList.contains('open'))closeCustomerAuth();
+          showToast(successToast);
         }else if(customerAuthMode==='signup'&&data&&data.user){
           setCustomerAuthMessage('Your account was created, but Supabase did not complete the login session. Please try signing in with your new account.','error');
         }else{
@@ -10866,7 +10923,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }catch(error){
         setCustomerAuthMessage(customerAuthFriendlyError(error,customerAuthMode),'error');
       }finally{
-        if(useGenericSignInLoader)hideCenteredActionStatus();
         customerAuthBusy=false;
         submit.disabled=false;
         submit.textContent=originalLabel;
