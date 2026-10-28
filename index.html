@@ -6444,6 +6444,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       <div class="modal-head"><button type="button" class="product-modal-back" id="productModalBack" aria-label="Back to product reviews" hidden>← <span>Back</span></button><span id="productModalTitle">Product details</span><button class="icon-btn" id="closeProductModal" aria-label="Close product details">×</button></div>
       <div class="product-modal-body">
         <div class="product-modal-icon" id="productModalIcon">💿</div>
+        <p class="product-image-enlarge-hint" id="productImageEnlargeHint" hidden>Tap the photo to enlarge</p>
         <div class="product-modal-gallery" id="productModalGallery" hidden>
           <div class="product-gallery-thumbnails" id="productGalleryThumbnails" role="group" aria-label="More product photos"></div>
         </div>
@@ -9282,6 +9283,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       const mainImage=images[0]||null;
       openProductSelectedColor=colors.length?(getColorForImage(mainImage,colors)||colors[0]):'';
       $('productModalIcon').innerHTML=mainImage?'<img id="productGalleryMainImage" src="'+escapeHtml(mainImage.url)+'" alt="'+escapeHtml(mainImage.alt||p.name)+'">':escapeHtml(p.icon||'🛍️');
+      const enlargeHint=$('productImageEnlargeHint');if(enlargeHint)enlargeHint.hidden=!mainImage;
       const gallery=$('productModalGallery'), thumbnails=$('productGalleryThumbnails');
       if(images.length>1){
         gallery.hidden=false;
@@ -16517,6 +16519,58 @@ main.container .catalog-search:focus-within {
   #productGrid .card-wishlist-button,#productOverlay .product-detail-action,
   #productOverlay .wishlist-detail-button{transition:none!important}
 }
+
+<style id="genmerch-product-photo-hint-and-enhanced-3d-v1">
+/* Responsive photo affordance immediately beneath the main product photo. */
+#productOverlay .product-image-enlarge-hint{
+  width:max-content;max-width:100%;display:block;margin:-5px auto 12px;padding:6px 11px;
+  border:1px solid #ead0c3;border-radius:999px;
+  background:linear-gradient(180deg,#fffdfb 0%,#f8eee8 100%);color:#795446;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 2px 0 rgba(134,78,54,.09),0 4px 9px rgba(58,35,23,.07);
+  font-size:.72rem;font-weight:750;letter-spacing:.01em;line-height:1.25;text-align:center;
+}
+#productOverlay .product-image-enlarge-hint[hidden]{display:none!important}
+
+/* Noticeably deeper, glossy 3D on the Wishlist pill, without changing the toggle logic. */
+#productOverlay .wishlist-detail-button{
+  position:relative;border:1px solid #e9b7aa!important;border-radius:999px!important;
+  background:linear-gradient(180deg,#fff 0%,#fffaf7 44%,#f8e8e1 100%)!important;color:#c72e1b!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.95);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -2px 0 rgba(169,68,48,.07),0 3px 0 #d7a093,0 6px 12px rgba(144,49,29,.19)!important;
+  transform:translateY(-2px);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease,background .16s ease!important;
+}
+#productOverlay .wishlist-detail-button.active{
+  border-color:#efaaa9!important;background:linear-gradient(180deg,#fff0ef 0%,#ffdeda 48%,#ffc9c6 100%)!important;color:#b8202a!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),inset 0 -2px 0 rgba(157,27,37,.09),0 3px 0 #d58f91,0 6px 12px rgba(165,34,43,.2)!important;
+}
+#productOverlay .wishlist-detail-button:focus-visible{outline:3px solid rgba(238,77,45,.32)!important;outline-offset:3px}
+@media(hover:hover) and (pointer:fine){
+  #productOverlay .wishlist-detail-button:hover{
+    filter:brightness(1.025);transform:translateY(-3px)!important;
+    box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(169,68,48,.08),0 4px 0 #d7a093,0 8px 15px rgba(144,49,29,.23)!important;
+  }
+  #productOverlay .wishlist-detail-button.active:hover{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(157,27,37,.1),0 4px 0 #d58f91,0 8px 15px rgba(165,34,43,.24)!important;
+  }
+}
+#productOverlay .wishlist-detail-button:active{
+  filter:brightness(.985);transform:translateY(1px)!important;
+  box-shadow:inset 0 2px 5px rgba(145,38,22,.17),inset 0 1px 0 #fff,0 1px 0 #d7a093!important;
+}
+
+/* Raised description card with layered shadow, warm gradient, and a clear edge highlight. */
+#productOverlay .product-description{
+  position:relative;border:1px solid #ead7cb!important;border-left:4px solid #ee4d2d!important;border-radius:10px!important;
+  background:linear-gradient(145deg,#fffdfb 0%,#fcf5f0 48%,#f4e7de 100%)!important;color:#5e4c43!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(140,83,57,.045),0 2px 0 rgba(131,78,52,.11),0 6px 14px rgba(56,34,22,.105)!important;
+  padding:13px 14px!important;transform:translateY(-1px);
+}
+@media(max-width:520px){
+  #productOverlay .product-image-enlarge-hint{font-size:.69rem;padding:6px 10px;margin:-4px auto 10px}
+  #productOverlay .product-description{padding:11px 12px!important}
+}
+@media(prefers-reduced-motion:reduce){#productOverlay .wishlist-detail-button{transition:none!important}}
+</style>
 </style>
 </body>
 </html>
