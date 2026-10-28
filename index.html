@@ -10686,6 +10686,24 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       return raw;
     }
+    function getCustomerAuthInitials(identity){
+      const value=String(identity||'').trim();
+      if(!value)return 'GM';
+      if(value.includes('@')){
+        const local=value.split('@')[0].replace(/[^a-zA-Z0-9]/g,'');
+        return (local.slice(0,2)||'GM').toUpperCase();
+      }
+      const parts=value.split(/\s+/).filter(Boolean);
+      if(parts.length>=2)return (parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase();
+      return (parts[0].replace(/[^a-zA-Z0-9]/g,'').slice(0,2)||'GM').toUpperCase();
+    }
+    function refreshCustomerAccountLabelForViewport(){
+      const button=$('customerAccountButton');
+      const label=$('customerAccountLabel');
+      if(!button||!label||!button.classList.contains('customer-account-signed-in'))return;
+      const fullName=label.dataset.fullName||button.title||'';
+      label.textContent=window.matchMedia('(max-width: 600px)').matches?getCustomerAuthInitials(fullName):fullName;
+    }
     function updateCustomerAuthScreen(session){
       customerAuthCurrentSession=session&&session.user?session:null;
       const signedIn=Boolean(customerAuthCurrentSession);
@@ -10693,7 +10711,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       const identity=signedIn?getCustomerAuthIdentity(user):'';
       const accountLabel=$('customerAccountLabel');
       const accountButton=$('customerAccountButton');
-      if(accountLabel)accountLabel.textContent=signedIn?identity:'Sign in';
+      if(accountLabel){accountLabel.dataset.fullName=signedIn?identity:'';accountLabel.textContent=signedIn?(window.matchMedia('(max-width: 600px)').matches?getCustomerAuthInitials(identity):identity):'Sign in';}
       if(accountButton){
         accountButton.setAttribute('aria-label',signedIn?'Account: '+identity+'. Open account options':'Sign in or create your GENMERCH customer account');
         accountButton.title=signedIn?identity:'Sign in or Create Account';
@@ -10714,7 +10732,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }else if(!$('customerAuthOverlay').classList.contains('open')||!customerAuthBusy){
         $('customerAuthTitle').textContent='Welcome to GENMERCH';
       }
+      if(accountLabel&&signedIn&&window.matchMedia('(max-width: 600px)').matches)accountLabel.textContent=getCustomerAuthInitials(identity);
     }
+    window.addEventListener('resize',refreshCustomerAccountLabelForViewport,{passive:true});
     function openCustomerAuth(){
       $('customerAuthOverlay').classList.add('open');
       $('customerAuthOverlay').setAttribute('aria-hidden','false');
@@ -15641,6 +15661,30 @@ main.container .catalog-search:focus-within {
     white-space: nowrap !important;
     overflow-wrap: normal !important;
     word-break: keep-all !important;
+  }
+}
+</style>
+<style id="genmerch-mobile-account-initials-v1">
+@media (max-width: 600px) {
+  .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+    display: none !important;
+  }
+  .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: clamp(13px, 3.5vw, 18px) !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
   }
 }
 </style>
