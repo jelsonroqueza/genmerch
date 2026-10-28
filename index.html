@@ -12158,8 +12158,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             const canCancel=['pending','confirmed','processing'].includes(status)&&!Boolean(row.inventory_released);
             const cancel=canCancel?'<button class="seller-danger-button" type="button" data-seller-cancel-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Cancel order</button>':'';
             const deleteTestDemo='<button class="seller-danger-button seller-order-delete-test-button" type="button" data-seller-delete-test-order data-order-id="'+orderId+'" data-order-number="'+orderNumber+'" title="For test/demo or erroneous orders only">Delete (test/demo)</button>';
-            const waybillSelected=Boolean(window.GM_WAYBILL_SELECTED_ORDER_IDS&&window.GM_WAYBILL_SELECTED_ORDER_IDS.has(String(row.id)));
-            const waybillAction=!['cancelled','refunded'].includes(status)
+            const waybillEligible=['processing','shipped','out_for_delivery','delivered'].includes(status);
+            const waybillSelected=waybillEligible&&Boolean(window.GM_WAYBILL_SELECTED_ORDER_IDS&&window.GM_WAYBILL_SELECTED_ORDER_IDS.has(String(row.id)));
+            const waybillAction=waybillEligible
               ?'<div class="gm-waybill-row-actions"><label class="gm-waybill-select"><input type="checkbox" data-seller-waybill-select data-order-id="'+orderId+'" aria-label="Select '+orderNumber+' for the 4-in-1 waybill sheet"'+(waybillSelected?' checked':'')+'><span>4-up</span></label><button class="seller-secondary-button gm-waybill-preview-button" type="button" data-seller-waybill-preview data-order-id="'+orderId+'" data-order-number="'+orderNumber+'">Preview Waybill</button></div>'
               :'';
 
@@ -15872,6 +15873,7 @@ main.container .catalog-search:focus-within {
 .gm-waybill-barcode-area{display:flex;flex-direction:column;justify-content:center;align-items:stretch;min-width:0;padding:2mm;border-right:.45mm solid #111827}
 .gm-waybill-barcode-area svg{display:block;width:100%;height:14mm;overflow:visible}
 .gm-waybill-barcode-caption{margin-top:1mm;text-align:center;font-size:1.7mm;line-height:1.12;font-weight:900;letter-spacing:.035em;overflow-wrap:anywhere}
+.gm-waybill-barcode-empty{display:grid;place-items:center;min-height:14mm;padding:1mm;border:.25mm dashed #b8c0ca;color:#a13820;font-size:2.1mm;font-weight:900;line-height:1.2;text-align:center;overflow-wrap:anywhere}
 .gm-waybill-meta{display:flex;flex-direction:column;justify-content:center;gap:1.35mm;min-width:0;padding:1.7mm}
 .gm-waybill-meta-row{display:flex;flex-direction:column;gap:.3mm;min-width:0}
 .gm-waybill-meta-row span{font-size:2.15mm;line-height:1.05;font-weight:900}
@@ -15982,7 +15984,7 @@ main.container .catalog-search:focus-within {
       }
     });
     var width=x+10;
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' 44" role="img" aria-label="Code 128 internal order reference barcode" shape-rendering="crispEdges">'+bars+'</svg>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' 44" role="img" aria-label="Code 128 courier tracking barcode" shape-rendering="crispEdges">'+bars+'</svg>';
   }
   function currentOrders(){return Array.isArray(window.sellerOrderFilterSourceRows)?window.sellerOrderFilterSourceRows:(typeof sellerOrderFilterSourceRows!=='undefined'?sellerOrderFilterSourceRows:[]);}
   function currentItems(){return typeof sellerOrderFilterSourceItems!=='undefined'&&Array.isArray(sellerOrderFilterSourceItems)?sellerOrderFilterSourceItems:[];}
@@ -16028,7 +16030,9 @@ main.container .catalog-search:focus-within {
     if(blank)return '<div class="gm-waybill-blank-slot"><span>GENMERCH<br>WAYBILL SLOT<br><small>100 × 150 mm</small></span></div>';
     var order=data.order||{};
     var orderNo=String(order.order_number||order.id||'—');
-    var barcode=code128Svg(orderNo);
+    var trackingValue=String(data.tracking||'').trim();
+    var barcode=trackingValue&&trackingValue.length<=40?code128Svg(trackingValue):'';
+    var barcodeMarkup=barcode||'<div class="gm-waybill-barcode-empty">'+(!trackingValue?'ENTER TRACKING NUMBER BEFORE PRINTING':'TRACKING NUMBER TOO LONG FOR COMPACT BARCODE')+'</div>';
     var productRows=(data.items||[]).slice(0,4).map(function(item){
       var desc=itemValue(item);
       var qty=Math.max(0,Number(item.quantity)||0);
@@ -16048,7 +16052,7 @@ main.container .catalog-search:focus-within {
     var instructions=order.delivery_instructions?'<div class="gm-waybill-recipient-line"><strong>Delivery note:</strong> '+safeText(order.delivery_instructions)+'</div>':'';
     return '<article class="gm-waybill-label">'+
       '<header class="gm-waybill-header"><div class="gm-waybill-brand"><strong>GENMERCH</strong><span>SUOT APPAREL · OFFICIAL WAYBILL</span><small>MERCHANT-PREPARED PARCEL LABEL</small></div><div class="gm-waybill-header-right"><b class="gm-waybill-parcel-badge">A6<br>PARCEL</b><small>PH-MNL</small></div></header>'+
-      '<section class="gm-waybill-identification"><div class="gm-waybill-barcode-area">'+barcode+'<div class="gm-waybill-barcode-caption">ORDER REF · INTERNAL BARCODE<br>'+safeText(orderNo)+'</div></div><div class="gm-waybill-meta">'+
+      '<section class="gm-waybill-identification"><div class="gm-waybill-barcode-area">'+barcodeMarkup+'<div class="gm-waybill-barcode-caption">COURIER TRACKING · CODE 128<br>'+safeText(trackingValue||'NOT ENTERED')+'</div></div><div class="gm-waybill-meta">'+
         '<div class="gm-waybill-meta-row"><span>ORDER ID:</span><strong>'+safeText(orderNo)+'</strong></div>'+
         '<div class="gm-waybill-meta-row"><span>SHIP DATE:</span><strong>'+safeText(data.shipDate)+'</strong></div>'+
         '<div class="gm-waybill-meta-row"><span>COURIER:</span><strong>'+safeText(courierLabel)+'</strong></div>'+
@@ -16139,6 +16143,8 @@ main.container .catalog-search:focus-within {
   }
   function printSingleWaybill(){
     if(!currentWaybillData)return;
+    var orderStatus=String(currentWaybillData.order.status||'').toLowerCase();
+    if(!['processing','shipped','out_for_delivery','delivered'].includes(orderStatus)){setHint('Waybill printing is available once the order reaches Processing or later.',true);return;}
     var weightInput=document.getElementById('gmWaybillWeightInput');
     if(weightInput&&!saveWeight(currentWaybillOrderId,weightInput.value)){setHint('Enter a valid weight from 0.05 to 50 kg.',true);return;}
     var problems=validateWaybillData(currentWaybillData);
@@ -16168,6 +16174,8 @@ main.container .catalog-search:focus-within {
     selected.forEach(function(id){
       var data=lookupWaybillData(id);
       if(!data){problems.push('Order '+id+': not found in the loaded Orders data.');return;}
+      var orderStatus=String(data.order.status||'').toLowerCase();
+      if(!['processing','shipped','out_for_delivery','delivered'].includes(orderStatus)){problems.push((data.order.order_number||id)+': waybill printing is available once the order reaches Processing or later.');return;}
       var issue=validateWaybillData(data);
       if(issue.length){problems.push((data.order.order_number||id)+': '+issue.join(' '));return;}
       datas.push(data);
