@@ -15688,5 +15688,93 @@ main.container .catalog-search:focus-within {
   }
 }
 </style>
+<style id="genmerch-analytics-tiles-3d-v1">
+/* Premium 3D finish for the eight Inventory & Analytics summary tiles. */
+#sellerInventoryMetrics > .seller-metric-card {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.9) !important;
+  border-radius: 13px !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.96),
+    inset 0 -4px 0 rgba(78,48,25,.10),
+    0 2px 0 rgba(164,121,85,.28),
+    0 7px 13px rgba(48,33,23,.14),
+    0 14px 22px rgba(48,33,23,.08) !important;
+  transform: translateY(0) !important;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease !important;
+}
+#sellerInventoryMetrics > .seller-metric-card::before {
+  width: 5px !important;
+  border-radius: 13px 0 0 13px !important;
+  z-index: 1 !important;
+  box-shadow: 1px 0 0 rgba(255,255,255,.45), 2px 0 7px rgba(50,35,25,.10) !important;
+}
+#sellerInventoryMetrics > .seller-metric-card::after {
+  width: 92px !important;
+  height: 92px !important;
+  right: -25px !important;
+  top: -33px !important;
+  border: 1px solid rgba(255,255,255,.46) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.50), var(--metric-orb, rgba(255,255,255,.24)) 68%, rgba(255,255,255,.16)) !important;
+  box-shadow:
+    inset 2px 2px 5px rgba(255,255,255,.65),
+    inset -3px -4px 8px rgba(68,43,29,.07),
+    0 2px 7px rgba(64,43,28,.06) !important;
+  z-index: 0 !important;
+}
+#sellerInventoryMetrics > .seller-metric-card .seller-metric-label,
+#sellerInventoryMetrics > .seller-metric-card .seller-metric-value,
+#sellerInventoryMetrics > .seller-metric-card .seller-metric-detail {
+  position: relative !important;
+  z-index: 2 !important;
+}
+#sellerInventoryMetrics > .seller-metric-card .seller-metric-value {
+  text-shadow: 0 1px 0 rgba(255,255,255,.82), 0 2px 2px rgba(53,34,24,.10) !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  #sellerInventoryMetrics > .seller-metric-card:hover {
+    transform: translateY(-4px) scale(1.008) !important;
+    border-color: rgba(255,255,255,1) !important;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,1),
+      inset 0 -4px 0 rgba(78,48,25,.08),
+      0 3px 0 rgba(164,121,85,.26),
+      0 12px 20px rgba(48,33,23,.18),
+      0 20px 30px rgba(48,33,23,.11) !important;
+    filter: saturate(1.035) !important;
+  }
+}
+#sellerInventoryMetrics > .seller-metric-card:active {
+  transform: translateY(1px) scale(.998) !important;
+  box-shadow:
+    inset 0 2px 3px rgba(72,44,26,.09),
+    inset 0 -1px 0 rgba(255,255,255,.72),
+    0 1px 0 rgba(164,121,85,.2),
+    0 3px 6px rgba(48,33,23,.11) !important;
+}
+@media (max-width: 650px) {
+  #sellerInventoryMetrics > .seller-metric-card {
+    border-radius: 11px !important;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.94),
+      inset 0 -3px 0 rgba(78,48,25,.09),
+      0 2px 0 rgba(164,121,85,.24),
+      0 5px 10px rgba(48,33,23,.12) !important;
+  }
+  #sellerInventoryMetrics > .seller-metric-card::after {
+    width: 68px !important;
+    height: 68px !important;
+    right: -20px !important;
+    top: -24px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sellerInventoryMetrics > .seller-metric-card {
+    transition: none !important;
+  }
+}
+</style>
 </body>
 </html>
