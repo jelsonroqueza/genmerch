@@ -16326,5 +16326,140 @@ main.container .catalog-search:focus-within {
 }
 </style>
 <!-- genmerch-orders-controls-3d-v1 -->
+
+<style id="genmerch-subtle-3d-shopping-ui-v1">
+/* Subtle dimensional finish for the GENMERCH product tiles — preserve the existing layout and colours. */
+#productGrid > .card{
+  border:1px solid rgba(226,207,195,.9)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 2px 0 rgba(130,87,59,.08),0 5px 13px rgba(56,35,22,.075)!important;
+  transform:translateY(0);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+#productGrid > .card:focus-visible,
+#productGrid > .card:focus-within{
+  outline:2px solid rgba(238,77,45,.42)!important;
+  outline-offset:2px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 2px 0 rgba(130,87,59,.09),0 7px 16px rgba(56,35,22,.11)!important;
+}
+@media(hover:hover) and (pointer:fine){
+  #productGrid > .card:hover{
+    transform:translateY(-3px)!important;
+    border-color:#e7cabc!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 3px 0 rgba(130,87,59,.09),0 9px 20px rgba(56,35,22,.12)!important;
+  }
+}
+#productGrid .card-img{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
+#productGrid .discount{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.58),0 2px 4px rgba(98,43,11,.12);
+}
+#productGrid .add-btn:not(:disabled),
+#productGrid .primary-btn:not(:disabled){
+  border:1px solid rgba(202,47,20,.7)!important;
+  background:linear-gradient(180deg,#ff5a34 0%,#ff3b1d 54%,#ef3216 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(143,26,10,.16),0 2px 0 #d52c15,0 4px 8px rgba(219,54,27,.15)!important;
+  transform:translateY(-1px);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
+}
+#productGrid .add-btn:not(:disabled):focus-visible,
+#productGrid .primary-btn:not(:disabled):focus-visible{
+  outline:3px solid rgba(238,77,45,.35)!important;
+  outline-offset:3px;
+}
+@media(hover:hover) and (pointer:fine){
+  #productGrid .add-btn:not(:disabled):hover,
+  #productGrid .primary-btn:not(:disabled):hover{
+    filter:brightness(1.035) saturate(1.03);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(143,26,10,.17),0 3px 0 #d52c15,0 6px 10px rgba(219,54,27,.2)!important;
+    transform:translateY(-2px)!important;
+  }
+}
+#productGrid .add-btn:not(:disabled):active,
+#productGrid .primary-btn:not(:disabled):active{
+  filter:brightness(.98);
+  transform:translateY(1px)!important;
+  box-shadow:inset 0 2px 4px rgba(105,22,10,.24),inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 #d52c15!important;
+}
+#productGrid .add-btn:disabled{
+  box-shadow:none!important;
+  transform:none!important;
+}
+#productGrid .card-wishlist-button{
+  filter:drop-shadow(0 1px 0 rgba(160,25,38,.12));
+  transition:transform .16s ease,filter .16s ease,background .16s ease!important;
+}
+#productGrid .card-wishlist-button:focus-visible{
+  outline:2px solid rgba(238,77,45,.48)!important;
+  outline-offset:2px;
+}
+#productGrid .card-wishlist-button:active{
+  transform:translateY(1px) scale(.97)!important;
+  filter:drop-shadow(0 0 0 rgba(160,25,38,0))!important;
+}
+
+/* Product detail modal: soft outer depth and a cleaner separation for the sticky action bar. */
+#productOverlay .product-modal{
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 2px 0 rgba(0,0,0,.05),0 15px 38px rgba(0,0,0,.22),0 28px 60px rgba(0,0,0,.12)!important;
+}
+#productOverlay .product-detail-actions{
+  border-top:1px solid rgba(223,198,186,.72)!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 -5px 16px rgba(55,32,22,.075)!important;
+}
+#productOverlay .product-detail-action{
+  border-radius:8px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -2px 0 rgba(116,35,20,.1),0 2px 0 rgba(144,52,30,.24),0 4px 9px rgba(60,30,20,.09)!important;
+  transform:translateY(-1px);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
+}
+#productOverlay .product-detail-action.add-to-cart{
+  border:1px solid #ef4d36!important;
+  background:linear-gradient(180deg,#fff 0%,#fffaf8 100%)!important;
+  color:#d73520!important;
+  box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(193,53,32,.06),0 2px 0 #e8b5a9,0 4px 8px rgba(60,30,20,.055)!important;
+}
+#productOverlay .product-detail-action.buy-now{
+  border:1px solid #df2b16!important;
+  background:linear-gradient(180deg,#ff5534 0%,#ff3d20 58%,#f02f16 100%)!important;
+  color:#fff!important;
+  text-shadow:0 1px 1px rgba(122,24,10,.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -2px 0 rgba(143,26,10,.16),0 2px 0 #cd2b17,0 4px 9px rgba(190,45,24,.17)!important;
+}
+@media(hover:hover) and (pointer:fine){
+  #productOverlay .product-detail-action:not(:disabled):hover{
+    filter:brightness(1.025);
+    transform:translateY(-2px)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(116,35,20,.1),0 3px 0 rgba(144,52,30,.26),0 6px 11px rgba(60,30,20,.12)!important;
+  }
+}
+#productOverlay .product-detail-action:not(:disabled):active{
+  filter:brightness(.985);
+  transform:translateY(1px)!important;
+  box-shadow:inset 0 2px 4px rgba(85,28,16,.17),inset 0 1px 0 rgba(255,255,255,.28),0 1px 0 rgba(144,52,30,.2)!important;
+}
+#productOverlay .product-detail-action:disabled{
+  box-shadow:none!important;
+  transform:none!important;
+}
+#productOverlay .wishlist-detail-button{
+  border:1px solid #f0c8be!important;
+  box-shadow:inset 0 1px 0 #fff,0 2px 0 rgba(194,72,51,.13),0 4px 8px rgba(85,35,25,.055)!important;
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease!important;
+}
+#productOverlay .wishlist-detail-button.active{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.88),inset 0 -2px 0 rgba(190,39,20,.05),0 2px 0 rgba(194,72,51,.18),0 4px 9px rgba(85,35,25,.075)!important;
+}
+#productOverlay .wishlist-detail-button:active{
+  transform:translateY(1px)!important;
+  box-shadow:inset 0 2px 4px rgba(145,38,22,.11),inset 0 1px 0 #fff!important;
+}
+@media(prefers-reduced-motion:reduce){
+  #productGrid > .card,#productGrid .add-btn,#productGrid .primary-btn,
+  #productGrid .card-wishlist-button,#productOverlay .product-detail-action,
+  #productOverlay .wishlist-detail-button{transition:none!important}
+}
+</style>
 </body>
 </html>
