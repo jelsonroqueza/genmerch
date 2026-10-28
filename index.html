@@ -15047,94 +15047,26 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-unified-3d-buttons-and-wordmark-fix-v1">
-/* Unified tactile 3D treatment for enabled store and dashboard buttons. */
-button:not(.brand-lockup):not(#storeRatingNavButton):not(:disabled) {
-  background: linear-gradient(180deg,#ffb8ad 0%,#ff4b3a 13%,#e6190f 52%,#b80d05 82%,#8a0904 100%) !important;
-  color: #fff !important;
-  border: 1px solid #ff9b8b !important;
-  border-radius: 999px !important;
+/* Preserve each button's original resting design. Apply depth only during the press. */
+button:not(.brand-lockup):not(:disabled):active {
+  transform: translateY(2px) !important;
+  filter: brightness(.96) saturate(1.03) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.86),
-    inset 0 2px 3px rgba(255,255,255,.30),
-    inset 0 -3px 4px rgba(0,0,0,.34),
-    0 1px 0 #8c0b04,
-    0 5px 10px rgba(230,25,15,.30),
-    0 2px 4px rgba(0,0,0,.18) !important;
-  text-shadow: 0 1px 1px rgba(120,0,0,.35) !important;
-  transition: transform .2s ease, filter .2s ease, box-shadow .2s ease !important;
-}
-button:not(.brand-lockup):not(#storeRatingNavButton):not(:disabled):hover {
-  filter: brightness(1.06) saturate(1.08) !important;
-  transform: translateY(-1px) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.90),
-    inset 0 -3px 4px rgba(0,0,0,.30),
-    0 2px 0 #8c0b04,
-    0 8px 15px rgba(230,25,15,.38),
-    0 2px 4px rgba(0,0,0,.18) !important;
-}
-button:not(.brand-lockup):not(#storeRatingNavButton):not(:disabled):active {
-  filter: brightness(.98) saturate(1.04) !important;
-  transform: translateY(1px) !important;
-  box-shadow:
-    inset 0 2px 4px rgba(0,0,0,.32),
-    inset 0 1px 0 rgba(255,255,255,.48),
-    0 1px 0 #8c0b04,
-    0 2px 4px rgba(0,0,0,.16) !important;
-}
-button:not(.brand-lockup):not(#storeRatingNavButton):focus-visible {
-  outline: 2px solid rgba(238,42,24,.6) !important;
-  outline-offset: 3px !important;
-}
-button:not(.brand-lockup):not(#storeRatingNavButton):disabled {
-  cursor: not-allowed !important;
-  transform: none !important;
+    inset 0 2px 5px rgba(0,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.30) !important;
 }
 
-/* Store Rating keeps its gold color while receiving the same raised 3D finish. */
-#storeRatingNavButton,
-.site-header .desktop-links .store-rating-nav {
-  background: linear-gradient(180deg,#fff9dc 0%,#ffec9a 18%,#f4cf58 55%,#d9ad32 83%,#b88a17 100%) !important;
-  color: #4b3500 !important;
-  border: 1px solid #f6d66a !important;
-  border-radius: 999px !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.98),
-    inset 0 2px 3px rgba(255,255,255,.45),
-    inset 0 -3px 4px rgba(110,74,0,.23),
-    0 1px 0 #9b7715,
-    0 5px 10px rgba(170,125,13,.25),
-    0 2px 4px rgba(0,0,0,.14) !important;
-  text-shadow: 0 1px 0 rgba(255,255,255,.62) !important;
-  transition: transform .2s ease, filter .2s ease, box-shadow .2s ease !important;
-}
-#storeRatingNavButton:hover:not(:disabled),
-.site-header .desktop-links .store-rating-nav:hover:not(:disabled) {
-  background: linear-gradient(180deg,#fffce9 0%,#fff0ac 18%,#f8d969 55%,#e4bd45 83%,#c69b25 100%) !important;
-  filter: brightness(1.04) saturate(1.05) !important;
-  transform: translateY(-1px) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -3px 4px rgba(110,74,0,.20),
-    0 2px 0 #9b7715,
-    0 8px 14px rgba(170,125,13,.30),
-    0 2px 4px rgba(0,0,0,.14) !important;
-}
+/* Store Rating keeps its existing gold appearance; only the pressed state changes. */
 #storeRatingNavButton:active,
 .site-header .desktop-links .store-rating-nav:active {
-  transform: translateY(1px) !important;
+  transform: translateY(2px) !important;
+  filter: brightness(.96) saturate(1.03) !important;
   box-shadow:
-    inset 0 2px 4px rgba(110,74,0,.25),
-    inset 0 1px 0 rgba(255,255,255,.65),
-    0 1px 0 #9b7715,
-    0 2px 4px rgba(0,0,0,.12) !important;
-}
-#storeRatingNavButton:focus-visible {
-  outline: 2px solid #c79c25 !important;
-  outline-offset: 3px !important;
+    inset 0 2px 5px rgba(110,74,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.38) !important;
 }
 
-/* Prevent italic GEN / MERCH terminal letters from being clipped at the span edges. */
+/* Avoid clipping italic terminal letters in the hero wordmark at responsive widths. */
 main.container .hero .hero-brand-lockup {
   overflow: visible !important;
   max-width: 100% !important;
@@ -15173,11 +15105,6 @@ main.container .hero .hero-wordmark > b {
   main.container .hero .hero-wordmark {
     font-size: clamp(1.12rem,6.2vw,1.45rem) !important;
     letter-spacing: -.04em !important;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  button:not(.brand-lockup):not(#storeRatingNavButton) {
-    transition: none !important;
   }
 }
 </style>
