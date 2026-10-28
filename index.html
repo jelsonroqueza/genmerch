@@ -6202,11 +6202,31 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           <span class="hero-wordmark"><span>GEN</span><b>MERCH</b></span>
         </div>
         <p class="hero-tagline">Comfort. Style. For Every You.</p>
-        <div class="hero-benefits" aria-label="Store highlights">
-          <span><b aria-hidden="true">♧</b><span>Premium<br>Quality Fabric</span></span>
-          <span><b aria-hidden="true">◇</b><span>Trendy<br>Designs</span></span>
-          <span><b aria-hidden="true">🚚</b><span>Nationwide<br>Shipping</span></span>
-          <span><b aria-hidden="true">♡</b><span>Cash on<br>Delivery</span></span>
+        <div class="hero-benefits genmerch-benefit-strip" aria-label="Store highlights">
+          <div class="hero-benefit-item">
+            <span class="hero-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 19 6v5c0 4.7-3 8-7 10-4-2-7-5.3-7-10V6Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
+            </span>
+            <span class="hero-benefit-copy"><strong>Premium Quality<br>Fabric</strong></span>
+          </div>
+          <div class="hero-benefit-item">
+            <span class="hero-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="m8 4 2-1h4l2 1 5 3-2.4 4-3.1-1.8V21H8.5V9.2L5.4 11 3 7Z"/><path d="M10 3c.2 2 1 3.2 2 3.2S13.8 5 14 3"/></svg>
+            </span>
+            <span class="hero-benefit-copy"><strong>Trendy<br>Designs</strong></span>
+          </div>
+          <div class="hero-benefit-item">
+            <span class="hero-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M2.5 6.5H14v10H2.5z"/><path d="M14 10h4l3.5 3.5v3H14z"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg>
+            </span>
+            <span class="hero-benefit-copy"><strong>Nationwide<br>Shipping</strong></span>
+          </div>
+          <div class="hero-benefit-item">
+            <span class="hero-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M3 6h18v13H3z"/><path d="M3 10h18"/><path d="M7 15h4"/><path d="m14 15 2 2 3-4"/></svg>
+            </span>
+            <span class="hero-benefit-copy"><strong>Cash on<br>Delivery</strong></span>
+          </div>
         </div>
         <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop Now <span>→</span></button>
         <div class="flash-deals-banner" id="flashDealsBanner" role="status" aria-live="off" aria-label="Flash deals countdown to the next Philippine day">
@@ -14412,5 +14432,166 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
 }
 </style>
+
+<style id="genmerch-store-highlights-polish-v1">
+  main.container .hero .hero-benefits.genmerch-benefit-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 660px !important;
+    min-width: 0 !important;
+    gap: clamp(6px, .7vw, 10px) !important;
+    margin: 0 auto clamp(13px, 1.35vw, 18px) !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: clamp(6px, .55vw, 9px) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: clamp(7px, .72vw, 10px) !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(171, 117, 72, .18) !important;
+    border-radius: 12px !important;
+    background: rgba(255,255,255,.38) !important;
+    box-shadow: 0 2px 8px rgba(63, 42, 24, .045) !important;
+    text-align: left !important;
+    overflow: hidden !important;
+    transition: background-color .18s ease, border-color .18s ease, transform .18s ease !important;
+  }
+  main.container .hero .hero-benefit-icon {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 25px !important;
+    width: 25px !important;
+    height: 25px !important;
+    min-width: 25px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    color: #ff2b16 !important;
+    background: rgba(255, 43, 22, .075) !important;
+  }
+  main.container .hero .hero-benefit-icon svg {
+    display: block !important;
+    width: 18px !important;
+    height: 18px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    overflow: visible !important;
+  }
+  main.container .hero .hero-benefit-copy {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #24211e !important;
+    text-align: left !important;
+  }
+  main.container .hero .hero-benefit-copy strong {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #282421 !important;
+    font-size: clamp(.63rem, .78vw, .82rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -.012em !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    main.container .hero .hero-benefit-item:hover {
+      background: rgba(255,255,255,.62) !important;
+      border-color: rgba(255,43,22,.24) !important;
+      transform: translateY(-1px);
+    }
+  }
+  @media (min-width: 761px) and (max-width: 1100px) {
+    main.container .hero .hero-benefits.genmerch-benefit-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      max-width: 460px !important;
+      gap: 8px !important;
+    }
+    main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
+      min-height: 46px !important;
+      padding: 7px 9px !important;
+      gap: 8px !important;
+    }
+    main.container .hero .hero-benefit-copy strong {
+      font-size: clamp(.68rem, 1vw, .8rem) !important;
+    }
+  }
+  @media (max-width: 760px) {
+    main.container .hero .hero-benefits.genmerch-benefit-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      width: 100% !important;
+      max-width: 430px !important;
+      gap: 8px !important;
+      margin: 0 auto 14px !important;
+    }
+    main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
+      min-height: 46px !important;
+      padding: 7px 9px !important;
+      gap: 8px !important;
+      border-radius: 11px !important;
+    }
+    main.container .hero .hero-benefit-icon {
+      flex-basis: 23px !important;
+      width: 23px !important;
+      height: 23px !important;
+      min-width: 23px !important;
+    }
+    main.container .hero .hero-benefit-icon svg {
+      width: 17px !important;
+      height: 17px !important;
+    }
+    main.container .hero .hero-benefit-copy strong {
+      font-size: clamp(.66rem, 2vw, .78rem) !important;
+      line-height: 1.18 !important;
+    }
+  }
+  @media (max-width: 380px) {
+    main.container .hero .hero-benefits.genmerch-benefit-strip {
+      gap: 6px !important;
+    }
+    main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
+      gap: 6px !important;
+      min-height: 43px !important;
+      padding: 6px 7px !important;
+    }
+    main.container .hero .hero-benefit-icon {
+      flex-basis: 21px !important;
+      width: 21px !important;
+      height: 21px !important;
+      min-width: 21px !important;
+    }
+    main.container .hero .hero-benefit-icon svg {
+      width: 15px !important;
+      height: 15px !important;
+    }
+    main.container .hero .hero-benefit-copy strong {
+      font-size: .64rem !important;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main.container .hero .hero-benefit-item {
+      transition: none !important;
+    }
+  }
+</style>
+
 </body>
 </html>
