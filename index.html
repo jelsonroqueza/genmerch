@@ -15621,6 +15621,17 @@ main.container .catalog-search:focus-within {
     transition: none !important;
   }
 }
+
+/* Mobile fix: keep the complete Notifications label on one line instead of orphaning the final “s”. */
+@media (max-width: 600px) {
+  .site-header .main-header .nav .header-actions > #genmerchNotificationButton > small {
+    font-size: clamp(6.5px, 1.7vw, 7.2px) !important;
+    letter-spacing: -.035em !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+  }
+}
 </style>
 </body>
 </html>
