@@ -9345,6 +9345,20 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       }
       return (images||[]).map((_,index)=>index);
     }
+    // Shared navigation hook for the enlarged image viewer; keeps the selected color/variant in sync.
+    window.navigateGenmerchProductGallery=function(direction){
+      if(!openProductGalleryProduct||openProductGallerySwipeIndexes.length<2)return null;
+      const indexes=openProductGallerySwipeIndexes;
+      let current=indexes.indexOf(openProductGalleryIndex);
+      if(current<0)current=0;
+      const nextPosition=(current+(Number(direction)<0?-1:1)+indexes.length)%indexes.length;
+      const nextIndex=indexes[nextPosition];
+      showProductGalleryImage(openProductGalleryProduct,openProductGalleryImages,nextIndex,openProductGalleryThumbnails);
+      const selected=openProductGalleryImages[nextIndex];
+      const color=getColorForImage(selected,getProductColors(openProductGalleryProduct));
+      flashProductSwipeHint(color?'Showing '+color+' variant':'Photo '+(nextIndex+1)+' of '+openProductGalleryImages.length,1450);
+      return selected||null;
+    };
     function clearProductSwipeHintTimers(){
       if(productSwipeHintTimer!==null){window.clearTimeout(productSwipeHintTimer);productSwipeHintTimer=null;}
       if(productSwipeHintHideTimer!==null){window.clearTimeout(productSwipeHintHideTimer);productSwipeHintHideTimer=null;}
@@ -13854,7 +13868,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 </style>
 <script id="genmerch-product-image-lightbox-controller">
 (function(){
- let overlay=null,stage=null,image=null,scale=1,tx=0,ty=0,pointers=new Map(),startScale=1,startDistance=0,startMid={x:0,y:0},startTx=0,startTy=0,lastTap=0,lastTapAt=0,dragStart={x:0,y:0},didDrag=false;
+ let overlay=null,stage=null,image=null,scale=1,tx=0,ty=0,pointers=new Map(),startScale=1,startDistance=0,startMid={x:0,y:0},startTx=0,startTy=0,lastTap=0,lastTapAt=0,dragStart={x:0,y:0},lightboxSwipeStart=null,didDrag=false;
  const MIN_SCALE=1,MAX_SCALE=5;
  function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
  function paint(){if(image)image.style.transform='translate3d('+tx+'px,'+ty+'px,0) scale('+scale+')';if(stage)stage.style.cursor=scale>1?'grab':'zoom-in';}
@@ -13880,16 +13894,16 @@ html.genmerch-initial-loading body{overflow:hidden!important}
  function ensure(){
    if(overlay)return;
    overlay=document.createElement('div');overlay.id='genmerchProductImageLightbox';overlay.setAttribute('aria-hidden','true');
-   overlay.innerHTML='<div class="gm-lightbox-card" role="dialog" aria-modal="true" aria-label="Product image viewer"><button type="button" class="gm-lightbox-close" aria-label="Close enlarged product image" title="Close">×</button><div class="gm-lightbox-image-stage"><img class="gm-lightbox-image" alt=""></div><div class="gm-lightbox-hint">Pinch to zoom · Double-tap to enlarge</div></div>';
+   overlay.innerHTML='<div class="gm-lightbox-card" role="dialog" aria-modal="true" aria-label="Product image viewer"><button type="button" class="gm-lightbox-close" aria-label="Close enlarged product image" title="Close">×</button><div class="gm-lightbox-image-stage"><img class="gm-lightbox-image" alt=""></div><div class="gm-lightbox-hint">Swipe to change color · Pinch to zoom · Double-tap to enlarge</div></div>';
    document.body.appendChild(overlay);
    stage=overlay.querySelector('.gm-lightbox-image-stage');image=overlay.querySelector('.gm-lightbox-image');
    overlay.querySelector('.gm-lightbox-close').addEventListener('click',close);
    overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
    document.addEventListener('keydown',function(e){if(!overlay.classList.contains('open'))return;if(e.key==='Escape'){close();return;}if(e.key==='+'||e.key==='='){scale=clamp(scale+.5,MIN_SCALE,MAX_SCALE);paint();}if(e.key==='-'){scale=clamp(scale-.5,MIN_SCALE,MAX_SCALE);if(scale===1)tx=ty=0;paint();}});
    stage.addEventListener('wheel',function(e){e.preventDefault();const old=scale;scale=clamp(scale*(e.deltaY<0?1.15:.87),MIN_SCALE,MAX_SCALE);if(scale===1){tx=ty=0;}else{const r=stage.getBoundingClientRect(),px=e.clientX-r.left-r.width/2,py=e.clientY-r.top-r.height/2,k=scale/old;tx=px-(px-tx)*k;ty=py-(py-ty)*k;fitBounds();}paint();},{passive:false});
-   stage.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;stage.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});didDrag=false;dragStart={x:e.clientX,y:e.clientY};if(pointers.size===1){startTx=tx;startTy=ty;}if(pointers.size===2){const pts=[...pointers.values()];startDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1;startScale=scale;startMid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};startTx=tx;startTy=ty;}});
-   stage.addEventListener('pointermove',function(e){if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const pts=[...pointers.values()],dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1,mid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};scale=clamp(startScale*dist/startDistance,MIN_SCALE,MAX_SCALE);tx=startTx+(mid.x-startMid.x);ty=startTy+(mid.y-startMid.y);if(scale===1)tx=ty=0;fitBounds();paint();didDrag=true;}else if(pointers.size===1&&scale>1){tx=startTx+(e.clientX-dragStart.x);ty=startTy+(e.clientY-dragStart.y);fitBounds();paint();if(Math.abs(e.clientX-dragStart.x)+Math.abs(e.clientY-dragStart.y)>4)didDrag=true;}});
-   function endPointer(e){pointers.delete(e.pointerId);if(pointers.size===1){const p=[...pointers.values()][0];dragStart={x:p.x,y:p.y};startTx=tx;startTy=ty;}if(pointers.size===0&&!didDrag&&e.pointerType!=='mouse'){const now=Date.now();if(now-lastTapAt<320){scale=scale>1?1:2.5; if(scale===1)tx=ty=0;paint();lastTapAt=0;}else lastTapAt=now;} }
+   stage.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;stage.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});didDrag=false;dragStart={x:e.clientX,y:e.clientY};if(pointers.size===1)lightboxSwipeStart={pointerId:e.pointerId,x:e.clientX,y:e.clientY};else lightboxSwipeStart=null;if(pointers.size===1){startTx=tx;startTy=ty;}if(pointers.size===2){const pts=[...pointers.values()];startDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1;startScale=scale;startMid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};startTx=tx;startTy=ty;}});
+   stage.addEventListener('pointermove',function(e){if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1&&scale===1&&lightboxSwipeStart&&lightboxSwipeStart.pointerId===e.pointerId){const swipeDx=e.clientX-lightboxSwipeStart.x,swipeDy=e.clientY-lightboxSwipeStart.y;if(Math.abs(swipeDx)>12&&Math.abs(swipeDx)>Math.abs(swipeDy)*1.1)didDrag=true;}if(pointers.size===2){const pts=[...pointers.values()],dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)||1,mid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};scale=clamp(startScale*dist/startDistance,MIN_SCALE,MAX_SCALE);tx=startTx+(mid.x-startMid.x);ty=startTy+(mid.y-startMid.y);if(scale===1)tx=ty=0;fitBounds();paint();didDrag=true;}else if(pointers.size===1&&scale>1){tx=startTx+(e.clientX-dragStart.x);ty=startTy+(e.clientY-dragStart.y);fitBounds();paint();if(Math.abs(e.clientX-dragStart.x)+Math.abs(e.clientY-dragStart.y)>4)didDrag=true;}});
+   function endPointer(e){const swipeStart=lightboxSwipeStart;const swipeDx=swipeStart&&swipeStart.pointerId===e.pointerId?e.clientX-swipeStart.x:0;const swipeDy=swipeStart&&swipeStart.pointerId===e.pointerId?e.clientY-swipeStart.y:0;const shouldSwipe=pointers.size===1&&scale===1&&swipeStart&&swipeStart.pointerId===e.pointerId&&Math.abs(swipeDx)>=48&&Math.abs(swipeDx)>Math.abs(swipeDy)*1.2;pointers.delete(e.pointerId);if(swipeStart&&swipeStart.pointerId===e.pointerId)lightboxSwipeStart=null;if(pointers.size===1){const p=[...pointers.values()][0];dragStart={x:p.x,y:p.y};startTx=tx;startTy=ty;}if(shouldSwipe&&typeof window.navigateGenmerchProductGallery==='function'){const selected=window.navigateGenmerchProductGallery(swipeDx<0?1:-1);if(selected&&selected.url){image.src=selected.url;image.alt=selected.alt||'Product image enlarged';reset();}didDrag=true;lastTapAt=0;return;}if(pointers.size===0&&!didDrag&&e.pointerType!=='mouse'){const now=Date.now();if(now-lastTapAt<320){scale=scale>1?1:2.5; if(scale===1)tx=ty=0;paint();lastTapAt=0;}else lastTapAt=now;} }
    stage.addEventListener('pointerup',endPointer);stage.addEventListener('pointercancel',endPointer);
    stage.addEventListener('dblclick',function(e){e.preventDefault();scale=scale>1?1:2.5;if(scale===1)tx=ty=0;else{const r=stage.getBoundingClientRect();tx=(r.width/2-(e.clientX-r.left))*0.7;ty=(r.height/2-(e.clientY-r.top))*0.7;}paint();});
  }
