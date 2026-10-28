@@ -13408,21 +13408,13 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         refreshCustomerRateBadge(customerAuthCurrentSession);
       }
     });
-    document.addEventListener('click',event=>{
-      const origin=event.target&&event.target.nodeType===1?event.target:event.target&&event.target.parentElement;
-      const control=origin&&origin.closest('button,[role="button"]');
-      if(!control||control.disabled||control.closest('#genmerchActionOverlay'))return;
-      if(control.matches('[data-gallery-index],[data-size],.product-gallery-thumb,.product-detail-size-option,[data-qty],[data-payment],[data-color],#productModalQuantityMinus,#productModalQuantityPlus,#sellerProductsApplyFilters,#sellerProductsClearFilters'))return;
-      const label=String(control.innerText||control.getAttribute('aria-label')||control.title||'').replace(/\s+/g,' ').trim();
-      if(!label||/^(×|x|close|close modal|cancel|no)$/i.test(label))return;
-      if(control.matches('[aria-label^="Close"],[data-close-modal]'))return;
-      const normalized=label.toLowerCase();
-      let message='Please wait...';
-      if(normalized.includes('refresh'))message='Please wait...';
-      else if(normalized.includes('delete')||normalized.includes('remove'))message='Please wait';
-      else if(normalized.includes('add to cart'))message='Adding item to your cart, please wait...';
-      showCenteredActionStatus(message,'loading',850);
-    },true);
+    /*
+     * Do not show a global blocking loader for every button click.
+     * UI-only interactions (auth tabs, show/hide password, category/dashboard tabs,
+     * filters, modal controls and other local form edits) should react immediately.
+     * Real asynchronous operations retain their own explicit loading/feedback inside
+     * the relevant handlers (login, checkout, stock verification, save/upload, etc.).
+     */
 
   </script>
   <script id="GENMERCH_ONLINE_ONLY_SERVICE_WORKER">
