@@ -14591,6 +14591,40 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       transition: none !important;
     }
   }
+
+  /* Mobile-only: center each store-highlight label while keeping its icon anchored left. */
+  @media (max-width: 760px) {
+    main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
+      position: relative !important;
+      justify-content: center !important;
+    }
+    main.container .hero .hero-benefit-icon {
+      position: absolute !important;
+      left: 9px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+    }
+    main.container .hero .hero-benefit-copy {
+      width: 100% !important;
+      flex: 1 1 100% !important;
+      padding: 0 27px !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+    }
+    main.container .hero .hero-benefit-copy strong {
+      text-align: center !important;
+    }
+  }
+  @media (max-width: 380px) {
+    main.container .hero .hero-benefit-icon {
+      left: 7px !important;
+    }
+    main.container .hero .hero-benefit-copy {
+      padding-right: 23px !important;
+      padding-left: 23px !important;
+    }
+  }
+  /* genmerch-mobile-centered-benefits-v1 */
 </style>
 
 </body>
