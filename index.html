@@ -2703,33 +2703,106 @@
   </style>
   <style id="genmerch-help-center-styles">
     #noticeOverlay .notice-modal.genmerch-help-modal{
-      width:min(720px,100%);max-height:min(90dvh,880px);padding:0;overflow:auto;
+      display:flex;flex-direction:column;
+      width:min(720px,100%);max-height:min(90dvh,880px);padding:0;overflow:hidden;
       border:1px solid #f0d8cf;border-radius:16px;background:#fff;color:#29211e;
+      box-shadow:0 2px 0 rgba(123,59,38,.12),0 14px 38px rgba(39,23,16,.23),0 28px 70px rgba(39,23,16,.16);
+    }
+    .genmerch-help-header{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;flex:0 0 auto;
+      padding:13px 18px 13px 23px;
+      background:linear-gradient(115deg,#ff3218 0%,#f52a12 60%,#ed431b 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 0 rgba(157,37,19,.2);
     }
     .genmerch-help-modal #noticeTitle{
-      margin:0;padding:20px 23px 15px;background:linear-gradient(115deg,#ff3218,#f52a12);
-      color:#fff;font-size:1.25rem;line-height:1.25;
+      flex:1 1 auto;min-width:0;margin:0;padding:0;background:transparent;
+      color:#fff;font-size:1.25rem;line-height:1.25;font-weight:900;
+      text-shadow:0 1px 1px rgba(111,24,10,.25);
     }
-    .genmerch-help-content{padding:18px 23px 22px}
+    #noticeOverlay .notice-modal.genmerch-help-modal #noticeContent{
+      flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+      scrollbar-gutter:stable;
+    }
+    .genmerch-help-close{
+      display:inline-grid!important;place-items:center!important;flex:0 0 38px!important;
+      width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;
+      margin:0!important;padding:0!important;border:1px solid rgba(255,255,255,.48)!important;
+      border-radius:11px!important;background:linear-gradient(180deg,#ff8167 0%,#ff4a2e 55%,#dc2d17 100%)!important;
+      color:#fff!important;font:900 25px/1 Arial,sans-serif!important;cursor:pointer!important;
+      text-shadow:0 1px 1px rgba(91,17,7,.35);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.52),inset 0 -2px 0 rgba(115,20,8,.2),0 3px 0 #b72514,0 5px 10px rgba(95,18,8,.22)!important;
+      transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
+    }
+    .genmerch-help-close:hover{filter:brightness(1.08);transform:translateY(-2px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(115,20,8,.2),0 4px 0 #b72514,0 7px 13px rgba(95,18,8,.27)!important}
+    .genmerch-help-close:active{transform:translateY(1px)!important;box-shadow:inset 0 2px 4px rgba(91,17,7,.28),0 1px 0 #b72514!important}
+    .genmerch-help-close:focus-visible{outline:3px solid rgba(255,255,255,.62)!important;outline-offset:3px}
+    .genmerch-help-content{padding:18px 20px 18px}
     .genmerch-help-intro{margin:0 0 16px!important;color:#71645d;font-size:.88rem!important;line-height:1.55!important}
-    .genmerch-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-    .genmerch-help-card{min-width:0;padding:14px;border:1px solid #efdfd8;border-radius:11px;background:#fffaf7}
-    .genmerch-help-card h3{margin:0 0 7px;font-size:.92rem;line-height:1.35;color:#2b211d}
+    .genmerch-help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .genmerch-help-card{
+      position:relative;min-width:0;padding:15px;
+      border:1px solid #e9d1c6;border-radius:12px;
+      background:linear-gradient(145deg,#fffdfb 0%,#fff7f1 54%,#f5e5dc 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(132,73,48,.045),0 2px 0 #e1c4b5,0 5px 12px rgba(76,43,27,.11);
+      transition:transform .17s ease,box-shadow .17s ease,border-color .17s ease;
+    }
+    .genmerch-help-card h3{margin:0 0 8px;font-size:.93rem;line-height:1.35;color:#2b211d;font-weight:900}
     .genmerch-help-card p{margin:0 0 8px!important;font-size:.79rem!important;line-height:1.55!important;color:#6d5f58}
     .genmerch-help-card p:last-child{margin-bottom:0!important}
-    .genmerch-help-card a{color:#c92d1b;font-weight:800;text-decoration:underline;overflow-wrap:anywhere}
-    .genmerch-help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
-    .genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;flex:1 1 170px;padding:11px 14px;border-radius:8px;font-size:.83rem;font-weight:850;text-decoration:none;text-align:center}
-    .genmerch-help-actions .secondary-btn{border:1px solid #e2d3cc;background:#fff;color:#392a23}
+    .genmerch-help-card a{color:#c92d1b;font-weight:850;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:2px;overflow-wrap:anywhere}
+    .genmerch-help-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}
+    .genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;flex:1 1 170px;
+      padding:11px 14px;border-radius:9px;font-size:.83rem;font-weight:900;text-decoration:none;text-align:center;
+      transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+    }
+    .genmerch-help-actions .primary-btn{
+      border:1px solid #d93219!important;
+      background:linear-gradient(180deg,#ff5a37 0%,#ff3b1d 52%,#ec3116 100%)!important;color:#fff!important;
+      text-shadow:0 1px 1px rgba(112,23,9,.32);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -2px 0 rgba(128,22,8,.2),0 3px 0 #c82b14,0 6px 11px rgba(208,50,25,.22)!important;
+    }
+    .genmerch-help-actions .secondary-btn{
+      border:1px solid #e1c4b7!important;
+      background:linear-gradient(180deg,#fff 0%,#fff9f5 50%,#f5e7df 100%)!important;color:#392a23!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(131,77,51,.07),0 3px 0 #d4b3a3,0 5px 9px rgba(73,41,26,.1)!important;
+    }
     .genmerch-help-hours-note{margin:12px 0 0!important;color:#8b7c74;font-size:.71rem!important;line-height:1.5!important}
+    @media(hover:hover) and (pointer:fine){
+      .genmerch-help-card:hover{
+        transform:translateY(-3px);border-color:#dfb5a2;
+        box-shadow:inset 0 1px 0 #fff,0 3px 0 #d9b5a3,0 9px 18px rgba(76,43,27,.16);
+      }
+      .genmerch-help-actions .primary-btn:hover,.genmerch-help-actions .secondary-btn:hover{
+        transform:translateY(-2px);filter:brightness(1.035);
+      }
+      .genmerch-help-actions .primary-btn:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(128,22,8,.2),0 4px 0 #c82b14,0 8px 14px rgba(208,50,25,.27)!important}
+      .genmerch-help-actions .secondary-btn:hover{box-shadow:inset 0 1px 0 #fff,0 4px 0 #d4b3a3,0 7px 13px rgba(73,41,26,.15)!important}
+    }
+    .genmerch-help-card:focus-within{outline:2px solid rgba(236,67,35,.25);outline-offset:2px}
+    .genmerch-help-actions .primary-btn:active,.genmerch-help-actions .secondary-btn:active{
+      transform:translateY(1px);filter:brightness(.98);
+      box-shadow:inset 0 2px 4px rgba(91,39,23,.2),0 1px 0 rgba(80,35,22,.12)!important;
+    }
+    .genmerch-help-actions a:focus-visible{outline:3px solid rgba(238,77,45,.3);outline-offset:3px}
     @media(max-width:560px){
       #noticeOverlay .notice-modal.genmerch-help-modal{max-height:calc(100dvh - 20px);border-radius:12px}
-      .genmerch-help-modal #noticeTitle{padding:16px 16px 13px;font-size:1.1rem}
+      .genmerch-help-header{padding:11px 12px 11px 15px;gap:10px}
+      .genmerch-help-modal #noticeTitle{font-size:1.08rem}
+      .genmerch-help-close{flex-basis:35px!important;width:35px!important;min-width:35px!important;height:35px!important;min-height:35px!important}
       .genmerch-help-content{padding:13px 13px 16px}
-      .genmerch-help-grid{grid-template-columns:minmax(0,1fr);gap:9px}
-      .genmerch-help-card{padding:12px}
+      .genmerch-help-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+      .genmerch-help-card{padding:13px}
       .genmerch-help-actions{flex-direction:column}
       .genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn{width:100%;flex:1 1 auto}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .genmerch-help-card,.genmerch-help-actions .primary-btn,.genmerch-help-actions .secondary-btn,.genmerch-help-close{transition:none!important}
+    }
+    .genmerch-help-card::before{
+      content:"";position:absolute;inset:0 0 auto;height:3px;border-radius:12px 12px 0 0;
+      background:linear-gradient(90deg,rgba(255,255,255,.98),rgba(238,77,45,.18),rgba(255,255,255,.65));
+      pointer-events:none;
     }
   
     /* Animated Flash Deals countdown replaces the hero clock. */
@@ -10503,7 +10576,27 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         </div>`;
       showNotice('GENMERCH Help Center',content);
       const modal=$('noticeOverlay').querySelector('.notice-modal');
-      if(modal)modal.classList.add('genmerch-help-modal');
+      if(modal){
+        modal.classList.add('genmerch-help-modal');
+        const title=$('noticeTitle');
+        const closeButton=$('closeNoticeButton');
+        if(title&&closeButton){
+          let header=modal.querySelector('.genmerch-help-header');
+          if(!header){
+            header=document.createElement('div');
+            header.className='genmerch-help-header';
+            modal.insertBefore(header,title);
+          }
+          header.appendChild(title);
+          header.appendChild(closeButton);
+          closeButton.classList.remove('primary-btn');
+          closeButton.classList.add('genmerch-help-close');
+          closeButton.type='button';
+          closeButton.textContent='×';
+          closeButton.setAttribute('aria-label','Close GENMERCH Help Center');
+          closeButton.setAttribute('title','Close Help Center');
+        }
+      }
       const trackButton=$('helpTrackOrderButton');
       if(trackButton)trackButton.addEventListener('click',()=>{
         closeNotice();
