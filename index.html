@@ -8279,6 +8279,23 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       button.classList.toggle('active',Boolean(saved));
       button.setAttribute('aria-pressed',String(Boolean(saved)));
     }
+    function refreshWishlistProductButtons(productId){
+      const id=String(productId||'');
+      const product=products.find(item=>String(item.id)===id);
+      const saved=wishlistProductIds.includes(id);
+      document.querySelectorAll('[data-wishlist-id]').forEach(button=>{
+        if(String(button.dataset.wishlistId||'')!==id)return;
+        button.classList.toggle('active',saved);
+        button.setAttribute('aria-pressed',String(saved));
+        button.setAttribute('aria-label',saved
+          ?'Remove '+String(product&&product.name||'product')+' from wishlist'
+          :'Add '+String(product&&product.name||'product')+' to wishlist');
+        button.setAttribute('title',saved?'Saved to Wishlist':'Add to Wishlist');
+      });
+      updateWishlistBadge();
+      if(String(openProductDetailId||'')===id)updateWishlistDetailButton(id);
+      if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+    }
     async function setWishlistProductSaved(productId,shouldSave,successMessage=''){
       const id=String(productId||'');
       if(!id)return;
@@ -8288,9 +8305,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       const key=getWishlistStorageKey(session);
       const currentlySaved=wishlistProductIds.includes(id);
       if(currentlySaved===shouldSave){
-        updateWishlistBadge();
-        updateWishlistDetailButton();
-        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+        refreshWishlistProductButtons(id);
         return;
       }
 
@@ -8302,10 +8317,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       // Update the customer-facing UI before waiting for Supabase.
       wishlistProductIds=nextIds;
       wishlistLastLoadedStorageKey=key;
-      updateWishlistBadge();
-      renderProducts();
-      updateWishlistDetailButton();
-      if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+      refreshWishlistProductButtons(id);
       const product=products.find(item=>String(item.id)===id);
       showToast(successMessage||(shouldSave?(product?product.name+' added to Wishlist':'Added to Wishlist'):'Removed from Wishlist'));
 
@@ -8363,10 +8375,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           wishlistLastLoadedStorageKey=key;
         }
         updateWishlistSyncStatus('Cloud sync failed. Your last confirmed Wishlist state was restored. Please try again.','error');
-        updateWishlistBadge();
-        renderProducts();
-        updateWishlistDetailButton();
-        if($('wishlistOverlay')&&$('wishlistOverlay').classList.contains('open'))renderWishlist();
+        refreshWishlistProductButtons(id);
         showToast('Could not sync this Wishlist change. Your previous saved state was restored.');
       }
     }
