@@ -5988,33 +5988,13 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           <span class="brand-type genmerch-metal-wordmark-wrap"><svg class="brand-word genmerch-svg-metal-wordmark" viewBox="0 0 1320 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GENMERCH | SUOT APPAREL" focusable="false">
   <defs>
     <linearGradient id="gmMetalChromeFace" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ededed"/>
-      <stop offset=".09" stop-color="#777777"/>
-      <stop offset=".18" stop-color="#f7f7f7"/>
-      <stop offset=".31" stop-color="#4c4c4c"/>
-      <stop offset=".47" stop-color="#171717"/>
-      <stop offset=".62" stop-color="#626262"/>
-      <stop offset=".78" stop-color="#0a0a0a"/>
-      <stop offset=".91" stop-color="#bcbcbc"/>
-      <stop offset="1" stop-color="#272727"/>
+      <stop offset="0" stop-color="#4a4a4a"/><stop offset=".18" stop-color="#171717"/><stop offset=".36" stop-color="#303030"/><stop offset=".56" stop-color="#080808"/><stop offset=".76" stop-color="#202020"/><stop offset=".92" stop-color="#414141"/><stop offset="1" stop-color="#121212"/>
     </linearGradient>
     <linearGradient id="gmMetalRedFace" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffdadd"/>
-      <stop offset=".09" stop-color="#f15a67"/>
-      <stop offset=".2" stop-color="#d91630"/>
-      <stop offset=".36" stop-color="#970719"/>
-      <stop offset=".52" stop-color="#e82840"/>
-      <stop offset=".7" stop-color="#7f0010"/>
-      <stop offset=".87" stop-color="#c9152d"/>
-      <stop offset="1" stop-color="#59000a"/>
+      <stop offset="0" stop-color="#ed5361"/><stop offset=".16" stop-color="#a9071f"/><stop offset=".34" stop-color="#d51b32"/><stop offset=".54" stop-color="#820012"/><stop offset=".72" stop-color="#b60b23"/><stop offset=".9" stop-color="#e52b40"/><stop offset="1" stop-color="#73000e"/>
     </linearGradient>
     <linearGradient id="gmMetalSuotBase" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#c8103b"/>
-      <stop offset=".2" stop-color="#ea2349"/>
-      <stop offset=".42" stop-color="#b70b4d"/>
-      <stop offset=".6" stop-color="#d81c51"/>
-      <stop offset=".78" stop-color="#e78311"/>
-      <stop offset="1" stop-color="#bf260b"/>
+      <stop offset="0" stop-color="#c90e3a"/><stop offset=".24" stop-color="#df1a42"/><stop offset=".44" stop-color="#b70d49"/><stop offset=".64" stop-color="#d51b4e"/><stop offset=".82" stop-color="#d97910"/><stop offset="1" stop-color="#ba260b"/>
     </linearGradient>
     <linearGradient id="gmMetalDivider" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#f4f4f4"/>
@@ -6023,28 +6003,19 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       <stop offset=".72" stop-color="#b8b8b8"/>
       <stop offset="1" stop-color="#363636"/>
     </linearGradient>
-    <filter id="gmMetalBevelGlint" x="-10%" y="-20%" width="120%" height="155%">
-      <feMorphology in="SourceAlpha" operator="dilate" radius="1.2" result="expandedAlpha"/>
-      <feOffset in="expandedAlpha" dx="0" dy="2.6" result="extrudedOffset"/>
-      <feFlood flood-color="#21070b" flood-opacity=".95" result="extrusionColor"/>
-      <feComposite in="extrusionColor" in2="extrudedOffset" operator="in" result="extrusion"/>
-      <feGaussianBlur in="SourceAlpha" stdDeviation=".55" result="softAlpha"/>
-      <feSpecularLighting in="softAlpha" surfaceScale="2.2" specularConstant=".8" specularExponent="16" lighting-color="#ffffff" result="metalHighlight">
-        <fePointLight x="-90" y="-70" z="160"/>
-      </feSpecularLighting>
-      <feComposite in="metalHighlight" in2="SourceAlpha" operator="in" result="bevelHighlight"/>
-      <feMerge>
-        <feMergeNode in="extrusion"/>
-        <feMergeNode in="SourceGraphic"/>
-        <feMergeNode in="bevelHighlight"/>
-      </feMerge>
+    <filter id="gmMetalBevelGlint" x="-10%" y="-16%" width="120%" height="145%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.25" result="softShadowBlur"/>
+      <feOffset in="softShadowBlur" dx="0" dy="2.5" result="softShadowOffset"/>
+      <feFlood flood-color="#16050a" flood-opacity=".48" result="softShadowColor"/>
+      <feComposite in="softShadowColor" in2="softShadowOffset" operator="in" result="softShadow"/>
+      <feMerge><feMergeNode in="softShadow"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
   <g transform="translate(0 -9.12) scale(1 1.12)" font-family="Montserrat, Inter, Lexend, Arial, sans-serif" font-weight="900" text-anchor="start" stroke-linejoin="round" filter="url(#gmMetalBevelGlint)">
-    <text x="8" y="76" font-size="76.22" textLength="220" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalChromeFace)" stroke="#292929" stroke-width="1.5" paint-order="stroke fill">GEN</text>
-    <text x="226" y="76" font-size="76.22" textLength="354" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalRedFace)" stroke="#780615" stroke-width="1.5" paint-order="stroke fill">MERCH</text>
-    <text x="590" y="77" font-size="81.37" fill="url(#gmMetalDivider)" stroke="#292929" stroke-width="1.25" paint-order="stroke fill">|</text>
-    <text x="634" y="76" font-size="70.04" textLength="674" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalSuotBase)" stroke="#65102a" stroke-width="1.45" paint-order="stroke fill">SUOT APPAREL</text>
+    <text x="8" y="76" font-size="76.22" textLength="220" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalChromeFace)" stroke="none" stroke-width="0">GEN</text>
+    <text x="226" y="76" font-size="76.22" textLength="354" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalRedFace)" stroke="none" stroke-width="0">MERCH</text>
+    <text x="590" y="77" font-size="81.37" fill="url(#gmMetalDivider)" stroke="none" stroke-width="0">|</text>
+    <text x="634" y="76" font-size="70.04" textLength="674" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalSuotBase)" stroke="none" stroke-width="0">SUOT APPAREL</text>
   </g>
 </svg></span>
         </button>
