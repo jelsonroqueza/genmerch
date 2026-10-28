@@ -6228,10 +6228,12 @@ html.genmerch-initial-loading body{overflow:hidden!important}
             <span class="hero-benefit-copy"><strong>Cash on<br>Delivery</strong></span>
           </div>
         </div>
-        <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop Now <span>→</span></button>
+        <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})"><span class="shop-now-label">Shop Now</span><span class="shop-now-arrow" aria-hidden="true">→</span></button>
         <div class="flash-deals-banner" id="flashDealsBanner" role="status" aria-live="off" aria-label="Flash deals countdown to the next Philippine day">
-          <span class="flash-deals-lightning" aria-hidden="true">ϟ</span>
-          <span class="flash-deals-title">FLASH DEALS</span>
+          <span class="flash-deals-brand" aria-label="Flash deals">
+            <span class="flash-deals-lightning" aria-hidden="true">ϟ</span>
+            <span class="flash-deals-title">FLASH DEALS</span>
+          </span>
           <span class="flash-deals-countdown" aria-label="Time until the next Philippine day">
             <span class="flash-time-unit" id="flashHours">00</span>
             <span class="flash-time-colon" aria-hidden="true">:</span>
@@ -14714,6 +14716,231 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
       transition: none !important;
     }
+  }
+</style>
+
+
+<style id="genmerch-premium-shop-deals-v1">
+  /* Premium shopping CTA: crisp cart glyph, glossy red gradient, and tactile depth. */
+  main.container .hero .shop-now {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(9px, 1.3vw, 15px) !important;
+    width: min(100%, 292px) !important;
+    min-width: 0 !important;
+    min-height: 55px !important;
+    padding: 13px 25px !important;
+    border: 1px solid rgba(255,143,124,.9) !important;
+    border-radius: 999px !important;
+    background: linear-gradient(180deg, #ff5947 0%, #ff2e20 36%, #ef171b 72%, #cc0b19 100%) !important;
+    color: #fff !important;
+    font-size: clamp(1rem, 1.25vw, 1.12rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: .015em !important;
+    line-height: 1.1 !important;
+    text-shadow: 0 1px 2px rgba(106,0,0,.28) !important;
+    box-shadow: 0 5px 0 #ad0915, 0 12px 24px rgba(214,27,23,.25), inset 0 1px 0 rgba(255,255,255,.58), inset 0 -4px 8px rgba(123,0,10,.18) !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  main.container .hero .shop-now::before {
+    content: "";
+    display: inline-block;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    z-index: 1;
+    background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E");
+    filter: drop-shadow(0 1px 1px rgba(100,0,0,.2));
+  }
+  main.container .hero .shop-now::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    top: -35%;
+    bottom: -35%;
+    left: -58%;
+    width: 34%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+    transform: skewX(-19deg);
+    animation: gmShopNowGloss 4.8s ease-in-out 1.3s infinite;
+  }
+  @keyframes gmShopNowGloss {
+    0%, 22% { left: -58%; opacity: 0; }
+    32% { opacity: .9; }
+    57%, 100% { left: 130%; opacity: 0; }
+  }
+  main.container .hero .shop-now .shop-now-label,
+  main.container .hero .shop-now .shop-now-arrow {
+    position: relative !important;
+    z-index: 1 !important;
+    flex: 0 0 auto !important;
+  }
+  main.container .hero .shop-now .shop-now-label {
+    display: inline-block !important;
+    animation: none !important;
+  }
+  main.container .hero .shop-now .shop-now-arrow {
+    display: inline-block !important;
+    font-size: 1.3em !important;
+    line-height: 1 !important;
+    margin-left: 2px !important;
+    animation: gmHeroArrowNudge 3.6s ease-in-out 1.8s infinite !important;
+  }
+  main.container .hero .shop-now:hover {
+    transform: translateY(-3px) scale(1.015) !important;
+    filter: saturate(1.08) brightness(1.025) !important;
+    box-shadow: 0 7px 0 #ad0915, 0 16px 30px rgba(214,27,23,.31), inset 0 1px 0 rgba(255,255,255,.68) !important;
+  }
+  main.container .hero .shop-now:active {
+    transform: translateY(1px) scale(.99) !important;
+    box-shadow: 0 2px 0 #ad0915, 0 6px 12px rgba(214,27,23,.22), inset 0 2px 5px rgba(123,0,10,.2) !important;
+  }
+
+  /* Flash Deals: vivid red offer plaque paired with premium dark countdown tiles. */
+  main.container .hero .flash-deals-banner {
+    --flash-gap: clamp(4px, .72vw, 8px);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: var(--flash-gap) !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 13px auto 0 !important;
+    padding: 8px 11px 8px 0 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255,255,255,.9) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(115deg, #fff4e9 0%, #fffaf5 54%, #fbe4d5 100%) !important;
+    box-shadow: 0 9px 22px rgba(106,57,32,.11), inset 0 1px 0 rgba(255,255,255,.96) !important;
+    color: #332723 !important;
+  }
+  main.container .hero .flash-deals-brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    align-self: stretch;
+    gap: 5px;
+    margin: -8px 0 -8px -1px;
+    padding: 8px 20px 8px 11px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6332 0%, #ff321f 45%, #df111c 100%);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 11px) 100%, 0 100%);
+    -webkit-clip-path: polygon(0 0, 100% 0, calc(100% - 11px) 100%, 0 100%);
+  }
+  main.container .hero .flash-deals-lightning {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    color: #fff3a9 !important;
+    font-size: 1.75rem !important;
+    line-height: 1 !important;
+    text-shadow: 0 2px 0 rgba(125,13,0,.25), 0 0 9px rgba(255,222,102,.22) !important;
+  }
+  main.container .hero .flash-deals-title {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    color: #fff !important;
+    font-size: clamp(.79rem, 1.15vw, 1rem) !important;
+    font-weight: 1000 !important;
+    font-style: italic !important;
+    letter-spacing: -.02em !important;
+    white-space: nowrap !important;
+    text-shadow: 0 1px 3px rgba(93,5,0,.25) !important;
+  }
+  main.container .hero .flash-deals-countdown {
+    position: relative;
+    z-index: 1;
+    display: inline-flex !important;
+    align-items: center !important;
+    flex: 0 0 auto !important;
+    gap: clamp(2px, .35vw, 4px) !important;
+    margin-left: 1px !important;
+  }
+  main.container .hero .flash-time-unit {
+    display: inline-grid !important;
+    place-items: center !important;
+    min-width: 35px !important;
+    height: 34px !important;
+    padding: 0 6px !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-radius: 7px !important;
+    background: linear-gradient(180deg, #383838 0%, #202020 55%, #111 100%) !important;
+    color: #fff !important;
+    font-size: .88rem !important;
+    font-weight: 950 !important;
+    font-variant-numeric: tabular-nums !important;
+    line-height: 1 !important;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3) !important;
+    box-shadow: 0 3px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.16), inset 0 -2px 4px rgba(0,0,0,.16) !important;
+  }
+  main.container .hero .flash-time-seconds {
+    border-color: rgba(255,255,255,.55) !important;
+    background: linear-gradient(145deg, #ff6545 0%, #f32a24 55%, #cf111d 100%) !important;
+    box-shadow: 0 3px 0 rgba(157,20,18,.17), inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 4px rgba(130,0,0,.18) !important;
+  }
+  main.container .hero .flash-time-colon {
+    color: #9d7868 !important;
+    font-weight: 1000 !important;
+    text-shadow: none !important;
+  }
+  main.container .hero .flash-deals-sparkle {
+    z-index: 2;
+    color: #ff9d24 !important;
+  }
+  @media (max-width: 600px) {
+    main.container .hero .shop-now {
+      width: min(100%, 290px) !important;
+      min-height: 54px !important;
+      padding: 12px 20px !important;
+      gap: 10px !important;
+    }
+    main.container .hero .shop-now::before {
+      width: 22px;
+      height: 22px;
+      flex-basis: 22px;
+    }
+    main.container .hero .flash-deals-banner {
+      gap: 5px !important;
+      margin-top: 11px !important;
+      padding: 7px 8px 7px 0 !important;
+      border-radius: 15px !important;
+    }
+    main.container .hero .flash-deals-brand {
+      margin-block: -7px !important;
+      padding: 7px 14px 7px 8px !important;
+      gap: 4px !important;
+    }
+    main.container .hero .flash-deals-lightning { font-size: 1.45rem !important; }
+    main.container .hero .flash-deals-title { font-size: .78rem !important; }
+    main.container .hero .flash-deals-countdown { gap: 3px !important; }
+    main.container .hero .flash-time-unit {
+      min-width: 30px !important;
+      height: 30px !important;
+      padding: 0 4px !important;
+      border-radius: 6px !important;
+      font-size: .79rem !important;
+    }
+  }
+  @media (max-width: 380px) {
+    main.container .hero .shop-now { gap: 8px !important; padding-inline: 15px !important; }
+    main.container .hero .shop-now::before { width: 20px; height: 20px; flex-basis: 20px; }
+    main.container .hero .flash-deals-banner { gap: 3px !important; padding-right: 6px !important; }
+    main.container .hero .flash-deals-brand { gap: 3px !important; padding-inline: 7px 11px !important; }
+    main.container .hero .flash-deals-lightning { font-size: 1.25rem !important; }
+    main.container .hero .flash-deals-title { font-size: .70rem !important; }
+    main.container .hero .flash-time-unit { min-width: 26px !important; height: 28px !important; padding-inline: 3px !important; font-size: .72rem !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main.container .hero .shop-now::after { animation: none !important; }
+    main.container .hero .flash-deals-banner { transition: none !important; }
   }
 </style>
 
