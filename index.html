@@ -14603,32 +14603,38 @@ html.genmerch-initial-loading body{overflow:hidden!important}
 
 
 <style id="genmerch-desktop-models-fit-v1">
-  /* Desktop: full, uncropped model artwork over a real blurred duplicate layer. */
+  /* Desktop-only seamless warm backdrop; keep the original model image untouched. */
   @media (min-width: 761px) {
     main.container .hero > .hero-art {
       position: relative !important;
       overflow: hidden !important;
-      background: #ff641c !important;
+      background-color: #ed5709 !important;
+      background-image:
+        radial-gradient(ellipse 82% 72% at 28% 88%, rgba(255, 214, 106, .94) 0%, rgba(255, 147, 31, .72) 38%, rgba(255, 111, 22, 0) 76%),
+        radial-gradient(ellipse 72% 62% at 94% 2%, rgba(170, 43, 2, .82) 0%, rgba(204, 54, 3, .42) 46%, rgba(255, 93, 10, 0) 100%),
+        linear-gradient(180deg, #b63a05 0%, #d84a06 15%, #f0600b 31%, #ff7919 48%, #ff9a27 70%, #ff741a 100%) !important;
       isolation: isolate !important;
     }
-    main.container .hero > .hero-art > .genmerch-desktop-hero-backdrop {
+
+    main.container .hero > .hero-art::before {
+      content: "" !important;
+      display: block !important;
       position: absolute !important;
       z-index: 0 !important;
-      inset: -4% !important;
-      display: block !important;
-      width: 108% !important;
-      height: 108% !important;
-      max-width: none !important;
-      object-fit: cover !important;
-      object-position: center 58% !important;
-      filter: blur(18px) saturate(1.08) brightness(.86) !important;
-      transform: scale(1.04) !important;
-      opacity: 1 !important;
+      inset: 0 !important;
+      width: auto !important;
+      height: auto !important;
       pointer-events: none !important;
-      border: 0 !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
+      background:
+        radial-gradient(ellipse 92% 42% at 27% 100%, rgba(255, 219, 113, .24) 0%, rgba(255, 154, 40, .12) 43%, transparent 78%),
+        linear-gradient(180deg, rgba(173, 43, 1, .10) 0%, rgba(255, 91, 10, .035) 25%, transparent 44%) !important;
     }
+
+    main.container .hero > .hero-art::after {
+      display: none !important;
+      content: none !important;
+    }
+
     main.container .hero > .hero-art > .hero-models-photo {
       position: absolute !important;
       z-index: 1 !important;
@@ -14640,6 +14646,8 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       object-fit: contain !important;
       object-position: center bottom !important;
       transform: none !important;
+      filter: none !important;
+      opacity: 1 !important;
       border: 0 !important;
       border-radius: 0 !important;
       box-shadow: none !important;
@@ -14647,48 +14655,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       mask-image: none !important;
     }
   }
-  @media (max-width: 760px) {
-    main.container .hero > .hero-art > .genmerch-desktop-hero-backdrop {
-      display: none !important;
-    }
-  }
 </style>
 
-<script id="genmerch-desktop-models-backdrop-v2">
-(function () {
-  var desktopQuery = window.matchMedia("(min-width: 761px)");
-  function syncDesktopHeroBackdrop() {
-    var heroArt = document.querySelector("main.container .hero > .hero-art");
-    var modelImage = heroArt && heroArt.querySelector(".hero-models-photo");
-    if (!heroArt || !modelImage) return;
-    var backdrop = heroArt.querySelector(".genmerch-desktop-hero-backdrop");
-    if (!desktopQuery.matches) {
-      if (backdrop) backdrop.remove();
-      return;
-    }
-    if (!backdrop) {
-      backdrop = modelImage.cloneNode(false);
-      backdrop.className = "genmerch-desktop-hero-backdrop";
-      backdrop.setAttribute("aria-hidden", "true");
-      backdrop.setAttribute("alt", "");
-      backdrop.setAttribute("tabindex", "-1");
-      backdrop.removeAttribute("id");
-      backdrop.draggable = false;
-      heroArt.insertBefore(backdrop, modelImage);
-    }
-    var originalSource = modelImage.currentSrc || modelImage.src;
-    if (originalSource && backdrop.src !== originalSource) backdrop.src = originalSource;
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", syncDesktopHeroBackdrop, { once: true });
-  } else {
-    syncDesktopHeroBackdrop();
-  }
-  window.addEventListener("resize", syncDesktopHeroBackdrop, { passive: true });
-  if (desktopQuery.addEventListener) desktopQuery.addEventListener("change", syncDesktopHeroBackdrop);
-  else if (desktopQuery.addListener) desktopQuery.addListener(syncDesktopHeroBackdrop);
-})();
-</script>
+
 
 </body>
 </html>
