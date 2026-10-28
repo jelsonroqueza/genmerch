@@ -14703,19 +14703,26 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     text-shadow: 0 1px 0 rgba(255,255,255,.38);
   }
   main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
-    background: linear-gradient(135deg, rgba(255,255,255,.84) 0%, rgba(250,235,220,.76) 100%) !important;
-    border: 1px solid rgba(255,255,255,.82) !important;
+    background: linear-gradient(180deg, #fffaf4 0%, #f9eadb 42%, #edd6c0 100%) !important;
+    border: 1px solid rgba(255,255,255,.94) !important;
     border-radius: 14px !important;
-    box-shadow: 0 5px 16px rgba(87,53,32,.065), inset 0 1px 0 rgba(255,255,255,.92) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.98),
+      inset 0 -2px 3px rgba(126,75,41,.10),
+      0 2px 0 rgba(205,166,130,.62),
+      0 5px 11px rgba(95,58,35,.12) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease !important;
   }
   main.container .hero .hero-benefit-icon {
     color: #ef351e !important;
-    background: linear-gradient(145deg, #fffaf3 0%, #ffe2ce 100%) !important;
-    border: 1px solid rgba(245,112,63,.15) !important;
-    box-shadow: 0 3px 8px rgba(135,68,36,.09), inset 0 1px 0 rgba(255,255,255,.95) !important;
+    background: linear-gradient(145deg, #fffdf8 0%, #f7dfcc 100%) !important;
+    border: 1px solid rgba(255,255,255,.96) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,1),
+      inset 0 -1px 2px rgba(157,75,42,.09),
+      0 2px 4px rgba(135,68,36,.11) !important;
   }
   main.container .hero .hero-benefit-copy strong {
     color: #2b2521 !important;
@@ -14725,9 +14732,13 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   }
   @media (hover: hover) and (pointer: fine) {
     main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item:hover {
-      background: linear-gradient(135deg, rgba(255,255,255,.98) 0%, rgba(255,239,222,.96) 100%) !important;
-      border-color: rgba(245,91,47,.27) !important;
-      box-shadow: 0 10px 22px rgba(107,59,32,.12), inset 0 1px 0 rgba(255,255,255,.98) !important;
+      background: linear-gradient(180deg, #fffdf9 0%, #ffeddd 48%, #f4ddc8 100%) !important;
+      border-color: rgba(234,147,105,.42) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,1),
+        inset 0 -2px 3px rgba(126,75,41,.10),
+        0 3px 0 rgba(205,166,130,.48),
+        0 9px 17px rgba(107,59,32,.17) !important;
       transform: translateY(-2px) !important;
     }
   }
@@ -14742,6 +14753,17 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     main.container .hero .hero-benefits.genmerch-benefit-strip > .hero-benefit-item {
       border-radius: 12px !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.96),
+        inset 0 -1px 2px rgba(126,75,41,.08),
+        0 2px 0 rgba(205,166,130,.50),
+        0 4px 8px rgba(95,58,35,.10) !important;
+    }
+    main.container .hero .hero-benefit-icon {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,1),
+        inset 0 -1px 2px rgba(157,75,42,.08),
+        0 2px 4px rgba(135,68,36,.10) !important;
     }
   }
   @media (prefers-reduced-motion: reduce) {
