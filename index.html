@@ -6445,6 +6445,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       <div class="product-modal-body">
         <div class="product-modal-icon" id="productModalIcon">💿</div>
         <p class="product-image-enlarge-hint" id="productImageEnlargeHint" hidden>Tap the photo to enlarge</p>
+        <p class="product-swipe-hint" id="productSwipeHint" role="status" aria-live="polite" hidden>Swipe the image to see other variants</p>
         <div class="product-modal-gallery" id="productModalGallery" hidden>
           <div class="product-gallery-thumbnails" id="productGalleryThumbnails" role="group" aria-label="More product photos"></div>
         </div>
@@ -7037,6 +7038,15 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     let pendingSelectedVariantId = null;
     let openProductSelectedColor = '';
     let openProductDetailId = null;
+    let openProductGalleryProduct = null;
+    let openProductGalleryImages = [];
+    let openProductGalleryThumbnails = null;
+    let openProductGallerySwipeIndexes = [];
+    let openProductGalleryIndex = 0;
+    let productGallerySwipeStart = null;
+    let productGallerySuppressClickUntil = 0;
+    let productSwipeHintTimer = null;
+    let productSwipeHintHideTimer = null;
     let productDetailSelectedSize = '';
     let productDetailSelectedVariantId = null;
     let productDetailSelectedColor = '';
@@ -9226,6 +9236,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
     function showProductGalleryImage(product,images,index,thumbnails){
       const selected=images[index];if(!selected)return;
+      openProductGalleryIndex=index;
       const main=$('productGalleryMainImage');
       if(main){main.src=selected.url;main.alt=selected.alt||product.name;}
       if(thumbnails){
@@ -9253,6 +9264,85 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         }
       }
     }
+
+    function getProductGallerySwipeIndexes(product,images){
+      const colorMapping=getProductColorMapping(product,images);
+      if(colorMapping&&colorMapping.colors.length>1){
+        return [...colorMapping.imageIndexByColor.values()].sort((a,b)=>a-b);
+      }
+      return (images||[]).map((_,index)=>index);
+    }
+    function clearProductSwipeHintTimers(){
+      if(productSwipeHintTimer!==null){window.clearTimeout(productSwipeHintTimer);productSwipeHintTimer=null;}
+      if(productSwipeHintHideTimer!==null){window.clearTimeout(productSwipeHintHideTimer);productSwipeHintHideTimer=null;}
+    }
+    function flashProductSwipeHint(message,duration=3200){
+      const hint=$('productSwipeHint');
+      if(!hint)return;
+      clearProductSwipeHintTimers();
+      hint.textContent=message;
+      hint.hidden=false;
+      hint.classList.remove('is-visible');
+      window.requestAnimationFrame(()=>hint.classList.add('is-visible'));
+      productSwipeHintTimer=window.setTimeout(()=>{
+        hint.classList.remove('is-visible');
+        productSwipeHintHideTimer=window.setTimeout(()=>{hint.hidden=true;},260);
+      },duration);
+    }
+    function showProductSwipeHint(productId,canSwipe){
+      const hint=$('productSwipeHint');
+      if(!hint)return;
+      if(!canSwipe){
+        clearProductSwipeHintTimers();
+        hint.classList.remove('is-visible');
+        hint.hidden=true;
+        return;
+      }
+      const key='genmerch:product-swipe-hint-shown:v1:'+String(productId||'');
+      try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1');}catch(_){}
+      flashProductSwipeHint('↔ Swipe the image to see other variants',3600);
+    }
+    function handleProductGallerySwipeEnd(event){
+      const start=productGallerySwipeStart;
+      if(!start||start.pointerId!==event.pointerId)return;
+      productGallerySwipeStart=null;
+      if(openProductGallerySwipeIndexes.length<2||!openProductGalleryProduct)return;
+      const dx=event.clientX-start.x,dy=event.clientY-start.y;
+      if(Math.abs(dx)<42||Math.abs(dx)<Math.abs(dy)*1.25)return;
+      const indexes=openProductGallerySwipeIndexes;
+      let current=indexes.indexOf(openProductGalleryIndex);
+      if(current<0){
+        current=indexes.reduce((best,index,pos)=>Math.abs(index-openProductGalleryIndex)<Math.abs(indexes[best]-openProductGalleryIndex)?pos:best,0);
+      }
+      const nextPosition=(current+(dx<0?1:-1)+indexes.length)%indexes.length;
+      const nextIndex=indexes[nextPosition];
+      showProductGalleryImage(openProductGalleryProduct,openProductGalleryImages,nextIndex,openProductGalleryThumbnails);
+      // Stop the synthetic click after a swipe from accidentally opening the zoom viewer.
+      productGallerySuppressClickUntil=Date.now()+500;
+      const selected=openProductGalleryImages[nextIndex];
+      const color=getColorForImage(selected,getProductColors(openProductGalleryProduct));
+      flashProductSwipeHint(color?'Showing '+color+' variant':'Photo '+(nextIndex+1)+' of '+openProductGalleryImages.length,1450);
+    }
+    const productGalleryGestureStage=$('productModalIcon');
+    if(productGalleryGestureStage){
+      productGalleryGestureStage.addEventListener('pointerdown',event=>{
+        const target=event.target instanceof Element?event.target:null;
+        if(!target||!target.closest('#productGalleryMainImage')||openProductGallerySwipeIndexes.length<2)return;
+        if(event.pointerType==='mouse'&&event.button!==0)return;
+        productGallerySwipeStart={pointerId:event.pointerId,x:event.clientX,y:event.clientY};
+      },{passive:true});
+      productGalleryGestureStage.addEventListener('click',event=>{
+        if(Date.now()<productGallerySuppressClickUntil){
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },true);
+    }
+    document.addEventListener('pointerup',handleProductGallerySwipeEnd,true);
+    document.addEventListener('pointercancel',event=>{
+      if(productGallerySwipeStart&&productGallerySwipeStart.pointerId===event.pointerId)productGallerySwipeStart=null;
+    },true);
+
     function openProduct(id,skipBackgroundRefresh=false){
       const p=products.find(item=>String(item.id)===String(id));
       if(!p){
@@ -9285,6 +9375,11 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       $('productModalIcon').innerHTML=mainImage?'<img id="productGalleryMainImage" src="'+escapeHtml(mainImage.url)+'" alt="'+escapeHtml(mainImage.alt||p.name)+'">':escapeHtml(p.icon||'🛍️');
       const enlargeHint=$('productImageEnlargeHint');if(enlargeHint)enlargeHint.hidden=!mainImage;
       const gallery=$('productModalGallery'), thumbnails=$('productGalleryThumbnails');
+      openProductGalleryProduct=p;
+      openProductGalleryImages=images;
+      openProductGalleryThumbnails=thumbnails;
+      openProductGallerySwipeIndexes=getProductGallerySwipeIndexes(p,images);
+      openProductGalleryIndex=0;
       if(images.length>1){
         gallery.hidden=false;
         thumbnails.innerHTML=images.map((image,index)=>'<button type="button" class="product-gallery-thumb'+(index===0?' active':'')+'" data-gallery-index="'+index+'" aria-label="View photo '+(index+1)+' of '+images.length+'" aria-pressed="'+(index===0?'true':'false')+'"><img src="'+escapeHtml(image.url)+'" alt="" loading="lazy"></button>').join('');
@@ -9293,6 +9388,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
           showProductGalleryImage(p,images,Number(button.dataset.galleryIndex),thumbnails);
         };
       }else{gallery.hidden=true;thumbnails.replaceChildren();thumbnails.onclick=null;}
+      showProductSwipeHint(p.id,openProductGallerySwipeIndexes.length>1);
       const colorSelector=$('productModalColorSelector');
       colorSelector.hidden=true;
       updateColorChoices('productModalColorChoices','productModalSelectedColor',colors,openProductSelectedColor);
@@ -16519,7 +16615,7 @@ main.container .catalog-search:focus-within {
   #productGrid .card-wishlist-button,#productOverlay .product-detail-action,
   #productOverlay .wishlist-detail-button{transition:none!important}
 }
-
+</style>
 <style id="genmerch-product-photo-hint-and-enhanced-3d-v1">
 /* Responsive photo affordance immediately beneath the main product photo. */
 #productOverlay .product-image-enlarge-hint{
@@ -16571,6 +16667,52 @@ main.container .catalog-search:focus-within {
 }
 @media(prefers-reduced-motion:reduce){#productOverlay .wishlist-detail-button{transition:none!important}}
 </style>
+
+
+<style id="genmerch-product-gallery-swipe-v1">
+#productOverlay #productModalIcon{
+  touch-action:pan-y;
+  -webkit-user-select:none;
+  user-select:none;
+}
+#productOverlay #productGalleryMainImage{
+  touch-action:pan-y;
+  -webkit-user-drag:none;
+  user-select:none;
+  cursor:ew-resize;
+  transition:opacity .16s ease,transform .2s ease;
+}
+#productOverlay .product-swipe-hint{
+  width:max-content;
+  max-width:100%;
+  margin:-5px auto 11px;
+  padding:7px 12px;
+  border:1px solid rgba(238,77,45,.22);
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,250,247,.98),rgba(255,239,231,.96));
+  color:#b83a24;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 2px 0 rgba(173,66,43,.08),0 4px 10px rgba(102,45,26,.09);
+  font-size:.73rem;
+  font-weight:800;
+  line-height:1.25;
+  text-align:center;
+  opacity:0;
+  transform:translateY(5px);
+  transition:opacity .24s ease,transform .24s ease;
+}
+#productOverlay .product-swipe-hint.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+#productOverlay .product-swipe-hint[hidden]{display:none!important}
+@media(max-width:520px){
+  #productOverlay .product-swipe-hint{font-size:.7rem;padding:7px 10px;margin:-4px auto 9px}
+}
+@media(prefers-reduced-motion:reduce){
+  #productOverlay .product-swipe-hint{transition:none!important}
+  #productOverlay #productGalleryMainImage{transition:none!important}
+}
 </style>
+
 </body>
 </html>
