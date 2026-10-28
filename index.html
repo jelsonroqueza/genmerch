@@ -8613,9 +8613,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
       const emailRetryAllowed=!guestMode&&Boolean(order.receipt_email&&order.customer_phone&&order.id&&order.order_number)
         &&Number.isFinite(createdAtMs)&&Date.now()>=createdAtMs&&Date.now()-createdAtMs<48*60*60*1000
         &&!['cancelled','refunded'].includes(status)&&!['cancelled','refunded'].includes(paymentStatus);
-      const emailRetryMarkup=emailRetryAllowed
-        ?'<section class="customer-order-email-retry"><div><strong>Order confirmation email</strong><p>Didn\'t receive the email? You can retry sending the details to '+escapeHtml(order.receipt_email)+'.</p></div><button type="button" data-resend-order-email data-order-id="'+escapeHtml(order.id)+'" data-order-number="'+escapeHtml(order.order_number)+'" data-order-phone="'+escapeHtml(order.customer_phone)+'" data-order-email="'+escapeHtml(order.receipt_email)+'">↻ Resend email</button><div class="customer-order-email-retry-result" aria-live="polite"></div></section>'
-        :'';
       const progressMarkup=deliveredButUnpaid
         ?'<div class="customer-order-payment-gated-progress">Delivery is recorded. Waiting for the seller to confirm payment before showing Order Received.</div>'
         :customerOrderProgressMarkup(status);
@@ -8628,7 +8625,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         '<section class="customer-order-current-status" aria-label="Latest order status"><div class="customer-order-current-status-kicker">LATEST ORDER UPDATE</div><p>'+escapeHtml(deliveredButUnpaid?'Delivery is recorded, but payment is pending. Please wait for the seller to confirm receipt of the payment.':meta.detail)+'</p><div class="customer-order-current-status-date">Last updated: '+escapeHtml(customerOrderDate(order.updated_at||order.created_at))+'</div></section>'+
         customerShipmentMarkup(shipmentData,status)+paymentGate+confirmReceipt+
         customerOrderTimelineMarkup(timelineHistory,timelineStatus,order)+customerOrderItemsMarkup(items)+delivery+
-        '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div>'+emailRetryMarkup+'</article>';
+        '<div class="customer-order-payment-note"><strong>Payment:</strong> '+escapeHtml(payment)+'</div></article>';
     }
         const CUSTOMER_ORDER_FILTERS=[
       {key:'all',label:'All Orders',countId:'customerOrderCountAll'},
