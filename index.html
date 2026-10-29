@@ -8901,11 +8901,11 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     updateFlashDealsCountdown();
     setInterval(updateFlashDealsCountdown,1000);
 
-    function showToast(message){
+    function showToast(message,duration=2300){
       $('toastText').textContent = message;
       $('toast').classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>$('toast').classList.remove('show'),2300);
+      toastTimer = setTimeout(()=>$('toast').classList.remove('show'),duration);
     }
 
     let genmerchActionStatusTimer=null;
@@ -11852,6 +11852,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         });
         if(error)throw error;
         setCustomerAuthMessage('If an account exists for this email, a password reset link has been sent. Check your inbox and spam folder.','success');
+        showToast('Please check your email.',5000);
       }catch(error){
         const raw=String(error&&error.message||'Password reset could not be requested. Please try again.');
         const normalized=raw.toLowerCase();
