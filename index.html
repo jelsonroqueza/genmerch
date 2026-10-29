@@ -6106,24 +6106,19 @@ footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12
 }
 </style>
 <style id="genmerch-business-partners">
-.gm-business-partners{width:min(1120px,calc(100% - 32px));margin:22px auto 26px;padding:24px 22px 26px;box-sizing:border-box;border:1px solid rgba(224,190,171,.75);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.28),rgba(238,216,202,.16));}
-.gm-partners-heading{text-align:center;margin:0 auto 22px;max-width:720px}
+.gm-business-partners{width:min(1120px,calc(100% - 32px));margin:22px auto 26px;padding:26px 22px 28px;box-sizing:border-box;border:1px solid rgba(224,190,171,.75);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.32),rgba(238,216,202,.16))}
+.gm-partners-heading{text-align:center;margin:0 auto 24px;max-width:720px}
 .gm-partners-kicker{margin:0 0 7px;font-size:10px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;color:#ff3c1f}
 .gm-partners-heading h2{margin:0 0 8px;font-size:clamp(20px,2.4vw,28px);line-height:1.2;color:#171717}
 .gm-partners-heading>p:last-child{margin:0;color:#5d514b;font-size:13px;line-height:1.65}
-.gm-partners-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
-.gm-partner-logo-card{min-width:0;text-align:center;padding:13px 9px 12px;border:1px solid rgba(224,190,171,.72);border-radius:13px;background:rgba(255,255,255,.66);box-shadow:0 2px 7px rgba(57,35,24,.035);transition:transform .2s ease,box-shadow .2s ease}
-.gm-partner-logo-card:hover{transform:translateY(-2px);box-shadow:0 5px 12px rgba(57,35,24,.08)}
-.gm-partner-logo-frame{height:116px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#f7f6f4;overflow:hidden}
-.gm-partner-logo-frame.gm-partner-dark,.gm-partner-logo-frame.gm-partner-red,.gm-partner-logo-frame.gm-partner-gold,.gm-partner-logo-frame.gm-partner-silver,.gm-partner-logo-frame.gm-partner-cyan{background:#111}
-.gm-partner-logo-frame.gm-partner-purple{background:#fff}
-.gm-partner-logo-frame.gm-partner-white{background:#f8f8f8}
-.gm-partner-logo-frame.gm-partner-blue{background:#f0fbff}
-.gm-partner-logo{display:block;width:100%;height:100%;max-width:160px;max-height:120px}
-.gm-partner-logo-card h3{margin:11px 0 0;font-size:12px;line-height:1.4;font-weight:900;color:#211914;overflow-wrap:anywhere}
-.gm-partner-logo-card p{margin:4px 0 0;font-size:10px;line-height:1.45;color:#74655d}
-@media(max-width:900px){.gm-partners-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:560px){.gm-business-partners{width:calc(100% - 20px);padding:19px 12px 20px;margin:18px auto 22px;border-radius:14px}.gm-partners-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gm-partner-logo-frame{height:104px}.gm-partner-logo-card{padding:10px 7px}.gm-partner-logo-card h3{font-size:11px}}
+.gm-partners-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.gm-partner-logo-card{min-width:0;text-align:center;padding:12px 12px 14px;border:1px solid rgba(224,190,171,.72);border-radius:14px;background:#fff;box-shadow:0 3px 10px rgba(57,35,24,.055);transition:transform .2s ease,box-shadow .2s ease;overflow:hidden}
+.gm-partner-logo-card:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(57,35,24,.1)}
+.gm-partner-logo-frame{height:164px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:9px;background:#fff}
+.gm-partner-image{display:block;width:100%;height:100%;object-fit:contain;object-position:center center}
+.gm-partner-logo-card h3{margin:12px 0 0;font-size:12px;line-height:1.45;font-weight:900;color:#211914;overflow-wrap:anywhere;min-height:2.9em;display:flex;align-items:center;justify-content:center}
+@media(max-width:900px){.gm-partners-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.gm-partner-logo-frame{height:150px}}
+@media(max-width:560px){.gm-business-partners{width:calc(100% - 20px);padding:19px 12px 20px;margin:18px auto 22px;border-radius:14px}.gm-partners-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gm-partner-logo-card{padding:9px 8px 11px}.gm-partner-logo-frame{height:112px}.gm-partner-logo-card h3{font-size:10.5px;min-height:3em;margin-top:9px}}
 @media(prefers-reduced-motion:reduce){.gm-partner-logo-card{transition:none}}
 </style>
 </head>
@@ -6580,44 +6575,86 @@ footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12
     </div>
 
       <section class="gm-business-partners" aria-labelledby="gmBusinessPartnersTitle">
-        <div class="gm-partners-heading">
-          <p class="gm-partners-kicker">GROWING TOGETHER</p>
-          <h2 id="gmBusinessPartnersTitle">GENMERCH Business Partners</h2>
-          <p>Discover the businesses and brands connected with our growing partner community.</p>
-        </div>
-        <div class="gm-partners-grid">
-        <article class="gm-partner-logo-card" aria-label="DARKROOM SECRETS">
-          <h3>DARKROOM SECRETS</h3>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="HOT ENCOUNTER">
-          <h3>HOT ENCOUNTER</h3>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="HG">
-          <h3>HG</h3>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="POWERHOUSE GYM">
-          <h3>POWERHOUSE GYM</h3><p>Your Place for Muscle Rehab</p>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="GYM-BUILT">
-          <h3>GYM-BUILT</h3><p>Building the New Me</p>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="ANYTIME FITNESS">
-          <h3>ANYTIME FITNESS</h3><p>SMDC LIGHT MALL</p>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="ROX POWER GYM">
-          <h3>ROX POWER GYM</h3>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="DABASOL LPG TRADING">
-          <h3>DABASOL LPG TRADING</h3><p>Legal Aluminum Butane</p>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="JD AESTHETIC STREETWEAR">
-          <h3>JD AESTHETIC STREETWEAR</h3>
-        </article>
-        <article class="gm-partner-logo-card" aria-label="WHEY FACTORY">
-          <h3>WHEY FACTORY</h3>
-        </article>
-        </div>
-      </section>
+  <div class="gm-partners-heading">
+    <p class="gm-partners-kicker">GROWING TOGETHER</p>
+    <h2 id="gmBusinessPartnersTitle">GENMERCH Business Partners</h2>
+    <p>Discover the businesses and brands connected with our growing partner community.</p>
+  </div>
+  <div class="gm-partners-grid">
+    <article class="gm-partner-logo-card" aria-label="DARKROOM SECRETS">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/01-darkroom-secrets.png" alt="DARKROOM SECRETS" loading="lazy" decoding="async">
+      </div>
+      <h3>DARKROOM SECRETS</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="HOT ENCOUNTER">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/02-hot-encounter.png" alt="HOT ENCOUNTER" loading="lazy" decoding="async">
+      </div>
+      <h3>HOT ENCOUNTER</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="HG">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/03-hg.png" alt="HG" loading="lazy" decoding="async">
+      </div>
+      <h3>HG</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="POWERHOUSE GYM">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/04-powerhouse-gym.png" alt="POWERHOUSE GYM" loading="lazy" decoding="async">
+      </div>
+      <h3>POWERHOUSE GYM</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="SUPREMO FITNESS — CANDON CITY">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/05-supremo-fitness-candon-city.png" alt="SUPREMO FITNESS — CANDON CITY" loading="lazy" decoding="async">
+      </div>
+      <h3>SUPREMO FITNESS — CANDON CITY</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="DABASOL LPG TRADING">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/06-dabasol-lpg-trading.png" alt="DABASOL LPG TRADING" loading="lazy" decoding="async">
+      </div>
+      <h3>DABASOL LPG TRADING</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="ANYTIME FITNESS — SMDC LIGHT MALL">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/07-anytime-fitness-smdc-light-mall.png" alt="ANYTIME FITNESS — SMDC LIGHT MALL" loading="lazy" decoding="async">
+      </div>
+      <h3>ANYTIME FITNESS — SMDC LIGHT MALL</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="GYM-BUILT">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/08-gym-built.png" alt="GYM-BUILT" loading="lazy" decoding="async">
+      </div>
+      <h3>GYM-BUILT</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="ROX POWER GYM">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/09-rox-power-gym.png" alt="ROX POWER GYM" loading="lazy" decoding="async">
+      </div>
+      <h3>ROX POWER GYM</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="JD AESTHETIC STREETWEAR">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/10-jd-aesthetic-streetwear.png" alt="JD AESTHETIC STREETWEAR" loading="lazy" decoding="async">
+      </div>
+      <h3>JD AESTHETIC STREETWEAR</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="WHEY FACTORY">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/11-whey-factory.png" alt="WHEY FACTORY" loading="lazy" decoding="async">
+      </div>
+      <h3>WHEY FACTORY</h3>
+    </article>
+    <article class="gm-partner-logo-card" aria-label="FITNESS HIVE">
+      <div class="gm-partner-logo-frame">
+        <img class="gm-partner-image" src="https://csbaxyzfcaxhyyzxfxjw.supabase.co/storage/v1/object/public/business-partners/12-fitness-hive.png" alt="FITNESS HIVE" loading="lazy" decoding="async">
+      </div>
+      <h3>FITNESS HIVE</h3>
+    </article>
+  </div>
+</section>
 
       <section class="genmerch-end-of-page" aria-label="End of page">
       <span class="genmerch-end-divider" aria-hidden="true"></span>
