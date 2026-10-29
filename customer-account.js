@@ -78,15 +78,21 @@
         '<header class="gmca-header">' +
           '<div class="gmca-brand"><span class="gmca-brand-mark"><img src="/assets/genmerch-cart-actual.webp?v=20261030-account" alt="GENMERCH official logo" width="72" height="56"></span><div><span class="gmca-eyebrow">GENMERCH CUSTOMER ACCOUNT</span><h2 id="gmcaTitle">My GENMERCH Account</h2><p id="gmcaWelcome">Your profile, points and shopping activity.</p></div></div>' +
           '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
-          '<div class="gmca-section-switcher"><label for="gmcaSectionSelect">ACCOUNT SECTION</label><select id="gmcaSectionSelect" aria-label="Choose account section">' +
-            '<option value="overview">Overview</option>' +
-            '<option value="profile">My Profile</option>' +
-            '<option value="points">Loyalty Points</option>' +
-            '<option value="orders">My Orders</option>' +
-            '<option value="activity">Shopping Activity</option>' +
-            '<option value="addresses">Saved Addresses</option>' +
-            '<option value="landmarks">Default Landmarks</option>' +
-          '</select></div>' +
+          '<div class="gmca-section-switcher" id="gmcaSectionSwitcher">' +
+            '<label for="gmcaSectionTrigger">ACCOUNT SECTION</label>' +
+            '<button type="button" class="gmca-section-trigger" id="gmcaSectionTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="gmcaSectionMenu">' +
+              '<span id="gmcaSectionCurrent">Overview</span><span class="gmca-section-chevron" aria-hidden="true">⌄</span>' +
+            '</button>' +
+            '<div class="gmca-section-menu" id="gmcaSectionMenu" role="listbox" aria-label="Account sections" hidden>' +
+              '<button type="button" role="option" aria-selected="true" data-gmca-section="overview">Overview</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="profile">My Profile</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="points">Loyalty Points</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="orders">My Orders</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="activity">Shopping Activity</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="addresses">Saved Addresses</button>' +
+              '<button type="button" role="option" aria-selected="false" data-gmca-section="landmarks">Default Landmarks</button>' +
+            '</div>' +
+          '</div>' +
         '</header>' +
         '<div class="gmca-content">' +
           '<div class="gmca-alert" id="gmcaAlert" role="status" aria-live="polite" hidden></div>' +
@@ -102,14 +108,20 @@
         '<footer class="gmca-footer"><span><span class="gmca-footer-lock">✓</span> Your account records are protected by your signed-in account permissions.</span><button type="button" id="gmcaSignOut" class="gmca-signout">Sign out</button></footer>' +
       '</section>';
     document.body.appendChild(overlay);
+    ensureSignOutConfirmation();
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) closeAccount();
+      if (!event.target.closest('.gmca-section-switcher')) closeSectionMenu();
+      const option = event.target.closest('[data-gmca-section]');
+      if (option) {
+        switchTab(option.getAttribute('data-gmca-section'));
+        closeSectionMenu();
+      }
+      if (!event.target.closest('.gmca-address-autocomplete')) hideAccountAddressSuggestions();
     });
-    $('gmcaSectionSelect').addEventListener('change', (event) => {
-      switchTab(event.target.value);
-    });
+    $('gmcaSectionTrigger').addEventListener('click', toggleSectionMenu);
     $('gmcaClose').addEventListener('click', closeAccount);
-    $('gmcaSignOut').addEventListener('click', signOut);
+    $('gmcaSignOut').addEventListener('click', openSignOutConfirmation);
     overlay.addEventListener('submit', (event) => {
       if (event.target && event.target.id === 'gmcaProfileForm') {
         event.preventDefault();
@@ -117,8 +129,130 @@
       }
     });
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && $('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) closeAccount();
+      if (event.key !== 'Escape') return;
+      if ($('gmcaSignOutConfirm') && !$('gmcaSignOutConfirm').hidden) {
+        closeSignOutConfirmation();
+        return;
+      }
+      if ($('gmcaSectionMenu') && !$('gmcaSectionMenu').hidden) {
+        closeSectionMenu();
+        $('gmcaSectionTrigger')?.focus();
+        return;
+      }
+      if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) closeAccount();
     });
+  }
+
+  function toggleSectionMenu() {
+    const menu = $('gmcaSectionMenu');
+    const trigger = $('gmcaSectionTrigger');
+    if (!menu || !trigger) return;
+    const opening = menu.hidden;
+    menu.hidden = !opening;
+    trigger.setAttribute('aria-expanded', String(opening));
+    trigger.classList.toggle('is-open', opening);
+    if (opening) {
+      const active = menu.querySelector('[aria-selected="true"]') || menu.querySelector('[data-gmca-section]');
+      if (active) active.focus({ preventScroll: true });
+    }
+  }
+
+  function closeSectionMenu() {
+    const menu = $('gmcaSectionMenu');
+    const trigger = $('gmcaSectionTrigger');
+    if (menu) menu.hidden = true;
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('is-open');
+    }
+  }
+
+  function ensureSignOutConfirmation() {
+    if ($('gmcaSignOutConfirm')) return;
+    const prompt = document.createElement('div');
+    prompt.id = 'gmcaSignOutConfirm';
+    prompt.className = 'gmca-signout-overlay';
+    prompt.hidden = true;
+    prompt.setAttribute('aria-hidden', 'true');
+    prompt.innerHTML =
+      '<section class="gmca-signout-dialog" role="alertdialog" aria-modal="true" aria-labelledby="gmcaSignOutTitle" aria-describedby="gmcaSignOutDescription">' +
+        '<div class="gmca-signout-emblem" aria-hidden="true">!</div>' +
+        '<h2 id="gmcaSignOutTitle">Confirm sign out</h2>' +
+        '<p id="gmcaSignOutDescription">For your account security, re-enter your registered email address before signing out.</p>' +
+        '<p class="gmca-signout-email-hint">Registered email: <strong id="gmcaSignOutExpectedEmail"></strong></p>' +
+        '<form id="gmcaSignOutConfirmForm" novalidate>' +
+          '<label for="gmcaSignOutEmailInput">Re-enter registered email</label>' +
+          '<input id="gmcaSignOutEmailInput" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@example.com" required>' +
+          '<p id="gmcaSignOutFeedback" class="gmca-signout-feedback" role="status" aria-live="polite"></p>' +
+          '<div class="gmca-signout-actions"><button type="button" class="gmca-secondary" id="gmcaSignOutCancel">Cancel</button><button type="submit" class="gmca-danger" id="gmcaSignOutConfirmButton">Confirm sign out</button></div>' +
+        '</form>' +
+      '</section>';
+    document.body.appendChild(prompt);
+    prompt.addEventListener('click', (event) => {
+      if (event.target === prompt) closeSignOutConfirmation();
+    });
+    $('gmcaSignOutCancel').addEventListener('click', closeSignOutConfirmation);
+    $('gmcaSignOutConfirmForm').addEventListener('submit', confirmSignOutWithEmail);
+  }
+
+  function openSignOutConfirmation() {
+    ensureSignOutConfirmation();
+    const email = String(state.session && state.session.user && state.session.user.email || '').trim();
+    if (!email) {
+      showAlert('Your registered email could not be verified. Refresh your account session before signing out.', 'error');
+      return;
+    }
+    $('gmcaSignOutExpectedEmail').textContent = email;
+    $('gmcaSignOutEmailInput').value = '';
+    $('gmcaSignOutFeedback').textContent = '';
+    $('gmcaSignOutFeedback').className = 'gmca-signout-feedback';
+    $('gmcaSignOutConfirm').hidden = false;
+    $('gmcaSignOutConfirm').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    window.setTimeout(() => $('gmcaSignOutEmailInput')?.focus(), 0);
+  }
+
+  function closeSignOutConfirmation() {
+    const prompt = $('gmcaSignOutConfirm');
+    if (!prompt) return;
+    prompt.hidden = true;
+    prompt.setAttribute('aria-hidden', 'true');
+    if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
+      document.body.style.overflow = 'hidden';
+      $('gmcaSignOut')?.focus();
+    } else if (!$('customerAuthOverlay')?.classList.contains('open') &&
+               !$('customerOrdersOverlay')?.classList.contains('open') &&
+               !$('cartModal')?.classList.contains('open') &&
+               !$('productOverlay')?.classList.contains('open')) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  async function confirmSignOutWithEmail(event) {
+    event.preventDefault();
+    const expected = String(state.session && state.session.user && state.session.user.email || '').trim();
+    const entered = String($('gmcaSignOutEmailInput').value || '').trim();
+    const feedback = $('gmcaSignOutFeedback');
+    const button = $('gmcaSignOutConfirmButton');
+    if (!expected) {
+      feedback.textContent = 'We could not verify the registered email. Refresh the page and try again.';
+      feedback.className = 'gmca-signout-feedback error';
+      return;
+    }
+    if (!entered || entered.toLocaleLowerCase() !== expected.toLocaleLowerCase()) {
+      feedback.textContent = 'The email does not match this account. Please enter the registered email exactly.';
+      feedback.className = 'gmca-signout-feedback error';
+      $('gmcaSignOutEmailInput').focus();
+      $('gmcaSignOutEmailInput').select();
+      return;
+    }
+    if (button) { button.disabled = true; button.textContent = 'Signing out…'; }
+    try {
+      await signOut();
+      closeSignOutConfirmation();
+    } finally {
+      if (button) { button.disabled = false; button.textContent = 'Confirm sign out'; }
+    }
   }
 
   function showAlert(message, kind) {
@@ -132,7 +266,16 @@
   function switchTab(tabName) {
     const valid = ['overview', 'profile', 'points', 'orders', 'activity', 'addresses', 'landmarks'];
     state.activeTab = valid.includes(tabName) ? tabName : 'overview';
-    if ($('gmcaSectionSelect')) $('gmcaSectionSelect').value = state.activeTab;
+    if ($('gmcaSectionCurrent')) {
+      const activeOption = $('gmcaSectionMenu')?.querySelector('[data-gmca-section="' + state.activeTab + '"]');
+      $('gmcaSectionCurrent').textContent = activeOption ? activeOption.textContent.trim() : 'Overview';
+    }
+    $('gmcaSectionMenu')?.querySelectorAll('[data-gmca-section]').forEach((button) => {
+      const active = button.getAttribute('data-gmca-section') === state.activeTab;
+      button.setAttribute('aria-selected', String(active));
+      button.classList.toggle('active', active);
+    });
+    closeSectionMenu();
     document.querySelectorAll('[data-gmca-pane]').forEach((pane) => {
       pane.hidden = pane.getAttribute('data-gmca-pane') !== state.activeTab;
     });
