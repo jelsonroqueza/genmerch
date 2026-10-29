@@ -309,7 +309,7 @@
         (state.orders.length ? '<div class="gmca-list">' + state.orders.slice(0, 3).map((order) => orderCard(order, true)).join('') + '</div>' :
           '<div class="gmca-empty"><span>▣</span><strong>No account orders yet</strong><p>Your orders will appear here after you check out while signed in.</p></div>') +
       '</div>' +
-      '<div class="gmca-overview-bottom"><div class="gmca-section-card"><h3>Member details</h3><p class="gmca-detail-line"><span>Registered email</span><strong>' + esc(user.email || '—') + '</strong></p><p class="gmca-detail-line"><span>Member since</span><strong>' + dateLabel(user.created_at) + '</strong></p></div>' +
+      '<div class="gmca-overview-bottom"><div class="gmca-section-card"><h3>Member details</h3><p class="gmca-detail-line"><span>Registered email</span><strong>' + esc(user.email || '—') + '</strong></p><p class="gmca-detail-line"><span>Phone number</span><strong>' + esc(currentPhone(user, state.profile) || 'Not added yet') + '</strong></p><p class="gmca-detail-line"><span>Member since</span><strong>' + dateLabel(user.created_at) + '</strong></p><button type="button" class="gmca-text-action" data-gmca-jump="profile">Manage profile →</button></div>' +
       '<div class="gmca-section-card gmca-points-teaser"><h3>Make your next order go further</h3><p>Earn 1 point per ₱100 of eligible merchandise spending. Each point is worth ₱1 when redeemed at checkout.</p><button type="button" class="gmca-primary" data-gmca-jump="points">View points</button></div></div>' +
       '<div class="gmca-pane-actions"><button type="button" class="gmca-secondary" id="gmcaRefreshOverview">↻ Refresh account</button><button type="button" class="gmca-secondary" data-gmca-jump="profile">Edit profile</button></div>';
     pane.querySelectorAll('[data-gmca-jump]').forEach((button) => button.addEventListener('click', () => switchTab(button.getAttribute('data-gmca-jump'))));
@@ -1168,9 +1168,14 @@
         state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
       } else {
         const summary = await client().rpc('get_my_genmerch_loyalty_summary');
-        if (summary.error) throw summary.error;
-        state.points = summary.data || { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
-        state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
+        if (summary.error) {
+          console.warn('GENMERCH points summary could not be refreshed:', summary.error.message || summary.error);
+          state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+          state.checkoutBalance = 0;
+        } else {
+          state.points = summary.data || { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+          state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
+        }
       }
       state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
       if (state.session && state.session.user) await loadCheckoutDetails();
