@@ -6035,9 +6035,9 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   </style>
 
 <style id="genmerch-footer-subtle-3d">
-/* Subtle 3D treatment for About Us and Partner With Us: restrained tilt, shallow depth, and softer shadows. */
+/* 20% 3D treatment: crisp surfaces, minimal tilt, and very soft shadows. */
 footer .footer-details-grid{
-  perspective:1600px!important;
+  perspective:1800px!important;
   perspective-origin:50% 28%!important;
   transform-style:preserve-3d!important;
 }
@@ -6046,11 +6046,13 @@ footer .footer-info-card{
   isolation:isolate!important;
   transform-style:preserve-3d!important;
   backface-visibility:hidden!important;
-  transform:perspective(1600px) rotateX(1.2deg) translateZ(0)!important;
-  border:1px solid rgba(224,190,171,.82)!important;
-  border-bottom:2px solid rgba(205,157,130,.64)!important;
-  box-shadow:0 2px 0 rgba(194,150,124,.18),0 8px 18px rgba(57,35,24,.075),inset 0 1px 0 rgba(255,255,255,.92)!important;
-  transition:transform .28s ease,box-shadow .28s ease!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:optimizeLegibility!important;
+  transform:perspective(1800px) rotateX(.25deg) translateZ(0)!important;
+  border:1px solid rgba(224,190,171,.72)!important;
+  border-bottom:1px solid rgba(205,157,130,.5)!important;
+  box-shadow:0 1px 0 rgba(194,150,124,.08),0 4px 12px rgba(57,35,24,.035),inset 0 1px 0 rgba(255,255,255,.94)!important;
+  transition:transform .24s ease,box-shadow .24s ease!important;
 }
 footer .footer-info-card::before{
   content:""!important;
@@ -6059,20 +6061,20 @@ footer .footer-info-card::before{
   inset:0!important;
   border-radius:inherit!important;
   pointer-events:none!important;
-  transform:translateZ(-6px) translateY(2px)!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(238,216,202,.22))!important;
-  box-shadow:0 5px 10px rgba(57,35,24,.045)!important;
+  transform:translateZ(-2px) translateY(1px)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(238,216,202,.10))!important;
+  box-shadow:0 2px 5px rgba(57,35,24,.025)!important;
 }
 footer .footer-about-card{
-  transform:perspective(1600px) rotateX(1.2deg) rotateY(.45deg)!important;
+  transform:perspective(1800px) rotateX(.25deg) rotateY(.1deg)!important;
 }
 footer .footer-partner-card{
-  transform:perspective(1600px) rotateX(1.2deg) rotateY(-.45deg)!important;
+  transform:perspective(1800px) rotateX(.25deg) rotateY(-.1deg)!important;
 }
 footer .footer-info-card:hover,
 footer .footer-info-card:focus-within{
-  transform:perspective(1600px) rotateX(0deg) rotateY(0deg) translateY(-2px) translateZ(4px)!important;
-  box-shadow:0 3px 0 rgba(194,150,124,.18),0 12px 22px rgba(57,35,24,.10),inset 0 1px 0 rgba(255,255,255,.95)!important;
+  transform:perspective(1800px) rotateX(0deg) rotateY(0deg) translateY(-1px) translateZ(1px)!important;
+  box-shadow:0 1px 0 rgba(194,150,124,.09),0 6px 14px rgba(57,35,24,.05),inset 0 1px 0 rgba(255,255,255,.96)!important;
 }
 footer .footer-legal-bottom{
   width:min(1040px,100%)!important;
@@ -6087,15 +6089,15 @@ footer .footer-legal-bottom>p{margin:0!important;line-height:1.55!important}
 footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12px 18px!important}
 @media(max-width:720px){
   footer .footer-info-card{
-    transform:perspective(1400px) rotateX(.8deg) translateZ(0)!important;
-    box-shadow:0 2px 0 rgba(194,150,124,.16),0 7px 15px rgba(57,35,24,.065),inset 0 1px 0 rgba(255,255,255,.92)!important;
+    transform:perspective(1800px) rotateX(.15deg) translateZ(0)!important;
+    box-shadow:0 1px 0 rgba(194,150,124,.07),0 3px 9px rgba(57,35,24,.03),inset 0 1px 0 rgba(255,255,255,.94)!important;
   }
-  footer .footer-about-card{transform:perspective(1400px) rotateX(.8deg) rotateY(.18deg)!important}
-  footer .footer-partner-card{transform:perspective(1400px) rotateX(.8deg) rotateY(-.18deg)!important}
+  footer .footer-about-card{transform:perspective(1800px) rotateX(.15deg) rotateY(.05deg)!important}
+  footer .footer-partner-card{transform:perspective(1800px) rotateX(.15deg) rotateY(-.05deg)!important}
   footer .footer-info-card:hover,
   footer .footer-info-card:focus-within{
-    transform:perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(-1px) translateZ(2px)!important;
-    box-shadow:0 2px 0 rgba(194,150,124,.14),0 9px 17px rgba(57,35,24,.085),inset 0 1px 0 rgba(255,255,255,.95)!important;
+    transform:perspective(1800px) rotateX(0deg) rotateY(0deg) translateY(-1px)!important;
+    box-shadow:0 1px 0 rgba(194,150,124,.07),0 4px 10px rgba(57,35,24,.04),inset 0 1px 0 rgba(255,255,255,.96)!important;
   }
   footer .footer-legal-bottom{margin-top:21px!important;padding:17px 5px 2px!important}
 }
