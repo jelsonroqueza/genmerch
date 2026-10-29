@@ -6193,6 +6193,58 @@ footer section.gm-business-partners .gm-partners-heading>p:last-child{
   footer section.gm-business-partners .gm-partners-heading .gm-partners-kicker .gm-kicker-line{width:28px !important;flex-basis:28px !important}
 }
 </style>
+<style id="genmerch-trust-icons-premium">
+/* Premium brand-aligned trust strip icons: orange/red enamel, soft highlights and grounded shadows. */
+.trust-strip .trust-icon{
+  display:grid!important;
+  place-items:center!important;
+  position:relative!important;
+  flex:0 0 48px!important;
+  width:48px!important;
+  height:48px!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  border:1px solid rgba(237,85,48,.2)!important;
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#fffaf4 0%,#f9e9df 53%,#f0d7cc 100%)!important;
+  color:#e93225!important;
+  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 3px rgba(152,70,43,.07),0 2px 0 rgba(174,100,73,.12),0 5px 10px rgba(77,49,35,.085)!important;
+  text-shadow:none!important;
+}
+.trust-strip .trust-icon::after{
+  content:"";
+  position:absolute;
+  inset:2px 3px auto;
+  height:42%;
+  border-radius:50% 50% 35% 35%;
+  background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.trust-strip .trust-icon svg{
+  display:block!important;
+  width:30px!important;
+  height:30px!important;
+  max-width:none!important;
+  max-height:none!important;
+  overflow:visible!important;
+  filter:drop-shadow(0 1px 1px rgba(63,37,26,.13));
+  transform:translateZ(0);
+}
+.trust-strip>div:hover .trust-icon{
+  box-shadow:inset 0 1.5px 1px rgba(255,255,255,.98),inset 0 -2px 3px rgba(152,70,43,.07),0 2px 0 rgba(174,100,73,.13),0 6px 13px rgba(207,67,38,.12)!important;
+}
+@media(max-width:900px){
+  .trust-strip .trust-icon{flex-basis:42px!important;width:42px!important;height:42px!important}
+  .trust-strip .trust-icon svg{width:27px!important;height:27px!important}
+}
+@media(max-width:380px){
+  .trust-strip .trust-icon{flex-basis:38px!important;width:38px!important;height:38px!important}
+  .trust-strip .trust-icon svg{width:25px!important;height:25px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .trust-strip .trust-icon svg{transform:none}
+}
+</style>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -6535,10 +6587,10 @@ footer section.gm-business-partners .gm-partners-heading>p:last-child{
       </div>
     </section>
     <section class="trust-strip" aria-label="Store benefits">
-      <div><span class="trust-icon">✓</span><p><b>100% Original Merch</b><small>Official and exclusive designs</small></p></div>
-      <div><span class="trust-icon">🚚</span><p><b>Nationwide Shipping</b><small>Fast and reliable delivery</small></p></div>
-      <div><span class="trust-icon">♙</span><p><b>Secure Checkout</b><small>Your information is safe with us</small></p></div>
-      <div><span class="trust-icon">♥</span><p><b>Made for Fans</b><small>Wear your passion with pride</small></p></div>
+      <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustOriginalStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9b45"/><stop offset=".55" stop-color="#ff4b2b"/><stop offset="1" stop-color="#d91f25"/></linearGradient><linearGradient id="trustOriginalFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf4"/><stop offset="1" stop-color="#ffe1d2"/></linearGradient></defs><path d="M24 4.5 39 10v11c0 10.2-6.1 17.4-15 22.1C15.1 38.4 9 31.2 9 21V10z" fill="url(#trustOriginalFill)" stroke="url(#trustOriginalStroke)" stroke-width="2.1" stroke-linejoin="round"/><path d="m16.7 23.6 4.8 4.7 10.1-10.6" fill="none" stroke="#e72e27" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.2 11.8 24 8.7l8.8 3.1" fill="none" stroke="#ffb36a" stroke-width="1.5" stroke-linecap="round"/></svg></span><p><b>100% Original Merch</b><small>Official and exclusive designs</small></p></div>
+      <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustTruckBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd66f"/><stop offset=".54" stop-color="#ff9d37"/><stop offset="1" stop-color="#f04a27"/></linearGradient><linearGradient id="trustTruckCab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7444"/><stop offset="1" stop-color="#d9252d"/></linearGradient><linearGradient id="trustTruckGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8f8ff"/><stop offset="1" stop-color="#8ac9df"/></linearGradient></defs><path d="M5 13.5a2.8 2.8 0 0 1 2.8-2.8h21.5a2.8 2.8 0 0 1 2.8 2.8v21H5z" fill="url(#trustTruckBody)" stroke="#d65a28" stroke-width="1.6" stroke-linejoin="round"/><path d="M32.1 19h6.2l5 6.3v9.2H32.1z" fill="url(#trustTruckCab)" stroke="#c63b2b" stroke-width="1.6" stroke-linejoin="round"/><path d="M33.8 21.5h3.4l3.2 4.1h-6.6z" fill="url(#trustTruckGlass)" stroke="#fff1d8" stroke-width="1.1" stroke-linejoin="round"/><path d="M8.6 17h19.7M8.6 21h14.7" fill="none" stroke="#fff5d9" stroke-width="1.5" stroke-linecap="round" opacity=".9"/><path d="M4.5 35.1h39" fill="none" stroke="#5b514b" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="35.2" r="5.2" fill="#34363b" stroke="#fff6eb" stroke-width="1.5"/><circle cx="14" cy="35.2" r="2" fill="#d7dce2"/><circle cx="35.7" cy="35.2" r="5.2" fill="#34363b" stroke="#fff6eb" stroke-width="1.5"/><circle cx="35.7" cy="35.2" r="2" fill="#d7dce2"/><path d="M7.8 14.1h17.4" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".65"/></svg></span><p><b>Nationwide Shipping</b><small>Fast and reliable delivery</small></p></div>
+      <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustSecureStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9d4d"/><stop offset=".55" stop-color="#f0442d"/><stop offset="1" stop-color="#b91f30"/></linearGradient><linearGradient id="trustSecureFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#f7d9cd"/></linearGradient></defs><path d="M24 4.5 39 10v10.7c0 10.6-6.2 18-15 22.8C15.2 38.7 9 31.3 9 20.7V10z" fill="url(#trustSecureFill)" stroke="url(#trustSecureStroke)" stroke-width="2.1" stroke-linejoin="round"/><rect x="16.5" y="21" width="15" height="11.5" rx="2.5" fill="url(#trustSecureStroke)" stroke="#d62d2b" stroke-width="1.1"/><path d="M19.5 21v-3.5a4.5 4.5 0 0 1 9 0V21" fill="none" stroke="#bd2a2c" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="26.1" r="1.5" fill="#fff6ec"/><path d="M24 27.2v2.2" stroke="#fff6ec" stroke-width="1.5" stroke-linecap="round"/><path d="M15.2 11.7 24 8.5l8.8 3.2" fill="none" stroke="#ffc17e" stroke-width="1.5" stroke-linecap="round"/></svg></span><p><b>Secure Checkout</b><small>Your information is safe with us</small></p></div>
+      <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustHeartFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9e76"/><stop offset=".35" stop-color="#ff4c36"/><stop offset=".72" stop-color="#ed2029"/><stop offset="1" stop-color="#b7132c"/></linearGradient><linearGradient id="trustHeartGloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset=".8" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><path d="M24 40.5 8.4 25.8C-.1 17.8 11.8 4.8 21.3 13.4l2.7 2.5 2.7-2.5c9.5-8.6 21.4 4.4 12.9 12.4z" fill="url(#trustHeartFace)" stroke="#c92a2d" stroke-width="1.6" stroke-linejoin="round"/><path d="M13.7 16.5c2-2.4 5.2-2.3 7.4-.7" fill="none" stroke="url(#trustHeartGloss)" stroke-width="3.1" stroke-linecap="round"/><path d="M10.8 23.1c-.2 1.9.8 3.7 2.5 5.1l9.1 8.6" fill="none" stroke="#ffb7a0" stroke-width="1.2" stroke-linecap="round" opacity=".6"/></svg></span><p><b>Made for Fans</b><small>Wear your passion with pride</small></p></div>
     </section>
     <div class="search catalog-search" role="search" aria-label="Search products">
       <button id="searchButton" type="button" aria-label="Search products" title="Search products">
