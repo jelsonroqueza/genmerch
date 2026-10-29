@@ -6034,10 +6034,10 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
   </style>
 
-<style id="genmerch-footer-3d-depth-80">
-/* 80%-strength 3D treatment for the About Us and Partner With Us cards. */
+<style id="genmerch-footer-subtle-3d">
+/* Subtle 3D treatment for About Us and Partner With Us: restrained tilt, shallow depth, and softer shadows. */
 footer .footer-details-grid{
-  perspective:1200px!important;
+  perspective:1600px!important;
   perspective-origin:50% 28%!important;
   transform-style:preserve-3d!important;
 }
@@ -6046,11 +6046,11 @@ footer .footer-info-card{
   isolation:isolate!important;
   transform-style:preserve-3d!important;
   backface-visibility:hidden!important;
-  transform:perspective(1200px) rotateX(3deg) translateZ(0)!important;
-  border:1px solid rgba(224,190,171,.98)!important;
-  border-bottom:4px solid rgba(205,157,130,.94)!important;
-  box-shadow:0 7px 0 rgba(194,150,124,.5),0 18px 30px rgba(57,35,24,.18),inset 0 1px 0 rgba(255,255,255,.98)!important;
-  transition:transform .32s cubic-bezier(.2,.75,.25,1),box-shadow .32s ease!important;
+  transform:perspective(1600px) rotateX(1.2deg) translateZ(0)!important;
+  border:1px solid rgba(224,190,171,.82)!important;
+  border-bottom:2px solid rgba(205,157,130,.64)!important;
+  box-shadow:0 2px 0 rgba(194,150,124,.18),0 8px 18px rgba(57,35,24,.075),inset 0 1px 0 rgba(255,255,255,.92)!important;
+  transition:transform .28s ease,box-shadow .28s ease!important;
 }
 footer .footer-info-card::before{
   content:""!important;
@@ -6059,20 +6059,20 @@ footer .footer-info-card::before{
   inset:0!important;
   border-radius:inherit!important;
   pointer-events:none!important;
-  transform:translateZ(-18px) translateY(7px)!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,216,202,.48))!important;
-  box-shadow:0 12px 22px rgba(57,35,24,.12)!important;
+  transform:translateZ(-6px) translateY(2px)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(238,216,202,.22))!important;
+  box-shadow:0 5px 10px rgba(57,35,24,.045)!important;
 }
 footer .footer-about-card{
-  transform:perspective(1200px) rotateX(3deg) rotateY(1.5deg)!important;
+  transform:perspective(1600px) rotateX(1.2deg) rotateY(.45deg)!important;
 }
 footer .footer-partner-card{
-  transform:perspective(1200px) rotateX(3deg) rotateY(-1.5deg)!important;
+  transform:perspective(1600px) rotateX(1.2deg) rotateY(-.45deg)!important;
 }
 footer .footer-info-card:hover,
 footer .footer-info-card:focus-within{
-  transform:perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(-5px) translateZ(18px)!important;
-  box-shadow:0 10px 0 rgba(194,150,124,.42),0 27px 42px rgba(57,35,24,.23),inset 0 1px 0 rgba(255,255,255,.98)!important;
+  transform:perspective(1600px) rotateX(0deg) rotateY(0deg) translateY(-2px) translateZ(4px)!important;
+  box-shadow:0 3px 0 rgba(194,150,124,.18),0 12px 22px rgba(57,35,24,.10),inset 0 1px 0 rgba(255,255,255,.95)!important;
 }
 footer .footer-legal-bottom{
   width:min(1040px,100%)!important;
@@ -6082,27 +6082,20 @@ footer .footer-legal-bottom{
   border-top:1px solid rgba(216,184,164,.72)!important;
   text-align:center!important;
 }
-footer .footer-legal-bottom .footer-brand{
-  margin:0 0 7px!important;
-}
-footer .footer-legal-bottom>p{
-  margin:0!important;
-  line-height:1.55!important;
-}
-footer .footer-legal-bottom .footer-legal-links{
-  margin-top:10px!important;
-  gap:12px 18px!important;
-}
+footer .footer-legal-bottom .footer-brand{margin:0 0 7px!important}
+footer .footer-legal-bottom>p{margin:0!important;line-height:1.55!important}
+footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12px 18px!important}
 @media(max-width:720px){
   footer .footer-info-card{
-    transform:perspective(1000px) rotateX(2deg) translateZ(0)!important;
-    box-shadow:0 5px 0 rgba(194,150,124,.42),0 14px 24px rgba(57,35,24,.16),inset 0 1px 0 rgba(255,255,255,.98)!important;
+    transform:perspective(1400px) rotateX(.8deg) translateZ(0)!important;
+    box-shadow:0 2px 0 rgba(194,150,124,.16),0 7px 15px rgba(57,35,24,.065),inset 0 1px 0 rgba(255,255,255,.92)!important;
   }
-  footer .footer-about-card{transform:perspective(1000px) rotateX(2deg) rotateY(.55deg)!important}
-  footer .footer-partner-card{transform:perspective(1000px) rotateX(2deg) rotateY(-.55deg)!important}
+  footer .footer-about-card{transform:perspective(1400px) rotateX(.8deg) rotateY(.18deg)!important}
+  footer .footer-partner-card{transform:perspective(1400px) rotateX(.8deg) rotateY(-.18deg)!important}
   footer .footer-info-card:hover,
   footer .footer-info-card:focus-within{
-    transform:perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-3px) translateZ(12px)!important;
+    transform:perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(-1px) translateZ(2px)!important;
+    box-shadow:0 2px 0 rgba(194,150,124,.14),0 9px 17px rgba(57,35,24,.085),inset 0 1px 0 rgba(255,255,255,.95)!important;
   }
   footer .footer-legal-bottom{margin-top:21px!important;padding:17px 5px 2px!important}
 }
