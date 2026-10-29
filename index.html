@@ -6035,7 +6035,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   </style>
 
 <style id="genmerch-footer-subtle-3d">
-/* 20% 3D treatment: crisp surfaces, minimal tilt, and very soft shadows. */
+/* 10% 3D treatment: near-flat cards, crisp text, and barely visible shadows. */
 footer .footer-details-grid{
   perspective:1800px!important;
   perspective-origin:50% 28%!important;
@@ -6048,10 +6048,10 @@ footer .footer-info-card{
   backface-visibility:hidden!important;
   -webkit-font-smoothing:antialiased!important;
   text-rendering:optimizeLegibility!important;
-  transform:perspective(1800px) rotateX(.25deg) translateZ(0)!important;
+  transform:perspective(1800px) rotateX(.12deg) translateZ(0)!important;
   border:1px solid rgba(224,190,171,.72)!important;
-  border-bottom:1px solid rgba(205,157,130,.5)!important;
-  box-shadow:0 1px 0 rgba(194,150,124,.08),0 4px 12px rgba(57,35,24,.035),inset 0 1px 0 rgba(255,255,255,.94)!important;
+  border-bottom:1px solid rgba(205,157,130,.32)!important;
+  box-shadow:0 1px 0 rgba(194,150,124,.04),0 2px 7px rgba(57,35,24,.022),inset 0 1px 0 rgba(255,255,255,.94)!important;
   transition:transform .24s ease,box-shadow .24s ease!important;
 }
 footer .footer-info-card::before{
@@ -6061,20 +6061,20 @@ footer .footer-info-card::before{
   inset:0!important;
   border-radius:inherit!important;
   pointer-events:none!important;
-  transform:translateZ(-2px) translateY(1px)!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(238,216,202,.10))!important;
-  box-shadow:0 2px 5px rgba(57,35,24,.025)!important;
+  transform:translateZ(-1px) translateY(.5px)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(238,216,202,.05))!important;
+  box-shadow:0 1px 3px rgba(57,35,24,.015)!important;
 }
 footer .footer-about-card{
-  transform:perspective(1800px) rotateX(.25deg) rotateY(.1deg)!important;
+  transform:perspective(1800px) rotateX(.12deg) rotateY(.04deg)!important;
 }
 footer .footer-partner-card{
-  transform:perspective(1800px) rotateX(.25deg) rotateY(-.1deg)!important;
+  transform:perspective(1800px) rotateX(.12deg) rotateY(-.04deg)!important;
 }
 footer .footer-info-card:hover,
 footer .footer-info-card:focus-within{
-  transform:perspective(1800px) rotateX(0deg) rotateY(0deg) translateY(-1px) translateZ(1px)!important;
-  box-shadow:0 1px 0 rgba(194,150,124,.09),0 6px 14px rgba(57,35,24,.05),inset 0 1px 0 rgba(255,255,255,.96)!important;
+  transform:perspective(1800px) rotateX(0deg) rotateY(0deg) translateY(-.5px) translateZ(.5px)!important;
+  box-shadow:0 1px 0 rgba(194,150,124,.045),0 3px 8px rgba(57,35,24,.025),inset 0 1px 0 rgba(255,255,255,.96)!important;
 }
 footer .footer-legal-bottom{
   width:min(1040px,100%)!important;
@@ -6089,15 +6089,15 @@ footer .footer-legal-bottom>p{margin:0!important;line-height:1.55!important}
 footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12px 18px!important}
 @media(max-width:720px){
   footer .footer-info-card{
-    transform:perspective(1800px) rotateX(.15deg) translateZ(0)!important;
-    box-shadow:0 1px 0 rgba(194,150,124,.07),0 3px 9px rgba(57,35,24,.03),inset 0 1px 0 rgba(255,255,255,.94)!important;
+    transform:perspective(1800px) rotateX(.08deg) translateZ(0)!important;
+    box-shadow:0 1px 0 rgba(194,150,124,.035),0 2px 6px rgba(57,35,24,.018),inset 0 1px 0 rgba(255,255,255,.94)!important;
   }
-  footer .footer-about-card{transform:perspective(1800px) rotateX(.15deg) rotateY(.05deg)!important}
-  footer .footer-partner-card{transform:perspective(1800px) rotateX(.15deg) rotateY(-.05deg)!important}
+  footer .footer-about-card{transform:perspective(1800px) rotateX(.08deg) rotateY(.02deg)!important}
+  footer .footer-partner-card{transform:perspective(1800px) rotateX(.08deg) rotateY(-.02deg)!important}
   footer .footer-info-card:hover,
   footer .footer-info-card:focus-within{
     transform:perspective(1800px) rotateX(0deg) rotateY(0deg) translateY(-1px)!important;
-    box-shadow:0 1px 0 rgba(194,150,124,.07),0 4px 10px rgba(57,35,24,.04),inset 0 1px 0 rgba(255,255,255,.96)!important;
+    box-shadow:0 1px 0 rgba(194,150,124,.035),0 2px 7px rgba(57,35,24,.02),inset 0 1px 0 rgba(255,255,255,.96)!important;
   }
   footer .footer-legal-bottom{margin-top:21px!important;padding:17px 5px 2px!important}
 }
