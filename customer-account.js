@@ -362,6 +362,8 @@
       feedback.textContent = 'Profile saved successfully.';
       feedback.className = 'success';
       await loadAccountData();
+      const refreshedFeedback = $('gmcaProfileFeedback');
+      if (refreshedFeedback) { refreshedFeedback.textContent = 'Profile saved successfully.'; refreshedFeedback.className = 'success'; }
       if (typeof window.updateCustomerAuthScreen === 'function') {
         const fresh = await db.auth.getSession();
         if (fresh && fresh.data) window.updateCustomerAuthScreen(fresh.data.session);
