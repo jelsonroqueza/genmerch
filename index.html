@@ -2230,7 +2230,7 @@
     .customer-auth-field input::placeholder{color:#aaa}
     .customer-auth-password-wrap{position:relative}
     .customer-auth-password-wrap input{padding-right:78px}
-    .customer-auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-width:58px;min-height:32px;padding:5px 8px;border:0;border-radius:6px;background:#f4f4f4;color:#333;font-size:.76rem;font-weight:850}
+    .customer-auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:58px;min-height:36px;padding:5px 8px;border:0;border-radius:6px;background:#f4f4f4;color:#333;font-size:.76rem;font-weight:850;line-height:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;pointer-events:auto;user-select:none;-webkit-user-select:none}
     .customer-auth-password-toggle:hover{background:#e9e9e9}
     .customer-auth-submit{width:100%;margin-top:2px}
     .customer-auth-google:disabled{opacity:.55;cursor:not-allowed}
@@ -11809,13 +11809,22 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     $('customerAuthCreateTab').addEventListener('click',()=>setCustomerAuthMode('signup'));
     function bindCustomerPasswordReveal(inputId,toggleId,shownLabel,hiddenLabel){
       const input=$(inputId),toggle=$(toggleId);
-      if(!input||!toggle)return;
-      toggle.addEventListener('click',()=>{
+      if(!input||!toggle||toggle.dataset.passwordRevealBound==='true')return;
+      toggle.dataset.passwordRevealBound='true';
+      const toggleVisibility=(event)=>{
+        event.preventDefault();
+        event.stopPropagation();
         const show=input.type==='password';
         input.type=show?'text':'password';
         toggle.textContent=show?'Hide':'Show';
         toggle.setAttribute('aria-label',show?hiddenLabel:shownLabel);
         toggle.setAttribute('aria-pressed',String(show));
+      };
+      toggle.addEventListener('click',toggleVisibility);
+      toggle.addEventListener('keydown',event=>{
+        if(event.key===' '){
+          event.preventDefault();
+        }
       });
     }
     bindCustomerPasswordReveal('customerResetPassword','customerResetPasswordToggle','Show new password','Hide new password');
