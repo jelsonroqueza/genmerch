@@ -5,15 +5,21 @@
 .gm-install-brand-mark{display:grid;place-items:center;margin:0 auto 16px;width:82px;height:82px;border-radius:23px;overflow:hidden;box-shadow:0 8px 22px rgba(238,77,45,.2)}
 .gm-install-brand-mark img{display:block;width:100%;height:100%;object-fit:cover}
 .gm-install-card h2{margin:0 auto 10px;max-width:310px;font-size:1.28rem;line-height:1.25;font-weight:900;letter-spacing:-.025em;color:#171717}
-.gm-install-card p{margin:0 auto 22px;max-width:315px;color:#5d6470;font-size:.9rem;line-height:1.55}
-.gm-install-card .gm-install-note{margin-top:-8px;font-size:.8rem;color:#8a3a28}
-.gm-install-primary{display:block;width:100%;min-height:48px;border:0;border-radius:12px;background:#ee4d2d;color:#fff;font-size:1rem;font-weight:900;box-shadow:0 5px 12px rgba(238,77,45,.22);cursor:pointer;transition:background .15s ease,transform .15s ease}
+.gm-install-card p{margin:0 auto 20px;max-width:315px;color:#5d6470;font-size:.9rem;line-height:1.55}
+.gm-install-card .gm-install-note{margin-top:-6px;margin-bottom:18px;font-size:.8rem;color:#8a3a28}
+.gm-install-card .gm-install-footer-note{margin:13px auto 0;margin-bottom:0;font-size:.73rem;line-height:1.4;color:#7b8190}
+.gm-install-actions{display:grid;grid-template-columns:1fr;gap:10px;width:100%;margin-top:2px}
+.gm-install-primary,.gm-install-secondary{display:block;width:100%;min-height:48px;border:0;border-radius:12px;font-size:.96rem;font-weight:900;cursor:pointer;transition:background .15s ease,transform .15s ease,box-shadow .15s ease}
+.gm-install-primary{background:#ee4d2d;color:#fff;box-shadow:0 5px 12px rgba(238,77,45,.22)}
 .gm-install-primary:hover{background:#d7381a}
-.gm-install-primary:active{transform:scale(.99)}
+.gm-install-secondary{border:1px solid #d1d5db;background:#fff;color:#374151;box-shadow:0 2px 5px rgba(17,24,39,.05)}
+.gm-install-secondary:hover{background:#f9fafb}
+.gm-install-primary:active,.gm-install-secondary:active{transform:scale(.99)}
 .gm-install-primary:disabled{opacity:.75;cursor:wait}
-.gm-install-primary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.gm-install-primary:focus-visible,.gm-install-secondary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
 .gm-install-success-toast{position:fixed;z-index:10060;left:50%;top:22px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:11px;width:min(520px,calc(100vw - 28px));padding:16px;border:1px solid #b7e6c5;border-radius:14px;background:#f0fff4;color:#155b2c;box-shadow:0 15px 45px rgba(0,0,0,.2);font-size:.9rem;font-weight:750;line-height:1.5;animation:gmInstallToastIn .2s ease-out}
 .gm-install-success-check{flex:0 0 24px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#16803d;color:#fff;font-size:.88rem;font-weight:900}
 @keyframes gmInstallFadeIn{from{opacity:0}to{opacity:1}}
 @keyframes gmInstallToastIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
-@media(prefers-reduced-motion:reduce){.gm-install-overlay,.gm-install-success-toast{animation:none}.gm-install-primary{transition:none}}
+@media(max-width:420px){.gm-install-overlay{padding:14px}.gm-install-card{padding:22px 18px 19px;border-radius:20px}.gm-install-brand-mark{width:74px;height:74px}.gm-install-card h2{font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){.gm-install-overlay,.gm-install-success-toast{animation:none}.gm-install-primary,.gm-install-secondary{transition:none}}
