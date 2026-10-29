@@ -944,6 +944,10 @@
     const profile = profileResult.data || null;
     state.addresses = asArray(addressesResult);
     state.landmarks = asArray(landmarksResult);
+    // Address-specific recipient and phone data take precedence when the customer
+    // has not typed checkout details yet; account profile data fills any remaining blanks.
+    const defaultAddress = state.addresses.find((address) => address.is_default);
+    if (defaultAddress) applyCheckoutAddress(defaultAddress, false);
     const name = currentUserName(session.user, profile);
     if (name) {
       setCheckoutField('firstName', name.split(/\s+/)[0], false);
@@ -955,8 +959,6 @@
       }
     }
     setCheckoutField('custPhone', profile && profile.phone ? profile.phone : (session.user.phone || ''), false);
-    const defaultAddress = state.addresses.find((address) => address.is_default);
-    if (defaultAddress) applyCheckoutAddress(defaultAddress, false);
     const defaultLandmark = state.landmarks.find((item) => item.is_default);
     if (defaultLandmark) {
       setCheckoutField('landmark', defaultLandmark.landmark, false);
