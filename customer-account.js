@@ -248,8 +248,13 @@
     }
     if (button) { button.disabled = true; button.textContent = 'Signing out…'; }
     try {
-      await signOut();
-      closeSignOutConfirmation();
+      const completed = await signOut();
+      if (completed) {
+        closeSignOutConfirmation();
+      } else {
+        feedback.textContent = 'Sign-out failed. Your account is still signed in; please try again.';
+        feedback.className = 'gmca-signout-feedback error';
+      }
     } finally {
       if (button) { button.disabled = false; button.textContent = 'Confirm sign out'; }
     }
@@ -345,8 +350,10 @@
       closeAccount();
       renderCheckoutPoints();
       if (typeof window.updateCustomerAuthScreen === 'function') window.updateCustomerAuthScreen(null);
+      return true;
     } catch (error) {
       showAlert(error.message || 'Could not sign out. Please try again.', 'error');
+      return false;
     } finally {
       if (button) { button.disabled = false; button.textContent = 'Sign out'; }
     }
@@ -654,10 +661,10 @@
           '<label>Recipient full name<input id="gmcaAddressName" maxlength="160" autocomplete="name" required></label>' +
           '<label>Mobile number<input id="gmcaAddressPhone" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX" required></label>' +
           '<label>House / unit and street<input id="gmcaAddressStreet" maxlength="250" required></label>' +
-          '<label>Province<input id="gmcaAddressProvince" maxlength="150" required></label>' +
-          '<label>City / municipality<input id="gmcaAddressCity" maxlength="150" required></label>' +
-          '<label>Barangay<input id="gmcaAddressBarangay" maxlength="150" required></label>' +
-          '<label>Postal code<input id="gmcaAddressPostal" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="4 digits"></label>' +
+          '<label>Province<input id="gmcaAddressProvince" maxlength="150" placeholder="Type to search province" autocomplete="address-level1" role="combobox" aria-autocomplete="list" aria-expanded="false" required></label>' +
+          '<label>City / municipality<input id="gmcaAddressCity" maxlength="150" placeholder="Choose province, then search city" autocomplete="address-level2" role="combobox" aria-autocomplete="list" aria-expanded="false" required></label>' +
+          '<label>Barangay<input id="gmcaAddressBarangay" maxlength="150" placeholder="Choose city, then search barangay" autocomplete="address-level3" role="combobox" aria-autocomplete="list" aria-expanded="false" required></label>' +
+          '<label>Postal code<input id="gmcaAddressPostal" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Suggested from chosen barangay" autocomplete="postal-code" role="combobox" aria-autocomplete="list" aria-expanded="false" required></label>' +
           '<label>Landmark / directions<input id="gmcaAddressLandmark" maxlength="250" placeholder="Nearby store, school, gate, etc."></label>' +
           '<label>Delivery instructions<input id="gmcaAddressInstructions" maxlength="500" placeholder="Gate details or delivery notes"></label>' +
           '<label class="gmca-check-label"><input type="checkbox" id="gmcaAddressDefault"> Set as my default delivery address</label>' +
@@ -694,6 +701,315 @@
       const credit = $('gmcaCheckoutAddressFeedback');
       if (credit) { credit.textContent = 'Saved address loaded into checkout.'; credit.className = 'gmca-checkout-feedback success'; }
     }));
+    bindAddressAutocomplete();
+  }
+
+  function bindAddressAutocomplete() {
+    const bridge = window.genmerchAddressReference;
+    const fieldIds = {
+      province: 'gmcaAddressProvince',
+      city: 'gmcaAddressCity',
+      barangay: 'gmcaAddressBarangay',
+      postal: 'gmcaAddressPostal'
+    };
+    const lookupState = {
+      province: null, city: null, barangay: null, cityBarangays: [],
+      requestId: { province: 0, city: 0, barangay: 0, postal: 0 }
+    };
+
+    Object.values(fieldIds).forEach((id) => {
+      const input = $(id);
+      if (!input) return;
+      input.autocomplete = 'off';
+      input.setAttribute('aria-controls', id + 'Suggestions');
+      if (input.closest('.gmca-address-autocomplete')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'gmca-address-autocomplete';
+      input.parentNode.insertBefore(wrapper, input);
+      wrapper.appendChild(input);
+      const box = document.createElement('div');
+      box.id = id + 'Suggestions';
+      box.className = 'gmca-address-suggestions';
+      box.setAttribute('role', 'listbox');
+      box.setAttribute('aria-label', input.id.replace('gmcaAddress', '') + ' suggestions');
+      wrapper.appendChild(box);
+    });
+
+    const norm = (value) => bridge && bridge.normalize
+      ? bridge.normalize(value)
+      : String(value || '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+    const placeName = (record) => bridge && bridge.getName ? bridge.getName(record) : (record && (record.name_en || record.name_local || record.name) || '');
+    const parentName = (record) => bridge && bridge.getParentName ? bridge.getParentName(record) : (record && (record.parent_name_en || record.parent_name_local) || '');
+    const postalCodes = (record) => bridge && bridge.getPostalCodes ? bridge.getPostalCodes(record) : [];
+    const matches = (record, query, extra) => {
+      const haystack = norm([placeName(record), parentName(record), record && record.postal_code,
+        ...(record && Array.isArray(record.zip_codes) ? record.zip_codes : []), extra || ''].join(' '));
+      return !norm(query) || haystack.includes(norm(query));
+    };
+    const inputFor = (level) => $(fieldIds[level]);
+    const boxFor = (level) => $(fieldIds[level] + 'Suggestions');
+
+    function hide(level) {
+      const box = boxFor(level), input = inputFor(level);
+      if (box) box.classList.remove('open');
+      if (input) input.setAttribute('aria-expanded', 'false');
+    }
+    function hideAccountAddressSuggestions() {
+      ['province', 'city', 'barangay', 'postal'].forEach(hide);
+    }
+    function showMessage(level, message) {
+      const input = inputFor(level), box = boxFor(level);
+      if (!input || !box) return;
+      box.replaceChildren();
+      const note = document.createElement('div');
+      note.className = 'gmca-address-suggestion-message';
+      note.textContent = message;
+      box.appendChild(note);
+      box.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function render(level, records, onSelect, emptyMessage) {
+      const input = inputFor(level), box = boxFor(level);
+      if (!input || !box) return;
+      box.replaceChildren();
+      const items = (records || []).slice(0, 9);
+      if (!items.length) {
+        showMessage(level, emptyMessage || 'No match found. You can still enter the address manually.');
+        return;
+      }
+      items.forEach((record) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'gmca-address-suggestion';
+        button.setAttribute('role', 'option');
+        const title = document.createElement('span');
+        title.textContent = record.label || placeName(record) || String(record.value || '');
+        button.appendChild(title);
+        const detailText = record.detail || '';
+        if (detailText) {
+          const detail = document.createElement('small');
+          detail.textContent = detailText;
+          button.appendChild(detail);
+        }
+        button.addEventListener('mousedown', (event) => event.preventDefault());
+        button.addEventListener('keydown', (event) => {
+          const options = [...box.querySelectorAll('button.gmca-address-suggestion')];
+          const index = options.indexOf(button);
+          if (event.key === 'ArrowDown') { event.preventDefault(); (options[index + 1] || options[0])?.focus(); }
+          else if (event.key === 'ArrowUp') { event.preventDefault(); if (index <= 0) input.focus(); else options[index - 1]?.focus(); }
+          else if (event.key === 'Escape') { event.preventDefault(); hide(level); input.focus(); }
+        });
+        button.addEventListener('click', () => onSelect(record));
+        box.appendChild(button);
+      });
+      box.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function clearBelow(level) {
+      if (level === 'province') {
+        lookupState.city = null; lookupState.barangay = null; lookupState.cityBarangays = [];
+        ['city', 'barangay', 'postal'].forEach((key) => {
+          inputFor(key).value = '';
+          hide(key);
+        });
+      } else if (level === 'city') {
+        lookupState.barangay = null; lookupState.cityBarangays = [];
+        ['barangay', 'postal'].forEach((key) => {
+          inputFor(key).value = '';
+          hide(key);
+        });
+      } else if (level === 'barangay') {
+        lookupState.barangay = null;
+        inputFor('postal').value = '';
+        hide('postal');
+      }
+    }
+
+    async function updateProvince() {
+      const request = ++lookupState.requestId.province;
+      const query = inputFor('province').value.trim();
+      if (!bridge || !bridge.loadProvinces) { showMessage('province', 'Address suggestions are unavailable right now.'); return; }
+      try {
+        const records = await bridge.loadProvinces();
+        if (request !== lookupState.requestId.province || query !== inputFor('province').value.trim()) return;
+        const list = [...records].filter((record) => matches(record, query))
+          .sort((a, b) => placeName(a).localeCompare(placeName(b)))
+          .map((record) => ({ ...record, label: placeName(record) }));
+        render('province', list, (record) => {
+          lookupState.province = record;
+          inputFor('province').value = placeName(record);
+          hide('province');
+          clearBelow('province');
+          inputFor('city').focus();
+          updateCity();
+        }, 'No province match found. Check the spelling or enter the address manually.');
+      } catch (error) {
+        showMessage('province', 'Province suggestions are temporarily unavailable. You can still type the province manually.');
+      }
+    }
+
+    async function resolveProvince() {
+      if (lookupState.province && norm(placeName(lookupState.province)) === norm(inputFor('province').value)) return lookupState.province;
+      if (!bridge || !bridge.loadProvinces) return null;
+      const records = await bridge.loadProvinces();
+      lookupState.province = records.find((record) => norm(placeName(record)) === norm(inputFor('province').value)) || null;
+      return lookupState.province;
+    }
+    async function updateCity() {
+      const request = ++lookupState.requestId.city;
+      const query = inputFor('city').value.trim();
+      if (!bridge || !bridge.loadMunicipalities) { showMessage('city', 'Address suggestions are unavailable right now.'); return; }
+      try {
+        const [records, province] = await Promise.all([bridge.loadMunicipalities(), resolveProvince()]);
+        if (request !== lookupState.requestId.city || query !== inputFor('city').value.trim()) return;
+        const narrowed = province ? records.filter((record) =>
+          String(record.parent_id || '') === String(province.id || '') ||
+          norm(parentName(record)) === norm(placeName(province))) : records;
+        const list = narrowed.filter((record) => matches(record, query))
+          .sort((a, b) => {
+            const needle = norm(query), aName = norm(placeName(a)), bName = norm(placeName(b));
+            return (aName.startsWith(needle) ? 0 : 1) - (bName.startsWith(needle) ? 0 : 1) || aName.localeCompare(bName);
+          })
+          .map((record) => ({ ...record, label: placeName(record), detail: parentName(record) || (province ? placeName(province) : 'Philippines') }));
+        render('city', list, async (record) => {
+          lookupState.city = record;
+          inputFor('city').value = placeName(record);
+          try {
+            const provinces = await bridge.loadProvinces();
+            const parentProvince = provinces.find((item) => String(item.id || '') === String(record.parent_id || '')) ||
+              provinces.find((item) => norm(placeName(item)) === norm(parentName(record)));
+            if (parentProvince) {
+              lookupState.province = parentProvince;
+              inputFor('province').value = placeName(parentProvince);
+              hide('province');
+            }
+          } catch (_) {}
+          hide('city');
+          clearBelow('city');
+          inputFor('barangay').focus();
+          updateBarangay();
+        }, province ? 'No city or municipality matches this province.' : 'No city or municipality match found.');
+      } catch (error) {
+        showMessage('city', 'City and municipality suggestions are temporarily unavailable. You can still type the city manually.');
+      }
+    }
+
+    async function resolveCity() {
+      if (lookupState.city && norm(placeName(lookupState.city)) === norm(inputFor('city').value)) return lookupState.city;
+      if (!bridge || !bridge.loadMunicipalities) return null;
+      const [records, province] = await Promise.all([bridge.loadMunicipalities(), resolveProvince()]);
+      const sameName = records.filter((record) => norm(placeName(record)) === norm(inputFor('city').value));
+      lookupState.city = province
+        ? sameName.find((record) => String(record.parent_id || '') === String(province.id || '') || norm(parentName(record)) === norm(placeName(province))) || null
+        : (sameName.length === 1 ? sameName[0] : null);
+      if (!lookupState.city && sameName.length === 1) lookupState.city = sameName[0];
+      return lookupState.city;
+    }
+    async function loadCityBarangays() {
+      const city = await resolveCity();
+      if (!city) return [];
+      const key = String(city.slug || city.id || '');
+      if (lookupState.city && lookupState.cityBarangays.length && String(lookupState.city.slug || lookupState.city.id || '') === key) {
+        return lookupState.cityBarangays;
+      }
+      if (!bridge || !bridge.loadBarangays) return [];
+      const records = await bridge.loadBarangays(city);
+      lookupState.cityBarangays = records;
+      lookupState.city = city;
+      return records;
+    }
+    async function updateBarangay() {
+      const request = ++lookupState.requestId.barangay;
+      const query = inputFor('barangay').value.trim();
+      try {
+        const cityRecords = await loadCityBarangays();
+        if (request !== lookupState.requestId.barangay || query !== inputFor('barangay').value.trim()) return;
+        if (!lookupState.city) {
+          showMessage('barangay', 'Choose a city or municipality first to see matching barangays.');
+          return;
+        }
+        const list = cityRecords.filter((record) => matches(record, query))
+          .sort((a, b) => {
+            const needle = norm(query), aName = norm(placeName(a)), bName = norm(placeName(b));
+            return (aName.startsWith(needle) ? 0 : 1) - (bName.startsWith(needle) ? 0 : 1) || aName.localeCompare(bName);
+          })
+          .map((record) => ({ ...record, label: placeName(record), detail: postalCodes(record).length ? 'Postal code: ' + postalCodes(record).join(', ') : 'Postal code not listed for this barangay' }));
+        render('barangay', list, (record) => {
+          lookupState.barangay = record;
+          inputFor('barangay').value = placeName(record);
+          hide('barangay');
+          const codes = postalCodes(record);
+          inputFor('postal').value = codes.length ? codes[0] : '';
+          hide('postal');
+          if (!codes.length) updatePostal();
+        }, 'No barangay match found in this city. Check spelling or enter it manually.');
+      } catch (error) {
+        showMessage('barangay', 'Barangay suggestions are temporarily unavailable. You can still type it manually.');
+      }
+    }
+
+    async function updatePostal() {
+      const request = ++lookupState.requestId.postal;
+      const query = inputFor('postal').value.trim();
+      try {
+        const cityRecords = await loadCityBarangays();
+        if (request !== lookupState.requestId.postal || query !== inputFor('postal').value.trim()) return;
+        if (!lookupState.city) { showMessage('postal', 'Choose a city or municipality first to get postal-code suggestions.'); return; }
+        const codes = new Map();
+        cityRecords.forEach((record) => postalCodes(record).forEach((code) => {
+          if (!codes.has(code)) codes.set(code, new Set());
+          codes.get(code).add(placeName(record));
+        }));
+        const list = [...codes.entries()].filter(([code]) => !query || code.includes(query))
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .map(([code, barangays]) => ({ value: code, label: code, detail: 'Listed for: ' + [...barangays].slice(0, 3).join(', ') + (barangays.size > 3 ? '…' : '') }));
+        render('postal', list, (record) => {
+          inputFor('postal').value = record.value;
+          hide('postal');
+        }, 'No postal code is listed for this city and query. You can type it manually.');
+      } catch (error) {
+        showMessage('postal', 'Postal-code suggestions are temporarily unavailable. You can still enter the code manually.');
+      }
+    }
+
+    function bindKeyboard(level) {
+      const input = inputFor(level);
+      if (!input || input.dataset.gmcaAutocompleteBound === '1') return;
+      input.dataset.gmcaAutocompleteBound = '1';
+      input.addEventListener('keydown', (event) => {
+        const box = boxFor(level);
+        const options = [...box.querySelectorAll('button.gmca-address-suggestion')];
+        if (event.key === 'ArrowDown' && box.classList.contains('open') && options.length) {
+          event.preventDefault(); options[0].focus();
+        } else if (event.key === 'Enter' && box.classList.contains('open') && options.length) {
+          event.preventDefault(); options[0].click();
+        } else if (event.key === 'Escape' && box.classList.contains('open')) {
+          event.preventDefault(); hide(level);
+        }
+      });
+    }
+    [['province', updateProvince], ['city', updateCity], ['barangay', updateBarangay], ['postal', updatePostal]].forEach(([level, updater]) => {
+      const input = inputFor(level);
+      if (!input || input.dataset.gmcaAutocompleteBound === '1') return;
+      input.dataset.gmcaAutocompleteBound = '1';
+      input.addEventListener('input', () => {
+        if (level === 'province') { lookupState.province = null; clearBelow('province'); }
+        else if (level === 'city') { lookupState.city = null; clearBelow('city'); }
+        else if (level === 'barangay') clearBelow('barangay');
+        updater();
+      });
+      input.addEventListener('focus', updater);
+      input.addEventListener('keydown', (event) => {
+        const box = boxFor(level), options = [...box.querySelectorAll('button.gmca-address-suggestion')];
+        if (event.key === 'ArrowDown' && box.classList.contains('open') && options.length) {
+          event.preventDefault(); options[0].focus();
+        } else if (event.key === 'Enter' && box.classList.contains('open') && options.length) {
+          event.preventDefault(); options[0].click();
+        } else if (event.key === 'Escape' && box.classList.contains('open')) {
+          event.preventDefault(); hide(level);
+        }
+      });
+    });
   }
 
   function resetAddressEditor() {
