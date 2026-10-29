@@ -555,7 +555,7 @@ begin
     'points_redeemed', v_requested,
     'loyalty_discount', v_requested,
     'discount_amount', coalesce(v_discount, 0),
-    'total_amount', coalesce(v_total, v_result->>'total_amount')::numeric
+    'total_amount', coalesce(v_total, (v_result->>'total_amount')::numeric)
   );
 end;
 $function$;
