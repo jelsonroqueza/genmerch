@@ -3912,7 +3912,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
     }
   </style>
   <script src="/install-flow.js?v=20261030-1" defer></script>
-  <script src="/customer-account.js?v=20261030-6" defer></script>
+  <script src="/customer-account.js?v=20261030-7" defer></script>
 
 <style id="genmerch-seller-products-filter-and-border-polish">
   .seller-products-filter-toolbar{grid-template-columns:minmax(190px,1.7fr) minmax(120px,1fr) minmax(118px,.85fr) minmax(140px,1fr) auto minmax(130px,.78fr)}
@@ -8892,7 +8892,8 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       getName: placeName,
       getParentName: placeParentName,
       getPostalCodes,
-      normalize: normalizeAddressText
+      normalize: normalizeAddressText,
+      restoreContext: restoreAddressReferenceContext
     };
 
     function updateFlashDealsCountdown(){
