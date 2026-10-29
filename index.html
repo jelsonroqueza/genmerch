@@ -7627,7 +7627,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
             <img src="/assets/genmerch-cart-actual.webp?v=20261027-popup-logo" alt="GENMERCH logo" width="64" height="54">
           </span>
           <div class="customer-auth-brand-copy">
-            <span class="customer-auth-eyebrow">SUOT APPAREL · CUSTOMER ACCOUNT</span>
+            <span class="customer-auth-eyebrow" role="img" aria-label="GENMERCH"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span>
             <h2 id="customerAuthTitle">Welcome to GENMERCH</h2>
             <p id="customerAuthSubtitle">Sign in or create your customer account.</p>
           </div>
@@ -11612,7 +11612,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       nameInput.required=customerAuthMode==='signup';
       password.autocomplete=customerAuthMode==='signup'?'new-password':'current-password';
       submit.textContent=customerAuthMode==='signup'?'Create Account':'Sign In';
-      $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark">GENMERCH</span>';
+      $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span>';
       const subtitle=$('customerAuthSubtitle');
       if(subtitle)subtitle.textContent=customerAuthMode==='signup'
         ?'Create your account to shop with GENMERCH.'
@@ -11685,10 +11685,10 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       }
       if(signedIn){
         $('customerAuthIdentity').textContent=identity;
-        $('customerAuthTitle').innerHTML='Your <span class="customer-auth-wordmark">GENMERCH</span> Account';
+        $('customerAuthTitle').innerHTML='Your <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span> Account';
         $('customerAuthMessage').hidden=true;
       }else if(!$('customerAuthOverlay').classList.contains('open')||!customerAuthBusy){
-        $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark">GENMERCH</span>';
+        $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span>';
       }
       if(accountLabel&&signedIn&&window.matchMedia('(max-width: 600px)').matches)accountLabel.textContent=getCustomerAuthInitials(identity);
     }
@@ -17493,6 +17493,80 @@ main.container .catalog-search:focus-within {
 @media(prefers-reduced-motion:reduce){
   #productOverlay .product-swipe-hint{transition:none!important}
   #productOverlay #productGalleryMainImage{transition:none!important}
+}
+</style>
+
+
+<style id="genmerch-customer-auth-wordmark-fix-v1">
+/* Match the customer account branding to the GENMERCH header wordmark: dark GEN, red MERCH. */
+#customerAuthOverlay .customer-auth-eyebrow{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  max-width:100%!important;
+  margin:0 0 7px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#292929!important;
+  font-family:inherit!important;
+  font-size:clamp(.98rem,2.8vw,1.12rem)!important;
+  font-weight:950!important;
+  letter-spacing:-.045em!important;
+  line-height:1!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+}
+#customerAuthOverlay .customer-auth-wordmark{
+  display:inline-flex!important;
+  align-items:baseline!important;
+  gap:0!important;
+  white-space:nowrap!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  -webkit-background-clip:border-box!important;
+  background-clip:border-box!important;
+  color:inherit!important;
+  -webkit-text-fill-color:inherit!important;
+  filter:none!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+  letter-spacing:-.045em!important;
+}
+#customerAuthOverlay .customer-auth-word-gen{
+  color:#292929!important;
+  -webkit-text-fill-color:#292929!important;
+  background:transparent!important;
+  background-image:none!important;
+}
+#customerAuthOverlay .customer-auth-word-merch{
+  color:#f33430!important;
+  -webkit-text-fill-color:#f33430!important;
+  background:transparent!important;
+  background-image:none!important;
+}
+#customerAuthOverlay .customer-auth-head h2 .customer-auth-wordmark{
+  font-size:inherit!important;
+  letter-spacing:-.045em!important;
+}
+#customerAuthOverlay .customer-auth-head-brand{gap:7px!important}
+#customerAuthOverlay .customer-auth-brand-copy{width:100%!important;min-width:0!important;text-align:center!important}
+#customerAuthOverlay .customer-auth-head h2{
+  max-width:100%!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+@media(max-width:520px){
+  #customerAuthOverlay .customer-auth-eyebrow{font-size:1rem!important;margin-bottom:6px!important;letter-spacing:-.04em!important}
+  #customerAuthOverlay .customer-auth-head h2 .customer-auth-wordmark{letter-spacing:-.045em!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #customerAuthOverlay .customer-auth-wordmark{transition:none!important}
 }
 </style>
 
