@@ -78,16 +78,16 @@
         '<header class="gmca-header">' +
           '<div class="gmca-brand"><span class="gmca-brand-mark"><img src="/assets/genmerch-cart-actual.webp?v=20261030-account" alt="GENMERCH official logo" width="72" height="56"></span><div><span class="gmca-eyebrow">GENMERCH CUSTOMER ACCOUNT</span><h2 id="gmcaTitle">My GENMERCH Account</h2><p id="gmcaWelcome">Your profile, points and shopping activity.</p></div></div>' +
           '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
+          '<div class="gmca-section-switcher"><label for="gmcaSectionSelect">ACCOUNT SECTION</label><select id="gmcaSectionSelect" aria-label="Choose account section">' +
+            '<option value="overview">Overview</option>' +
+            '<option value="profile">My Profile</option>' +
+            '<option value="points">Loyalty Points</option>' +
+            '<option value="orders">My Orders</option>' +
+            '<option value="activity">Shopping Activity</option>' +
+            '<option value="addresses">Saved Addresses</option>' +
+            '<option value="landmarks">Default Landmarks</option>' +
+          '</select></div>' +
         '</header>' +
-        '<div class="gmca-tabs" role="tablist" aria-label="Account sections">' +
-          '<button type="button" role="tab" aria-selected="true" data-gmca-tab="overview">Overview</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="profile">My Profile</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="points">Loyalty Points</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="orders">My Orders</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="activity">Shopping Activity</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="addresses">Saved Addresses</button>' +
-          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="landmarks">Default Landmarks</button>' +
-        '</div>' +
         '<div class="gmca-content">' +
           '<div class="gmca-alert" id="gmcaAlert" role="status" aria-live="polite" hidden></div>' +
           '<div id="gmcaLoading" class="gmca-loading">Loading your account securely…</div>' +
@@ -104,8 +104,9 @@
     document.body.appendChild(overlay);
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) closeAccount();
-      const tab = event.target.closest('[data-gmca-tab]');
-      if (tab) switchTab(tab.getAttribute('data-gmca-tab'));
+    });
+    $('gmcaSectionSelect').addEventListener('change', (event) => {
+      switchTab(event.target.value);
     });
     $('gmcaClose').addEventListener('click', closeAccount);
     $('gmcaSignOut').addEventListener('click', signOut);
@@ -131,11 +132,7 @@
   function switchTab(tabName) {
     const valid = ['overview', 'profile', 'points', 'orders', 'activity', 'addresses', 'landmarks'];
     state.activeTab = valid.includes(tabName) ? tabName : 'overview';
-    document.querySelectorAll('[data-gmca-tab]').forEach((button) => {
-      const active = button.getAttribute('data-gmca-tab') === state.activeTab;
-      button.classList.toggle('active', active);
-      button.setAttribute('aria-selected', String(active));
-    });
+    if ($('gmcaSectionSelect')) $('gmcaSectionSelect').value = state.activeTab;
     document.querySelectorAll('[data-gmca-pane]').forEach((pane) => {
       pane.hidden = pane.getAttribute('data-gmca-pane') !== state.activeTab;
     });
