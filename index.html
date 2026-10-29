@@ -7677,6 +7677,10 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
               <p class="customer-auth-help" id="customerPasswordHelp">Use at least 6 characters.</p>
             </div>
 
+            <div class="customer-auth-forgot-row" id="customerAuthForgotRow">
+              <button type="button" class="customer-auth-forgot-link" id="customerAuthForgotPassword">Forgot password?</button>
+            </div>
+
             <button class="customer-auth-send customer-auth-submit" type="submit" id="customerPasswordSubmit">Sign In</button>
           </form>
 
@@ -7694,6 +7698,20 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
             <span>Continue using Google account</span>
           </button>
         </div>
+
+        <form id="customerPasswordRecoveryForm" class="customer-auth-form customer-auth-recovery-form" novalidate hidden>
+          <p class="customer-auth-recovery-intro">Create a new password to recover access to your GENMERCH account.</p>
+          <div class="customer-auth-field">
+            <label for="customerResetPassword">New Password</label>
+            <input id="customerResetPassword" name="new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Enter your new password" required>
+          </div>
+          <div class="customer-auth-field">
+            <label for="customerResetPasswordConfirm">Confirm New Password</label>
+            <input id="customerResetPasswordConfirm" name="confirm_new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Re-enter your new password" required>
+          </div>
+          <button class="customer-auth-send customer-auth-submit" type="submit" id="customerPasswordRecoverySubmit">Update Password</button>
+          <button class="customer-auth-recovery-cancel" type="button" id="customerPasswordRecoveryCancel">Back to Sign In</button>
+        </form>
 
         <div class="customer-auth-signed-in" id="customerAuthSignedIn" hidden>
           <div class="customer-auth-success-mark" aria-hidden="true">✓</div>
@@ -11356,6 +11374,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     let customerAuthSubscription = null;
     let customerAuthCurrentSession = null;
     let customerAuthBusy = false;
+    let customerAuthRecoveryMode = false;
     let customerAuthMode = 'signin';
     const CUSTOMER_GOOGLE_OAUTH_PENDING_KEY = 'genmerchGoogleOAuthPendingAt';
     const CUSTOMER_GOOGLE_OAUTH_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
@@ -11398,6 +11417,12 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     }
     function getCustomerAuthRedirectUrl(){
       return 'https://shopgenmerch.com/';
+    }
+    function isCustomerPasswordRecoveryCallbackUrl(){
+      const url=new URL(window.location.href);
+      return url.searchParams.get('type')==='recovery' ||
+        url.hash.includes('type=recovery') ||
+        url.hash.includes('genmerch-password-recovery');
     }
 
     // Native Google Sheets export uses a short-lived Google OAuth provider token.
@@ -11531,6 +11556,9 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         const result=customerAuthClient.auth.onAuthStateChange((event,session)=>{
           sellerCaptureGoogleSheetsSessionToken(event,session);
           updateCustomerAuthScreen(session);
+          if(event==='PASSWORD_RECOVERY'){
+            window.setTimeout(()=>openCustomerPasswordRecovery('Your reset link is verified. Choose a new password.','success'),0);
+          }
           if(event==='SIGNED_IN'&&session&&session.user&&typeof window.playGenmerchNotificationChime==='function'){
             const welcomeKey='welcome:'+String(session.user.id||'customer')+':'+String(session.expires_at||Date.now());
             window.setTimeout(()=>window.playGenmerchNotificationChime(welcomeKey,'welcome'),80);
@@ -11614,6 +11642,8 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       submit.textContent=customerAuthMode==='signup'?'Create Account':'Sign In';
       $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span>';
       const subtitle=$('customerAuthSubtitle');
+      const forgotRow=$('customerAuthForgotRow');
+      if(forgotRow)forgotRow.hidden=customerAuthMode!=='signin';
       if(subtitle)subtitle.textContent=customerAuthMode==='signup'
         ?'Create your account to shop with GENMERCH.'
         :'Sign in to your GENMERCH customer account.';
@@ -11690,9 +11720,51 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       }else if(!$('customerAuthOverlay').classList.contains('open')||!customerAuthBusy){
         $('customerAuthTitle').innerHTML='Welcome to <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span>';
       }
+      if(customerAuthRecoveryMode){
+        $('customerAuthMethods').hidden=true;
+        $('customerAuthSignedIn').hidden=true;
+        $('customerPasswordRecoveryForm').hidden=false;
+      }else{
+        $('customerPasswordRecoveryForm').hidden=true;
+      }
       if(accountLabel&&signedIn&&window.matchMedia('(max-width: 600px)').matches)accountLabel.textContent=getCustomerAuthInitials(identity);
     }
     window.addEventListener('resize',refreshCustomerAccountLabelForViewport,{passive:true});
+    function openCustomerPasswordRecovery(message='Your reset link is verified. Choose a new password.',type='success'){
+      customerAuthRecoveryMode=true;
+      const overlay=$('customerAuthOverlay');
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+      $('customerAuthMethods').hidden=true;
+      $('customerAuthSignedIn').hidden=true;
+      $('customerPasswordRecoveryForm').hidden=false;
+      $('customerAuthTitle').innerHTML='Reset your <span class="customer-auth-wordmark"><span class="customer-auth-word-gen">GEN</span><span class="customer-auth-word-merch">MERCH</span></span> password';
+      $('customerAuthSubtitle').textContent='Choose a new password for your account.';
+      $('customerResetPassword').value='';
+      $('customerResetPasswordConfirm').value='';
+      setCustomerAuthMessage(message,type);
+      window.setTimeout(()=>{const input=$('customerResetPassword');if(input&&!input.disabled)input.focus();},0);
+    }
+    async function cancelCustomerPasswordRecovery(){
+      if(customerAuthBusy)return;
+      let client=null;
+      try{
+        client=getCustomerAuthClient();
+        const result=await client.auth.signOut();
+        if(result.error)throw result.error;
+      }catch(error){
+        console.warn('GENMERCH password recovery session could not be closed cleanly.',error);
+      }
+      customerAuthRecoveryMode=false;
+      $('customerPasswordRecoveryForm').hidden=true;
+      $('customerAuthMethods').hidden=false;
+      updateCustomerAuthScreen(null);
+      setCustomerAuthMode('signin');
+      setCustomerAuthMessage('');
+      $('customerEmail').focus();
+    }
+    $('customerPasswordRecoveryCancel').addEventListener('click',cancelCustomerPasswordRecovery);
     function openCustomerAuth(){
       $('customerAuthOverlay').classList.add('open');
       $('customerAuthOverlay').setAttribute('aria-hidden','false');
@@ -11727,6 +11799,49 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       $('customerPasswordToggle').textContent=show?'Hide':'Show';
       $('customerPasswordToggle').setAttribute('aria-label',show?'Hide password':'Show password');
       $('customerPasswordToggle').setAttribute('aria-pressed',String(show));
+    });
+    $('customerAuthForgotPassword').addEventListener('click',async()=>{
+      if(customerAuthBusy)return;
+      const email=$('customerEmail').value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        setCustomerAuthMessage('Enter your email address first so we know where to send the reset link.','error');
+        $('customerEmail').focus();
+        return;
+      }
+      let client;
+      try{client=getCustomerAuthClient();}
+      catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
+      customerAuthBusy=true;
+      const button=$('customerAuthForgotPassword');
+      const originalLabel=button.textContent;
+      button.disabled=true;
+      button.textContent='Sending reset link…';
+      $('customerPasswordSubmit').disabled=true;
+      $('customerGoogleButton').disabled=true;
+      setCustomerAuthMessage('Requesting a secure password reset link…');
+      try{
+        const {error}=await client.auth.resetPasswordForEmail(email,{
+          redirectTo:getCustomerAuthRedirectUrl()+'#genmerch-password-recovery'
+        });
+        if(error)throw error;
+        setCustomerAuthMessage('If an account exists for this email, a password reset link has been sent. Check your inbox and spam folder.','success');
+      }catch(error){
+        const raw=String(error&&error.message||'Password reset could not be requested. Please try again.');
+        const normalized=raw.toLowerCase();
+        let message=customerAuthFriendlyError(error,'recovery');
+        if(normalized.includes('redirect')&&normalized.includes('url')){
+          message='Supabase blocked the reset redirect. In Authentication → URL Configuration, make sure https://shopgenmerch.com/ is an allowed redirect URL.';
+        }else if(normalized.includes('email rate limit')||normalized.includes('sending rate limit')){
+          message='Password-reset emails are temporarily rate-limited. Wait a little before trying again.';
+        }
+        setCustomerAuthMessage(message,'error');
+      }finally{
+        customerAuthBusy=false;
+        button.disabled=false;
+        button.textContent=originalLabel;
+        $('customerPasswordSubmit').disabled=false;
+        $('customerGoogleButton').disabled=false;
+      }
     });
     $('customerPasswordForm').addEventListener('submit',async event=>{
       event.preventDefault();
@@ -11812,6 +11927,61 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         submit.disabled=false;
         submit.textContent=originalLabel;
         $('customerGoogleButton').disabled=false;
+      }
+    });
+    $('customerPasswordRecoveryForm').addEventListener('submit',async event=>{
+      event.preventDefault();
+      if(customerAuthBusy)return;
+      const password=$('customerResetPassword').value;
+      const confirmation=$('customerResetPasswordConfirm').value;
+      if(password.length<6){
+        setCustomerAuthMessage('Your new password must be at least 6 characters.','error');
+        $('customerResetPassword').focus();
+        return;
+      }
+      if(password!==confirmation){
+        setCustomerAuthMessage('The passwords do not match. Please enter them again.','error');
+        $('customerResetPasswordConfirm').focus();
+        return;
+      }
+      let client;
+      try{client=getCustomerAuthClient();}
+      catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
+      customerAuthBusy=true;
+      const submit=$('customerPasswordRecoverySubmit');
+      submit.disabled=true;
+      submit.textContent='Updating password…';
+      $('customerPasswordRecoveryCancel').disabled=true;
+      setCustomerAuthMessage('Updating your GENMERCH password securely…');
+      try{
+        const result=await client.auth.updateUser({password});
+        if(result.error)throw result.error;
+        customerAuthRecoveryMode=false;
+        $('customerPasswordRecoveryForm').hidden=true;
+        $('customerAuthMethods').hidden=false;
+        $('customerResetPassword').value='';
+        $('customerResetPasswordConfirm').value='';
+        try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
+        let session=null;
+        try{
+          const sessionResult=await client.auth.getSession();
+          if(!sessionResult.error&&sessionResult.data)session=sessionResult.data.session||null;
+        }catch(_){}
+        updateCustomerAuthScreen(session);
+        if(session&&session.user){
+          closeCustomerAuth();
+          showToast('Your GENMERCH password was updated successfully.');
+        }else{
+          setCustomerAuthMode('signin');
+          setCustomerAuthMessage('Your password was updated successfully. Sign in with your new password.','success');
+        }
+      }catch(error){
+        setCustomerAuthMessage(customerAuthFriendlyError(error,'recovery'),'error');
+      }finally{
+        customerAuthBusy=false;
+        submit.disabled=false;
+        submit.textContent='Update Password';
+        $('customerPasswordRecoveryCancel').disabled=false;
       }
     });
     $('customerGoogleButton').addEventListener('click',async()=>{
@@ -12001,6 +12171,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     });
     function initializeCustomerAuth(){
       const callbackAtStart=isCustomerAuthCallbackUrl();
+      const recoveryCallbackAtStart=isCustomerPasswordRecoveryCallbackUrl();
       const callbackParams=new URLSearchParams(window.location.search);
       const callbackError=callbackParams.get('error_description')||callbackParams.get('error')||'';
       try{
@@ -12009,7 +12180,11 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
           if(error)throw error;
           const session=data&&data.session?data.session:null;
           updateCustomerAuthScreen(session);
-          if(callbackAtStart&&session){
+          if(recoveryCallbackAtStart&&session){
+            clearCustomerGoogleOAuthPending();
+            window.setTimeout(()=>openCustomerPasswordRecovery('Your reset link is verified. Choose a new password.','success'),0);
+            try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
+          }else if(callbackAtStart&&session){
             clearCustomerGoogleOAuthPending();
             // The SIGNED_IN auth event shows the success toast and clears callback parameters.
             try{window.history.replaceState({},document.title,getCustomerAuthRedirectUrl());}catch(_){}
@@ -17567,6 +17742,56 @@ main.container .catalog-search:focus-within {
 }
 @media(prefers-reduced-motion:reduce){
   #customerAuthOverlay .customer-auth-wordmark{transition:none!important}
+}
+</style>
+
+
+<style id="genmerch-customer-password-recovery-v1">
+/* Forgot-password and recovery forms use the same cream-glass account modal system. */
+#customerAuthOverlay .customer-auth-forgot-row{
+  display:flex!important;justify-content:flex-end!important;align-items:center!important;
+  margin:-5px 0 12px!important;min-height:20px!important;
+}
+#customerAuthOverlay .customer-auth-forgot-row[hidden],
+#customerAuthOverlay #customerPasswordRecoveryForm[hidden]{display:none!important}
+#customerAuthOverlay .customer-auth-forgot-link{
+  padding:3px 0!important;border:0!important;background:transparent!important;
+  color:#c93425!important;font:inherit!important;font-size:.76rem!important;
+  font-weight:850!important;text-decoration:none!important;cursor:pointer!important;
+}
+#customerAuthOverlay .customer-auth-forgot-link:hover{text-decoration:underline!important;color:#a9211a!important}
+#customerAuthOverlay .customer-auth-forgot-link:disabled{opacity:.62!important;cursor:wait!important}
+#customerAuthOverlay .customer-auth-recovery-form{
+  display:flex;flex-direction:column;gap:0;
+}
+#customerAuthOverlay .customer-auth-recovery-form[hidden]{display:none!important}
+#customerAuthOverlay .customer-auth-recovery-intro{
+  margin:0 0 17px!important;padding:12px 13px!important;
+  border:1px solid #f0d8c9!important;border-radius:10px!important;
+  background:linear-gradient(145deg,#fffaf6,#f8ece3)!important;
+  color:#6d5549!important;font-size:.82rem!important;line-height:1.5!important;
+}
+#customerAuthOverlay .customer-auth-recovery-form .customer-auth-field{margin:0 0 15px!important}
+#customerAuthOverlay .customer-auth-recovery-form input{
+  display:block;width:100%;min-width:0;
+}
+#customerAuthOverlay .customer-auth-recovery-cancel{
+  width:100%;min-height:43px;margin-top:10px;padding:10px 14px!important;
+  border:1px solid #e4d3c8!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#fffdfa,#f6ece5)!important;color:#654a3d!important;
+  font:inherit!important;font-size:.82rem!important;font-weight:850!important;
+  cursor:pointer;transition:background .18s ease,transform .18s ease;
+}
+#customerAuthOverlay .customer-auth-recovery-cancel:hover:not(:disabled){
+  background:#fff!important;transform:translateY(-1px);
+}
+#customerAuthOverlay .customer-auth-recovery-cancel:disabled{opacity:.6;cursor:wait}
+@media(max-width:520px){
+  #customerAuthOverlay .customer-auth-forgot-link{font-size:.74rem!important}
+  #customerAuthOverlay .customer-auth-recovery-intro{font-size:.78rem!important;padding:10px 11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #customerAuthOverlay .customer-auth-recovery-cancel{transition:none!important}
 }
 </style>
 
