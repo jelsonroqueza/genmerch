@@ -8,6 +8,8 @@
     orderItems: [],
     shipments: [],
     addresses: [],
+    landmarks: [],
+    openAfterLogin: false,
     wishlist: [],
     reviews: [],
     points: { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] },
@@ -74,7 +76,7 @@
     overlay.innerHTML =
       '<section class="gmca-modal" role="dialog" aria-modal="true" aria-labelledby="gmcaTitle">' +
         '<header class="gmca-header">' +
-          '<div class="gmca-brand"><span class="gmca-brand-mark">G</span><div><span class="gmca-eyebrow">GENMERCH CUSTOMER ACCOUNT</span><h2 id="gmcaTitle">My GENMERCH Account</h2><p id="gmcaWelcome">Your profile, points and shopping activity.</p></div></div>' +
+          '<div class="gmca-brand"><span class="gmca-brand-mark"><img src="/assets/genmerch-cart-actual.webp?v=20261030-account" alt="GENMERCH official logo" width="72" height="56"></span><div><span class="gmca-eyebrow">GENMERCH CUSTOMER ACCOUNT</span><h2 id="gmcaTitle">My GENMERCH Account</h2><p id="gmcaWelcome">Your profile, points and shopping activity.</p></div></div>' +
           '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
         '</header>' +
         '<div class="gmca-tabs" role="tablist" aria-label="Account sections">' +
@@ -83,6 +85,8 @@
           '<button type="button" role="tab" aria-selected="false" data-gmca-tab="points">Loyalty Points</button>' +
           '<button type="button" role="tab" aria-selected="false" data-gmca-tab="orders">My Orders</button>' +
           '<button type="button" role="tab" aria-selected="false" data-gmca-tab="activity">Shopping Activity</button>' +
+          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="addresses">Saved Addresses</button>' +
+          '<button type="button" role="tab" aria-selected="false" data-gmca-tab="landmarks">Default Landmarks</button>' +
         '</div>' +
         '<div class="gmca-content">' +
           '<div class="gmca-alert" id="gmcaAlert" role="status" aria-live="polite" hidden></div>' +
@@ -92,6 +96,8 @@
           '<section class="gmca-pane" data-gmca-pane="points" hidden></section>' +
           '<section class="gmca-pane" data-gmca-pane="orders" hidden></section>' +
           '<section class="gmca-pane" data-gmca-pane="activity" hidden></section>' +
+          '<section class="gmca-pane" data-gmca-pane="addresses" hidden></section>' +
+          '<section class="gmca-pane" data-gmca-pane="landmarks" hidden></section>' +
         '</div>' +
         '<footer class="gmca-footer"><span><span class="gmca-footer-lock">✓</span> Your account records are protected by your signed-in account permissions.</span><button type="button" id="gmcaSignOut" class="gmca-signout">Sign out</button></footer>' +
       '</section>';
@@ -123,7 +129,7 @@
   }
 
   function switchTab(tabName) {
-    const valid = ['overview', 'profile', 'points', 'orders', 'activity'];
+    const valid = ['overview', 'profile', 'points', 'orders', 'activity', 'addresses', 'landmarks'];
     state.activeTab = valid.includes(tabName) ? tabName : 'overview';
     document.querySelectorAll('[data-gmca-tab]').forEach((button) => {
       const active = button.getAttribute('data-gmca-tab') === state.activeTab;
@@ -138,6 +144,8 @@
     if (state.activeTab === 'activity') renderActivityPane();
     if (state.activeTab === 'profile') renderProfilePane();
     if (state.activeTab === 'overview') renderOverviewPane();
+    if (state.activeTab === 'addresses') renderAddressesPane();
+    if (state.activeTab === 'landmarks') renderLandmarksPane();
   }
 
   async function openAccount() {
@@ -147,6 +155,7 @@
       if (error) throw error;
       const session = data && data.session;
       if (!session || !session.user) {
+        state.openAfterLogin = true;
         if (typeof window.openCustomerAuth === 'function') window.openCustomerAuth();
         return;
       }
@@ -210,19 +219,22 @@
     showAlert('');
     const db = client();
     const userId = user.id;
-    const [profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult] = await Promise.all([
+    const [profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult] = await Promise.all([
       tryQuery(() => db.from('profiles').select('id,full_name,phone,created_at,updated_at').eq('id', userId).maybeSingle(), null),
       tryQuery(() => db.from('orders').select('id,order_number,status,payment_status,payment_method,subtotal,shipping_fee,discount_amount,total_amount,loyalty_points_redeemed,loyalty_points_discount,created_at,updated_at,receipt_email', { count: 'exact' }).eq('user_id', userId).order('created_at', { ascending: false }).limit(20), []),
-      tryQuery(() => db.from('customer_addresses').select('id,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
+      tryQuery(() => db.from('customer_addresses').select('id,address_label,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
       tryQuery(() => db.from('customer_wishlist').select('product_id,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
       tryQuery(() => db.from('product_reviews').select('id,product_id,order_id,rating,feedback,nickname,moderation_status,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
-      tryQuery(() => db.rpc('get_my_genmerch_loyalty_summary'), null)
+      tryQuery(() => db.rpc('get_my_genmerch_loyalty_summary'), null),
+      tryQuery(() => db.from('customer_default_landmarks').select('id,label,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), [])
     ]);
 
     state.profile = profileResult.data || null;
     state.orders = asArray(orderResult);
     state.orderCount = typeof orderResult.count === 'number' ? orderResult.count : state.orders.length;
     state.addresses = asArray(addressResult);
+    state.wishlist = asArray(wishlistResult);
+    state.landmarks = asArray(landmarksResult);
     state.reviews = asArray(reviewResult);
     state.points = pointsResult.data && typeof pointsResult.data === 'object'
       ? pointsResult.data
@@ -263,7 +275,8 @@
     $('gmcaLoading').hidden = true;
     renderAllPanes();
     renderCheckoutPoints();
-    if ([profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult].some((result) => result && result.error)) {
+    renderCheckoutAddressPicker();
+    if ([profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult].some((result) => result && result.error)) {
       showAlert('Some account information could not be loaded. Check your connection and tap Refresh account.', 'warning');
     }
     state.loading = false;
@@ -275,6 +288,8 @@
     renderPointsPane();
     renderOrdersPane();
     renderActivityPane();
+    renderAddressesPane();
+    renderLandmarksPane();
   }
 
   function renderOverviewPane() {
@@ -486,6 +501,553 @@
     $('gmcaActivityRefresh').addEventListener('click', loadAccountData);
   }
 
+  function renderAddressesPane() {
+    const pane = document.querySelector('[data-gmca-pane="addresses"]');
+    if (!pane) return;
+    const rows = state.addresses || [];
+    pane.innerHTML =
+      '<div class="gmca-pane-title"><div><h3>Saved Address Book</h3><p>Save delivery details once, then load them into checkout with one tap.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaAddressesRefresh">↻ Refresh</button></div>' +
+      '<details class="gmca-editor" id="gmcaAddressEditor"><summary id="gmcaAddressEditorSummary">＋ Add a saved address</summary>' +
+        '<form id="gmcaAddressForm" class="gmca-form gmca-address-form">' +
+          '<input id="gmcaAddressId" type="hidden">' +
+          '<label>Address label<input id="gmcaAddressLabel" maxlength="80" placeholder="Home, Work, Family" required></label>' +
+          '<label>Recipient full name<input id="gmcaAddressName" maxlength="160" autocomplete="name" required></label>' +
+          '<label>Mobile number<input id="gmcaAddressPhone" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX" required></label>' +
+          '<label>House / unit and street<input id="gmcaAddressStreet" maxlength="250" required></label>' +
+          '<label>Province<input id="gmcaAddressProvince" maxlength="150" required></label>' +
+          '<label>City / municipality<input id="gmcaAddressCity" maxlength="150" required></label>' +
+          '<label>Barangay<input id="gmcaAddressBarangay" maxlength="150" required></label>' +
+          '<label>Postal code<input id="gmcaAddressPostal" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="4 digits"></label>' +
+          '<label>Landmark / directions<input id="gmcaAddressLandmark" maxlength="250" placeholder="Nearby store, school, gate, etc."></label>' +
+          '<label>Delivery instructions<input id="gmcaAddressInstructions" maxlength="500" placeholder="Gate details or delivery notes"></label>' +
+          '<label class="gmca-check-label"><input type="checkbox" id="gmcaAddressDefault"> Set as my default delivery address</label>' +
+          '<div class="gmca-form-actions"><button type="submit" class="gmca-primary" id="gmcaAddressSave">Save address</button><button type="button" class="gmca-secondary" id="gmcaAddressCancel">Cancel</button><span id="gmcaAddressFeedback" role="status" aria-live="polite"></span></div>' +
+        '</form>' +
+      '</details>' +
+      (rows.length ? '<div class="gmca-address-grid">' + rows.map((address) =>
+        '<article class="gmca-address-book-card">' +
+          '<div class="gmca-address-card-top"><span class="gmca-address-icon" aria-hidden="true">⌂</span><div><h4>' + esc(address.address_label || 'Saved address') + '</h4>' +
+          (address.is_default ? '<span class="gmca-default-tag">DEFAULT ADDRESS</span>' : '') + '</div></div>' +
+          '<strong>' + esc(address.recipient_name) + '</strong><p>' + esc(address.phone) + '</p>' +
+          '<p>' + esc([address.street_address, address.barangay, address.city_municipality, address.province, address.postal_code].filter(Boolean).join(', ')) + '</p>' +
+          (address.landmark ? '<p class="gmca-address-extra"><span>Landmark</span>' + esc(address.landmark) + '</p>' : '') +
+          (address.delivery_instructions ? '<p class="gmca-address-extra"><span>Delivery notes</span>' + esc(address.delivery_instructions) + '</p>' : '') +
+          '<div class="gmca-address-actions"><button type="button" class="gmca-secondary" data-gmca-edit-address="' + esc(address.id) + '">Edit</button>' +
+          '<button type="button" class="gmca-secondary" data-gmca-use-address="' + esc(address.id) + '">Use at checkout</button>' +
+          (address.is_default ? '' : '<button type="button" class="gmca-secondary" data-gmca-default-address="' + esc(address.id) + '">Set default</button>') +
+          '<button type="button" class="gmca-danger" data-gmca-delete-address="' + esc(address.id) + '">Delete</button></div>' +
+        '</article>'
+      ).join('') + '</div>' :
+        '<div class="gmca-empty gmca-address-empty"><span>⌂</span><strong>No saved addresses yet</strong><p>After your first successful order, GENMERCH will save that delivery address to your address book automatically.</p></div>');
+    $('gmcaAddressesRefresh').addEventListener('click', loadAccountData);
+    $('gmcaAddressCancel').addEventListener('click', resetAddressEditor);
+    $('gmcaAddressForm').addEventListener('submit', (event) => { event.preventDefault(); saveAddress(); });
+    pane.querySelectorAll('[data-gmca-edit-address]').forEach((button) => button.addEventListener('click', () => editAddress(button.getAttribute('data-gmca-edit-address'))));
+    pane.querySelectorAll('[data-gmca-default-address]').forEach((button) => button.addEventListener('click', () => setDefaultAddress(button.getAttribute('data-gmca-default-address'))));
+    pane.querySelectorAll('[data-gmca-delete-address]').forEach((button) => button.addEventListener('click', () => deleteAddress(button.getAttribute('data-gmca-delete-address'))));
+    pane.querySelectorAll('[data-gmca-use-address]').forEach((button) => button.addEventListener('click', () => {
+      const address = rows.find((row) => String(row.id) === String(button.getAttribute('data-gmca-use-address')));
+      if (!address) return;
+      applyCheckoutAddress(address, true);
+      closeAccount();
+      if (typeof window.updateCart === 'function') window.updateCart();
+      const credit = $('gmcaCheckoutAddressFeedback');
+      if (credit) { credit.textContent = 'Saved address loaded into checkout.'; credit.className = 'gmca-checkout-feedback success'; }
+    }));
+  }
+
+  function resetAddressEditor() {
+    const form = $('gmcaAddressForm');
+    if (form) form.reset();
+    if ($('gmcaAddressId')) $('gmcaAddressId').value = '';
+    if ($('gmcaAddressLabel')) $('gmcaAddressLabel').value = '';
+    if ($('gmcaAddressEditorSummary')) $('gmcaAddressEditorSummary').textContent = '＋ Add a saved address';
+    if ($('gmcaAddressEditor')) $('gmcaAddressEditor').open = false;
+    if ($('gmcaAddressSave')) $('gmcaAddressSave').textContent = 'Save address';
+    if ($('gmcaAddressFeedback')) $('gmcaAddressFeedback').textContent = '';
+  }
+
+  function editAddress(id) {
+    const address = state.addresses.find((row) => String(row.id) === String(id));
+    if (!address) return;
+    const values = {
+      gmcaAddressId: address.id, gmcaAddressLabel: address.address_label || 'Saved address',
+      gmcaAddressName: address.recipient_name, gmcaAddressPhone: address.phone,
+      gmcaAddressStreet: address.street_address, gmcaAddressProvince: address.province,
+      gmcaAddressCity: address.city_municipality, gmcaAddressBarangay: address.barangay,
+      gmcaAddressPostal: address.postal_code, gmcaAddressLandmark: address.landmark,
+      gmcaAddressInstructions: address.delivery_instructions
+    };
+    Object.entries(values).forEach(([id, value]) => { if ($(id)) $(id).value = value == null ? '' : String(value); });
+    $('gmcaAddressDefault').checked = Boolean(address.is_default);
+    $('gmcaAddressEditor').open = true;
+    $('gmcaAddressEditorSummary').textContent = 'Edit saved address';
+    $('gmcaAddressSave').textContent = 'Update address';
+    $('gmcaAddressFeedback').textContent = '';
+    $('gmcaAddressEditor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function saveAddress() {
+    if (!state.session || !state.session.user) return;
+    const userId = state.session.user.id;
+    const id = String($('gmcaAddressId').value || '').trim();
+    const label = String($('gmcaAddressLabel').value || '').trim() || 'Saved address';
+    const recipient = String($('gmcaAddressName').value || '').trim();
+    const phone = String($('gmcaAddressPhone').value || '').trim();
+    const street = String($('gmcaAddressStreet').value || '').trim();
+    const province = String($('gmcaAddressProvince').value || '').trim();
+    const city = String($('gmcaAddressCity').value || '').trim();
+    const barangay = String($('gmcaAddressBarangay').value || '').trim();
+    const postal = String($('gmcaAddressPostal').value || '').trim();
+    const landmark = String($('gmcaAddressLandmark').value || '').trim();
+    const instructions = String($('gmcaAddressInstructions').value || '').trim();
+    const wantsDefault = $('gmcaAddressDefault').checked;
+    const feedback = $('gmcaAddressFeedback');
+    const save = $('gmcaAddressSave');
+    if (!recipient || !phone || !street || !province || !city || !barangay) {
+      feedback.textContent = 'Complete the recipient, phone and delivery address fields.';
+      feedback.className = 'error';
+      return;
+    }
+    if (postal && !/^\d{4}$/.test(postal)) {
+      feedback.textContent = 'Postal code must be 4 digits.';
+      feedback.className = 'error';
+      return;
+    }
+    if (!/^[0-9+() -]{7,20}$/.test(phone)) {
+      feedback.textContent = 'Check the mobile number format.';
+      feedback.className = 'error';
+      return;
+    }
+    const payload = {
+      user_id: userId, address_label: label, recipient_name: recipient, phone,
+      street_address: street, province, city_municipality: city, barangay,
+      postal_code: postal || null, landmark: landmark || null,
+      delivery_instructions: instructions || null, is_default: false
+    };
+    save.disabled = true;
+    save.textContent = 'Saving…';
+    feedback.textContent = '';
+    try {
+      const db = client();
+      let savedId = id;
+      if (id) {
+        const result = await db.from('customer_addresses').update(payload).eq('id', id).eq('user_id', userId).select('id').single();
+        if (result.error) throw result.error;
+        savedId = result.data.id;
+      } else {
+        const result = await db.from('customer_addresses').insert(payload).select('id').single();
+        if (result.error) throw result.error;
+        savedId = result.data.id;
+      }
+      if (wantsDefault) {
+        const clear = await db.from('customer_addresses').update({ is_default: false }).eq('user_id', userId);
+        if (clear.error) throw clear.error;
+        const set = await db.from('customer_addresses').update({ is_default: true }).eq('id', savedId).eq('user_id', userId);
+        if (set.error) throw set.error;
+      }
+      resetAddressEditor();
+      await loadAccountData();
+      switchTab('addresses');
+      showAlert('Saved address updated successfully.', 'success');
+    } catch (error) {
+      feedback.textContent = error.message || 'Could not save this address.';
+      feedback.className = 'error';
+    } finally {
+      save.disabled = false;
+      save.textContent = id ? 'Update address' : 'Save address';
+    }
+  }
+
+  async function setDefaultAddress(id) {
+    if (!state.session || !state.session.user) return;
+    try {
+      const db = client(), userId = state.session.user.id;
+      const clear = await db.from('customer_addresses').update({ is_default: false }).eq('user_id', userId);
+      if (clear.error) throw clear.error;
+      const set = await db.from('customer_addresses').update({ is_default: true }).eq('id', id).eq('user_id', userId);
+      if (set.error) throw set.error;
+      await loadAccountData();
+      switchTab('addresses');
+      showAlert('Default delivery address updated.', 'success');
+    } catch (error) {
+      showAlert(error.message || 'Could not set the default address.', 'error');
+    }
+  }
+
+  async function deleteAddress(id) {
+    if (!state.session || !state.session.user) return;
+    const address = state.addresses.find((row) => String(row.id) === String(id));
+    if (!address || !window.confirm('Delete "' + (address.address_label || 'this saved address') + '" from your address book?')) return;
+    try {
+      const result = await client().from('customer_addresses').delete().eq('id', id).eq('user_id', state.session.user.id);
+      if (result.error) throw result.error;
+      await loadAccountData();
+      switchTab('addresses');
+      showAlert('Saved address deleted.', 'success');
+    } catch (error) {
+      showAlert(error.message || 'Could not delete this address.', 'error');
+    }
+  }
+
+  function renderLandmarksPane() {
+    const pane = document.querySelector('[data-gmca-pane="landmarks"]');
+    if (!pane) return;
+    const rows = state.landmarks || [];
+    pane.innerHTML =
+      '<div class="gmca-pane-title"><div><h3>Default Landmarks</h3><p>Save frequently used directions and special delivery instructions for faster checkout.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksRefresh">↻ Refresh</button></div>' +
+      '<details class="gmca-editor" id="gmcaLandmarkEditor"><summary id="gmcaLandmarkEditorSummary">＋ Add a default landmark</summary>' +
+        '<form id="gmcaLandmarkForm" class="gmca-form gmca-landmark-form">' +
+          '<input id="gmcaLandmarkId" type="hidden">' +
+          '<label>Label<input id="gmcaLandmarkLabel" maxlength="80" placeholder="Home gate, Office, Subdivision" required></label>' +
+          '<label>Landmark / directions<input id="gmcaLandmarkValue" maxlength="250" placeholder="Near a known place or entrance" required></label>' +
+          '<label class="gmca-form-full">Special delivery instructions<textarea id="gmcaLandmarkInstructions" maxlength="500" required placeholder="Gate number, call on arrival, etc."></textarea></label>' +
+          '<label class="gmca-check-label"><input type="checkbox" id="gmcaLandmarkDefault"> Use as my default checkout landmark</label>' +
+          '<div class="gmca-form-actions"><button type="submit" class="gmca-primary" id="gmcaLandmarkSave">Save landmark</button><button type="button" class="gmca-secondary" id="gmcaLandmarkCancel">Cancel</button><span id="gmcaLandmarkFeedback" role="status" aria-live="polite"></span></div>' +
+        '</form>' +
+      '</details>' +
+      (rows.length ? '<div class="gmca-address-grid">' + rows.map((landmark) =>
+        '<article class="gmca-address-book-card gmca-landmark-card"><div class="gmca-address-card-top"><span class="gmca-address-icon" aria-hidden="true">⌖</span><div><h4>' + esc(landmark.label || 'Saved landmark') + '</h4>' +
+        (landmark.is_default ? '<span class="gmca-default-tag">DEFAULT LANDMARK</span>' : '') + '</div></div>' +
+        '<p>' + esc(landmark.landmark) + '</p><p class="gmca-address-extra"><span>Delivery notes</span>' + esc(landmark.delivery_instructions || 'N/A') + '</p>' +
+        '<div class="gmca-address-actions"><button type="button" class="gmca-secondary" data-gmca-edit-landmark="' + esc(landmark.id) + '">Edit</button>' +
+        (landmark.is_default ? '' : '<button type="button" class="gmca-secondary" data-gmca-default-landmark="' + esc(landmark.id) + '">Set default</button>') +
+        '<button type="button" class="gmca-danger" data-gmca-delete-landmark="' + esc(landmark.id) + '">Delete</button></div></article>'
+      ).join('') + '</div>' :
+        '<div class="gmca-empty gmca-address-empty"><span>⌖</span><strong>No saved landmarks yet</strong><p>GENMERCH can save your landmark and delivery instructions after you place an order.</p></div>');
+    $('gmcaLandmarksRefresh').addEventListener('click', loadAccountData);
+    $('gmcaLandmarkCancel').addEventListener('click', resetLandmarkEditor);
+    $('gmcaLandmarkForm').addEventListener('submit', (event) => { event.preventDefault(); saveLandmark(); });
+    pane.querySelectorAll('[data-gmca-edit-landmark]').forEach((button) => button.addEventListener('click', () => editLandmark(button.getAttribute('data-gmca-edit-landmark'))));
+    pane.querySelectorAll('[data-gmca-default-landmark]').forEach((button) => button.addEventListener('click', () => setDefaultLandmark(button.getAttribute('data-gmca-default-landmark'))));
+    pane.querySelectorAll('[data-gmca-delete-landmark]').forEach((button) => button.addEventListener('click', () => deleteLandmark(button.getAttribute('data-gmca-delete-landmark'))));
+  }
+
+  function resetLandmarkEditor() {
+    const form = $('gmcaLandmarkForm');
+    if (form) form.reset();
+    if ($('gmcaLandmarkId')) $('gmcaLandmarkId').value = '';
+    if ($('gmcaLandmarkEditorSummary')) $('gmcaLandmarkEditorSummary').textContent = '＋ Add a default landmark';
+    if ($('gmcaLandmarkEditor')) $('gmcaLandmarkEditor').open = false;
+    if ($('gmcaLandmarkSave')) $('gmcaLandmarkSave').textContent = 'Save landmark';
+    if ($('gmcaLandmarkFeedback')) $('gmcaLandmarkFeedback').textContent = '';
+  }
+
+  function editLandmark(id) {
+    const item = state.landmarks.find((row) => String(row.id) === String(id));
+    if (!item) return;
+    $('gmcaLandmarkId').value = item.id;
+    $('gmcaLandmarkLabel').value = item.label || '';
+    $('gmcaLandmarkValue').value = item.landmark || '';
+    $('gmcaLandmarkInstructions').value = item.delivery_instructions || 'N/A';
+    $('gmcaLandmarkDefault').checked = Boolean(item.is_default);
+    $('gmcaLandmarkEditor').open = true;
+    $('gmcaLandmarkEditorSummary').textContent = 'Edit saved landmark';
+    $('gmcaLandmarkSave').textContent = 'Update landmark';
+    $('gmcaLandmarkEditor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function saveLandmark() {
+    if (!state.session || !state.session.user) return;
+    const userId = state.session.user.id;
+    const id = String($('gmcaLandmarkId').value || '').trim();
+    const label = String($('gmcaLandmarkLabel').value || '').trim();
+    const landmark = String($('gmcaLandmarkValue').value || '').trim();
+    const instructions = String($('gmcaLandmarkInstructions').value || '').trim() || 'N/A';
+    const wantsDefault = $('gmcaLandmarkDefault').checked;
+    const feedback = $('gmcaLandmarkFeedback');
+    const button = $('gmcaLandmarkSave');
+    if (!label || !landmark || !instructions) {
+      feedback.textContent = 'Complete the landmark label, directions and delivery instructions.';
+      feedback.className = 'error';
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Saving…';
+    try {
+      const db = client();
+      const payload = { user_id: userId, label, landmark, delivery_instructions: instructions, is_default: false };
+      let savedId = id;
+      if (id) {
+        const result = await db.from('customer_default_landmarks').update(payload).eq('id', id).eq('user_id', userId).select('id').single();
+        if (result.error) throw result.error;
+        savedId = result.data.id;
+      } else {
+        const result = await db.from('customer_default_landmarks').insert(payload).select('id').single();
+        if (result.error) throw result.error;
+        savedId = result.data.id;
+      }
+      if (wantsDefault) {
+        const clear = await db.from('customer_default_landmarks').update({ is_default: false }).eq('user_id', userId);
+        if (clear.error) throw clear.error;
+        const set = await db.from('customer_default_landmarks').update({ is_default: true }).eq('id', savedId).eq('user_id', userId);
+        if (set.error) throw set.error;
+      }
+      resetLandmarkEditor();
+      await loadAccountData();
+      switchTab('landmarks');
+      showAlert('Default landmark saved successfully.', 'success');
+    } catch (error) {
+      feedback.textContent = error.message || 'Could not save this landmark.';
+      feedback.className = 'error';
+    } finally {
+      button.disabled = false;
+      button.textContent = id ? 'Update landmark' : 'Save landmark';
+    }
+  }
+
+  async function setDefaultLandmark(id) {
+    if (!state.session || !state.session.user) return;
+    try {
+      const db = client(), userId = state.session.user.id;
+      const clear = await db.from('customer_default_landmarks').update({ is_default: false }).eq('user_id', userId);
+      if (clear.error) throw clear.error;
+      const set = await db.from('customer_default_landmarks').update({ is_default: true }).eq('id', id).eq('user_id', userId);
+      if (set.error) throw set.error;
+      await loadAccountData();
+      switchTab('landmarks');
+      showAlert('Default landmark updated.', 'success');
+    } catch (error) {
+      showAlert(error.message || 'Could not set the default landmark.', 'error');
+    }
+  }
+
+  async function deleteLandmark(id) {
+    if (!state.session || !state.session.user) return;
+    const item = state.landmarks.find((row) => String(row.id) === String(id));
+    if (!item || !window.confirm('Delete "' + (item.label || 'this saved landmark') + '"?')) return;
+    try {
+      const result = await client().from('customer_default_landmarks').delete().eq('id', id).eq('user_id', state.session.user.id);
+      if (result.error) throw result.error;
+      await loadAccountData();
+      switchTab('landmarks');
+      showAlert('Saved landmark deleted.', 'success');
+    } catch (error) {
+      showAlert(error.message || 'Could not delete this landmark.', 'error');
+    }
+  }
+
+  function setCheckoutField(id, value, force) {
+    const field = $(id);
+    if (!field || value == null || String(value).trim() === '') return;
+    if (!force && String(field.value || '').trim()) return;
+    field.value = String(value);
+  }
+
+  function notifyCheckoutField(id) {
+    const field = $(id);
+    if (field) field.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function applyCheckoutAddress(address, force) {
+    if (!address) return;
+    const user = state.session && state.session.user;
+    const values = {
+      firstName: String(address.recipient_name || '').trim().split(/\s+/)[0] || '',
+      lastName: String(address.recipient_name || '').trim().split(/\s+/).slice(1).join(' '),
+      custPhone: address.phone,
+      streetAddress: address.street_address,
+      province: address.province,
+      city: address.city_municipality,
+      barangay: address.barangay,
+      postalCode: address.postal_code,
+      landmark: address.landmark,
+      specialInstructions: address.delivery_instructions
+    };
+    Object.entries(values).forEach(([id, value]) => setCheckoutField(id, value, Boolean(force)));
+    if (typeof window.syncCheckoutFullName === 'function') {
+      try { window.syncCheckoutFullName(); } catch (_) {}
+    } else if (typeof syncCheckoutFullName === 'function') {
+      try { syncCheckoutFullName(); } catch (_) {}
+    }
+    ['firstName','lastName','custPhone','streetAddress','province','city','barangay','postalCode','landmark','specialInstructions'].forEach(notifyCheckoutField);
+    if (typeof window.updateCart === 'function') window.updateCart();
+    const picker = $('gmcaCheckoutAddressFeedback');
+    if (picker) {
+      picker.textContent = 'Saved address loaded. Please confirm the delivery details before placing your order.';
+      picker.className = 'gmca-checkout-feedback success';
+    }
+  }
+
+  function ensureCheckoutAddressPicker() {
+    if ($('gmcaCheckoutAddressPicker')) return;
+    const form = $('checkoutForm');
+    const grid = form && form.querySelector('.checkout-grid');
+    if (!grid) return;
+    const section = document.createElement('section');
+    section.id = 'gmcaCheckoutAddressPicker';
+    section.className = 'gmca-checkout-address-picker';
+    section.innerHTML =
+      '<div class="gmca-checkout-address-heading"><div><strong>▣ Saved delivery details</strong><p id="gmcaCheckoutAddressHelp">Sign in to load your saved phone number and address.</p></div><button type="button" class="gmca-checkout-manage" id="gmcaCheckoutManageAddresses">Manage</button></div>' +
+      '<div class="gmca-checkout-address-controls"><select id="gmcaCheckoutAddressSelect" aria-label="Choose saved delivery address"><option value="">Use my default address</option></select><button type="button" class="gmca-primary gmca-checkout-use" id="gmcaCheckoutUseAddress">Use selected address</button></div>' +
+      '<p id="gmcaCheckoutAddressFeedback" class="gmca-checkout-feedback" role="status" aria-live="polite"></p>';
+    grid.insertAdjacentElement('afterend', section);
+    $('gmcaCheckoutUseAddress').addEventListener('click', () => {
+      const selectedId = $('gmcaCheckoutAddressSelect').value;
+      const address = state.addresses.find((row) => String(row.id) === String(selectedId)) ||
+        state.addresses.find((row) => row.is_default);
+      if (!address) {
+        const feedback = $('gmcaCheckoutAddressFeedback');
+        if (feedback) {
+          feedback.textContent = 'No saved address yet. Complete your first checkout while signed in and GENMERCH will save the details automatically.';
+          feedback.className = 'gmca-checkout-feedback';
+        }
+        return;
+      }
+      applyCheckoutAddress(address, true);
+    });
+    $('gmcaCheckoutManageAddresses').addEventListener('click', () => {
+      const session = state.session && state.session.user;
+      if (!session) {
+        if (typeof window.openCustomerAuth === 'function') window.openCustomerAuth();
+        return;
+      }
+      openAccount().then(() => switchTab('addresses'));
+    });
+    renderCheckoutAddressPicker();
+  }
+
+  function renderCheckoutAddressPicker() {
+    const select = $('gmcaCheckoutAddressSelect');
+    if (!select) return;
+    const rows = state.addresses || [];
+    const current = select.value;
+    select.innerHTML = '<option value="">Use my default address</option>' + rows.map((row) =>
+      '<option value="' + esc(row.id) + '">' + esc((row.is_default ? '★ Default · ' : '') + (row.address_label || 'Saved address') + ' — ' + [row.city_municipality, row.province].filter(Boolean).join(', ')) + '</option>'
+    ).join('');
+    if (rows.some((row) => String(row.id) === String(current))) select.value = current;
+    else {
+      const defaultAddress = rows.find((row) => row.is_default);
+      if (defaultAddress) select.value = String(defaultAddress.id);
+    }
+    const help = $('gmcaCheckoutAddressHelp');
+    if (help) help.textContent = rows.length
+      ? 'Your saved phone number and delivery details can be loaded here. Please review before ordering.'
+      : 'Your successful order will be saved to your address book automatically.';
+  }
+
+  async function loadCheckoutDetails() {
+    const session = state.session;
+    if (!session || !session.user) {
+      state.addresses = [];
+      state.landmarks = [];
+      renderCheckoutAddressPicker();
+      return;
+    }
+    const db = client();
+    const userId = session.user.id;
+    const [profileResult, addressesResult, landmarksResult] = await Promise.all([
+      tryQuery(() => db.from('profiles').select('id,full_name,phone').eq('id', userId).maybeSingle(), null),
+      tryQuery(() => db.from('customer_addresses').select('id,address_label,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
+      tryQuery(() => db.from('customer_default_landmarks').select('id,label,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), [])
+    ]);
+    const profile = profileResult.data || null;
+    state.addresses = asArray(addressesResult);
+    state.landmarks = asArray(landmarksResult);
+    const name = currentUserName(session.user, profile);
+    if (name) {
+      setCheckoutField('firstName', name.split(/\s+/)[0], false);
+      setCheckoutField('lastName', name.split(/\s+/).slice(1).join(' '), false);
+      if (typeof window.syncCheckoutFullName === 'function') {
+        try { window.syncCheckoutFullName(); } catch (_) {}
+      } else if (typeof syncCheckoutFullName === 'function') {
+        try { syncCheckoutFullName(); } catch (_) {}
+      }
+    }
+    setCheckoutField('custPhone', profile && profile.phone ? profile.phone : (session.user.phone || ''), false);
+    const defaultAddress = state.addresses.find((address) => address.is_default);
+    if (defaultAddress) applyCheckoutAddress(defaultAddress, false);
+    const defaultLandmark = state.landmarks.find((item) => item.is_default);
+    if (defaultLandmark) {
+      setCheckoutField('landmark', defaultLandmark.landmark, false);
+      setCheckoutField('specialInstructions', defaultLandmark.delivery_instructions, false);
+      notifyCheckoutField('landmark');
+      notifyCheckoutField('specialInstructions');
+    }
+    renderCheckoutAddressPicker();
+  }
+
+  async function saveUsedCheckoutAddress(requestPayload) {
+    try {
+      const auth = await client().auth.getSession();
+      if (auth.error) throw auth.error;
+      const session = auth.data && auth.data.session;
+      if (!session || !session.user || !requestPayload) return false;
+      const db = client();
+      const userId = session.user.id;
+      const address = {
+        user_id: userId,
+        address_label: 'Saved address',
+        recipient_name: String(requestPayload.customer_name || '').trim(),
+        phone: String(requestPayload.customer_phone || '').trim(),
+        province: String(requestPayload.shipping_province || '').trim(),
+        city_municipality: String(requestPayload.shipping_city_municipality || '').trim(),
+        barangay: String(requestPayload.shipping_barangay || '').trim(),
+        postal_code: String(requestPayload.shipping_postal_code || '').trim() || null,
+        street_address: String(requestPayload.shipping_street_address || '').trim(),
+        landmark: String(requestPayload.shipping_landmark || '').trim() || null,
+        delivery_instructions: String(requestPayload.delivery_instructions || '').trim() || null,
+        is_default: false
+      };
+      if (!address.recipient_name || !address.phone || !address.province || !address.city_municipality || !address.barangay || !address.street_address) return false;
+
+      const [matchedResult, defaultResult, profileResult] = await Promise.all([
+        tryQuery(() => db.from('customer_addresses').select('id,address_label,is_default').eq('user_id', userId).eq('street_address', address.street_address).eq('barangay', address.barangay).eq('city_municipality', address.city_municipality).eq('province', address.province).eq('postal_code', address.postal_code).limit(1).maybeSingle(), null),
+        tryQuery(() => db.from('customer_addresses').select('id').eq('user_id', userId).eq('is_default', true).limit(1).maybeSingle(), null),
+        tryQuery(() => db.from('profiles').select('id,full_name,phone').eq('id', userId).maybeSingle(), null)
+      ]);
+      const matched = matchedResult.data || null;
+      if (matched) {
+        const update = await db.from('customer_addresses').update({
+          recipient_name: address.recipient_name, phone: address.phone,
+          landmark: address.landmark, delivery_instructions: address.delivery_instructions,
+          updated_at: new Date().toISOString()
+        }).eq('id', matched.id).eq('user_id', userId);
+        if (update.error) throw update.error;
+      } else {
+        address.address_label = defaultResult.data ? 'Saved address' : 'Home';
+        address.is_default = !defaultResult.data;
+        const insert = await db.from('customer_addresses').insert(address);
+        if (insert.error) throw insert.error;
+      }
+
+      const profile = profileResult.data || null;
+      const profilePatch = { id: userId };
+      if (!profile || !String(profile.full_name || '').trim()) profilePatch.full_name = address.recipient_name;
+      if (!profile || !String(profile.phone || '').trim()) profilePatch.phone = address.phone;
+      if (Object.keys(profilePatch).length > 1) {
+        const profileSave = await db.from('profiles').upsert(profilePatch, { onConflict: 'id' });
+        if (profileSave.error) console.warn('GENMERCH saved the address but could not update the profile phone/name:', profileSave.error.message);
+      }
+
+      const landmarkText = String(address.landmark || '').trim();
+      const instructionsText = String(address.delivery_instructions || '').trim() || 'N/A';
+      if (landmarkText && !/^n\/?a$/i.test(landmarkText)) {
+        const [savedLandmarkResult, defaultLandmarkResult] = await Promise.all([
+          tryQuery(() => db.from('customer_default_landmarks').select('id,is_default').eq('user_id', userId).eq('landmark', landmarkText).eq('delivery_instructions', instructionsText).limit(1).maybeSingle(), null),
+          tryQuery(() => db.from('customer_default_landmarks').select('id').eq('user_id', userId).eq('is_default', true).limit(1).maybeSingle(), null)
+        ]);
+        if (!savedLandmarkResult.data) {
+          const insertLandmark = await db.from('customer_default_landmarks').insert({
+            user_id: userId,
+            label: defaultLandmarkResult.data ? 'Saved landmark' : 'Default landmark',
+            landmark: landmarkText,
+            delivery_instructions: instructionsText,
+            is_default: !defaultLandmarkResult.data
+          });
+          if (insertLandmark.error) throw insertLandmark.error;
+        }
+      }
+      state.session = session;
+      await loadCheckoutDetails();
+      if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) await loadAccountData();
+      return true;
+    } catch (error) {
+      console.warn('GENMERCH could not auto-save this completed order address:', error && error.message ? error.message : error);
+      return false;
+    }
+  }
+
   function getCartSubtotal() {
     try {
       if (typeof cart !== 'undefined' && Array.isArray(cart)) {
@@ -597,6 +1159,8 @@
         state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
       }
       state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
+      if (state.session && state.session.user) await loadCheckoutDetails();
+      else { state.addresses = []; state.landmarks = []; renderCheckoutAddressPicker(); }
       renderCheckoutPoints();
       if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) await loadAccountData();
     } catch (error) {
@@ -630,10 +1194,12 @@
   window.closeGenmerchCustomerAccount = closeAccount;
   window.genmerchSelectedLoyaltyPoints = 0;
   window.genmerchRefreshLoyaltyPoints = refreshPointsBalance;
+  window.genmerchSaveUsedCheckoutAddress = saveUsedCheckoutAddress;
 
   document.addEventListener('DOMContentLoaded', () => {
     ensureModal();
     ensureCheckoutPoints();
+    ensureCheckoutAddressPicker();
     state.baseCheckoutTotal = $('finalTotalText') ? $('finalTotalText').textContent.trim() : '';
     installUpdateCartHook();
     renderCheckoutPoints();
@@ -651,6 +1217,7 @@
             renderCheckoutPoints();
           } else if (session && session.user) {
             await refreshPointsBalance();
+            if (state.openAfterLogin) { state.openAfterLogin = false; await openAccount(); }
           }
         }, 0);
       });
@@ -659,6 +1226,7 @@
     }
 
     window.addEventListener('genmerch:loyalty-updated', refreshPointsBalance);
+    window.addEventListener('genmerch:customer-address-saved', loadCheckoutDetails);
     refreshPointsBalance();
   });
 })();
