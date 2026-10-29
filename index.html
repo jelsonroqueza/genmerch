@@ -7652,7 +7652,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
           </div>
         </div>
         <div id="customerAuthMethods">
-          <div class="customer-auth-tabs" role="tablist" aria-label="Customer account options">
+          <div class="customer-auth-tabs" id="customerAuthTabs" role="tablist" aria-label="Customer account options">
             <button class="customer-auth-tab active" type="button" id="customerAuthSignInTab" role="tab" aria-selected="true" aria-controls="customerPasswordForm">Sign In</button>
             <button class="customer-auth-tab" type="button" id="customerAuthCreateTab" role="tab" aria-selected="false" aria-controls="customerPasswordForm">Create Account</button>
           </div>
@@ -7668,7 +7668,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
               <input id="customerEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
             </div>
 
-            <div class="customer-auth-field">
+            <div class="customer-auth-field" id="customerPasswordField">
               <label for="customerPassword">Password</label>
               <div class="customer-auth-password-wrap">
                 <input id="customerPassword" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="128" placeholder="Enter your password" required>
@@ -7682,9 +7682,10 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
             </div>
 
             <button class="customer-auth-send customer-auth-submit" type="submit" id="customerPasswordSubmit">Sign In</button>
+            <button class="customer-auth-recovery-cancel" type="button" id="customerForgotBackButton" hidden>Back to Sign In</button>
           </form>
 
-          <div class="customer-auth-divider"><span>OR</span></div>
+          <div class="customer-auth-divider" id="customerAuthDivider"><span>OR</span></div>
 
           <button class="customer-auth-google" type="button" id="customerGoogleButton">
             <span class="customer-google-g" aria-hidden="true">
@@ -11375,6 +11376,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     let customerAuthCurrentSession = null;
     let customerAuthBusy = false;
     let customerAuthRecoveryMode = false;
+    let customerAuthForgotMode = false;
     let customerAuthMode = 'signin';
     const CUSTOMER_GOOGLE_OAUTH_PENDING_KEY = 'genmerchGoogleOAuthPendingAt';
     const CUSTOMER_GOOGLE_OAUTH_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
@@ -11626,12 +11628,19 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     }
     function setCustomerAuthMode(mode){
       customerAuthMode=mode==='signup'?'signup':'signin';
+      customerAuthForgotMode=false;
       const signIn=$('customerAuthSignInTab');
       const create=$('customerAuthCreateTab');
       const nameField=$('customerFullNameField');
       const nameInput=$('customerFullName');
       const password=$('customerPassword');
       const submit=$('customerPasswordSubmit');
+      $('customerAuthTabs').hidden=false;
+      $('customerPasswordField').hidden=false;
+      $('customerAuthDivider').hidden=false;
+      $('customerGoogleButton').hidden=false;
+      $('customerForgotBackButton').hidden=true;
+      password.required=true;
       signIn.classList.toggle('active',customerAuthMode==='signin');
       create.classList.toggle('active',customerAuthMode==='signup');
       signIn.setAttribute('aria-selected',String(customerAuthMode==='signin'));
@@ -11800,11 +11809,11 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       $('customerPasswordToggle').setAttribute('aria-label',show?'Hide password':'Show password');
       $('customerPasswordToggle').setAttribute('aria-pressed',String(show));
     });
-    $('customerAuthForgotPassword').addEventListener('click',async()=>{
+    async function submitCustomerForgotPassword(){
       if(customerAuthBusy)return;
       const email=$('customerEmail').value.trim();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-        setCustomerAuthMessage('Enter your email address first so we know where to send the reset link.','error');
+        setCustomerAuthMessage('Enter a valid email address.','error');
         $('customerEmail').focus();
         return;
       }
@@ -11812,12 +11821,11 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       try{client=getCustomerAuthClient();}
       catch(error){setCustomerAuthMessage(error.message||'The sign-in service is unavailable.','error');return;}
       customerAuthBusy=true;
-      const button=$('customerAuthForgotPassword');
-      const originalLabel=button.textContent;
-      button.disabled=true;
-      button.textContent='Sending reset link…';
-      $('customerPasswordSubmit').disabled=true;
-      $('customerGoogleButton').disabled=true;
+      const submit=$('customerPasswordSubmit');
+      const back=$('customerForgotBackButton');
+      submit.disabled=true;
+      back.disabled=true;
+      submit.textContent='Sending reset link…';
       setCustomerAuthMessage('Requesting a secure password reset link…');
       try{
         const {error}=await client.auth.resetPasswordForEmail(email,{
@@ -11837,15 +11845,39 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         setCustomerAuthMessage(message,'error');
       }finally{
         customerAuthBusy=false;
-        button.disabled=false;
-        button.textContent=originalLabel;
-        $('customerPasswordSubmit').disabled=false;
-        $('customerGoogleButton').disabled=false;
+        submit.disabled=false;
+        submit.textContent='Send Reset Link';
+        back.disabled=false;
       }
+    }
+    $('customerAuthForgotPassword').addEventListener('click',()=>{
+      if(customerAuthBusy)return;
+      setCustomerAuthMode('signin');
+      customerAuthForgotMode=true;
+      $('customerAuthTabs').hidden=true;
+      $('customerPasswordField').hidden=true;
+      $('customerPassword').required=false;
+      $('customerPassword').value='';
+      $('customerAuthDivider').hidden=true;
+      $('customerGoogleButton').hidden=true;
+      $('customerAuthForgotRow').hidden=true;
+      $('customerForgotBackButton').hidden=false;
+      $('customerPasswordSubmit').textContent='Send Reset Link';
+      $('customerAuthTitle').textContent='Forgot your password?';
+      $('customerAuthSubtitle').textContent='Enter the email address for your GENMERCH account. We’ll send a secure reset link.';
+      setCustomerAuthMessage('');
+      $('customerEmail').focus();
+    });
+    $('customerForgotBackButton').addEventListener('click',()=>{
+      if(customerAuthBusy)return;
+      setCustomerAuthMode('signin');
+      $('customerPassword').value='';
+      $('customerEmail').focus();
     });
     $('customerPasswordForm').addEventListener('submit',async event=>{
       event.preventDefault();
       if(customerAuthBusy)return;
+      if(customerAuthForgotMode){await submitCustomerForgotPassword();return;}
       const email=$('customerEmail').value.trim();
       const password=$('customerPassword').value;
       const fullName=$('customerFullName').value.trim();
@@ -17795,5 +17827,12 @@ main.container .catalog-search:focus-within {
 }
 </style>
 
+<style id="genmerch-forgot-password-email-only-v1">
+  #customerAuthOverlay #customerAuthTabs[hidden],
+  #customerAuthOverlay #customerPasswordField[hidden],
+  #customerAuthOverlay #customerAuthDivider[hidden],
+  #customerAuthOverlay #customerGoogleButton[hidden],
+  #customerAuthOverlay #customerForgotBackButton[hidden]{display:none!important;}
+</style>
 </body>
 </html>
