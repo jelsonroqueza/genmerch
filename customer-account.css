@@ -16,6 +16,7 @@
 .gmca-loading{padding:56px 16px;text-align:center;color:#72665e;font-size:.9rem}
 .gmca-alert{margin-bottom:14px;padding:11px 13px;border-radius:10px;background:#fff4d9;color:#795b16;font-size:.84rem;line-height:1.45}
 .gmca-alert.error{background:#fff0ee;color:#9e2f20}
+.gmca-alert.success{background:#e8f8ed;color:#176b36}
 .gmca-alert[hidden],.gmca-loading[hidden],.gmca-pane[hidden]{display:none!important}
 .gmca-welcome-card{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border:1px solid #f1d0c3;border-radius:17px;background:linear-gradient(120deg,#fff1e8,#fffaf6 65%,#ffede4)}
 .gmca-welcome-card h3{margin:5px 0 6px;font-size:1.5rem;line-height:1.2;font-weight:950;color:#2d211b}
