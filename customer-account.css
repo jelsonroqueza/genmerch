@@ -338,3 +338,85 @@
  .gmca-address-actions button{flex:1 1 42%}
 }
 @media(prefers-reduced-motion:reduce){.gmca-metric,.gmca-primary{transition:none}}
+
+
+/* Compact, non-sticky account shell: one natural scroll surface across devices */
+.gmca-overlay{align-items:center;padding:clamp(8px,1.2vw,18px);overflow:hidden}
+.gmca-modal{display:block;width:min(1240px,100%);max-height:min(94dvh,980px);height:auto;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;scrollbar-gutter:stable;border-radius:20px}
+.gmca-header{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(225px,285px);align-items:center;gap:12px 16px;padding:16px 20px;background:radial-gradient(ellipse at 82% 10%,rgba(255,111,26,.22),transparent 38%),linear-gradient(125deg,#070809 0%,#161719 58%,#2a1308 100%);position:static}
+.gmca-brand{grid-column:1;min-width:0}
+.gmca-brand-mark{flex-basis:64px;width:64px;height:52px}
+.gmca-header h2{font-size:clamp(1.08rem,1.8vw,1.45rem);overflow-wrap:anywhere}
+.gmca-header p{font-size:.79rem}
+.gmca-close{grid-column:2;grid-row:1;width:38px;height:38px}
+.gmca-section-switcher{grid-column:3;grid-row:1;display:grid;grid-template-columns:1fr;gap:5px;min-width:0;align-self:center}
+.gmca-section-switcher label{color:#ffab67;font-size:.64rem;font-weight:950;letter-spacing:.1em}
+.gmca-section-switcher select{display:block;width:100%;min-width:0;min-height:42px;padding:8px 35px 8px 12px;border:1px solid #8c4c23;border-radius:11px;background:linear-gradient(180deg,#292a2c,#151618);color:#fff;font:inherit;font-size:.81rem;font-weight:850;box-shadow:0 4px 10px #0005,inset 0 1px 0 #ffffff17;cursor:pointer}
+.gmca-section-switcher select:focus-visible{outline:3px solid #ff9b43;outline-offset:3px}
+.gmca-content{padding:clamp(13px,2vw,22px);overflow:visible;min-height:0;height:auto;overscroll-behavior:initial}
+.gmca-pane{min-width:0}
+.gmca-footer{position:static;display:flex;flex-wrap:wrap;min-height:0;padding:12px 20px;background:#0b0c0e;border-top:1px solid #3a2d24}
+.gmca-section-card,.gmca-order-card,.gmca-address-book-card,.gmca-metric,.gmca-welcome-card{min-width:0}
+.gmca-overview-bottom{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gmca-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gmca-pane-title{flex-wrap:wrap}
+.gmca-section-heading{flex-wrap:wrap}
+.gmca-form input,.gmca-form textarea,.gmca-form select,.gmca-section-switcher select{max-width:100%}
+.gmca-modal::-webkit-scrollbar{width:10px}
+.gmca-modal::-webkit-scrollbar-track{background:#111214}
+.gmca-modal::-webkit-scrollbar-thumb{border:2px solid #111214;border-radius:999px;background:linear-gradient(180deg,#ff9b43,#dc4a00)}
+@media(max-width:900px){
+ .gmca-modal{width:min(100%,820px)}
+ .gmca-header{grid-template-columns:minmax(0,1fr) auto}
+ .gmca-brand{grid-column:1;grid-row:1}
+ .gmca-close{grid-column:2;grid-row:1}
+ .gmca-section-switcher{grid-column:1/-1;grid-row:2;grid-template-columns:112px minmax(0,1fr);align-items:center;gap:10px;padding-top:10px;border-top:1px solid rgba(255,123,35,.26)}
+ .gmca-section-switcher label{font-size:.62rem}
+ .gmca-section-switcher select{min-height:40px}
+ .gmca-content{padding:14px}
+}
+@media(max-width:760px){
+ .gmca-overlay{display:none;align-items:stretch;padding:0}
+ .gmca-overlay.open{display:flex}
+ .gmca-modal{width:100%;max-width:none;height:100dvh;max-height:100dvh;min-height:100dvh;border-radius:0;border:0;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:auto}
+ .gmca-header{padding:13px 13px 12px;gap:10px}
+ .gmca-brand{gap:9px}
+ .gmca-brand-mark{flex-basis:48px;width:48px;height:42px;padding:3px;border-radius:10px}
+ .gmca-eyebrow{font-size:.56rem;letter-spacing:.07em}
+ .gmca-header h2{font-size:1.03rem;line-height:1.2}
+ .gmca-header p{font-size:.7rem;line-height:1.35}
+ .gmca-close{width:34px;height:34px;min-width:34px;min-height:34px;font-size:1.35rem}
+ .gmca-section-switcher{grid-template-columns:86px minmax(0,1fr);gap:8px;padding-top:9px}
+ .gmca-section-switcher select{font-size:.78rem;min-height:39px}
+ .gmca-content{padding:12px 11px 16px}
+ .gmca-footer{padding:10px 12px;font-size:.66rem;gap:8px}
+ .gmca-overview-bottom{grid-template-columns:1fr;gap:0}
+ .gmca-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .gmca-metric{padding:12px}
+ .gmca-metric strong{font-size:1.35rem}
+ .gmca-section-card{padding:13px;margin-top:11px}
+ .gmca-welcome-card{padding:15px;gap:9px}
+ .gmca-welcome-card h3{font-size:1.28rem}
+ .gmca-welcome-card p{font-size:.81rem}
+ .gmca-welcome-icon{flex-basis:38px;width:38px;height:38px;border-radius:12px;font-size:1.3rem}
+ .gmca-order-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gmca-form{grid-template-columns:1fr;padding:13px;gap:12px}
+ .gmca-form-actions{grid-column:auto;align-items:flex-start}
+ .gmca-address-grid{grid-template-columns:1fr}
+ .gmca-editor .gmca-form{grid-template-columns:1fr}
+ .gmca-form-full,.gmca-check-label{grid-column:auto}
+}
+@media(max-width:400px){
+ .gmca-header{padding:11px 10px}
+ .gmca-brand-mark{flex-basis:41px;width:41px;height:38px}
+ .gmca-header h2{font-size:.94rem}
+ .gmca-header p{font-size:.66rem}
+ .gmca-section-switcher{grid-template-columns:72px minmax(0,1fr);gap:6px}
+ .gmca-section-switcher select{padding:7px 27px 7px 9px;font-size:.73rem}
+ .gmca-content{padding:10px 9px 14px}
+ .gmca-metric{padding:10px}
+ .gmca-metric span{font-size:.57rem}
+ .gmca-metric strong{font-size:1.25rem}
+ .gmca-footer{align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){.gmca-modal{scroll-behavior:auto}}
