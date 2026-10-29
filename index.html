@@ -11812,31 +11812,28 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       if(!input||!toggle||toggle.dataset.passwordRevealBound==='true')return;
       toggle.dataset.passwordRevealBound='true';
       const toggleVisibility=(event)=>{
-        event.preventDefault();
-        event.stopPropagation();
+        if(event){event.preventDefault();event.stopPropagation();}
         const show=input.type==='password';
         input.type=show?'text':'password';
         toggle.textContent=show?'Hide':'Show';
         toggle.setAttribute('aria-label',show?hiddenLabel:shownLabel);
         toggle.setAttribute('aria-pressed',String(show));
       };
-      toggle.addEventListener('click',toggleVisibility);
-      toggle.addEventListener('keydown',event=>{
-        if(event.key===' '){
-          event.preventDefault();
-        }
+      // Toggle immediately on pointer press so mobile taps don't depend on a delayed synthetic click.
+      toggle.addEventListener('pointerdown',event=>{
+        if(event.pointerType==='mouse'&&event.button!==0)return;
+        toggleVisibility(event);
+      });
+      // Keep keyboard and assistive-technology activation working; ignore pointer-generated clicks
+      // because those were already handled on pointerdown.
+      toggle.addEventListener('click',event=>{
+        if(event.detail!==0){event.preventDefault();event.stopPropagation();return;}
+        toggleVisibility(event);
       });
     }
+    bindCustomerPasswordReveal('customerPassword','customerPasswordToggle','Show password','Hide password');
     bindCustomerPasswordReveal('customerResetPassword','customerResetPasswordToggle','Show new password','Hide new password');
     bindCustomerPasswordReveal('customerResetPasswordConfirm','customerResetPasswordConfirmToggle','Show confirmation password','Hide confirmation password');
-    $('customerPasswordToggle').addEventListener('click',()=>{
-      const input=$('customerPassword');
-      const show=input.type==='password';
-      input.type=show?'text':'password';
-      $('customerPasswordToggle').textContent=show?'Hide':'Show';
-      $('customerPasswordToggle').setAttribute('aria-label',show?'Hide password':'Show password');
-      $('customerPasswordToggle').setAttribute('aria-pressed',String(show));
-    });
     async function submitCustomerForgotPassword(){
       if(customerAuthBusy)return;
       const email=$('customerEmail').value.trim();
