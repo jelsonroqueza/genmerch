@@ -6034,6 +6034,82 @@ html.genmerch-initial-loading body{overflow:hidden!important}
     }
   </style>
 
+<style id="genmerch-footer-3d-depth-80">
+/* 80%-strength 3D treatment for the About Us and Partner With Us cards. */
+footer .footer-details-grid{
+  perspective:1200px!important;
+  perspective-origin:50% 28%!important;
+  transform-style:preserve-3d!important;
+}
+footer .footer-info-card{
+  position:relative!important;
+  isolation:isolate!important;
+  transform-style:preserve-3d!important;
+  backface-visibility:hidden!important;
+  transform:perspective(1200px) rotateX(3deg) translateZ(0)!important;
+  border:1px solid rgba(224,190,171,.98)!important;
+  border-bottom:4px solid rgba(205,157,130,.94)!important;
+  box-shadow:0 7px 0 rgba(194,150,124,.5),0 18px 30px rgba(57,35,24,.18),inset 0 1px 0 rgba(255,255,255,.98)!important;
+  transition:transform .32s cubic-bezier(.2,.75,.25,1),box-shadow .32s ease!important;
+}
+footer .footer-info-card::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:-1!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  pointer-events:none!important;
+  transform:translateZ(-18px) translateY(7px)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,216,202,.48))!important;
+  box-shadow:0 12px 22px rgba(57,35,24,.12)!important;
+}
+footer .footer-about-card{
+  transform:perspective(1200px) rotateX(3deg) rotateY(1.5deg)!important;
+}
+footer .footer-partner-card{
+  transform:perspective(1200px) rotateX(3deg) rotateY(-1.5deg)!important;
+}
+footer .footer-info-card:hover,
+footer .footer-info-card:focus-within{
+  transform:perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(-5px) translateZ(18px)!important;
+  box-shadow:0 10px 0 rgba(194,150,124,.42),0 27px 42px rgba(57,35,24,.23),inset 0 1px 0 rgba(255,255,255,.98)!important;
+}
+footer .footer-legal-bottom{
+  width:min(1040px,100%)!important;
+  box-sizing:border-box!important;
+  margin:26px auto 0!important;
+  padding:19px 12px 3px!important;
+  border-top:1px solid rgba(216,184,164,.72)!important;
+  text-align:center!important;
+}
+footer .footer-legal-bottom .footer-brand{
+  margin:0 0 7px!important;
+}
+footer .footer-legal-bottom>p{
+  margin:0!important;
+  line-height:1.55!important;
+}
+footer .footer-legal-bottom .footer-legal-links{
+  margin-top:10px!important;
+  gap:12px 18px!important;
+}
+@media(max-width:720px){
+  footer .footer-info-card{
+    transform:perspective(1000px) rotateX(2deg) translateZ(0)!important;
+    box-shadow:0 5px 0 rgba(194,150,124,.42),0 14px 24px rgba(57,35,24,.16),inset 0 1px 0 rgba(255,255,255,.98)!important;
+  }
+  footer .footer-about-card{transform:perspective(1000px) rotateX(2deg) rotateY(.55deg)!important}
+  footer .footer-partner-card{transform:perspective(1000px) rotateX(2deg) rotateY(-.55deg)!important}
+  footer .footer-info-card:hover,
+  footer .footer-info-card:focus-within{
+    transform:perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-3px) translateZ(12px)!important;
+  }
+  footer .footer-legal-bottom{margin-top:21px!important;padding:17px 5px 2px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  footer .footer-info-card{transition:none!important}
+}
+</style>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -6416,14 +6492,6 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   </div>
 
   <footer>
-    <div class="footer-brand">GENMERCH - Suot Apparel</div>
-    <p>© 2026 GENMERCH — Suot Apparel. All rights reserved.</p>
-    <p style="display:flex;justify-content:center;flex-wrap:wrap;gap:18px;margin:10px 0 0">
-      <a href="/privacy.html" style="color:#dc2626;text-decoration:underline">Privacy Policy</a>
-      <a href="/terms.html" style="color:#2563eb;text-decoration:underline">Terms of Service</a>
-      <a href="mailto:negosyonipinoy@gmail.com" style="color:inherit;text-decoration:underline">Contact</a>
-      <a href="tel:09750634497" style="color:inherit;text-decoration:underline">☎ 09750634497</a>
-    </p>
     <div class="footer-details-grid" aria-label="About GENMERCH and partnership information">
       <section class="footer-info-card footer-about-card" aria-labelledby="footerAboutTitle">
         <p class="footer-info-kicker">THE STORY BEHIND THE BRAND</p>
@@ -6503,6 +6571,16 @@ html.genmerch-initial-loading body{overflow:hidden!important}
         <span aria-hidden="true">↑</span> Back to Top
       </button>
     </section>
+    <div class="footer-legal-bottom" aria-label="GENMERCH copyright, policies, and contact information">
+      <div class="footer-brand">GENMERCH - Suot Apparel</div>
+      <p>© 2026 GENMERCH — Suot Apparel. All rights reserved.</p>
+      <p class="footer-legal-links" style="display:flex;justify-content:center;flex-wrap:wrap;gap:18px;margin:10px 0 0">
+        <a href="/privacy.html" style="color:#dc2626;text-decoration:underline">Privacy Policy</a>
+        <a href="/terms.html" style="color:#2563eb;text-decoration:underline">Terms of Service</a>
+        <a href="mailto:negosyonipinoy@gmail.com" style="color:inherit;text-decoration:underline">Contact</a>
+        <a href="tel:09750634497" style="color:inherit;text-decoration:underline">☎ 09750634497</a>
+      </p>
+    </div>
 </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
