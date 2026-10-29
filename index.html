@@ -7704,11 +7704,17 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
           <p class="customer-auth-recovery-intro">Create a new password to recover access to your GENMERCH account.</p>
           <div class="customer-auth-field">
             <label for="customerResetPassword">New Password</label>
-            <input id="customerResetPassword" name="new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Enter your new password" required>
+            <div class="customer-auth-password-wrap">
+              <input id="customerResetPassword" name="new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Enter your new password" required>
+              <button class="customer-auth-password-toggle" type="button" id="customerResetPasswordToggle" aria-label="Show new password" aria-pressed="false">Show</button>
+            </div>
           </div>
           <div class="customer-auth-field">
             <label for="customerResetPasswordConfirm">Confirm New Password</label>
-            <input id="customerResetPasswordConfirm" name="confirm_new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Re-enter your new password" required>
+            <div class="customer-auth-password-wrap">
+              <input id="customerResetPasswordConfirm" name="confirm_new_password" type="password" autocomplete="new-password" minlength="6" maxlength="128" placeholder="Re-enter your new password" required>
+              <button class="customer-auth-password-toggle" type="button" id="customerResetPasswordConfirmToggle" aria-label="Show confirmation password" aria-pressed="false">Show</button>
+            </div>
           </div>
           <button class="customer-auth-send customer-auth-submit" type="submit" id="customerPasswordRecoverySubmit">Update Password</button>
           <button class="customer-auth-recovery-cancel" type="button" id="customerPasswordRecoveryCancel">Back to Sign In</button>
@@ -11801,6 +11807,19 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     });
     $('customerAuthSignInTab').addEventListener('click',()=>setCustomerAuthMode('signin'));
     $('customerAuthCreateTab').addEventListener('click',()=>setCustomerAuthMode('signup'));
+    function bindCustomerPasswordReveal(inputId,toggleId,shownLabel,hiddenLabel){
+      const input=$(inputId),toggle=$(toggleId);
+      if(!input||!toggle)return;
+      toggle.addEventListener('click',()=>{
+        const show=input.type==='password';
+        input.type=show?'text':'password';
+        toggle.textContent=show?'Hide':'Show';
+        toggle.setAttribute('aria-label',show?hiddenLabel:shownLabel);
+        toggle.setAttribute('aria-pressed',String(show));
+      });
+    }
+    bindCustomerPasswordReveal('customerResetPassword','customerResetPasswordToggle','Show new password','Hide new password');
+    bindCustomerPasswordReveal('customerResetPasswordConfirm','customerResetPasswordConfirmToggle','Show confirmation password','Hide confirmation password');
     $('customerPasswordToggle').addEventListener('click',()=>{
       const input=$('customerPassword');
       const show=input.type==='password';
@@ -17833,6 +17852,10 @@ main.container .catalog-search:focus-within {
   #customerAuthOverlay #customerAuthDivider[hidden],
   #customerAuthOverlay #customerGoogleButton[hidden],
   #customerAuthOverlay #customerForgotBackButton[hidden]{display:none!important;}
+  #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-wrap{position:relative;width:100%;}
+  #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-wrap input{padding-right:76px!important;}
+  #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-width:58px;min-height:32px;padding:5px 8px;border:1px solid #ead7c9;border-radius:7px;background:#fff4eb;color:#69483a;font-size:.76rem;font-weight:850;cursor:pointer;}
+  #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-toggle:hover{background:#f2e2d7;}
 </style>
 </body>
 </html>
