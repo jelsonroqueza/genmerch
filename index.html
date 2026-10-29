@@ -6122,6 +6122,41 @@ footer .footer-legal-bottom .footer-legal-links{margin-top:10px!important;gap:12
 @media(max-width:560px){.gm-business-partners{width:calc(100% - 20px);padding:18px 11px 19px;margin:18px auto 22px;border-radius:14px}.gm-partners-heading{margin-bottom:17px}.gm-partners-heading::before{margin-bottom:13px;width:58%}.gm-partners-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.gm-partner-logo-card{padding:8px 7px 10px;border-radius:11px}.gm-partner-logo-frame{height:70px}.gm-partner-logo-card h3{font-size:10px;min-height:3em;margin-top:8px}.gm-partners-heading h2{font-size:clamp(19px,5vw,24px)}.gm-partners-heading>p:last-child{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.gm-partner-logo-card{transition:none}}
 </style>
+<style id="genmerch-business-partners-deep-gradient">
+/* High-specificity override: make the complete heading panel visibly dark and premium. */
+footer section.gm-business-partners .gm-partners-heading{
+  background:linear-gradient(118deg,#050609 0%,#11131a 24%,#240b18 51%,#5b0b20 74%,#170910 100%) !important;
+  background-color:#100b12 !important;
+  border:1px solid rgba(255,54,74,.72) !important;
+  border-radius:14px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 34px rgba(0,0,0,.22),0 9px 24px rgba(25,2,10,.24) !important;
+  padding:22px 18px 20px !important;
+  position:relative !important;
+  isolation:isolate !important;
+}
+footer section.gm-business-partners .gm-partners-heading::before{
+  background:linear-gradient(90deg,transparent 0%,#8e112a 18%,#ff1e3c 42%,#ffd0d3 50%,#ff1e3c 58%,#8e112a 82%,transparent 100%) !important;
+  box-shadow:0 0 16px rgba(255,27,57,.48) !important;
+}
+footer section.gm-business-partners .gm-partners-heading .gm-partners-kicker{
+  color:#ff4b60 !important;
+  text-shadow:0 0 12px rgba(255,40,63,.42) !important;
+}
+footer section.gm-business-partners .gm-partners-heading h2{
+  color:#f8f8fb !important;
+  background:linear-gradient(180deg,#fff 0%,#f0edf1 48%,#bdb3be 76%,#fff 100%) !important;
+  background-clip:text !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  text-shadow:none !important;
+}
+footer section.gm-business-partners .gm-partners-heading>p:last-child{
+  color:#e2d7df !important;
+}
+@media(max-width:560px){
+  footer section.gm-business-partners .gm-partners-heading{padding:18px 12px 17px !important}
+}
+</style>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
