@@ -170,3 +170,171 @@
  .gmca-checkout-points-top strong{font-size:.8rem}
 }
 @media(prefers-reduced-motion:reduce){.gmca-metric,.gmca-switch span,.gmca-switch span:after{transition:none}}
+
+/* GENMERCH official black + orange premium account theme */
+.gmca-overlay{background:rgba(3,4,6,.82);backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%)}
+.gmca-modal{background:#101113;color:#f7f7f7;border:1px solid rgba(255,111,26,.75);box-shadow:0 32px 100px rgba(0,0,0,.62),0 0 0 1px rgba(255,132,30,.13),inset 0 1px 0 rgba(255,255,255,.07)}
+.gmca-header{background:radial-gradient(ellipse at 82% 10%,rgba(255,111,26,.22),transparent 38%),linear-gradient(125deg,#070809 0%,#161719 58%,#2a1308 100%);border-bottom:1px solid rgba(255,111,26,.65);box-shadow:inset 0 -2px 0 rgba(255,106,16,.1)}
+.gmca-brand{gap:14px}
+.gmca-brand-mark{display:grid;place-items:center;flex:0 0 76px;width:76px;height:60px;padding:4px;border:1px solid rgba(255,130,39,.52);border-radius:13px;background:linear-gradient(145deg,#fff,#f4f0ed);box-shadow:0 6px 18px rgba(255,95,0,.24),inset 0 1px 0 #fff;color:transparent}
+.gmca-brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
+.gmca-eyebrow{color:#ff8733;text-shadow:0 0 12px rgba(255,120,35,.2)}
+.gmca-header h2{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+.gmca-header p{color:#c4c3c1}
+.gmca-close{border-color:#4d4239;background:linear-gradient(145deg,#26282b,#131416);color:#f7a263;box-shadow:0 4px 10px #0006,inset 0 1px 0 #ffffff1a}
+.gmca-close:hover{background:linear-gradient(145deg,#ff8b2b,#e54e08);color:#fff;border-color:#ff9a4d}
+.gmca-tabs{gap:7px;padding:12px 16px 0;background:#151618;border-bottom:1px solid rgba(255,114,25,.35);box-shadow:inset 0 1px 0 #ffffff08}
+.gmca-tabs button{border:1px solid transparent;border-bottom:3px solid transparent;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#222427,#18191b);color:#d5d3d1;box-shadow:inset 0 1px 0 #ffffff0c;font-size:.8rem}
+.gmca-tabs button:hover{border-color:#5e331d;color:#fff;background:linear-gradient(180deg,#342319,#201814)}
+.gmca-tabs button.active{border-color:rgba(255,117,26,.65);border-bottom-color:#ff7419;background:linear-gradient(180deg,#ff8a25,#e95007);color:#fff;text-shadow:0 1px 2px #8c300b;box-shadow:0 4px 13px rgba(255,94,0,.24),inset 0 1px 0 #ffffff4d}
+.gmca-content{background:radial-gradient(ellipse at 5% 0%,rgba(255,105,15,.055),transparent 30%),linear-gradient(180deg,#121315,#0f1012)}
+.gmca-alert{border:1px solid #805021;background:linear-gradient(135deg,#30200e,#21190f);color:#ffd19c;box-shadow:inset 0 1px 0 #ffffff08}
+.gmca-alert.error{border-color:#873923;background:linear-gradient(135deg,#351710,#21100d);color:#ffb5a5}
+.gmca-alert.success{border-color:#a95416;background:linear-gradient(135deg,#39210b,#21180e);color:#ffd9a4}
+.gmca-welcome-card{border:1px solid #a94f19;background:radial-gradient(ellipse at 85% 5%,rgba(255,111,26,.28),transparent 36%),linear-gradient(115deg,#070809 0%,#191a1c 58%,#381808 100%);box-shadow:0 10px 25px #0005,inset 0 1px 0 #ffffff13,inset 0 -3px 0 rgba(255,100,10,.12)}
+.gmca-welcome-card h3{color:#fff;text-shadow:0 2px 8px #000}
+.gmca-welcome-card h3::first-letter{color:#fff}
+.gmca-welcome-card p{color:#d6d1cc}
+.gmca-welcome-icon{background:linear-gradient(145deg,#ff9a35,#e94d00);color:#fff;border:1px solid #ffb066;box-shadow:0 7px 18px #f65a093f,inset 0 1px 0 #ffffff5c}
+.gmca-metric{position:relative;overflow:hidden;border:1px solid rgba(255,150,69,.7);background:linear-gradient(145deg,#ffad35 0%,#ff7818 48%,#c93400 100%);box-shadow:0 9px 19px rgba(255,93,10,.18),inset 0 2px 0 rgba(255,255,255,.46),inset 0 -5px 0 rgba(109,35,0,.2);color:#fff}
+.gmca-metric::before{content:"";position:absolute;inset:0 0 auto;height:42%;background:linear-gradient(180deg,rgba(255,255,255,.23),transparent);pointer-events:none}
+.gmca-metric:nth-child(2){border-color:#5c5f64;background:linear-gradient(145deg,#303236 0%,#1b1c1f 58%,#52270e 100%);box-shadow:0 9px 19px #0006,inset 0 2px 0 #ffffff2b,inset 0 -5px 0 #0007}
+.gmca-metric:nth-child(3){border-color:#f7a04b;background:linear-gradient(145deg,#ffd36b 0%,#ff8d23 51%,#dc4a00 100%)}
+.gmca-metric:nth-child(4){border-color:#764426;background:linear-gradient(145deg,#39312d 0%,#211a17 60%,#572b13 100%);box-shadow:0 9px 19px #0007,inset 0 2px 0 #ffffff26,inset 0 -5px 0 #0007}
+.gmca-metric span{position:relative;color:#fff0df;text-shadow:0 1px 2px #6c2a07;font-size:.66rem}
+.gmca-metric strong{position:relative;color:#fff;text-shadow:0 2px 4px rgba(88,27,0,.5);font-size:1.65rem}
+.gmca-metric small{position:relative;color:#fff1e5}
+.gmca-metric:hover{transform:translateY(-3px);border-color:#fff0cc;box-shadow:0 14px 26px rgba(255,96,0,.28),inset 0 2px 0 rgba(255,255,255,.5),inset 0 -5px 0 rgba(109,35,0,.2)}
+.gmca-section-card{border:1px solid #39302a;background:linear-gradient(145deg,#1b1c1e,#131416);box-shadow:0 8px 18px rgba(0,0,0,.25),inset 0 1px 0 #ffffff08}
+.gmca-section-card h3,.gmca-pane-title h3{color:#fff}
+.gmca-section-heading p,.gmca-pane-title p{color:#b9b4af}
+.gmca-text-action{color:#ff8b35}
+.gmca-text-action:hover{color:#ffbb83}
+.gmca-order-card{border-color:#41352c;background:linear-gradient(145deg,#202123,#151618);box-shadow:0 5px 12px #0003,inset 0 1px 0 #ffffff08}
+.gmca-order-head{border-bottom-color:#3b3029}
+.gmca-order-number{color:#ff9748}
+.gmca-order-head small{color:#b9ada4}
+.gmca-order-items{color:#e4ded9}
+.gmca-order-bottom span{color:#b9aaa0}
+.gmca-order-bottom strong{color:#fff}
+.gmca-order-tracking{background:#211a16;color:#e7d4c4;border:1px solid #473021}
+.gmca-order-tracking a{color:#ff9b52}
+.gmca-status{border:1px solid #9b591a;background:linear-gradient(145deg,#5c350e,#35200c);color:#ffd49d;box-shadow:inset 0 1px 0 #ffffff16}
+.gmca-status-delivered{border-color:#3d7752;background:linear-gradient(145deg,#1c4a2c,#10271a);color:#b8f2c9}
+.gmca-status-cancelled,.gmca-status-refunded{border-color:#874335;background:linear-gradient(145deg,#552116,#29110c);color:#ffc0b1}
+.gmca-status-shipped,.gmca-status-out-for-delivery{border-color:#a15b20;background:linear-gradient(145deg,#55300e,#2b1b10);color:#ffd2a3}
+.gmca-detail-line{border-top-color:#3d3027}
+.gmca-detail-line span{color:#b9ada5}
+.gmca-detail-line strong{color:#fff}
+.gmca-points-teaser{background:radial-gradient(ellipse at 93% 8%,rgba(255,124,28,.35),transparent 38%),linear-gradient(140deg,#21150e,#100f0e 70%,#3c1b0b);border-color:#a8551c;box-shadow:0 9px 20px #0006,inset 0 1px 0 #ffffff12}
+.gmca-points-teaser p{color:#e5c5ac}
+.gmca-primary{border:1px solid #ffab58;background:linear-gradient(180deg,#ff9b35 0%,#ff7418 48%,#d83e00 100%);color:#fff;text-shadow:0 1px 2px #8c3308;box-shadow:0 5px 0 #8a2b00,0 10px 17px rgba(255,94,0,.18),inset 0 1px 0 #ffffff70;font-weight:950;transition:transform .14s ease,filter .14s ease,box-shadow .14s ease}
+.gmca-primary:hover{background:linear-gradient(180deg,#ffb34f,#ff791b 48%,#e64900);filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 6px 0 #8a2b00,0 14px 20px rgba(255,94,0,.23),inset 0 1px 0 #ffffff80}
+.gmca-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #8a2b00,0 5px 9px rgba(255,94,0,.17)}
+.gmca-secondary{border:1px solid #5c493b;background:linear-gradient(145deg,#292a2c,#17181a);color:#f5e8dd;box-shadow:0 4px 9px #0005,inset 0 1px 0 #ffffff14}
+.gmca-secondary:hover{border-color:#c46b2b;background:linear-gradient(145deg,#39251a,#201612);color:#fff}
+.gmca-form{border-color:#40342b;background:linear-gradient(145deg,#1d1e20,#141517);box-shadow:inset 0 1px 0 #ffffff09}
+.gmca-form label{color:#e5d7cb}
+.gmca-form input,.gmca-form textarea,.gmca-form select{border-color:#4a3a2e;background:linear-gradient(180deg,#0f1012,#191a1c);color:#fff;box-shadow:inset 0 2px 5px #0006}
+.gmca-form input::placeholder,.gmca-form textarea::placeholder{color:#81756d}
+.gmca-form input:focus,.gmca-form textarea:focus,.gmca-form select:focus{border-color:#ff8733;box-shadow:0 0 0 3px rgba(255,114,26,.17),inset 0 2px 5px #0006}
+.gmca-form input[readonly]{background:#222326;color:#a9a19b}
+.gmca-form label small{color:#a99c91}
+.gmca-note{border:1px solid #55402b;background:linear-gradient(145deg,#211a14,#151311);color:#ffd2a2}
+.gmca-note p{color:#d4bca7}
+.gmca-points-hero{border-color:#b15e20;background:radial-gradient(ellipse at 90% 0%,rgba(255,132,33,.33),transparent 42%),linear-gradient(135deg,#26170c,#101113 75%);box-shadow:0 10px 22px #0006,inset 0 1px 0 #ffffff12}
+.gmca-points-hero span{color:#ffb46b}
+.gmca-points-hero strong{color:#fff;text-shadow:0 3px 15px rgba(255,105,10,.28)}
+.gmca-points-hero p{color:#e0c7b4}
+.gmca-rules{border-color:#403329;background:linear-gradient(145deg,#1d1e20,#141517);color:#eee}
+.gmca-rules h4{color:#fff}
+.gmca-rules ul{color:#d2c6bc}
+.gmca-ledger-row{border-bottom-color:#38302a}
+.gmca-ledger-row strong{color:#fff}
+.gmca-ledger-row p{color:#d1c4ba}
+.gmca-ledger-row small{color:#a79a90}
+.gmca-ledger-row .positive{color:#ffac58}
+.gmca-ledger-row .negative{color:#ff8163}
+.gmca-order-summary-strip>div{border-color:#44352a;background:linear-gradient(145deg,#242528,#151618);box-shadow:0 5px 12px #0004,inset 0 1px 0 #ffffff0b}
+.gmca-order-summary-strip span{color:#c7b7aa}
+.gmca-order-summary-strip strong{color:#fff}
+.gmca-activity-row{border-bottom-color:#393029}
+.gmca-activity-row strong{color:#fff}
+.gmca-activity-row p{color:#d3c7bd}
+.gmca-activity-row small{color:#b0a39a}
+.gmca-address-card{border-color:#40342b;background:linear-gradient(145deg,#222326,#151618);box-shadow:0 5px 13px #0004,inset 0 1px 0 #ffffff0a}
+.gmca-address-card strong{color:#fff}
+.gmca-address-card p{color:#d5c8bd}
+.gmca-address-card small{color:#b2a499}
+.gmca-default-tag{border:1px solid #b86422;background:linear-gradient(145deg,#57300e,#2e1a0c);color:#ffd5a4}
+.gmca-empty{color:#b5a79b}
+.gmca-empty strong{color:#fff}
+.gmca-empty p{color:#bdb1a8}
+.gmca-footer{border-top-color:#3a2d24;background:#0b0c0e;color:#b6a99f}
+.gmca-footer-lock{background:linear-gradient(145deg,#ff9a3a,#e95005);color:#fff}
+.gmca-signout{border-color:#9d4a22;background:linear-gradient(145deg,#382014,#1e130e);color:#ffb47b;box-shadow:0 4px 9px #0005,inset 0 1px 0 #ffffff12}
+.gmca-signout:hover{background:linear-gradient(145deg,#ff892d,#d94300);color:#fff}
+.gmca-checkout-points{border-color:#a9551e;background:radial-gradient(ellipse at 95% 0%,rgba(255,122,24,.25),transparent 42%),linear-gradient(135deg,#21170f,#121315);box-shadow:0 5px 14px #0003,inset 0 1px 0 #ffffff10}
+.gmca-checkout-points-top strong{color:#ffae67}
+.gmca-checkout-points-top p{color:#c9b8aa}
+.gmca-checkout-points-foot{border-top-color:#463328;color:#c9b9ad}
+.gmca-switch em{color:#eee}
+.gmca-switch span{background:#58483b}
+.gmca-switch input:checked+span{background:#ff7418}
+.gmca-checkout-points-row strong{color:#ffae67}
+.gmca-editor{margin:0 0 16px;border:1px solid #8a481b;border-radius:13px;background:linear-gradient(145deg,#20170f,#151618);box-shadow:0 7px 18px #0004,inset 0 1px 0 #ffffff0b}
+.gmca-editor>summary{padding:14px 16px;list-style:none;color:#ffac67;font-size:.85rem;font-weight:950;cursor:pointer}
+.gmca-editor>summary::-webkit-details-marker{display:none}
+.gmca-editor>summary::after{content:"＋";float:right;color:#fff;font-size:1rem}
+.gmca-editor[open]>summary::after{content:"−"}
+.gmca-editor .gmca-form{margin:0 10px 10px;border-color:#514033}
+.gmca-address-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
+.gmca-address-book-card{min-width:0;padding:16px;border:1px solid #5c3b25;border-radius:15px;background:radial-gradient(ellipse at 90% 0%,rgba(255,127,29,.13),transparent 38%),linear-gradient(145deg,#232426,#141517);box-shadow:0 9px 18px #0005,inset 0 1px 0 #ffffff10,inset 0 -3px 0 #0005}
+.gmca-address-card-top{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.gmca-address-card-top>div{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.gmca-address-card-top h4{margin:0;color:#fff;font-size:.96rem;font-weight:950;overflow-wrap:anywhere}
+.gmca-address-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border:1px solid #ffad61;border-radius:12px;background:linear-gradient(145deg,#ff9a35,#d84200);color:#fff;font-size:1.35rem;font-weight:950;box-shadow:0 5px 12px #f75a183d,inset 0 1px 0 #ffffff70}
+.gmca-address-book-card>strong{display:block;margin-bottom:5px;color:#fff;font-size:.83rem}
+.gmca-address-book-card>p{margin:4px 0;color:#d7c9be;font-size:.79rem;line-height:1.45;overflow-wrap:anywhere}
+.gmca-address-extra{padding:8px 10px;border-radius:8px;background:#ffffff08;border:1px solid #ffffff0b}
+.gmca-address-extra span{display:block;margin-bottom:2px;color:#ffb574;font-size:.65rem;font-weight:950;text-transform:uppercase;letter-spacing:.06em}
+.gmca-address-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.gmca-address-actions button{min-height:33px;padding:7px 9px;font-size:.72rem}
+.gmca-danger{min-height:40px;padding:10px 14px;border:1px solid #a34229;border-radius:10px;background:linear-gradient(145deg,#481c14,#24110e);color:#ffb4a3;font-size:.82rem;font-weight:900;cursor:pointer;box-shadow:0 4px 9px #0004,inset 0 1px 0 #ffffff0c}
+.gmca-danger:hover{background:linear-gradient(145deg,#7b2b18,#41150d);color:#fff}
+.gmca-check-label{display:flex!important;flex-direction:row!important;align-items:center!important;gap:9px!important;grid-column:1/-1;cursor:pointer}
+.gmca-check-label input{flex:0 0 18px;width:18px;min-height:18px;height:18px;accent-color:#ff7418}
+.gmca-form-full{grid-column:1/-1}
+.gmca-form textarea{width:100%;min-height:88px;padding:10px 12px;border:1px solid #4a3a2e;border-radius:9px;background:linear-gradient(180deg,#0f1012,#191a1c);color:#fff;font:inherit;font-size:.9rem;resize:vertical}
+.gmca-address-empty{margin-top:14px;border:1px dashed #63452e;border-radius:15px;background:linear-gradient(145deg,#1e1a16,#121315)}
+.gmca-checkout-address-picker{margin:0 0 15px;padding:14px;border:1px solid #a85620;border-radius:13px;background:radial-gradient(ellipse at 94% 0%,rgba(255,120,20,.2),transparent 43%),linear-gradient(135deg,#23170e,#111214);box-shadow:0 7px 16px #0004,inset 0 1px 0 #ffffff10}
+.gmca-checkout-address-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.gmca-checkout-address-heading strong{color:#ffb36e;font-size:.84rem;font-weight:950}
+.gmca-checkout-address-heading p{margin:4px 0 0;color:#cdbbad;font-size:.75rem;line-height:1.45}
+.gmca-checkout-manage{border:1px solid #75421f;border-radius:8px;background:#211710;color:#ffb678;padding:7px 10px;font-size:.75rem;font-weight:900;cursor:pointer}
+.gmca-checkout-address-controls{display:flex;gap:8px;margin-top:11px}
+.gmca-checkout-address-controls select{min-width:0;flex:1;min-height:42px;padding:8px 10px;border:1px solid #67432a;border-radius:9px;background:#111214;color:#fff;font-size:.8rem}
+.gmca-checkout-use{min-height:42px;padding:9px 12px;white-space:nowrap}
+.gmca-checkout-feedback{min-height:0;margin:7px 0 0;color:#d8c6b7;font-size:.74rem;line-height:1.45}
+.gmca-checkout-feedback.success{color:#ffc28a}
+@media(max-width:760px){
+ .gmca-brand-mark{flex-basis:58px;width:58px;height:48px;padding:3px}
+ .gmca-tabs{gap:5px;padding:9px 9px 0}
+ .gmca-tabs button{border-radius:9px 9px 0 0;padding:10px 9px}
+ .gmca-address-grid{grid-template-columns:1fr}
+ .gmca-editor .gmca-form{grid-template-columns:1fr}
+ .gmca-form-full,.gmca-check-label{grid-column:auto}
+}
+@media(max-width:480px){
+ .gmca-header{padding:13px 12px}
+ .gmca-brand{gap:9px}
+ .gmca-brand-mark{flex-basis:48px;width:48px;height:42px}
+ .gmca-eyebrow{font-size:.58rem;letter-spacing:.08em}
+ .gmca-header h2{font-size:1.05rem}
+ .gmca-header p{font-size:.72rem}
+ .gmca-close{flex-basis:34px;width:34px;height:34px}
+ .gmca-checkout-address-controls{flex-direction:column}
+ .gmca-checkout-use{width:100%}
+ .gmca-address-actions button{flex:1 1 42%}
+}
+@media(prefers-reduced-motion:reduce){.gmca-metric,.gmca-primary{transition:none}}
