@@ -958,7 +958,8 @@
         try { syncCheckoutFullName(); } catch (_) {}
       }
     }
-    setCheckoutField('custPhone', profile && profile.phone ? profile.phone : (session.user.phone || ''), false);
+    const accountPhone = profile && profile.phone ? profile.phone : (session.user.phone || '');
+    setCheckoutField('custPhone', accountPhone, Boolean(String(accountPhone || '').trim()));
     const defaultLandmark = state.landmarks.find((item) => item.is_default);
     if (defaultLandmark) {
       setCheckoutField('landmark', defaultLandmark.landmark, false);
@@ -998,6 +999,7 @@
         tryQuery(() => db.from('customer_addresses').select('id').eq('user_id', userId).eq('is_default', true).limit(1).maybeSingle(), null),
         tryQuery(() => db.from('profiles').select('id,full_name,phone').eq('id', userId).maybeSingle(), null)
       ]);
+      if (matchedResult.error || defaultResult.error) throw matchedResult.error || defaultResult.error;
       const matched = matchedResult.data || null;
       if (matched) {
         const update = await db.from('customer_addresses').update({
@@ -1006,6 +1008,10 @@
           updated_at: new Date().toISOString()
         }).eq('id', matched.id).eq('user_id', userId);
         if (update.error) throw update.error;
+        if (!defaultResult.data && !matched.is_default) {
+          const promote = await db.from('customer_addresses').update({ is_default: true }).eq('id', matched.id).eq('user_id', userId);
+          if (promote.error) throw promote.error;
+        }
       } else {
         address.address_label = defaultResult.data ? 'Saved address' : 'Home';
         address.is_default = !defaultResult.data;
@@ -1029,7 +1035,13 @@
           tryQuery(() => db.from('customer_default_landmarks').select('id,is_default').eq('user_id', userId).eq('landmark', landmarkText).eq('delivery_instructions', instructionsText).limit(1).maybeSingle(), null),
           tryQuery(() => db.from('customer_default_landmarks').select('id').eq('user_id', userId).eq('is_default', true).limit(1).maybeSingle(), null)
         ]);
-        if (!savedLandmarkResult.data) {
+        if (savedLandmarkResult.error || defaultLandmarkResult.error) throw savedLandmarkResult.error || defaultLandmarkResult.error;
+        if (savedLandmarkResult.data) {
+          if (!defaultLandmarkResult.data && !savedLandmarkResult.data.is_default) {
+            const promoteLandmark = await db.from('customer_default_landmarks').update({ is_default: true }).eq('id', savedLandmarkResult.data.id).eq('user_id', userId);
+            if (promoteLandmark.error) throw promoteLandmark.error;
+          }
+        } else {
           const insertLandmark = await db.from('customer_default_landmarks').insert({
             user_id: userId,
             label: defaultLandmarkResult.data ? 'Saved landmark' : 'Default landmark',
