@@ -6743,7 +6743,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
   </div>
   <div class="seller-modal-overlay" id="sellerDashboardOverlay" aria-hidden="true">
     <section class="seller-modal seller-dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="sellerDashboardTitle">
-      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle">GENMERCH Seller Centre</h2><p>Manage products and review customer orders</p></div><div class="seller-dashboard-actions"><button class="seller-logout-button" id="sellerCentreLogoutButton" type="button" onclick="logoutSellerCentre()" aria-label="Log out of Seller Centre" title="Log out of Seller Centre"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10"/><path d="M13 8l4 4-4 4M8 12h9"/></svg><span>Log Out</span></button><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre" title="Close dashboard">×</button></div></div>
+      <div class="seller-modal-head"><div><h2 id="sellerDashboardTitle"><span class="seller-brand-gen">GEN</span><span class="seller-brand-merch">MERCH</span><span class="seller-brand-section">Seller Centre</span></h2><p>Manage products and review customer orders</p></div><div class="seller-dashboard-actions"><button class="seller-logout-button" id="sellerCentreLogoutButton" type="button" onclick="logoutSellerCentre()" aria-label="Log out of Seller Centre" title="Log out of Seller Centre"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10"/><path d="M13 8l4 4-4 4M8 12h9"/></svg><span>Log Out</span></button><button class="seller-modal-close" type="button" onclick="closeSellerDashboard()" aria-label="Close Seller Centre" title="Close dashboard">×</button></div></div>
       <div class="seller-tabs" role="tablist" aria-label="Seller Centre sections">
         <button class="seller-tab-button active" type="button" role="tab" id="sellerProductsTab" aria-selected="true" aria-controls="sellerProductsPanel" onclick="switchSellerTab('products')">Products</button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerDeletedTab" aria-selected="false" aria-controls="sellerDeletedPanel" onclick="switchSellerTab('deleted')">Deleted <span class="seller-deleted-count" id="sellerDeletedCount" hidden>0</span></button>
@@ -12639,7 +12639,8 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         const image=images[0]?safeCatalogImageUrl(images[0].image_url):'',variants=variantMap.get(id)||[],activeVariants=variants.filter(row=>row.is_active!==false);
         const stock=activeVariants.reduce((total,row)=>total+Math.max(0,Math.floor(Number(row.stock_quantity)||0)),0),category=categoryMap.get(String(product.category_id))||'Other';
         const status=product.is_active?'<span class="seller-status-pill">Active</span>':'<span class="seller-status-pill inactive">Inactive</span>';
-        const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
+        const imageAlt=(product.name||'Product')+' photo';
+        const thumb=image?'<button class="seller-product-image-button" type="button" data-genmerch-seller-image-viewer="true" data-image-url="'+sellerEscape(image)+'" data-image-alt="'+sellerEscape(imageAlt)+'" aria-label="Open larger image: '+sellerEscape(imageAlt)+'" title="Click to view larger image"><img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="'+sellerEscape(imageAlt)+'" loading="lazy" referrerpolicy="no-referrer"></button>':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
         const edit='<button class="seller-secondary-button seller-edit-button" type="button" data-seller-product-action="edit" data-product-id="'+sellerEscape(id)+'">✎ Edit</button>';
         const toggle='<button class="seller-danger-button" type="button" data-seller-product-action="delete" data-product-id="'+sellerEscape(id)+'">Delete</button>';
         return '<tr><td><div class="seller-product-cell">'+thumb+'<div><div class="seller-product-name">'+sellerEscape(product.name||'Unnamed product')+'</div><div class="seller-muted">SKU: '+sellerEscape(product.sku||'—')+'</div><div class="seller-muted">'+images.length+'/5 photos</div></div></div></td><td>'+sellerEscape(category)+'</td><td><strong>'+sellerEscape(money(product.base_price))+'</strong>'+(Number(product.compare_at_price)>0?'<div class="seller-muted">Original: '+sellerEscape(money(product.compare_at_price))+'</div>':'')+'</td><td>'+activeVariants.length+' active size(s)<div class="seller-muted">Stock total: '+stock+'</div></td><td>'+status+(product.is_demo?'<div class="seller-muted">Demo product</div>':'')+'</td><td><div class="seller-row-actions">'+edit+toggle+'</div></td></tr>';
@@ -12655,7 +12656,8 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       tbody.innerHTML=rows.map(product=>{
         const id=String(product.id),images=(imageMap.get(id)||[]).slice().sort((a,b)=>Number(Boolean(b.is_primary))-Number(Boolean(a.is_primary))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
         const image=images[0]?safeCatalogImageUrl(images[0].image_url):'';
-        const thumb=image?'<img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
+        const imageAlt=(product.name||'Product')+' photo';
+        const thumb=image?'<button class="seller-product-image-button" type="button" data-genmerch-seller-image-viewer="true" data-image-url="'+sellerEscape(image)+'" data-image-alt="'+sellerEscape(imageAlt)+'" aria-label="Open larger image: '+sellerEscape(imageAlt)+'" title="Click to view larger image"><img class="seller-product-thumb" src="'+sellerEscape(image)+'" alt="'+sellerEscape(imageAlt)+'" loading="lazy" referrerpolicy="no-referrer"></button>':'<div class="seller-product-thumb" aria-hidden="true" style="display:grid;place-items:center">👕</div>';
         const category=categoryMap.get(String(product.category_id))||'Other';
         const restore='<button class="seller-restore-button" type="button" data-seller-restore-product="'+sellerEscape(id)+'">↶ Restore</button>';
         const permanentDelete='<button class="seller-danger-button seller-permanent-delete-button" type="button" data-seller-permanent-delete-product="'+sellerEscape(id)+'" aria-label="Permanently delete '+sellerEscape(product.name||'product')+'">Delete Permanently</button>';
@@ -17951,6 +17953,6 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-4">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-5">
 </body>
 </html>
