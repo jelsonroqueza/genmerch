@@ -6749,6 +6749,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         <button class="seller-tab-button" type="button" role="tab" id="sellerDeletedTab" aria-selected="false" aria-controls="sellerDeletedPanel" onclick="switchSellerTab('deleted')">Deleted <span class="seller-deleted-count" id="sellerDeletedCount" hidden>0</span></button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerOrdersTab" aria-selected="false" aria-controls="sellerOrdersPanel" onclick="switchSellerTab('orders')">Orders</button>
         <button class="seller-tab-button" type="button" role="tab" id="sellerInventoryTab" aria-selected="false" aria-controls="sellerInventoryPanel" onclick="switchSellerTab('inventory')">Inventory &amp; Analytics</button>
+        <button class="seller-tab-button" type="button" role="tab" id="sellerMovementsTab" aria-selected="false" aria-controls="sellerMovementsPanel" onclick="switchSellerTab('movements')">Recent Movements</button>
         <div class="seller-tab-tools"><button class="seller-secondary-button" id="sellerRefreshButton" type="button" onclick="refreshSellerTab()">↻ Refresh</button></div>
       </div>
       <section class="seller-panel" id="sellerProductsPanel" role="tabpanel" aria-labelledby="sellerProductsTab">
@@ -6858,6 +6859,8 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         <div class="seller-table-pagination" id="sellerInventoryPagination" role="navigation" aria-label="Inventory table pages"></div>
           </div>
         </div>
+        </section>
+      <section class="seller-panel seller-movements-panel" id="sellerMovementsPanel" role="tabpanel" aria-labelledby="sellerMovementsTab" hidden>
         <div class="seller-collapsible-section seller-movement-section">
         <div class="seller-section-heading seller-collapsible-section-heading"><div><h3 class="seller-panel-title">Recent inventory movements</h3><p class="seller-panel-subtitle">Records manual stock changes, order deductions, and stock returned by cancellations.</p></div><button class="seller-collapse-button" type="button" onclick="sellerToggleSection('sellerMovementHistoryContent',this)" data-collapse-label="Collapse Movement History" data-expand-label="Expand Movement History" aria-controls="sellerMovementHistoryContent" aria-expanded="true">− Collapse Movement History</button></div>
         <div class="seller-collapsible-content" id="sellerMovementHistoryContent">
@@ -12303,7 +12306,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     // Session-scoped UI state: survives hard refresh in each open tab, but is cleared by Exit/Log Out.
     const SELLER_CENTRE_VIEW_STATE_KEY = 'genmerchSellerCentreViewState';
     const SELLER_CENTRE_TAB_STATE_KEY = 'genmerchSellerCentreActiveTab';
-    const SELLER_CENTRE_ALLOWED_TABS = new Set(['products','deleted','orders','inventory']);
+    const SELLER_CENTRE_ALLOWED_TABS = new Set(['products','deleted','orders','inventory','movements']);
     // Explicit email allowlist: only these two addresses may use Seller Centre.
     // Supabase app_metadata.role must also be "admin"; email alone never grants access.
     const GENMERCH_SELLER_ADMIN_EMAILS = new Set([
@@ -13045,22 +13048,22 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       },20000);
     }
     function switchSellerTab(tab){
-      sellerCurrentTab=tab==='deleted'?'deleted':(tab==='orders'?'orders':(tab==='inventory'?'inventory':'products'));
+      sellerCurrentTab=SELLER_CENTRE_ALLOWED_TABS.has(tab)?tab:'products';
       if(sellerCentreIsUnlocked&&$('sellerDashboardOverlay').classList.contains('open')){try{sessionStorage.setItem(SELLER_CENTRE_TAB_STATE_KEY,sellerCurrentTab);}catch(error){console.warn('Seller Centre active tab could not be saved.',error);}}
-      const productsSelected=sellerCurrentTab==='products',deletedSelected=sellerCurrentTab==='deleted',ordersSelected=sellerCurrentTab==='orders',inventorySelected=sellerCurrentTab==='inventory';
-      $('sellerProductsPanel').hidden=!productsSelected;$('sellerDeletedPanel').hidden=!deletedSelected;$('sellerOrdersPanel').hidden=!ordersSelected;$('sellerInventoryPanel').hidden=!inventorySelected;
-      $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerDeletedTab').classList.toggle('active',deletedSelected);$('sellerOrdersTab').classList.toggle('active',ordersSelected);$('sellerInventoryTab').classList.toggle('active',inventorySelected);
-      $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerDeletedTab').setAttribute('aria-selected',String(deletedSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(ordersSelected));$('sellerInventoryTab').setAttribute('aria-selected',String(inventorySelected));
+      const productsSelected=sellerCurrentTab==='products',deletedSelected=sellerCurrentTab==='deleted',ordersSelected=sellerCurrentTab==='orders',inventorySelected=sellerCurrentTab==='inventory',movementsSelected=sellerCurrentTab==='movements';
+      $('sellerProductsPanel').hidden=!productsSelected;$('sellerDeletedPanel').hidden=!deletedSelected;$('sellerOrdersPanel').hidden=!ordersSelected;$('sellerInventoryPanel').hidden=!inventorySelected;$('sellerMovementsPanel').hidden=!movementsSelected;
+      $('sellerProductsTab').classList.toggle('active',productsSelected);$('sellerDeletedTab').classList.toggle('active',deletedSelected);$('sellerOrdersTab').classList.toggle('active',ordersSelected);$('sellerInventoryTab').classList.toggle('active',inventorySelected);$('sellerMovementsTab').classList.toggle('active',movementsSelected);
+      $('sellerProductsTab').setAttribute('aria-selected',String(productsSelected));$('sellerDeletedTab').setAttribute('aria-selected',String(deletedSelected));$('sellerOrdersTab').setAttribute('aria-selected',String(ordersSelected));$('sellerInventoryTab').setAttribute('aria-selected',String(inventorySelected));$('sellerMovementsTab').setAttribute('aria-selected',String(movementsSelected));
       if(ordersSelected){if(!sellerOrdersLoaded)loadSellerOrders();startSellerOrdersAutoRefresh();}
       else stopSellerOrdersAutoRefresh();
-      if(inventorySelected&&!sellerInventoryLoaded)loadSellerInventoryAnalytics();
+      if((inventorySelected||movementsSelected)&&!sellerInventoryLoaded)loadSellerInventoryAnalytics();
       if(deletedSelected)loadSellerProducts();
     }
     async function refreshSellerTab(){
       showCenteredActionStatus('Please wait...','loading');
       try{
         if(sellerCurrentTab==='orders')await loadSellerOrders();
-        else if(sellerCurrentTab==='inventory')await loadSellerInventoryAnalytics();
+        else if(sellerCurrentTab==='inventory'||sellerCurrentTab==='movements')await loadSellerInventoryAnalytics();
         else await loadSellerProducts();
       }finally{if(isCenteredActionStatusLoading())hideCenteredActionStatus();}
     }
@@ -17973,6 +17976,6 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-2">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-3">
 </body>
 </html>

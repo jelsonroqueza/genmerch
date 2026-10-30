@@ -974,3 +974,35 @@
     border-right: 0 !important;
   }
 }
+
+
+/* Dedicated Recent Movements tab: full-width movement ledger, independent of inventory stock view. */
+#sellerDashboardOverlay #sellerMovementsPanel {
+  width:100%!important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-section {
+  width:100%!important;
+  margin:0!important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-section-heading {
+  align-items:center!important;
+  margin:0 0 12px!important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table-wrap {
+  width:100%!important;
+  max-height:none!important;
+  overflow:auto!important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table {
+  width:100%!important;
+  min-width:820px!important;
+}
+@media(max-width:760px) {
+  #sellerDashboardOverlay #sellerMovementsPanel .seller-section-heading {
+    align-items:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+  #sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table {
+    min-width:720px!important;
+  }
+}
