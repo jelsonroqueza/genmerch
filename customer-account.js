@@ -4,6 +4,9 @@
   const state = {
     session: null,
     profile: null,
+    avatarPath: null,
+    avatarUrl: null,
+    uploadingAvatar: false,
     orders: [],
     orderItems: [],
     shipments: [],
@@ -24,6 +27,9 @@
   };
 
   const $ = (id) => document.getElementById(id);
+  const CUSTOMER_AVATAR_BUCKET = 'customer-avatars';
+  const CUSTOMER_AVATAR_MAX_BYTES = 2 * 1024 * 1024;
+  const CUSTOMER_AVATAR_URL_TTL_SECONDS = 900;
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[ch]));
@@ -66,6 +72,13 @@
     if (parts.length > 1) return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
     return (parts[0].replace(/[^a-zA-Z0-9]/g, '').slice(0, 2) || 'GM').toUpperCase();
   }
+  function avatarMarkup(identity) {
+    if (state.avatarUrl) {
+      return '<img class="gmca-avatar-image" src="' + esc(state.avatarUrl) + '" alt="" draggable="false" referrerpolicy="no-referrer">';
+    }
+    return esc(makeInitials(identity || 'GM'));
+  }
+
   const asArray = (result) => result && Array.isArray(result.data) ? result.data : [];
   async function tryQuery(factory, fallback) {
     try {
@@ -119,7 +132,7 @@
             '</div>' +
             '<div class="gmca-header-actions">' +
               '<button type="button" class="gmca-notification-button" id="gmcaNotificationButton" aria-label="Order notifications" title="Order notifications"><span class="gmca-notification-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="gmca-notification-badge" id="gmcaNotificationBadge" hidden>0</span></span></button>' +
-              '<div class="gmca-user-chip"><span class="gmca-user-avatar" id="gmcaUserAvatar" aria-hidden="true">GM</span><span class="gmca-user-copy"><strong id="gmcaUserName">Customer</strong><small>Customer</small></span></div>' +
+              '<div class="gmca-user-chip"><span class="gmca-user-avatar-wrap"><span class="gmca-user-avatar" id="gmcaUserAvatar" aria-hidden="true">GM</span><button type="button" class="gmca-avatar-camera gmca-header-avatar-camera" data-gmca-avatar-upload aria-label="Change profile photo" title="Change profile photo">✎</button></span><span class="gmca-user-copy"><strong id="gmcaUserName">Customer</strong><small>Customer</small></span></div>' +
               '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
           '</div>' +
@@ -145,11 +158,25 @@
           '<section class="gmca-pane" id="gmcaPaneLandmarks" data-gmca-pane="landmarks" role="tabpanel" hidden></section>' +
         '</div>' +
         '<footer class="gmca-footer"><span><span class="gmca-footer-lock">✓</span> Your account records are protected by your signed-in account permissions.</span><button type="button" id="gmcaSignOut" class="gmca-signout">Sign out</button></footer>' +
+        '<input type="file" id="gmcaAvatarFileInput" accept="image/jpeg,image/png,image/webp" aria-label="Choose a profile photo" hidden>' +
       '</section>';
     document.body.appendChild(overlay);
     ensureSignOutConfirmation();
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) closeAccount();
+      const avatarTrigger = event.target.closest('[data-gmca-avatar-upload]');
+      if (avatarTrigger) {
+        event.preventDefault();
+        const input = $('gmcaAvatarFileInput');
+        if (input && !state.uploadingAvatar) input.click();
+        return;
+      }
+      const avatarRemoveTrigger = event.target.closest('[data-gmca-avatar-remove]');
+      if (avatarRemoveTrigger) {
+        event.preventDefault();
+        removeCustomerAvatar();
+        return;
+      }
       const tab = event.target.closest('[data-gmca-section]');
       if (tab) {
         switchTab(tab.getAttribute('data-gmca-section'));
@@ -171,6 +198,7 @@
       }
     }
     $('gmcaSignOut').addEventListener('click', openSignOutConfirmation);
+    $('gmcaAvatarFileInput').addEventListener('change', handleCustomerAvatarSelection);
     overlay.addEventListener('submit', (event) => {
       if (event.target && event.target.id === 'gmcaProfileForm') {
         event.preventDefault();
@@ -405,6 +433,9 @@
       const { error } = await client().auth.signOut();
       if (error) throw error;
       state.session = null;
+      state.profile = null;
+      state.avatarPath = null;
+      state.avatarUrl = null;
       state.checkoutBalance = 0;
       state.selectedPoints = 0;
       window.genmerchSelectedLoyaltyPoints = 0;
@@ -428,7 +459,7 @@
     const db = client();
     const userId = user.id;
     const [profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult] = await Promise.all([
-      tryQuery(() => db.from('profiles').select('id,full_name,phone,created_at,updated_at').eq('id', userId).maybeSingle(), null),
+      tryQuery(() => db.from('profiles').select('id,full_name,phone,avatar_path,created_at,updated_at').eq('id', userId).maybeSingle(), null),
       tryQuery(() => db.from('orders').select('id,order_number,status,payment_status,payment_method,subtotal,shipping_fee,discount_amount,total_amount,loyalty_points_redeemed,loyalty_points_discount,created_at,updated_at,receipt_email', { count: 'exact' }).eq('user_id', userId).order('created_at', { ascending: false }).limit(20), []),
       tryQuery(() => db.from('customer_addresses').select('id,address_label,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
       tryQuery(() => db.from('customer_wishlist').select('product_id,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
@@ -438,6 +469,21 @@
     ]);
 
     state.profile = profileResult.data || null;
+    state.avatarPath = String(state.profile && state.profile.avatar_path || '').trim() || null;
+    state.avatarUrl = null;
+    if (state.avatarPath && state.avatarPath.startsWith(String(userId) + '/')) {
+      try {
+        const signedAvatar = await db.storage
+          .from(CUSTOMER_AVATAR_BUCKET)
+          .createSignedUrl(state.avatarPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
+        if (signedAvatar.error) throw signedAvatar.error;
+        state.avatarUrl = signedAvatar.data && signedAvatar.data.signedUrl ? signedAvatar.data.signedUrl : null;
+      } catch (avatarError) {
+        console.warn('GENMERCH customer avatar could not be loaded:', avatarError.message || avatarError);
+      }
+    } else {
+      state.avatarPath = null;
+    }
     state.orders = asArray(orderResult);
     state.orderCount = typeof orderResult.count === 'number' ? orderResult.count : state.orders.length;
     state.addresses = asArray(addressResult);
@@ -481,7 +527,7 @@
     const name = currentUserName(user, state.profile);
     $('gmcaWelcome').textContent = 'Your shopping activity, rewards and personal information.';
     if ($('gmcaUserName')) $('gmcaUserName').textContent = name || user.email || 'Customer';
-    if ($('gmcaUserAvatar')) $('gmcaUserAvatar').textContent = makeInitials(name || user.email || 'GM');
+    if ($('gmcaUserAvatar')) $('gmcaUserAvatar').innerHTML = avatarMarkup(name || user.email || 'GM');
     $('gmcaLoading').hidden = true;
     renderAllPanes();
     renderCheckoutPoints();
@@ -512,7 +558,7 @@
     const progress = Math.min(100, points);
     pane.innerHTML =
       '<section class="gmca-welcome-card">' +
-        '<div class="gmca-welcome-profile"><span class="gmca-welcome-avatar" aria-hidden="true">' + esc(makeInitials(name || user.email || 'GM')) + '</span><div><span class="gmca-eyebrow">YOUR GENMERCH ACCOUNT</span><h3>Hi, ' + esc(firstName) + '!</h3><p>Welcome back. Track your purchases, manage your profile, and enjoy your member rewards.</p></div></div>' +
+        '<div class="gmca-welcome-profile"><span class="gmca-welcome-avatar-wrap"><span class="gmca-welcome-avatar" id="gmcaWelcomeAvatar" aria-hidden="true">' + avatarMarkup(name || user.email || 'GM') + '</span><button type="button" class="gmca-avatar-camera gmca-welcome-avatar-camera" data-gmca-avatar-upload aria-label="Change profile photo" title="Change profile photo">✎</button></span><div><span class="gmca-eyebrow">YOUR GENMERCH ACCOUNT</span><h3>Hi, ' + esc(firstName) + '!</h3><p>Welcome back. Track your purchases, manage your profile, and enjoy your member rewards.</p></div></div>' +
         '<div class="gmca-welcome-art" aria-hidden="true"><span class="gmca-art-orb gmca-art-orb-one"></span><span class="gmca-art-orb gmca-art-orb-two"></span><span class="gmca-art-bag"><b>GEN</b><strong>MERCH</strong></span><span class="gmca-art-shirt">✦</span></div>' +
       '</section>' +
       '<div class="gmca-metric-grid">' +
@@ -563,6 +609,13 @@
     const phone = currentPhone(user, state.profile);
     pane.innerHTML =
       '<div class="gmca-pane-title"><div><h3>My Profile</h3><p>Update the information saved to your GENMERCH customer profile.</p></div></div>' +
+      '<section class="gmca-profile-photo-card">' +
+        '<span class="gmca-profile-photo-preview" id="gmcaProfileAvatar" aria-hidden="true">' + avatarMarkup(fullName || user.email || 'GM') + '</span>' +
+        '<div class="gmca-profile-photo-copy"><strong>Profile photo</strong><small>JPG, PNG or WebP · Maximum 2 MB</small><small>Your photo is stored privately in your GENMERCH account.</small></div>' +
+        '<div class="gmca-profile-photo-actions"><button type="button" class="gmca-secondary" data-gmca-avatar-upload>Change photo</button>' +
+          (state.avatarPath ? '<button type="button" class="gmca-secondary gmca-avatar-remove-button" data-gmca-avatar-remove>Remove photo</button>' : '') +
+        '</div>' +
+      '</section>' +
       '<form id="gmcaProfileForm" class="gmca-form">' +
         '<label>Full name<input type="text" id="gmcaFullName" name="full_name" maxlength="100" value="' + esc(fullName) + '" autocomplete="name" required></label>' +
         '<label>Registered email<input type="email" value="' + esc(user.email || '') + '" readonly aria-readonly="true"><small>Your login email is shown here and is not changed by this form.</small></label>' +
@@ -571,6 +624,169 @@
         '<div class="gmca-form-actions"><button type="submit" class="gmca-primary" id="gmcaSaveProfile">Save profile</button><span id="gmcaProfileFeedback" role="status" aria-live="polite"></span></div>' +
       '</form>' +
       '<div class="gmca-note"><strong>Privacy note</strong><p>Your profile is saved under your signed-in customer ID. Order and address records are loaded through their own access policies.</p></div>';
+  }
+
+  function detectCustomerAvatarFileType(bytes) {
+    if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+      return { mime: 'image/jpeg', extension: 'jpg' };
+    }
+    if (bytes.length >= 8 &&
+        bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 &&
+        bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a) {
+      return { mime: 'image/png', extension: 'png' };
+    }
+    if (bytes.length >= 12 &&
+        String.fromCharCode(...bytes.slice(0, 4)) === 'RIFF' &&
+        String.fromCharCode(...bytes.slice(8, 12)) === 'WEBP') {
+      return { mime: 'image/webp', extension: 'webp' };
+    }
+    return null;
+  }
+
+  function setCustomerAvatarControlsBusy(busy) {
+    document.querySelectorAll('[data-gmca-avatar-upload], [data-gmca-avatar-remove]').forEach((button) => {
+      button.disabled = Boolean(busy);
+      button.setAttribute('aria-busy', String(Boolean(busy)));
+    });
+  }
+
+  async function handleCustomerAvatarSelection(event) {
+    const input = event && event.target;
+    const file = input && input.files && input.files[0];
+    if (input) input.value = '';
+    if (!file) return;
+    if (state.uploadingAvatar) return;
+    const user = state.session && state.session.user;
+    if (!user) {
+      showAlert('Please sign in again before changing your profile photo.', 'error');
+      return;
+    }
+    if (!file.size || file.size > CUSTOMER_AVATAR_MAX_BYTES) {
+      showAlert('Choose an image smaller than or equal to 2 MB.', 'error');
+      return;
+    }
+
+    state.uploadingAvatar = true;
+    setCustomerAvatarControlsBusy(true);
+    showAlert('Checking and uploading your profile photo…', 'warning');
+    let uploadedPath = null;
+    try {
+      const signatureBytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+      const detectedType = detectCustomerAvatarFileType(signatureBytes);
+      if (!detectedType) {
+        throw new Error('Unsupported image. Please choose a valid JPG, PNG or WebP photo.');
+      }
+      if (file.type && file.type !== detectedType.mime && !(file.type === 'image/jpg' && detectedType.mime === 'image/jpeg')) {
+        throw new Error('The selected file type does not match the image. Please choose a JPG, PNG or WebP photo.');
+      }
+
+      const db = client();
+      const randomId = window.crypto && typeof window.crypto.randomUUID === 'function'
+        ? window.crypto.randomUUID()
+        : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+      uploadedPath = String(user.id) + '/' + randomId + '.' + detectedType.extension;
+      const uploadResult = await db.storage
+        .from(CUSTOMER_AVATAR_BUCKET)
+        .upload(uploadedPath, file, {
+          cacheControl: '900',
+          contentType: detectedType.mime,
+          upsert: false
+        });
+      if (uploadResult.error) throw uploadResult.error;
+
+      const previousPath = state.avatarPath;
+      const profileResult = await db.from('profiles').upsert({
+        id: user.id,
+        avatar_path: uploadedPath,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+
+      if (profileResult.error) {
+        try {
+          await db.storage.from(CUSTOMER_AVATAR_BUCKET).remove([uploadedPath]);
+        } catch (cleanupError) {
+          console.warn('GENMERCH could not clean up an unlinked avatar upload:', cleanupError.message || cleanupError);
+        }
+        uploadedPath = null;
+        throw profileResult.error;
+      }
+
+      const savedPath = uploadedPath;
+      uploadedPath = null;
+      state.avatarPath = savedPath;
+      state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
+      try {
+        const signedResult = await db.storage
+          .from(CUSTOMER_AVATAR_BUCKET)
+          .createSignedUrl(savedPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
+        if (signedResult.error) throw signedResult.error;
+        state.avatarUrl = signedResult.data && signedResult.data.signedUrl
+          ? signedResult.data.signedUrl
+          : null;
+      } catch (signedUrlError) {
+        state.avatarUrl = null;
+        console.warn('GENMERCH saved the customer avatar, but could not create its preview URL:', signedUrlError.message || signedUrlError);
+      }
+
+      if (previousPath && previousPath !== savedPath && previousPath.startsWith(String(user.id) + '/')) {
+        const cleanup = await db.storage.from(CUSTOMER_AVATAR_BUCKET).remove([previousPath]);
+        if (cleanup.error) console.warn('GENMERCH could not remove the previous customer avatar:', cleanup.error.message || cleanup.error);
+      }
+
+      const name = currentUserName(user, state.profile);
+      if ($('gmcaUserAvatar')) $('gmcaUserAvatar').innerHTML = avatarMarkup(name || user.email || 'GM');
+      renderAllPanes();
+      showAlert(state.avatarUrl
+        ? 'Your profile photo has been updated.'
+        : 'Your profile photo was saved. Refresh your account if the preview does not appear yet.',
+      state.avatarUrl ? 'success' : 'warning');
+    } catch (error) {
+      if (uploadedPath) {
+        try {
+          await client().storage.from(CUSTOMER_AVATAR_BUCKET).remove([uploadedPath]);
+        } catch (_) {}
+      }
+      showAlert(error.message || 'We could not upload your profile photo. Please try again.', 'error');
+    } finally {
+      state.uploadingAvatar = false;
+      setCustomerAvatarControlsBusy(false);
+    }
+  }
+
+  async function removeCustomerAvatar() {
+    const user = state.session && state.session.user;
+    const oldPath = state.avatarPath;
+    if (!user || !oldPath || state.uploadingAvatar) return;
+    if (!window.confirm('Remove your profile photo and use your initials avatar instead?')) return;
+
+    state.uploadingAvatar = true;
+    setCustomerAvatarControlsBusy(true);
+    showAlert('Removing your profile photo…', 'warning');
+    try {
+      const db = client();
+      const profileResult = await db.from('profiles').upsert({
+        id: user.id,
+        avatar_path: null,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+      if (profileResult.error) throw profileResult.error;
+
+      state.avatarPath = null;
+      state.avatarUrl = null;
+      state.profile = { ...(state.profile || {}), id: user.id, avatar_path: null };
+      renderAllPanes();
+
+      if (oldPath.startsWith(String(user.id) + '/')) {
+        const removeResult = await db.storage.from(CUSTOMER_AVATAR_BUCKET).remove([oldPath]);
+        if (removeResult.error) console.warn('GENMERCH could not remove the old avatar object:', removeResult.error.message || removeResult.error);
+      }
+      showAlert('Your profile photo has been removed.');
+    } catch (error) {
+      showAlert(error.message || 'We could not remove your profile photo. Please try again.', 'error');
+    } finally {
+      state.uploadingAvatar = false;
+      setCustomerAvatarControlsBusy(false);
+    }
   }
 
   async function saveProfile() {
@@ -1766,6 +1982,9 @@
         window.setTimeout(async () => {
           state.session = session && session.user ? session : null;
           if (event === 'SIGNED_OUT') {
+            state.profile = null;
+            state.avatarPath = null;
+            state.avatarUrl = null;
             state.checkoutBalance = 0;
             state.selectedPoints = 0;
             window.genmerchSelectedLoyaltyPoints = 0;
