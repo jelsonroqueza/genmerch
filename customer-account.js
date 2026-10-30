@@ -711,16 +711,18 @@
         throw profileResult.error;
       }
 
-      state.avatarPath = uploadedPath;
-      state.profile = { ...(state.profile || {}), id: user.id, avatar_path: uploadedPath };
+      const savedPath = uploadedPath;
+      uploadedPath = null;
+      state.avatarPath = savedPath;
+      state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
       const signedResult = await db.storage
         .from(CUSTOMER_AVATAR_BUCKET)
-        .createSignedUrl(uploadedPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
+        .createSignedUrl(savedPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
       state.avatarUrl = signedResult.error || !signedResult.data
         ? null
         : signedResult.data.signedUrl || null;
 
-      if (previousPath && previousPath !== uploadedPath && previousPath.startsWith(String(user.id) + '/')) {
+      if (previousPath && previousPath !== savedPath && previousPath.startsWith(String(user.id) + '/')) {
         const cleanup = await db.storage.from(CUSTOMER_AVATAR_BUCKET).remove([previousPath]);
         if (cleanup.error) console.warn('GENMERCH could not remove the previous customer avatar:', cleanup.error.message || cleanup.error);
       }
