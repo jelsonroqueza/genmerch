@@ -2472,7 +2472,6 @@
     let wishlistCloudSyncError = '';
     let wishlistCloudSyncWarning = '';
     let wishlistLastLoadedStorageKey = '';
-    let wishlistCloudRefreshTimer = null;
     const wishlistWriteChains = new Map();
     const wishlistWriteVersions = new Map();
     const wishlistConfirmedSavedState = new Map();
@@ -2728,6 +2727,7 @@
     let customerGuestTrackingLookup=null;
     let customerOrdersRealtimeChannel=null;
     let customerOrdersRealtimeUserId='';
+    let customerOrdersRealtimeConnected=false;
     let customerOrdersBadgePollTimer=null;
     let customerOrdersBadgeRefreshSequence=0;
 
@@ -2819,6 +2819,7 @@
         customerOrdersRealtimeChannel=null;
       }
       customerOrdersRealtimeUserId='';
+      customerOrdersRealtimeConnected=false;
     }
 
     function startCustomerOrdersBadgePolling(){
@@ -2870,8 +2871,10 @@
           .subscribe(status=>{
             if(customerOrdersRealtimeUserId!==userId)return;
             if(status==='SUBSCRIBED'){
+              customerOrdersRealtimeConnected=true;
               stopCustomerOrdersBadgePolling();
             }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+              customerOrdersRealtimeConnected=false;
               console.warn('GENMERCH Orders Realtime is temporarily unavailable; enabling the slower fallback refresh.');
               startCustomerOrdersBadgePolling();
             }
@@ -3273,13 +3276,14 @@
     function startCustomerOrdersRefresh(){
       if(customerOrdersRefreshTimer!==null)return;
       customerOrdersRefreshTimer=window.setInterval(async()=>{
-        if(!document.hidden&&$('customerOrdersOverlay').classList.contains('open')){
-          await loadCustomerAccountOrders(true);
-          if(customerGuestTrackingLookup){
-            try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);}catch(_){}
-          }
+        if(document.hidden||!$('customerOrdersOverlay').classList.contains('open'))return;
+        const session=customerAuthCurrentSession;
+        if(session&&session.user){
+          if(!customerOrdersRealtimeConnected)await loadCustomerAccountOrders(true);
+        }else if(customerGuestTrackingLookup){
+          try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);}catch(_){}
         }
-      },20000);
+      },60000);
     }
     function stopCustomerOrdersRefresh(){if(customerOrdersRefreshTimer!==null){window.clearInterval(customerOrdersRefreshTimer);customerOrdersRefreshTimer=null;}}
     $('customerOrdersClose').addEventListener('click',closeCustomerOrders);
@@ -3338,15 +3342,6 @@
       finally{button.disabled=false;button.textContent='Track my order';}
     });
 
-    function startWishlistCloudRefresh(){
-      if(wishlistCloudRefreshTimer!==null)return;
-      wishlistCloudRefreshTimer=window.setInterval(()=>{
-        if(!document.hidden&&$('wishlistOverlay').classList.contains('open'))syncWishlistForCustomerSession(undefined,true);
-      },20000);
-    }
-    function stopWishlistCloudRefresh(){
-      if(wishlistCloudRefreshTimer!==null){window.clearInterval(wishlistCloudRefreshTimer);wishlistCloudRefreshTimer=null;}
-    }
     async function openWishlist(){
       $('wishlistOverlay').classList.add('open');
       $('wishlistOverlay').setAttribute('aria-hidden','false');
@@ -3355,14 +3350,12 @@
       await syncWishlistForCustomerSession(undefined,false);
       renderWishlist();
       if(wishlistCloudSyncError&&customerAuthCurrentSession&&customerAuthCurrentSession.user)showToast('Could not connect to your cloud Wishlist. Showing this device’s saved items for now.');
-      startWishlistCloudRefresh();
     }
     function closeWishlist(){
       const overlay=$('wishlistOverlay');
       if(!overlay)return;
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden','true');
-      stopWishlistCloudRefresh();
       if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
     }
     $('wishlistCloseButton').addEventListener('click',closeWishlist);
@@ -8319,7 +8312,19 @@
 </script>
 <script id="genmerch-wishlist-cross-device-sync">
 (function(){
- let channel=null,activeUid='';
+ let channel=null,activeUid='',fallbackTimer=null;
+ function startWishlistRealtimeFallback(){
+   if(fallbackTimer!==null)return;
+   fallbackTimer=window.setInterval(function(){
+     var overlay=document.getElementById('wishlistOverlay');
+     if(document.visibilityState==='visible'&&overlay&&overlay.classList.contains('open')&&typeof syncWishlistForCustomerSession==='function'){
+       syncWishlistForCustomerSession(undefined,true).catch(function(error){console.warn('Wishlist fallback refresh failed.',error);});
+     }
+   },60000);
+ }
+ function stopWishlistRealtimeFallback(){
+   if(fallbackTimer!==null){window.clearInterval(fallbackTimer);fallbackTimer=null;}
+ }
  async function bindWishlistSync(sessionOverride){
    if(typeof getCustomerAuthClient!=='function')return;
    try{
@@ -8338,18 +8343,28 @@
        try{await client.removeChannel(channel);}catch(_){}
        channel=null;
      }
+     stopWishlistRealtimeFallback();
      if(uid){
        channel=client.channel('genmerch-wishlist-sync-'+uid)
          .on('postgres_changes',{event:'*',schema:'public',table:'customer_wishlist',filter:'user_id=eq.'+uid},function(){
-           if(document.visibilityState==='visible'&&typeof syncWishlistForCustomerSession==='function'){
-             syncWishlistForCustomerSession(undefined,true).catch(error=>console.warn('Wishlist cross-device refresh failed.',error));
+           var overlay=document.getElementById('wishlistOverlay');
+           if(document.visibilityState==='visible'&&overlay&&overlay.classList.contains('open')&&typeof syncWishlistForCustomerSession==='function'){
+             syncWishlistForCustomerSession(undefined,true).catch(function(error){console.warn('Wishlist cross-device refresh failed.',error);});
            }
          })
          .subscribe(status=>{
-           if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Wishlist Realtime is temporarily unavailable; local and next-visibility sync remain available.');
+           if(status==='SUBSCRIBED'){
+             stopWishlistRealtimeFallback();
+           }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+             console.warn('Wishlist Realtime is temporarily unavailable; enabling the slower fallback refresh.');
+             startWishlistRealtimeFallback();
+           }
          });
      }
-   }catch(error){console.warn('Wishlist Realtime channel could not be synchronized.',error);}
+   }catch(error){
+     console.warn('Wishlist Realtime channel could not be synchronized.',error);
+     if(activeUid)startWishlistRealtimeFallback();
+   }
  }
  function start(){
    bindWishlistSync();
