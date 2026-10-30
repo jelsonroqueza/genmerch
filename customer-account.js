@@ -29,7 +29,7 @@
   const $ = (id) => document.getElementById(id);
   const CUSTOMER_AVATAR_BUCKET = 'customer-avatars';
   const CUSTOMER_AVATAR_MAX_BYTES = 2 * 1024 * 1024;
-  const CUSTOMER_AVATAR_URL_TTL_SECONDS = 1800;
+  const CUSTOMER_AVATAR_URL_TTL_SECONDS = 900;
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[ch]));
@@ -688,7 +688,7 @@
       const uploadResult = await db.storage
         .from(CUSTOMER_AVATAR_BUCKET)
         .upload(uploadedPath, file, {
-          cacheControl: '1800',
+          cacheControl: '900',
           contentType: detectedType.mime,
           upsert: false
         });
