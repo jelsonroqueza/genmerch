@@ -67,6 +67,14 @@
     }
   }
 
+  function hideAddressBookSuggestions() {
+    document.querySelectorAll('.gmca-address-suggestions').forEach((box) => {
+      box.classList.remove('open');
+      const input = box.closest('.gmca-address-autocomplete')?.querySelector('input');
+      if (input) input.setAttribute('aria-expanded', 'false');
+    });
+  }
+
   function ensureModal() {
     if ($('gmcaOverlay')) return;
     const overlay = document.createElement('div');
@@ -117,7 +125,7 @@
         switchTab(option.getAttribute('data-gmca-section'));
         closeSectionMenu();
       }
-      if (!event.target.closest('.gmca-address-autocomplete')) hideAccountAddressSuggestions();
+      if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
     $('gmcaSectionTrigger').addEventListener('click', toggleSectionMenu);
     $('gmcaClose').addEventListener('click', closeAccount);
