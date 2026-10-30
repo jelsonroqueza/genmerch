@@ -124,6 +124,7 @@
       if (option) {
         switchTab(option.getAttribute('data-gmca-section'));
         closeSectionMenu();
+        $('gmcaSectionTrigger')?.focus({ preventScroll: true });
       }
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
