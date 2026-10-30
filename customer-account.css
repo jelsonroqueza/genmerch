@@ -2204,3 +2204,127 @@
     width:min(230px,100%);
   }
 }
+
+/* Private customer profile photo controls */
+#gmcaOverlay .gmca-avatar-image{
+  display:block;
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+  object-fit:cover;
+  object-position:center;
+}
+#gmcaOverlay .gmca-user-avatar-wrap{
+  position:relative;
+  display:block;
+  flex:0 0 48px;
+  width:48px;
+  height:48px;
+}
+#gmcaOverlay .gmca-user-avatar-wrap .gmca-user-avatar{
+  box-sizing:border-box;
+  flex:0 0 100%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  padding:0;
+}
+#gmcaOverlay .gmca-welcome-avatar-wrap{
+  position:relative;
+  display:block;
+  flex:0 0 clamp(64px,7vw,88px);
+  width:clamp(64px,7vw,88px);
+  height:clamp(64px,7vw,88px);
+}
+#gmcaOverlay .gmca-welcome-avatar-wrap .gmca-welcome-avatar{
+  box-sizing:border-box;
+  flex:0 0 100%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  padding:0;
+}
+#gmcaOverlay .gmca-avatar-camera{
+  position:absolute;
+  z-index:3;
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  padding:0;
+  border:2px solid #fff;
+  border-radius:50%;
+  background:linear-gradient(145deg,#ff9a3b,#e94c05);
+  color:#fff;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:950;
+  line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+  cursor:pointer;
+  transition:transform .15s ease,filter .15s ease;
+}
+#gmcaOverlay .gmca-avatar-camera:hover{transform:scale(1.08);filter:brightness(1.08)}
+#gmcaOverlay .gmca-avatar-camera:focus-visible{outline:3px solid #ffb36b;outline-offset:2px}
+#gmcaOverlay .gmca-avatar-camera:disabled{opacity:.55;cursor:wait}
+#gmcaOverlay .gmca-header-avatar-camera{right:-2px;bottom:-2px;width:19px;height:19px;font-size:.62rem}
+#gmcaOverlay .gmca-welcome-avatar-camera{right:-2px;bottom:0;width:29px;height:29px;font-size:.82rem}
+#gmcaOverlay .gmca-profile-photo-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+  margin:0 0 15px;
+  padding:14px;
+  border:1px solid #49301f;
+  border-radius:14px;
+  background:linear-gradient(135deg,#1b1c1e,#151618);
+}
+#gmcaOverlay .gmca-profile-photo-preview{
+  display:grid;
+  place-items:center;
+  flex:0 0 60px;
+  width:60px;
+  height:60px;
+  overflow:hidden;
+  border:2px solid #ff9a4a;
+  border-radius:50%;
+  background:linear-gradient(145deg,#303c4a,#18202a);
+  color:#fff;
+  font-size:1.05rem;
+  font-weight:950;
+}
+#gmcaOverlay .gmca-profile-photo-copy{
+  display:grid;
+  flex:1 1 auto;
+  gap:4px;
+  min-width:0;
+}
+#gmcaOverlay .gmca-profile-photo-copy strong{color:#fff;font-size:.86rem;font-weight:950}
+#gmcaOverlay .gmca-profile-photo-copy small{color:#c6b6a8;font-size:.72rem;line-height:1.4}
+#gmcaOverlay .gmca-profile-photo-actions{display:flex;flex:0 0 auto;flex-wrap:wrap;gap:7px}
+#gmcaOverlay .gmca-profile-photo-actions button{min-height:38px}
+#gmcaOverlay .gmca-avatar-remove-button{border-color:#75412b;background:#261914;color:#ffb39a}
+#gmcaOverlay .gmca-avatar-remove-button:hover{border-color:#c86442;background:#3b1d15;color:#fff}
+@media(max-width:760px){
+  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:62px;width:62px;height:62px}
+  #gmcaOverlay .gmca-footer{padding-bottom:max(9px,env(safe-area-inset-bottom))}
+  #gmcaOverlay .gmca-profile-photo-card{flex-wrap:wrap;gap:11px}
+  #gmcaOverlay .gmca-profile-photo-actions{flex:1 0 100%}
+  #gmcaOverlay .gmca-profile-photo-actions button{flex:1 1 0}
+}
+@media(max-width:480px){
+  #gmcaOverlay .gmca-user-avatar-wrap{flex-basis:34px;width:34px;height:34px}
+  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:51px;width:51px;height:51px}
+  #gmcaOverlay .gmca-avatar-camera{width:23px;height:23px}
+  #gmcaOverlay .gmca-header-avatar-camera{width:17px;height:17px;font-size:.56rem}
+  #gmcaOverlay .gmca-welcome-avatar-camera{width:25px;height:25px}
+  #gmcaOverlay .gmca-profile-photo-card{padding:11px}
+}
+@media(max-width:359px){
+  #gmcaOverlay .gmca-user-avatar-wrap{flex-basis:30px;width:30px;height:30px}
+  #gmcaOverlay .gmca-header-avatar-camera{right:-3px;bottom:-3px;width:16px;height:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  #gmcaOverlay .gmca-avatar-camera{transition:none}
+}
