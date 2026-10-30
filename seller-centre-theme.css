@@ -3086,3 +3086,99 @@
     justify-content: flex-start !important;
   }
 }
+
+
+/* GENMERCH Seller Centre — unified inventory navigation and frozen column headings. */
+#sellerDashboardOverlay #sellerInventoryPanel {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain !important;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+#sellerDashboardOverlay #sellerInventoryTableContent {
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+#sellerDashboardOverlay #sellerInventoryFilterToolbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+  isolation: isolate !important;
+  scroll-margin-top: 0 !important;
+}
+#sellerDashboardOverlay .seller-inventory-table-wrap {
+  max-height: none !important;
+  height: auto !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain !important;
+  overscroll-behavior-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+#sellerDashboardOverlay .seller-inventory-table-wrap > .seller-inventory-table > thead {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head {
+  position: sticky !important;
+  top: var(--gm-inventory-filter-height, 54px) !important;
+  z-index: 24 !important;
+  width: 100% !important;
+  height: var(--gm-inventory-head-height, 42px) !important;
+  margin-bottom: calc(-1 * var(--gm-inventory-head-height, 42px)) !important;
+  overflow: hidden !important;
+  border: 1px solid #e2e8f0 !important;
+  border-bottom: 0 !important;
+  border-radius: 9px 9px 0 0 !important;
+  background: #f8fafc !important;
+  box-shadow: 0 2px 6px rgba(38,50,56,.08) !important;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head table {
+  table-layout: fixed !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  transform: translateX(var(--gm-inventory-head-x, 0px));
+  will-change: transform;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head thead th {
+  position: static !important;
+  top: auto !important;
+  z-index: auto !important;
+  height: var(--gm-inventory-head-height, 42px) !important;
+  padding: 10px 10px !important;
+  border-top: 0 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head .seller-sort-button {
+  max-width: 100% !important;
+  white-space: nowrap !important;
+}
+#sellerDashboardOverlay .seller-inventory-back-top {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+@media (max-width: 760px) {
+  #sellerDashboardOverlay .seller-inventory-sticky-head thead th {
+    padding: 9px 8px !important;
+    font-size: .65rem !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sellerDashboardOverlay #sellerInventoryPanel {
+    scroll-behavior: auto !important;
+  }
+  #sellerDashboardOverlay .seller-inventory-sticky-head table {
+    will-change: auto;
+  }
+}
