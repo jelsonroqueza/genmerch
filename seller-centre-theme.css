@@ -3229,3 +3229,57 @@
     backdrop-filter: blur(26px) saturate(.08) brightness(1.06) !important;
   }
 }
+
+
+/* GENMERCH Seller Centre — align the blur curtain with the panel edge.
+   The panel has its own top padding. The old top:0 shield started below that
+   padding, leaving the first slice of the moving row visible above it. */
+#sellerDashboardOverlay #sellerInventoryPanel {
+  --gm-inventory-panel-top-padding: clamp(18px, 2vw, 30px) !important;
+  --gm-inventory-blur-guard-height: calc(var(--gm-inventory-panel-top-padding) + 24px) !important;
+}
+#sellerDashboardOverlay #sellerInventoryPanel::before {
+  top: calc(-1 * var(--gm-inventory-panel-top-padding)) !important;
+  height: var(--gm-inventory-blur-guard-height) !important;
+  min-height: var(--gm-inventory-blur-guard-height) !important;
+  margin-bottom: calc(-1 * var(--gm-inventory-blur-guard-height)) !important;
+  z-index: 90 !important;
+  opacity: 0 !important;
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: opacity .12s ease !important;
+}
+#sellerDashboardOverlay #sellerInventoryPanel[data-scroll-active="true"]::before {
+  opacity: 1 !important;
+  background: rgba(248, 250, 252, .985) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(.02) brightness(1.04) !important;
+  backdrop-filter: blur(36px) saturate(.02) brightness(1.04) !important;
+  border-bottom: 1px solid rgba(203, 213, 225, .78) !important;
+  box-shadow: 0 5px 14px rgba(38, 50, 56, .07) !important;
+}
+#sellerDashboardOverlay #sellerInventoryFilterToolbar {
+  top: var(--gm-inventory-blur-guard-height) !important;
+  z-index: 80 !important;
+  background: rgba(248, 250, 252, .995) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(.05) !important;
+  backdrop-filter: blur(24px) saturate(.05) !important;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head {
+  top: calc(var(--gm-inventory-blur-guard-height) + var(--gm-inventory-filter-height, 54px)) !important;
+  z-index: 70 !important;
+  background: rgba(248, 250, 252, .995) !important;
+}
+@media (max-width: 760px) {
+  #sellerDashboardOverlay #sellerInventoryPanel {
+    --gm-inventory-panel-top-padding: 12px !important;
+    --gm-inventory-blur-guard-height: calc(var(--gm-inventory-panel-top-padding) + 22px) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sellerDashboardOverlay #sellerInventoryPanel::before {
+    transition: none !important;
+  }
+}
