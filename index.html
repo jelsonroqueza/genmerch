@@ -17964,5 +17964,124 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 </style>
 
 <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-13">
+
+<script id="genmerch-inventory-freeze-navigation">
+(function () {
+  'use strict';
+  var panel = document.getElementById('sellerInventoryPanel');
+  var content = document.getElementById('sellerInventoryTableContent');
+  var toolbar = document.getElementById('sellerInventoryFilterToolbar');
+  var tableWrap = panel ? panel.querySelector('.seller-inventory-table-wrap') : null;
+  var table = tableWrap ? tableWrap.querySelector('.seller-inventory-table') : null;
+  var backToTop = document.getElementById('sellerInventoryBackToTopButton');
+  if (!panel || !content || !toolbar || !tableWrap || !table || !table.tHead) return;
+  if (window.__GENMERCH_INVENTORY_FREEZE_NAV_READY__) return;
+  window.__GENMERCH_INVENTORY_FREEZE_NAV_READY__ = true;
+
+  var stickyHead = null;
+  var stickyTable = null;
+  var animationPending = false;
+
+  function buildStickyHead() {
+    if (stickyHead && stickyHead.isConnected) return;
+    stickyHead = document.createElement('div');
+    stickyHead.className = 'seller-inventory-sticky-head';
+    stickyHead.setAttribute('role', 'region');
+    stickyHead.setAttribute('aria-label', 'Frozen inventory table headings');
+    stickyTable = document.createElement('table');
+    stickyTable.className = table.className + ' seller-inventory-sticky-table';
+    stickyTable.setAttribute('aria-label', 'Inventory table column headings');
+    stickyTable.setAttribute('role', 'table');
+
+    var clonedHead = table.tHead.cloneNode(true);
+    clonedHead.setAttribute('data-genmerch-sticky-copy', 'true');
+    clonedHead.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
+    clonedHead.querySelectorAll('th').forEach(function (cell) {
+      if (!cell.hasAttribute('scope')) cell.setAttribute('scope', 'col');
+    });
+    stickyTable.appendChild(clonedHead);
+    stickyHead.appendChild(stickyTable);
+    tableWrap.parentNode.insertBefore(stickyHead, tableWrap);
+
+    stickyHead.addEventListener('click', function (event) {
+      var button = event.target.closest('button[data-inventory-sort]');
+      if (!button) return;
+      var key = button.getAttribute('data-inventory-sort');
+      var sourceButton = Array.prototype.find.call(
+        table.tHead.querySelectorAll('button[data-inventory-sort]'),
+        function (candidate) { return candidate.getAttribute('data-inventory-sort') === key; }
+      );
+      if (sourceButton) sourceButton.click();
+    });
+    table.tHead.setAttribute('aria-hidden', 'true');
+  }
+
+  function updateLayout() {
+    animationPending = false;
+    if (!stickyHead || !stickyHead.isConnected) buildStickyHead();
+    var sourceCells = Array.prototype.slice.call(table.tHead.querySelectorAll('th'));
+    var stickyCells = Array.prototype.slice.call(stickyTable.tHead.querySelectorAll('th'));
+    if (!sourceCells.length || !stickyCells.length) return;
+    var widths = sourceCells.map(function (cell) { return cell.getBoundingClientRect().width; });
+    if (!widths[0]) return;
+    var headerHeight = table.tHead.getBoundingClientRect().height || 42;
+    var tableWidth = Math.max(
+      table.scrollWidth || 0,
+      table.getBoundingClientRect().width || 0,
+      widths.reduce(function (total, width) { return total + width; }, 0)
+    );
+    stickyHead.style.setProperty('--gm-inventory-filter-height', Math.ceil(toolbar.getBoundingClientRect().height) + 'px');
+    stickyHead.style.setProperty('--gm-inventory-head-height', Math.ceil(headerHeight) + 'px');
+    stickyHead.style.height = Math.ceil(headerHeight) + 'px';
+    stickyHead.style.marginBottom = (-Math.ceil(headerHeight)) + 'px';
+    stickyTable.style.width = Math.ceil(tableWidth) + 'px';
+    stickyCells.forEach(function (cell, index) {
+      var width = widths[index];
+      if (Number.isFinite(width) && width > 0) {
+        cell.style.setProperty('width', width + 'px', 'important');
+        cell.style.setProperty('min-width', width + 'px', 'important');
+        cell.style.setProperty('max-width', width + 'px', 'important');
+      }
+    });
+    stickyTable.style.setProperty('transform', 'translateX(' + (-tableWrap.scrollLeft) + 'px)');
+  }
+
+  function scheduleLayout() {
+    if (animationPending) return;
+    animationPending = true;
+    window.requestAnimationFrame(updateLayout);
+  }
+
+  tableWrap.addEventListener('scroll', scheduleLayout, { passive: true });
+  window.addEventListener('resize', scheduleLayout, { passive: true });
+  if (window.ResizeObserver) {
+    var resizeObserver = new ResizeObserver(scheduleLayout);
+    resizeObserver.observe(toolbar);
+    resizeObserver.observe(table);
+    resizeObserver.observe(panel);
+  }
+  if (backToTop) {
+    backToTop.addEventListener('click', function () {
+      panel.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      });
+    });
+  }
+  var inventoryTab = document.getElementById('sellerInventoryTab');
+  if (inventoryTab) {
+    inventoryTab.addEventListener('click', function () {
+      window.requestAnimationFrame(function () { window.requestAnimationFrame(scheduleLayout); });
+    });
+  }
+  var tableBody = document.getElementById('sellerInventoryTableBody');
+  if (tableBody && window.MutationObserver) {
+    new MutationObserver(scheduleLayout).observe(tableBody, { childList: true, subtree: true });
+  }
+  buildStickyHead();
+  scheduleLayout();
+})();
+</script>
+
 </body>
 </html>
