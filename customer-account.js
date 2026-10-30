@@ -1360,7 +1360,7 @@
     section.id = 'gmcaCheckoutAddressPicker';
     section.className = 'gmca-checkout-address-picker';
     section.innerHTML =
-      '<div class="gmca-checkout-address-heading"><div><strong>▣ Saved delivery details</strong><p id="gmcaCheckoutAddressHelp">Sign in to load your saved phone number and address.</p></div><button type="button" class="gmca-checkout-manage" id="gmcaCheckoutManageAddresses">Manage</button></div>' +
+      '<div class="gmca-checkout-address-heading"><div><strong><span class="gmca-checkout-title-icon" aria-hidden="true">⌖</span> Saved delivery details</strong><p id="gmcaCheckoutAddressHelp">Sign in to load your saved phone number and address.</p></div><button type="button" class="gmca-checkout-manage" id="gmcaCheckoutManageAddresses">Manage</button></div>' +
       '<div class="gmca-checkout-address-controls"><select id="gmcaCheckoutAddressSelect" aria-label="Choose saved delivery address"><option value="">Use my default address</option></select><button type="button" class="gmca-primary gmca-checkout-use" id="gmcaCheckoutUseAddress">Use selected address</button></div>' +
       '<p id="gmcaCheckoutAddressFeedback" class="gmca-checkout-feedback" role="status" aria-live="polite"></p>';
     grid.insertAdjacentElement('afterend', section);
@@ -1571,7 +1571,7 @@
     box.id = 'gmcaCheckoutPoints';
     box.className = 'gmca-checkout-points';
     box.innerHTML =
-      '<div class="gmca-checkout-points-top"><div><strong>✦ Use GENMERCH Points</strong><p id="gmcaCheckoutPointsHelp">Sign in to view your available points.</p></div><label class="gmca-switch"><input type="checkbox" id="gmcaUsePoints" disabled><span></span><em>Apply</em></label></div>' +
+      '<div class="gmca-checkout-points-top"><div><strong><span class="gmca-checkout-points-icon" aria-hidden="true">₱</span> Use GENMERCH Points</strong><p id="gmcaCheckoutPointsHelp">Sign in to view your available points.</p></div><label class="gmca-switch"><input type="checkbox" id="gmcaUsePoints" disabled><span></span><em>Apply</em></label></div>' +
       '<div class="gmca-checkout-points-foot"><span id="gmcaCheckoutPointsBalance">Available: 0 points</span><span id="gmcaCheckoutPointsMax">Maximum discount: ₱0</span></div>';
     totals.parentNode.insertBefore(box, totals);
     const row = document.createElement('div');
