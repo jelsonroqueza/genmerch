@@ -3182,3 +3182,50 @@
     will-change: auto;
   }
 }
+
+
+/* GENMERCH Seller Centre — full-strength blur shield for content scrolling beneath frozen inventory navigation. */
+#sellerDashboardOverlay #sellerInventoryPanel {
+  --gm-inventory-blur-guard-height: 24px !important;
+}
+#sellerDashboardOverlay #sellerInventoryPanel::before {
+  content: "" !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  display: block !important;
+  width: 100% !important;
+  height: var(--gm-inventory-blur-guard-height, 24px) !important;
+  min-height: var(--gm-inventory-blur-guard-height, 24px) !important;
+  margin: 0 0 calc(-1 * var(--gm-inventory-blur-guard-height, 24px)) !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+  background: rgba(248, 250, 252, .92) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(.08) brightness(1.06) !important;
+  backdrop-filter: blur(30px) saturate(.08) brightness(1.06) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(203, 213, 225, .75) !important;
+  box-shadow: 0 5px 12px rgba(38, 50, 56, .055) !important;
+}
+#sellerDashboardOverlay #sellerInventoryFilterToolbar {
+  top: var(--gm-inventory-blur-guard-height, 24px) !important;
+  background: rgba(248, 250, 252, .97) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(.12) !important;
+  backdrop-filter: blur(18px) saturate(.12) !important;
+  box-shadow: 0 5px 12px rgba(38, 50, 56, .075) !important;
+}
+#sellerDashboardOverlay .seller-inventory-sticky-head {
+  top: calc(var(--gm-inventory-blur-guard-height, 24px) + var(--gm-inventory-filter-height, 54px)) !important;
+  background: rgba(248, 250, 252, .99) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(.2) !important;
+  backdrop-filter: blur(12px) saturate(.2) !important;
+}
+@media (max-width: 760px) {
+  #sellerDashboardOverlay #sellerInventoryPanel {
+    --gm-inventory-blur-guard-height: 22px !important;
+  }
+  #sellerDashboardOverlay #sellerInventoryPanel::before {
+    -webkit-backdrop-filter: blur(26px) saturate(.08) brightness(1.06) !important;
+    backdrop-filter: blur(26px) saturate(.08) brightness(1.06) !important;
+  }
+}
