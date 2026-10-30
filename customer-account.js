@@ -1755,8 +1755,10 @@
       const identity=String(label.dataset.fullName||button.getAttribute('title')||'').trim();
       if(!identity)return;
       const initials=makeInitials(identity);
-      if(label.textContent.trim()!==initials)label.textContent=initials;
-      label.setAttribute('aria-label','Customer account initials '+initials);
+      const icon=button.querySelector('.header-icon');
+      if(icon&&icon.dataset.initials!==initials)icon.dataset.initials=initials;
+      if(label.textContent.trim()!=='Account')label.textContent='Account';
+      label.setAttribute('aria-label','Account');
     }
     apply();
     if(typeof MutationObserver==='function'){
