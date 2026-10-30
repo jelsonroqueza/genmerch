@@ -1481,3 +1481,294 @@
     font-size: 1.34rem !important;
   }
 }
+
+
+/* GENMERCH Comfort UI — Soft Graphite Edition.
+   Visual-only override: existing inventory, orders, calculations and Supabase logic remain unchanged. */
+#sellerDashboardOverlay,
+#sellerPasscodeOverlay {
+  --sc-bg: #45474b;
+  --sc-panel: #505258;
+  --sc-panel-raised: #595b61;
+  --sc-panel-deep: #3c3e42;
+  --sc-border: #696b71;
+  --sc-border-orange: rgba(217, 107, 43, .55);
+  --sc-orange: #d96b2b;
+  --sc-orange-light: #e99a68;
+  --sc-text: #e9e3dc;
+  --sc-muted: #c4bbb2;
+  --sc-soft: #aaa29a;
+  --sc-shadow: 0 22px 64px rgba(0,0,0,.32);
+}
+
+/* Brighter graphite frame; reduce the black veil around the administration window. */
+#sellerDashboardOverlay.seller-modal-overlay {
+  background: rgba(37, 38, 41, .62) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(.94) !important;
+  backdrop-filter: blur(8px) saturate(.94) !important;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal {
+  background: linear-gradient(145deg, #4a4c51 0%, #45474b 58%, #48433f 100%) !important;
+  border-color: #c96a32 !important;
+  box-shadow: 0 0 0 1px rgba(217,107,43,.11), 0 24px 66px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+#sellerDashboardOverlay .seller-modal-head {
+  background: linear-gradient(110deg, #55575d 0%, #4d4f55 68%, #51463e 100%) !important;
+  border-bottom-color: rgba(217,107,43,.46) !important;
+}
+#sellerDashboardOverlay .seller-modal-head h2,
+#sellerDashboardOverlay .seller-panel-title,
+#sellerDashboardOverlay .seller-table td strong,
+#sellerDashboardOverlay .seller-table td b {
+  color: #f1ece6 !important;
+}
+#sellerDashboardOverlay .seller-modal-head p,
+#sellerDashboardOverlay .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-muted,
+#sellerDashboardOverlay .seller-field-hint,
+#sellerDashboardOverlay .seller-gallery-upload-help,
+#sellerDashboardOverlay .seller-gallery-file-name {
+  color: #d0c8c0 !important;
+}
+#sellerDashboardOverlay .seller-tabs {
+  background: linear-gradient(180deg, #494b50, #43454a) !important;
+  border-bottom-color: rgba(217,107,43,.32) !important;
+}
+#sellerDashboardOverlay .seller-tab-button {
+  color: #d6cec6 !important;
+}
+#sellerDashboardOverlay .seller-tab-button.active,
+#sellerDashboardOverlay .seller-tab-button[aria-selected="true"] {
+  background: #56585e !important;
+  color: #f0a071 !important;
+  border-color: rgba(217,107,43,.5) !important;
+  border-bottom-color: #d96b2b !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-panel {
+  background: transparent !important;
+  color: #e9e3dc !important;
+}
+#sellerDashboardOverlay .seller-products-topbar,
+#sellerDashboardOverlay .seller-section-heading,
+#sellerDashboardOverlay .seller-collapsible-section-heading,
+#sellerDashboardOverlay .seller-inventory-heading,
+#sellerDashboardOverlay .seller-orders-heading,
+#sellerDashboardOverlay .seller-products-heading,
+#sellerDashboardOverlay .seller-deleted-heading {
+  background: linear-gradient(145deg, #55575d, #4d4f55 78%, #51473f) !important;
+  border-color: #69625c !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 3px 10px rgba(0,0,0,.09) !important;
+}
+#sellerDashboardOverlay .seller-product-form,
+#sellerDashboardOverlay .seller-inventory-tools,
+#sellerDashboardOverlay .seller-file-picker,
+#sellerDashboardOverlay .seller-gallery-item,
+#sellerDashboardOverlay .seller-product-card,
+#sellerDashboardOverlay .seller-section-card,
+#sellerDashboardOverlay .seller-inventory-summary,
+#sellerDashboardOverlay .seller-filter-toolbar,
+#sellerDashboardOverlay .seller-filter-field,
+#sellerDashboardOverlay .gm-waybill-queue-bar,
+#sellerDashboardOverlay .seller-empty-state,
+#sellerDashboardOverlay .seller-order-card,
+#sellerDashboardOverlay .seller-order-detail-card,
+#sellerDashboardOverlay .seller-products-filter-toolbar,
+#sellerDashboardOverlay .seller-orders-filter-toolbar,
+#sellerDashboardOverlay .seller-inventory-filter-toolbar {
+  background: #505258 !important;
+  border-color: #6a6c72 !important;
+  color: #e9e3dc !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 3px 9px rgba(0,0,0,.08) !important;
+}
+#sellerDashboardOverlay .seller-field label,
+#sellerDashboardOverlay .seller-filter-field label,
+#sellerDashboardOverlay .seller-file-picker > label,
+#sellerDashboardOverlay .seller-gallery-color-label {
+  color: #e9e3dc !important;
+}
+#sellerDashboardOverlay .seller-field input,
+#sellerDashboardOverlay .seller-field textarea,
+#sellerDashboardOverlay .seller-field select,
+#sellerDashboardOverlay .seller-filter-field input,
+#sellerDashboardOverlay .seller-filter-field select,
+#sellerDashboardOverlay .seller-filter-field textarea,
+#sellerDashboardOverlay .seller-inventory-tools input,
+#sellerDashboardOverlay .seller-inventory-tools select,
+#sellerDashboardOverlay .seller-stock-input,
+#sellerPasscodeOverlay .seller-field input {
+  background: #3c3e42 !important;
+  border-color: #73757b !important;
+  color: #f1ece6 !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.14) !important;
+}
+#sellerDashboardOverlay .seller-field input:focus,
+#sellerDashboardOverlay .seller-field textarea:focus,
+#sellerDashboardOverlay .seller-field select:focus,
+#sellerDashboardOverlay .seller-filter-field input:focus,
+#sellerDashboardOverlay .seller-filter-field select:focus,
+#sellerDashboardOverlay .seller-inventory-tools input:focus,
+#sellerDashboardOverlay .seller-inventory-tools select:focus {
+  border-color: #d98a5d !important;
+  box-shadow: 0 0 0 2px rgba(217,107,43,.16) !important;
+}
+#sellerDashboardOverlay .seller-table-wrap,
+#sellerDashboardOverlay .seller-products-table-wrap,
+#sellerDashboardOverlay .seller-table {
+  background: #494b50 !important;
+  border-color: #696b71 !important;
+  color: #e9e3dc !important;
+}
+#sellerDashboardOverlay .seller-table thead th,
+#sellerDashboardOverlay .seller-products-table thead th,
+#sellerDashboardOverlay .seller-orders-table thead th,
+#sellerDashboardOverlay .seller-inventory-table thead th,
+#sellerDashboardOverlay .seller-movements-table thead th {
+  background: #555158 !important;
+  color: #efb18a !important;
+  border-color: rgba(217,107,43,.38) !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even),
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd),
+#sellerDashboardOverlay .seller-table tbody td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd) td,
+#sellerDashboardOverlay .seller-products-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-products-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:hover td {
+  background: #494b50 !important;
+  color: #e9e3dc !important;
+  border-bottom-color: rgba(255,255,255,.09) !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-products-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:hover td {
+  background: #55575d !important;
+  color: #fff5ec !important;
+}
+#sellerDashboardOverlay .seller-table .seller-product-name {
+  color: #f2ece5 !important;
+}
+#sellerDashboardOverlay .seller-table .seller-muted,
+#sellerDashboardOverlay .seller-filter-result-count,
+#sellerDashboardOverlay .seller-products-filter-result-count,
+#sellerDashboardOverlay .seller-orders-filter-result-count {
+  color: #d0c8c0 !important;
+}
+
+/* KPI row: no large saturated orange tiles or translucent orb decorations. */
+#sellerDashboardOverlay .seller-metric-card {
+  position: relative !important;
+  overflow: hidden !important;
+  background: #505258 !important;
+  border: 1px solid #707279 !important;
+  border-left: 3px solid #d96b2b !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 9px rgba(0,0,0,.1) !important;
+}
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1),
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3),
+#sellerDashboardOverlay .seller-metric-card:not(:nth-child(4n+1)):not(:nth-child(4n+3)) {
+  background: #505258 !important;
+  border-color: #707279 !important;
+  border-left-color: #d96b2b !important;
+  box-shadow: 0 3px 9px rgba(0,0,0,.1) !important;
+}
+#sellerDashboardOverlay .seller-metric-card::after {
+  display: none !important;
+  content: none !important;
+}
+#sellerDashboardOverlay .seller-metric-card::before {
+  background: #d96b2b !important;
+}
+#sellerDashboardOverlay .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-label {
+  color: #e9e3dc !important;
+}
+#sellerDashboardOverlay .seller-metric-detail,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-detail,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-detail {
+  color: #cfc7bf !important;
+}
+#sellerDashboardOverlay .seller-metric-value,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-value,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-value {
+  color: #f0a071 !important;
+  font-family: "Lexend", system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  font-variant-numeric: lining-nums tabular-nums !important;
+  font-feature-settings: "tnum" 1, "lnum" 1 !important;
+  font-synthesis: none !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+#sellerDashboardOverlay .seller-primary-button,
+#sellerPasscodeOverlay .seller-primary-button {
+  background: linear-gradient(145deg, #e4864c, #d96b2b) !important;
+  border-color: #e39a6c !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.2) !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-primary-button:hover:not(:disabled),
+#sellerPasscodeOverlay .seller-primary-button:hover:not(:disabled) {
+  filter: brightness(1.04) !important;
+  box-shadow: 0 3px 7px rgba(0,0,0,.16) !important;
+}
+#sellerDashboardOverlay .seller-secondary-button,
+#sellerPasscodeOverlay .seller-secondary-button,
+#sellerDashboardOverlay .seller-collapse-button,
+#sellerDashboardOverlay .seller-dashboard-toggle-group button {
+  background: #55575d !important;
+  border-color: #747078 !important;
+  color: #eee7df !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,.09) !important;
+}
+#sellerDashboardOverlay .seller-danger-button,
+#sellerDashboardOverlay .seller-inventory-delete-button {
+  background: #574443 !important;
+  border-color: #98716b !important;
+  color: #f0c3bb !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-gen {
+  background: #d96b2b !important;
+  color: #171717 !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-merch {
+  color: #d96b2b !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-section {
+  color: #f1ece6 !important;
+}
+#sellerDashboardOverlay .seller-dashboard-foot {
+  background: #414348 !important;
+  border-top-color: #686a70 !important;
+  color: #cfc7bf !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle,
+#sellerDashboardOverlay .seller-panel-title,
+#sellerDashboardOverlay .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-value,
+#sellerDashboardOverlay .seller-metric-detail {
+  text-shadow: none !important;
+  filter: none !important;
+}
+@media (max-width: 760px) {
+  #sellerDashboardOverlay > .seller-dashboard-modal {
+    background: #45474b !important;
+  }
+}
