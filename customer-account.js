@@ -14,6 +14,8 @@
     reviews: [],
     points: { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] },
     activeTab: 'overview',
+    navTab: 'overview',
+    activityTab: 'wishlist',
     checkoutBalance: 0,
     selectedPoints: 0,
     baseCheckoutTotal: '',
@@ -84,34 +86,39 @@
     overlay.innerHTML =
       '<section class="gmca-modal" role="dialog" aria-modal="true" aria-labelledby="gmcaTitle">' +
         '<header class="gmca-header">' +
-          '<div class="gmca-brand"><span class="gmca-brand-mark"><img src="/assets/genmerch-cart-actual.webp?v=20261030-account" alt="GENMERCH official logo" width="72" height="56"></span><div><span class="gmca-eyebrow">GENMERCH CUSTOMER ACCOUNT</span><h2 id="gmcaTitle">My GENMERCH Account</h2><p id="gmcaWelcome">Your profile, points and shopping activity.</p></div></div>' +
-          '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
-          '<div class="gmca-section-switcher" id="gmcaSectionSwitcher">' +
-            '<label for="gmcaSectionTrigger">ACCOUNT SECTION</label>' +
-            '<button type="button" class="gmca-section-trigger" id="gmcaSectionTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="gmcaSectionMenu">' +
-              '<span id="gmcaSectionCurrent">Overview</span><span class="gmca-section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6.5 9 5.5 5.5L17.5 9"/></svg></span>' +
-            '</button>' +
-            '<div class="gmca-section-menu" id="gmcaSectionMenu" role="listbox" aria-label="Account sections" hidden>' +
-              '<button type="button" role="option" aria-selected="true" data-gmca-section="overview">Overview</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="profile">My Profile</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="points">Loyalty Points</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="orders">My Orders</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="activity">Shopping Activity</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="addresses">Saved Addresses</button>' +
-              '<button type="button" role="option" aria-selected="false" data-gmca-section="landmarks">Default Landmarks</button>' +
+          '<div class="gmca-header-top">' +
+            '<div class="gmca-brand">' +
+              '<span class="gmca-brand-mark"><img src="/assets/genmerch-cart-actual.webp?v=20261031-account" alt="" width="72" height="56"></span>' +
+              '<div class="gmca-brand-copy">' +
+                '<div class="gmca-brand-line"><span class="gmca-word-gen">GEN</span><span class="gmca-word-merch">MERCH</span><span class="gmca-brand-divider" aria-hidden="true"></span><strong id="gmcaTitle">My Account</strong></div>' +
+                '<p id="gmcaWelcome">Your shopping activity, rewards and personal information.</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="gmca-header-actions">' +
+              '<div class="gmca-user-chip"><span class="gmca-user-avatar" id="gmcaUserAvatar" aria-hidden="true">GM</span><span class="gmca-user-copy"><strong id="gmcaUserName">Customer</strong><small>Customer</small></span></div>' +
+              '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
           '</div>' +
         '</header>' +
+        '<nav class="gmca-tabs" id="gmcaTabs" role="tablist" aria-label="Customer account navigation">' +
+          '<button type="button" class="active" role="tab" aria-selected="true" aria-controls="gmcaPaneOverview" data-gmca-section="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Overview</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPaneOrders" data-gmca-section="orders"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21"/></svg><span>My Orders</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPaneActivity" data-gmca-section="wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3z"/></svg><span>Wishlist</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPaneActivity" data-gmca-section="reviews"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg><span>My Reviews</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPanePoints" data-gmca-section="points"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M17 7.2c-.7-1.1-2.1-1.7-4.1-1.7-2.5 0-4.1 1.1-4.1 2.8 0 4.4 8.4 1.6 8.4 6.1 0 1.9-1.7 3.2-4.4 3.2-2.1 0-3.8-.7-4.8-2"/></svg><span>Rewards &amp; Points</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPaneProfile" data-gmca-section="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.1 3.4-6.3 8-6.3s7.3 2.2 8 6.3"/></svg><span>My Profile</span></button>' +
+          '<button type="button" role="tab" aria-selected="false" aria-controls="gmcaPaneAddresses" data-gmca-section="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.7 3-1.7-.7a8 8 0 0 1-1.7 1l-.3 1.8h-3.4l-.3-1.8a8 8 0 0 1-1.7-1l-1.7.7-1.7-3 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.7-3 1.7.7a8 8 0 0 1 1.7-1l.3-1.8h3.4l.3 1.8a8 8 0 0 1 1.7 1l1.7-.7 1.7 3-1.4 1.1a7 7 0 0 1 0 2z"/></svg><span>Account Settings</span></button>' +
+        '</nav>' +
         '<div class="gmca-content">' +
           '<div class="gmca-alert" id="gmcaAlert" role="status" aria-live="polite" hidden></div>' +
           '<div id="gmcaLoading" class="gmca-loading">Loading your account securely…</div>' +
-          '<section class="gmca-pane" data-gmca-pane="overview" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="profile" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="points" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="orders" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="activity" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="addresses" hidden></section>' +
-          '<section class="gmca-pane" data-gmca-pane="landmarks" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneOverview" data-gmca-pane="overview" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneProfile" data-gmca-pane="profile" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPanePoints" data-gmca-pane="points" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneOrders" data-gmca-pane="orders" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneActivity" data-gmca-pane="activity" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneAddresses" data-gmca-pane="addresses" role="tabpanel" hidden></section>' +
+          '<section class="gmca-pane" id="gmcaPaneLandmarks" data-gmca-pane="landmarks" role="tabpanel" hidden></section>' +
         '</div>' +
         '<footer class="gmca-footer"><span><span class="gmca-footer-lock">✓</span> Your account records are protected by your signed-in account permissions.</span><button type="button" id="gmcaSignOut" class="gmca-signout">Sign out</button></footer>' +
       '</section>';
@@ -119,28 +126,12 @@
     ensureSignOutConfirmation();
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) closeAccount();
-      if (!event.target.closest('.gmca-section-switcher')) closeSectionMenu();
-      const option = event.target.closest('[data-gmca-section]');
-      if (option) {
-        switchTab(option.getAttribute('data-gmca-section'));
-        closeSectionMenu();
-        $('gmcaSectionTrigger')?.focus({ preventScroll: true });
+      const tab = event.target.closest('[data-gmca-section]');
+      if (tab) {
+        switchTab(tab.getAttribute('data-gmca-section'));
+        tab.focus({ preventScroll: true });
       }
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
-    });
-    $('gmcaSectionTrigger').addEventListener('click', toggleSectionMenu);
-    $('gmcaSectionMenu').addEventListener('keydown', (event) => {
-      const options = [...$('gmcaSectionMenu').querySelectorAll('[data-gmca-section]')];
-      if (!options.length) return;
-      const current = options.indexOf(document.activeElement);
-      let target = current;
-      if (event.key === 'ArrowDown') target = (current + 1 + options.length) % options.length;
-      else if (event.key === 'ArrowUp') target = (current - 1 + options.length) % options.length;
-      else if (event.key === 'Home') target = 0;
-      else if (event.key === 'End') target = options.length - 1;
-      else return;
-      event.preventDefault();
-      options[target].focus();
     });
     $('gmcaClose').addEventListener('click', closeAccount);
     $('gmcaSignOut').addEventListener('click', openSignOutConfirmation);
@@ -156,14 +147,10 @@
         closeSignOutConfirmation();
         return;
       }
-      if ($('gmcaSectionMenu') && !$('gmcaSectionMenu').hidden) {
-        closeSectionMenu();
-        $('gmcaSectionTrigger')?.focus();
-        return;
-      }
       if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) closeAccount();
     });
   }
+
 
   function toggleSectionMenu() {
     const menu = $('gmcaSectionMenu');
@@ -291,18 +278,33 @@
   }
 
   function switchTab(tabName) {
-    const valid = ['overview', 'profile', 'points', 'orders', 'activity', 'addresses', 'landmarks'];
-    state.activeTab = valid.includes(tabName) ? tabName : 'overview';
-    if ($('gmcaSectionCurrent')) {
-      const activeOption = $('gmcaSectionMenu')?.querySelector('[data-gmca-section="' + state.activeTab + '"]');
-      $('gmcaSectionCurrent').textContent = activeOption ? activeOption.textContent.trim() : 'Overview';
+    let paneTab = String(tabName || 'overview');
+    let navTab = paneTab;
+    if (paneTab === 'wishlist' || paneTab === 'reviews') {
+      state.activityTab = paneTab;
+      paneTab = 'activity';
+    } else if (paneTab === 'activity') {
+      state.activityTab = 'wishlist';
+      navTab = 'wishlist';
+    } else if (paneTab === 'settings' || paneTab === 'addresses') {
+      paneTab = 'addresses';
+      navTab = 'settings';
+    } else if (paneTab === 'landmarks') {
+      navTab = 'settings';
     }
-    $('gmcaSectionMenu')?.querySelectorAll('[data-gmca-section]').forEach((button) => {
-      const active = button.getAttribute('data-gmca-section') === state.activeTab;
+    const valid = ['overview', 'profile', 'points', 'orders', 'activity', 'addresses', 'landmarks'];
+    if (!valid.includes(paneTab)) {
+      paneTab = 'overview';
+      navTab = 'overview';
+    }
+    state.activeTab = paneTab;
+    state.navTab = navTab;
+    document.querySelectorAll('#gmcaTabs [data-gmca-section]').forEach((button) => {
+      const active = button.getAttribute('data-gmca-section') === state.navTab;
       button.setAttribute('aria-selected', String(active));
       button.classList.toggle('active', active);
+      button.tabIndex = active ? 0 : -1;
     });
-    closeSectionMenu();
     document.querySelectorAll('[data-gmca-pane]').forEach((pane) => {
       pane.hidden = pane.getAttribute('data-gmca-pane') !== state.activeTab;
     });
@@ -314,6 +316,7 @@
     if (state.activeTab === 'addresses') renderAddressesPane();
     if (state.activeTab === 'landmarks') renderLandmarksPane();
   }
+
 
   async function openAccount() {
     ensureModal();
@@ -440,7 +443,9 @@
     }
 
     const name = currentUserName(user, state.profile);
-    $('gmcaWelcome').textContent = name ? 'Welcome back, ' + name + '. Your GENMERCH activity in one place.' : 'Your profile, points and shopping activity in one place.';
+    $('gmcaWelcome').textContent = 'Your shopping activity, rewards and personal information.';
+    if ($('gmcaUserName')) $('gmcaUserName').textContent = name || user.email || 'Customer';
+    if ($('gmcaUserAvatar')) $('gmcaUserAvatar').textContent = makeInitials(name || user.email || 'GM');
     $('gmcaLoading').hidden = true;
     renderAllPanes();
     renderCheckoutPoints();
@@ -466,28 +471,53 @@
     if (!pane || !state.session) return;
     const user = state.session.user;
     const name = currentUserName(user, state.profile);
+    const firstName = name ? name.split(/\s+/)[0] : 'there';
+    const points = Math.max(0, Number(state.points.points_balance) || 0);
+    const progress = Math.min(100, points);
     pane.innerHTML =
-      '<div class="gmca-welcome-card"><div><span class="gmca-eyebrow">YOUR CUSTOMER SPACE</span><h3>' + (name ? 'Hi, ' + esc(name.split(/\s+/)[0]) + '!' : 'Welcome to GENMERCH!') + '</h3><p>Track your purchases, manage your profile and use points toward eligible orders.</p></div><span class="gmca-welcome-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><rect x="8" y="6.5" width="32" height="35" rx="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="18.5" r="5.2" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M14.5 33c1.9-4.6 5.1-6.8 9.5-6.8s7.6 2.2 9.5 6.8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M12 12h2M34 12h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>' +
+      '<section class="gmca-welcome-card">' +
+        '<div class="gmca-welcome-profile"><span class="gmca-welcome-avatar" aria-hidden="true">' + esc(makeInitials(name || user.email || 'GM')) + '</span><div><span class="gmca-eyebrow">YOUR GENMERCH ACCOUNT</span><h3>Hi, ' + esc(firstName) + '!</h3><p>Welcome back. Track your purchases, manage your profile, and enjoy your member rewards.</p></div></div>' +
+        '<div class="gmca-welcome-art" aria-hidden="true"><span class="gmca-art-orb gmca-art-orb-one"></span><span class="gmca-art-orb gmca-art-orb-two"></span><span class="gmca-art-bag"><b>GEN</b><strong>MERCH</strong></span><span class="gmca-art-shirt">✦</span></div>' +
+      '</section>' +
       '<div class="gmca-metric-grid">' +
-        metricCard('LOYALTY BALANCE', String(Math.max(0, Number(state.points.points_balance) || 0)), 'points', 'points') +
-        metricCard('TOTAL ORDERS', String(Number(state.orderCount) || 0), 'orders', 'orders') +
-        metricCard('WISHLIST ITEMS', String(state.wishlist.length), 'saved products', 'activity') +
-        metricCard('YOUR REVIEWS', String(state.reviews.length), 'ratings & feedback', 'activity') +
+        metricCard('TOTAL ORDERS', String(Number(state.orderCount) || 0), 'Lifetime orders', 'orders', '▣') +
+        metricCard('WISHLIST ITEMS', String(state.wishlist.length), 'Saved products', 'wishlist', '♥') +
+        metricCard('LOYALTY POINTS', String(points), 'Available points', 'points', '✦') +
+        metricCard('YOUR REVIEWS', String(state.reviews.length), 'Ratings & feedback', 'reviews', '★') +
       '</div>' +
-      '<div class="gmca-section-card"><div class="gmca-section-heading"><div><h3>Recent orders</h3><p>Latest orders linked to your signed-in account.</p></div><button type="button" class="gmca-text-action" data-gmca-jump="orders">View all</button></div>' +
+      '<section class="gmca-section-card gmca-recent-orders"><div class="gmca-section-heading"><div><h3>Recent orders</h3><p>Latest orders linked to your signed-in account.</p></div><button type="button" class="gmca-text-action" data-gmca-jump="orders">View all orders <span aria-hidden="true">›</span></button></div>' +
         (state.orders.length ? '<div class="gmca-list">' + state.orders.slice(0, 3).map((order) => orderCard(order, true)).join('') + '</div>' :
-          '<div class="gmca-empty"><span>▣</span><strong>No account orders yet</strong><p>Your orders will appear here after you check out while signed in.</p></div>') +
-      '</div>' +
-      '<div class="gmca-overview-bottom"><div class="gmca-section-card"><h3>Member details</h3><p class="gmca-detail-line"><span>Registered email</span><strong>' + esc(user.email || '—') + '</strong></p><p class="gmca-detail-line"><span>Phone number</span><strong>' + esc(currentPhone(user, state.profile) || 'Not added yet') + '</strong></p><p class="gmca-detail-line"><span>Member since</span><strong>' + dateLabel(user.created_at) + '</strong></p><button type="button" class="gmca-text-action" data-gmca-jump="profile">Manage profile →</button></div>' +
-      '<div class="gmca-section-card gmca-points-teaser"><h3>Make your next order go further</h3><p>Earn 1 point per ₱100 of eligible merchandise spending. Each point is worth ₱1 when redeemed at checkout.</p><button type="button" class="gmca-primary" data-gmca-jump="points">View points</button></div></div>' +
-      '<div class="gmca-pane-actions"><button type="button" class="gmca-secondary" id="gmcaRefreshOverview">↻ Refresh account</button><button type="button" class="gmca-secondary" data-gmca-jump="profile">Edit profile</button></div>';
+          '<div class="gmca-empty gmca-orders-empty"><span class="gmca-empty-package" aria-hidden="true">▣</span><strong>No orders yet.</strong><p>Your orders will appear here after you place your first order.</p><button type="button" class="gmca-primary gmca-browse-products" id="gmcaBrowseProducts">Browse Products</button></div>') +
+      '</section>' +
+      '<div class="gmca-overview-bottom">' +
+        '<section class="gmca-section-card gmca-member-card"><div class="gmca-card-title"><span class="gmca-card-icon gmca-member-icon" aria-hidden="true">●</span><div><h3>Member details</h3><p>Your personal information and account details.</p></div></div>' +
+          '<div class="gmca-member-details">' +
+            '<div class="gmca-detail-line"><span>✉ <span>Registered email</span></span><strong>' + esc(user.email || '—') + '</strong></div>' +
+            '<div class="gmca-detail-line"><span>⌕ <span>Phone number</span></span><strong>' + esc(currentPhone(user, state.profile) || 'Not added yet') + '</strong></div>' +
+            '<div class="gmca-detail-line"><span>▦ <span>Member since</span></span><strong>' + dateLabel(user.created_at) + '</strong></div>' +
+          '</div>' +
+          '<div class="gmca-member-actions"><button type="button" class="gmca-secondary" id="gmcaRefreshOverview">↻ Refresh account</button><button type="button" class="gmca-secondary" data-gmca-jump="profile">✎ Edit profile</button></div>' +
+        '</section>' +
+        '<section class="gmca-section-card gmca-rewards-card"><div class="gmca-section-heading"><div class="gmca-card-title"><span class="gmca-card-icon gmca-reward-icon" aria-hidden="true">♛</span><div><h3>Your GENMERCH Rewards</h3><p>Earn points and redeem them for discounts on eligible purchases.</p></div></div><button type="button" class="gmca-text-action" data-gmca-jump="points">View points history <span aria-hidden="true">›</span></button></div>' +
+          '<div class="gmca-rewards-summary"><div class="gmca-points-mark" aria-hidden="true">P</div><div class="gmca-rewards-balance"><span>Available points</span><strong>' + esc(points.toLocaleString('en-PH')) + '</strong><small>points</small></div>' +
+            '<ul class="gmca-rewards-facts"><li>Earn 1 point for every ₱100 of eligible merchandise spending.</li><li>Each point is worth ₱1 when redeemed at checkout.</li><li>Redeem at least 20 points, subject to checkout limits.</li></ul>' +
+          '</div>' +
+          '<div class="gmca-reward-progress"><div class="gmca-progress-heading"><strong>Progress to 100 points</strong><b>' + esc(Math.min(points, 100).toLocaleString('en-PH')) + ' / 100 points</b></div><div class="gmca-progress-track" role="progressbar" aria-label="Progress to 100 loyalty points" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + esc(progress) + '"><span style="width:' + progress + '%"></span></div><small>100 points represent up to ₱100 in eligible checkout value. Redemption limits apply.</small></div>' +
+        '</section>' +
+      '</div>';
     pane.querySelectorAll('[data-gmca-jump]').forEach((button) => button.addEventListener('click', () => switchTab(button.getAttribute('data-gmca-jump'))));
-    $('gmcaRefreshOverview').addEventListener('click', loadAccountData);
+    $('gmcaRefreshOverview')?.addEventListener('click', loadAccountData);
+    $('gmcaBrowseProducts')?.addEventListener('click', () => {
+      closeAccount();
+      if (typeof window.resetCatalog === 'function') window.resetCatalog();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
-  function metricCard(label, value, caption, tab) {
-    return '<button type="button" class="gmca-metric" data-gmca-jump="' + esc(tab) + '"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong><small>' + esc(caption) + '</small></button>';
+  function metricCard(label, value, caption, tab, icon) {
+    return '<button type="button" class="gmca-metric" data-gmca-jump="' + esc(tab) + '"><span class="gmca-metric-icon" aria-hidden="true">' + esc(icon || '✦') + '</span><span class="gmca-metric-label">' + esc(label) + '</span><strong class="gmca-metric-value">' + esc(value) + '</strong><small class="gmca-metric-caption">' + esc(caption) + '</small></button>';
   }
+
 
   function renderProfilePane() {
     const pane = document.querySelector('[data-gmca-pane="profile"]');
@@ -638,44 +668,31 @@
   function renderActivityPane() {
     const pane = document.querySelector('[data-gmca-pane="activity"]');
     if (!pane) return;
+    const showingReviews = state.activityTab === 'reviews';
     const wishlistMarkup = state.wishlist.length
       ? '<div class="gmca-activity-list">' + state.wishlist.map((wish) => {
         const product = wish.product;
-        return '<div class="gmca-activity-row"><div><strong>' + esc(product ? product.name : 'Saved product') + '</strong><small>Saved ' + esc(dateLabel(wish.created_at)) + (product && product.is_active && !product.is_deleted ? ' · Available in the catalog' : ' · May no longer be available') + '</small></div><b>' + (product && product.base_price != null ? esc(php(product.base_price)) : '') + '</b></div>';
+        return '<article class="gmca-activity-row"><div><strong>' + esc(product ? product.name : 'Saved product') + '</strong><small>Saved ' + esc(dateLabel(wish.created_at)) + (product && product.is_active && !product.is_deleted ? ' · Available in the catalog' : ' · May no longer be available') + '</small></div><b>' + (product && product.base_price != null ? esc(php(product.base_price)) : '') + '</b></article>';
       }).join('') + '</div>'
-      : '<div class="gmca-empty gmca-empty-small"><strong>No saved products</strong><p>Items you add to your wishlist appear here.</p></div>';
-
-    const addressMarkup = state.addresses.length
-      ? '<div class="gmca-activity-list">' + state.addresses.map((address) =>
-        '<div class="gmca-address-card">' +
-          (address.is_default ? '<span class="gmca-default-tag">DEFAULT ADDRESS</span>' : '') +
-          '<strong>' + esc(address.recipient_name) + '</strong><p>' + esc(address.phone) + '</p>' +
-          '<p>' + esc([address.street_address, address.barangay, address.city_municipality, address.province, address.postal_code].filter(Boolean).join(', ')) + '</p>' +
-          (address.landmark ? '<small>Landmark: ' + esc(address.landmark) + '</small>' : '') +
-        '</div>'
-      ).join('') + '</div>'
-      : '<div class="gmca-empty gmca-empty-small"><strong>No saved delivery addresses</strong><p>Saved addresses will appear here when available in your account.</p></div>';
-
+      : '<div class="gmca-empty gmca-empty-small"><span>♡</span><strong>No saved products yet</strong><p>Products you add to your wishlist will appear here.</p></div>';
     const reviewMarkup = state.reviews.length
       ? '<div class="gmca-activity-list">' + state.reviews.map((review) =>
-        '<div class="gmca-activity-row gmca-review-row"><div><strong>' + esc('★'.repeat(Math.max(0, Math.min(5, Number(review.rating) || 0))) + ' ' + (Number(review.rating) || 0) + '/5') + '</strong><p>' + esc(review.feedback) + '</p><small>' + esc(dateLabel(review.created_at)) + ' · ' + esc(displayStatus(review.moderation_status)) + '</small></div></div>'
+        '<article class="gmca-activity-row gmca-review-row"><div><strong>' + esc('★'.repeat(Math.max(0, Math.min(5, Number(review.rating) || 0))) + ' ' + (Number(review.rating) || 0) + '/5') + '</strong><p>' + esc(review.feedback || 'No written feedback added.') + '</p><small>' + esc(dateLabel(review.created_at)) + ' · ' + esc(displayStatus(review.moderation_status)) + '</small></div></article>'
       ).join('') + '</div>'
-      : '<div class="gmca-empty gmca-empty-small"><strong>No reviews yet</strong><p>Your product ratings and feedback will appear here.</p></div>';
-
+      : '<div class="gmca-empty gmca-empty-small"><span>★</span><strong>No reviews yet</strong><p>Your product ratings and feedback will appear here after you review a purchase.</p></div>';
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>Shopping Activity</h3><p>Your saved products, delivery addresses and product feedback.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaActivityRefresh">↻ Refresh</button></div>' +
-      '<div class="gmca-section-card"><div class="gmca-section-heading"><div><h3>Wishlist</h3><p>' + esc(state.wishlist.length) + ' saved product(s).</p></div></div>' + wishlistMarkup + '</div>' +
-      '<div class="gmca-section-card"><div class="gmca-section-heading"><div><h3>Saved delivery addresses</h3><p>Private address records saved to your account.</p></div></div>' + addressMarkup + '</div>' +
-      '<div class="gmca-section-card"><div class="gmca-section-heading"><div><h3>Product ratings & reviews</h3><p>' + esc(state.reviews.length) + ' review(s) linked to your account.</p></div></div>' + reviewMarkup + '</div>';
+      '<div class="gmca-pane-title"><div><h3>' + (showingReviews ? 'My Reviews' : 'My Wishlist') + '</h3><p>' + (showingReviews ? state.reviews.length + ' rating(s) and feedback linked to your account.' : state.wishlist.length + ' saved product(s) in your wishlist.') + '</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaActivityRefresh">↻ Refresh</button></div>' +
+      '<section class="gmca-section-card gmca-activity-panel">' + (showingReviews ? reviewMarkup : wishlistMarkup) + '</section>';
     $('gmcaActivityRefresh').addEventListener('click', loadAccountData);
   }
+
 
   function renderAddressesPane() {
     const pane = document.querySelector('[data-gmca-pane="addresses"]');
     if (!pane) return;
     const rows = state.addresses || [];
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>Saved Address Book</h3><p>Save delivery details once, then load them into checkout with one tap.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaAddressesRefresh">↻ Refresh</button></div>' +
+      '<div class="gmca-pane-title"><div><h3>Account Settings</h3><p>Manage saved delivery addresses and default delivery landmarks.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaManageLandmarks">Manage landmarks</button><button type="button" class="gmca-secondary gmca-small-button" id="gmcaAddressesRefresh">↻ Refresh</button></div></div>' +
       '<details class="gmca-editor" id="gmcaAddressEditor"><summary id="gmcaAddressEditorSummary">＋ Add a saved address</summary>' +
         '<form id="gmcaAddressForm" class="gmca-form gmca-address-form">' +
           '<input id="gmcaAddressId" type="hidden">' +
@@ -709,6 +726,7 @@
       ).join('') + '</div>' :
         '<div class="gmca-empty gmca-address-empty"><span>⌂</span><strong>No saved addresses yet</strong><p>After your first successful order, GENMERCH will save that delivery address to your address book automatically.</p></div>');
     $('gmcaAddressesRefresh').addEventListener('click', loadAccountData);
+    $('gmcaManageLandmarks').addEventListener('click', () => switchTab('landmarks'));
     $('gmcaAddressCancel').addEventListener('click', resetAddressEditor);
     $('gmcaAddressForm').addEventListener('submit', (event) => { event.preventDefault(); saveAddress(); });
     pane.querySelectorAll('[data-gmca-edit-address]').forEach((button) => button.addEventListener('click', () => editAddress(button.getAttribute('data-gmca-edit-address'))));
@@ -1173,7 +1191,7 @@
     if (!pane) return;
     const rows = state.landmarks || [];
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>Default Landmarks</h3><p>Save frequently used directions and special delivery instructions for faster checkout.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksRefresh">↻ Refresh</button></div>' +
+      '<div class="gmca-pane-title"><div><h3>Saved Delivery Landmarks</h3><p>Save frequently used directions and special delivery instructions for faster checkout.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksBack">← Account settings</button><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksRefresh">↻ Refresh</button></div></div>' +
       '<details class="gmca-editor" id="gmcaLandmarkEditor"><summary id="gmcaLandmarkEditorSummary">＋ Add a default landmark</summary>' +
         '<form id="gmcaLandmarkForm" class="gmca-form gmca-landmark-form">' +
           '<input id="gmcaLandmarkId" type="hidden">' +
@@ -1194,6 +1212,7 @@
       ).join('') + '</div>' :
         '<div class="gmca-empty gmca-address-empty"><span>⌖</span><strong>No saved landmarks yet</strong><p>GENMERCH can save your landmark and delivery instructions after you place an order.</p></div>');
     $('gmcaLandmarksRefresh').addEventListener('click', loadAccountData);
+    $('gmcaLandmarksBack').addEventListener('click', () => switchTab('settings'));
     $('gmcaLandmarkCancel').addEventListener('click', resetLandmarkEditor);
     $('gmcaLandmarkForm').addEventListener('submit', (event) => { event.preventDefault(); saveLandmark(); });
     pane.querySelectorAll('[data-gmca-edit-landmark]').forEach((button) => button.addEventListener('click', () => editLandmark(button.getAttribute('data-gmca-edit-landmark'))));
