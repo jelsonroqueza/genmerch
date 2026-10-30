@@ -158,8 +158,8 @@
           '<section class="gmca-pane" id="gmcaPaneLandmarks" data-gmca-pane="landmarks" role="tabpanel" hidden></section>' +
         '</div>' +
         '<footer class="gmca-footer"><span><span class="gmca-footer-lock">✓</span> Your account records are protected by your signed-in account permissions.</span><button type="button" id="gmcaSignOut" class="gmca-signout">Sign out</button></footer>' +
-      '</section>' +
-      '<input type="file" id="gmcaAvatarFileInput" accept="image/jpeg,image/png,image/webp" aria-label="Choose a profile photo" hidden>';
+        '<input type="file" id="gmcaAvatarFileInput" accept="image/jpeg,image/png,image/webp" aria-label="Choose a profile photo" hidden>' +
+      '</section>';
     document.body.appendChild(overlay);
     ensureSignOutConfirmation();
     overlay.addEventListener('click', (event) => {
@@ -715,12 +715,18 @@
       uploadedPath = null;
       state.avatarPath = savedPath;
       state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
-      const signedResult = await db.storage
-        .from(CUSTOMER_AVATAR_BUCKET)
-        .createSignedUrl(savedPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
-      state.avatarUrl = signedResult.error || !signedResult.data
-        ? null
-        : signedResult.data.signedUrl || null;
+      try {
+        const signedResult = await db.storage
+          .from(CUSTOMER_AVATAR_BUCKET)
+          .createSignedUrl(savedPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
+        if (signedResult.error) throw signedResult.error;
+        state.avatarUrl = signedResult.data && signedResult.data.signedUrl
+          ? signedResult.data.signedUrl
+          : null;
+      } catch (signedUrlError) {
+        state.avatarUrl = null;
+        console.warn('GENMERCH saved the customer avatar, but could not create its preview URL:', signedUrlError.message || signedUrlError);
+      }
 
       if (previousPath && previousPath !== savedPath && previousPath.startsWith(String(user.id) + '/')) {
         const cleanup = await db.storage.from(CUSTOMER_AVATAR_BUCKET).remove([previousPath]);
