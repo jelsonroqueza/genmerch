@@ -584,8 +584,7 @@
       if (error) throw error;
       state.session = null;
       state.profile = null;
-      state.avatarPath = null;
-      state.avatarUrl = null;
+      clearCustomerAvatarForSignedOut();
       state.checkoutBalance = 0;
       state.selectedPoints = 0;
       window.genmerchSelectedLoyaltyPoints = 0;
@@ -870,6 +869,7 @@
 
       const savedPath = uploadedPath;
       uploadedPath = null;
+      state.avatarRequestToken += 1;
       state.avatarPath = savedPath;
       state.avatarOwnerId = String(user.id);
       state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
@@ -942,6 +942,7 @@
       }, { onConflict: 'id' });
       if (profileResult.error) throw profileResult.error;
 
+      state.avatarRequestToken += 1;
       state.avatarPath = null;
       state.avatarUrl = null;
       state.avatarOwnerId = String(user.id);
