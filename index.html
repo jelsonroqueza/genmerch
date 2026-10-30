@@ -13688,7 +13688,7 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         const showDelete=Boolean(productId)&&!deleteActionProducts.has(productId);
         if(showDelete)deleteActionProducts.add(productId);
         const sellable=product.is_active!==false&&variant.is_active!==false;
-        const status=!sellable?'<span class="seller-status-pill inactive">Inactive</span>':stock===0?'<span class="seller-status-pill inactive">Out of stock</span>':stock<=5?'<span class="seller-status-pill" style="background:#fff5d8;color:#805c00">Low stock</span>':'<span class="seller-status-pill">In stock</span>';
+        const status=!sellable?'<span class="seller-status-pill inactive">Inactive</span>':stock===0?'<span class="seller-status-pill out-of-stock">Out of stock</span>':stock<=5?'<span class="seller-status-pill low-stock">Low stock</span>':'<span class="seller-status-pill in-stock">In stock</span>';
         const unitPrice=variant.price_override==null?product.base_price:variant.price_override;
         const deleteButton=showDelete?'<button class="seller-danger-button seller-inventory-delete-button" type="button" data-seller-inventory-delete="'+sellerEscape(productId)+'" aria-label="Permanently delete '+sellerEscape(product.name||'product')+'">DELETE</button>':'<span class="seller-muted">—</span>';
         const productName=product.name||'Unknown product';
@@ -17963,6 +17963,6 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-8">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-9">
 </body>
 </html>
