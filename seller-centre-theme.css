@@ -2401,3 +2401,499 @@
     animation: none !important;
   }
 }
+
+
+/* FINAL CASCADE LOCK — GENMERCH Soft Light Professional reference.
+   These rules deliberately outrank legacy charcoal/3D styles without changing behavior. */
+#sellerDashboardOverlay.seller-modal-overlay {
+  background: rgba(31, 47, 68, .24) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.02) !important;
+  backdrop-filter: blur(8px) saturate(1.02) !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal {
+  background: #F4F6F8 !important;
+  background-image: none !important;
+  color: #263238 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  isolation: isolate !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 54px rgba(38, 50, 56, .14) !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal > .seller-modal-head {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  color: #263238 !important;
+  opacity: 1 !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(38,50,56,.035) !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal > .seller-modal-head h2 {
+  color: #263238 !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal > .seller-modal-head p {
+  color: #64748B !important;
+  opacity: 1 !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-gen {
+  background: #F47B35 !important;
+  color: #FFFFFF !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-merch,
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-section {
+  color: #263238 !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal > .seller-tabs {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-tab-button {
+  color: #263238 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+#sellerDashboardOverlay .seller-tab-button.active,
+#sellerDashboardOverlay .seller-tab-button[aria-selected="true"] {
+  background: #F47B35 !important;
+  border-color: #F47B35 !important;
+  border-bottom-color: #DF6828 !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-tab-tools button,
+#sellerDashboardOverlay .seller-secondary-button,
+#sellerDashboardOverlay .seller-collapse-button,
+#sellerDashboardOverlay .seller-dashboard-toggle-group button {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #263238 !important;
+  box-shadow: 0 1px 3px rgba(38,50,56,.04) !important;
+}
+#sellerDashboardOverlay > section.seller-modal.seller-dashboard-modal > .seller-panel {
+  background: transparent !important;
+  background-image: none !important;
+  color: #263238 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+#sellerDashboardOverlay .seller-inventory-heading,
+#sellerDashboardOverlay .seller-products-topbar,
+#sellerDashboardOverlay .seller-section-heading,
+#sellerDashboardOverlay .seller-collapsible-section-heading,
+#sellerDashboardOverlay .seller-orders-heading,
+#sellerDashboardOverlay .seller-products-heading,
+#sellerDashboardOverlay .seller-deleted-heading {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  color: #263238 !important;
+  box-shadow: 0 2px 8px rgba(38,50,56,.035) !important;
+}
+#sellerDashboardOverlay .seller-panel-title,
+#sellerDashboardOverlay .seller-inventory-heading .seller-panel-title,
+#sellerDashboardOverlay .seller-products-topbar .seller-panel-title,
+#sellerDashboardOverlay .seller-section-heading .seller-panel-title {
+  color: #263238 !important;
+}
+#sellerDashboardOverlay .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-inventory-heading .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-products-topbar .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-section-heading .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-muted,
+#sellerDashboardOverlay .seller-field-hint {
+  color: #64748B !important;
+}
+
+/* Product forms, filter surfaces and dialog content use solid soft-light surfaces. */
+#sellerDashboardOverlay .seller-product-form,
+#sellerDashboardOverlay .seller-inventory-tools,
+#sellerDashboardOverlay .seller-file-picker,
+#sellerDashboardOverlay .seller-gallery-item,
+#sellerDashboardOverlay .seller-product-card,
+#sellerDashboardOverlay .seller-section-card,
+#sellerDashboardOverlay .seller-inventory-summary,
+#sellerDashboardOverlay .seller-filter-toolbar,
+#sellerDashboardOverlay .seller-filter-field,
+#sellerDashboardOverlay .seller-products-filter-toolbar,
+#sellerDashboardOverlay .seller-orders-filter-toolbar,
+#sellerDashboardOverlay .seller-inventory-filter-toolbar,
+#sellerDashboardOverlay .seller-empty-state,
+#sellerDashboardOverlay .seller-order-card,
+#sellerDashboardOverlay .seller-order-detail-card {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #263238 !important;
+  box-shadow: 0 2px 8px rgba(38,50,56,.035) !important;
+}
+#sellerDashboardOverlay .seller-field label,
+#sellerDashboardOverlay .seller-filter-field label,
+#sellerDashboardOverlay .seller-file-picker > label,
+#sellerDashboardOverlay .seller-gallery-color-label {
+  color: #263238 !important;
+}
+#sellerDashboardOverlay .seller-field input,
+#sellerDashboardOverlay .seller-field textarea,
+#sellerDashboardOverlay .seller-field select,
+#sellerDashboardOverlay .seller-filter-field input,
+#sellerDashboardOverlay .seller-filter-field select,
+#sellerDashboardOverlay .seller-filter-field textarea,
+#sellerDashboardOverlay .seller-inventory-tools input,
+#sellerDashboardOverlay .seller-inventory-tools select,
+#sellerDashboardOverlay .seller-stock-input,
+#sellerPasscodeOverlay .seller-field input {
+  background: #FFFFFF !important;
+  color: #263238 !important;
+  border: 1px solid #D7E0EA !important;
+  color-scheme: light !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-field input::placeholder,
+#sellerDashboardOverlay .seller-field textarea::placeholder,
+#sellerDashboardOverlay .seller-filter-field input::placeholder {
+  color: #94A3B8 !important;
+}
+#sellerDashboardOverlay .seller-field input:focus,
+#sellerDashboardOverlay .seller-field textarea:focus,
+#sellerDashboardOverlay .seller-field select:focus,
+#sellerDashboardOverlay .seller-filter-field input:focus,
+#sellerDashboardOverlay .seller-filter-field select:focus,
+#sellerDashboardOverlay .seller-inventory-tools input:focus,
+#sellerDashboardOverlay .seller-inventory-tools select:focus {
+  border-color: #F47B35 !important;
+  box-shadow: 0 0 0 3px rgba(244,123,53,.13) !important;
+}
+
+/* White table body, cool-gray header and precise dividers. */
+#sellerDashboardOverlay .seller-table-wrap,
+#sellerDashboardOverlay .seller-products-table-wrap,
+#sellerDashboardOverlay .seller-inventory-table-wrap,
+#sellerDashboardOverlay .seller-orders-table-wrap,
+#sellerDashboardOverlay .seller-movements-table-wrap,
+#sellerDashboardOverlay .seller-table {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #263238 !important;
+  box-shadow: 0 2px 8px rgba(38,50,56,.025) !important;
+}
+#sellerDashboardOverlay .seller-table thead th,
+#sellerDashboardOverlay .seller-products-table thead th,
+#sellerDashboardOverlay .seller-orders-table thead th,
+#sellerDashboardOverlay .seller-inventory-table thead th,
+#sellerDashboardOverlay .seller-movements-table thead th {
+  background: #F8FAFC !important;
+  color: #475569 !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: inset 0 -1px 0 #E2E8F0 !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even),
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd),
+#sellerDashboardOverlay .seller-table tbody td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd) td,
+#sellerDashboardOverlay .seller-products-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:nth-child(even) td {
+  background: #FFFFFF !important;
+  color: #263238 !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-products-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:hover td {
+  background: #F8FAFC !important;
+  color: #263238 !important;
+}
+#sellerDashboardOverlay .seller-table td strong,
+#sellerDashboardOverlay .seller-table td b,
+#sellerDashboardOverlay .seller-table .seller-product-name {
+  color: #263238 !important;
+}
+#sellerDashboardOverlay .seller-table .seller-muted,
+#sellerDashboardOverlay .seller-filter-result-count,
+#sellerDashboardOverlay .seller-products-filter-result-count,
+#sellerDashboardOverlay .seller-orders-filter-result-count {
+  color: #64748B !important;
+}
+#sellerDashboardOverlay .seller-sort-button {
+  color: #475569 !important;
+}
+
+/* KPI specificity lock: beats legacy :not() charcoal rules and old white-label rules. */
+#sellerDashboardOverlay #sellerInventoryMetrics {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card {
+  display: grid !important;
+  grid-template-columns: 58px minmax(0,1fr) !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+  min-height: 100px !important;
+  padding: 13px 14px !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 13px !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(38,50,56,.035) !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(1) {
+  background: #FFF8F2 !important;
+  border-color: #FBE4D4 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(2) {
+  background: #F7FAFF !important;
+  border-color: #DFEAFE !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(3) {
+  background: #F4FBF7 !important;
+  border-color: #D9F0E3 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(4) {
+  background: #FFFCF4 !important;
+  border-color: #F5EBD2 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(5) {
+  background: #FFF7F7 !important;
+  border-color: #F7DFE1 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(6) {
+  background: #FAF8FF !important;
+  border-color: #EAE2FC !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(7) {
+  background: #F5FAFF !important;
+  border-color: #DCEBFB !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(8) {
+  background: #FFF7F8 !important;
+  border-color: #F6DFE4 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card::before,
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card::after {
+  display: none !important;
+  content: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  gap: 3px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  background: #FFF0E4 !important;
+  color: #F47B35 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-icon svg {
+  display: block !important;
+  width: 27px !important;
+  height: 27px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-label {
+  color: #263238 !important;
+  font-family: "Lexend", system-ui, sans-serif !important;
+  font-size: .73rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-detail {
+  color: #64748B !important;
+  font-family: "Lexend", system-ui, sans-serif !important;
+  font-size: .68rem !important;
+  font-weight: 400 !important;
+  line-height: 1.35 !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-value {
+  display: block !important;
+  color: #263238 !important;
+  font-family: "Lexend", system-ui, sans-serif !important;
+  font-size: clamp(1.42rem, 1.9vw, 1.8rem) !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.025em !important;
+  font-variant-numeric: lining-nums tabular-nums !important;
+  font-feature-settings: "tnum" 1, "lnum" 1 !important;
+  font-synthesis: none !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(1) .seller-metric-icon { background: #FFEADF !important; color: #F47B35 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(1) .seller-metric-value { color: #DC4545 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(2) .seller-metric-icon { background: #E2EDFF !important; color: #3B82F6 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(2) .seller-metric-value { color: #2563C9 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(3) .seller-metric-icon { background: #DDF7E8 !important; color: #16A34A !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(3) .seller-metric-value { color: #16A34A !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(4) .seller-metric-icon { background: #FFF1C9 !important; color: #E5A000 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(4) .seller-metric-value { color: #E5A000 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(5) .seller-metric-icon { background: #FFDFE2 !important; color: #DC4545 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(5) .seller-metric-value { color: #DC4545 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(6) .seller-metric-icon { background: #ECE5FF !important; color: #6D42CF !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(6) .seller-metric-value { color: #632CC5 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(7) .seller-metric-icon { background: #DDF2FF !important; color: #3B82F6 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(7) .seller-metric-value { color: #2563C9 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(8) .seller-metric-icon { background: #FFDFE5 !important; color: #DC4545 !important; }
+#sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card:nth-child(8) .seller-metric-value { color: #DC4545 !important; }
+
+/* Clear stock status chips with explicit semantic classes from the existing renderer. */
+#sellerDashboardOverlay .seller-inventory-table .seller-status-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 25px !important;
+  padding: 5px 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-size: .69rem !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+#sellerDashboardOverlay .seller-inventory-table .seller-status-pill.out-of-stock {
+  background: #FEE2E2 !important;
+  color: #DC4545 !important;
+}
+#sellerDashboardOverlay .seller-inventory-table .seller-status-pill.low-stock {
+  background: #FFF2CC !important;
+  color: #9A6500 !important;
+}
+#sellerDashboardOverlay .seller-inventory-table .seller-status-pill.in-stock {
+  background: #DDF7E7 !important;
+  color: #168345 !important;
+}
+#sellerDashboardOverlay .seller-inventory-table .seller-status-pill.inactive {
+  background: #E2E8F0 !important;
+  color: #64748B !important;
+}
+
+/* Buttons, editor and footnote follow the same palette. */
+#sellerDashboardOverlay .seller-primary-button,
+#sellerPasscodeOverlay .seller-primary-button {
+  background: #F47B35 !important;
+  border: 1px solid #F47B35 !important;
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+  box-shadow: 0 2px 5px rgba(244,123,53,.16) !important;
+}
+#sellerDashboardOverlay .seller-primary-button:hover:not(:disabled),
+#sellerPasscodeOverlay .seller-primary-button:hover:not(:disabled) {
+  background: #DF6828 !important;
+  border-color: #DF6828 !important;
+  filter: none !important;
+  box-shadow: 0 3px 7px rgba(223,104,40,.18) !important;
+}
+#sellerDashboardOverlay .seller-danger-button,
+#sellerDashboardOverlay .seller-inventory-delete-button {
+  background: #FFFFFF !important;
+  border: 1px solid #F2B8B8 !important;
+  color: #DC4545 !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-danger-button:hover,
+#sellerDashboardOverlay .seller-inventory-delete-button:hover {
+  background: #FFF5F5 !important;
+  border-color: #ECA0A0 !important;
+}
+#sellerDashboardOverlay #sellerCentreLogoutButton {
+  background: #FFF0F0 !important;
+  border: 1px solid #FFD1D1 !important;
+  color: #DC4545 !important;
+}
+#sellerDashboardOverlay .seller-dashboard-foot {
+  background: #FFFFFF !important;
+  border-top: 1px solid #E2E8F0 !important;
+  color: #64748B !important;
+}
+#sellerPasscodeOverlay > .seller-modal,
+#sellerProductEditorOverlay .seller-product-editor-modal {
+  background: #FFFFFF !important;
+  color: #263238 !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 20px 54px rgba(38,50,56,.14) !important;
+}
+#sellerProductEditorOverlay .seller-modal-head,
+#sellerProductEditorOverlay .seller-product-editor-body,
+#sellerProductEditorOverlay .seller-product-form,
+#sellerProductEditorOverlay .seller-size-field,
+#sellerProductEditorOverlay .seller-file-picker,
+#sellerProductEditorOverlay .seller-form-actions {
+  background: #FFFFFF !important;
+  color: #263238 !important;
+  border-color: #E2E8F0 !important;
+}
+#sellerProductEditorOverlay .seller-modal-head h2,
+#sellerProductEditorOverlay .seller-panel-title,
+#sellerProductEditorOverlay .seller-field label {
+  color: #263238 !important;
+}
+#sellerProductEditorOverlay .seller-modal-head p,
+#sellerProductEditorOverlay .seller-panel-subtitle,
+#sellerProductEditorOverlay .seller-field-hint {
+  color: #64748B !important;
+}
+
+/* Responsive behavior matches the four/two-column reference grid. */
+@media (max-width: 1050px) {
+  #sellerDashboardOverlay #sellerInventoryMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 600px) {
+  #sellerDashboardOverlay #sellerInventoryMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card {
+    grid-template-columns: 38px minmax(0,1fr) !important;
+    column-gap: 8px !important;
+    min-height: 82px !important;
+    padding: 9px 8px !important;
+  }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-icon svg {
+    width: 19px !important;
+    height: 19px !important;
+  }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-label { font-size: .64rem !important; }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-value { font-size: 1.22rem !important; }
+  #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-detail { font-size: .59rem !important; }
+}
