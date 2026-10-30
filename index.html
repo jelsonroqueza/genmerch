@@ -13583,7 +13583,17 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         ['Orders received',orders.length,'All recorded orders'],
         ['Paid sales',sellerInventoryMoney(paidSales),'Paid, non-cancelled/refunded orders']
       ];
-      $('sellerInventoryMetrics').innerHTML=cards.map(card=>'<div class="seller-metric-card"><span class="seller-metric-label">'+sellerEscape(card[0])+'</span><strong class="seller-metric-value">'+sellerEscape(card[1])+'</strong><span class="seller-metric-detail">'+sellerEscape(card[2])+'</span></div>').join('');
+      const metricIcons=[
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 1.9-1.5L22 8H6"/><circle cx="10" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13 13 20 3 10V3h7l10 10Z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="M3 7v10l9 5 9-5V7M12 12v10"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.7 2.5 17.2A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.8L13.7 3.7a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 16.5h.01"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v5c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 10v5c0 1.7 3.6 3 8 3 1.4 0 2.7-.1 3.8-.4M4 15v4c0 1.7 3.6 3 8 3"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v5h5M8 12h8M8 16h8"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14"/><path d="M2 9h20M15 14h3"/><path d="M11 3v3"/></svg>'
+      ];
+      $('sellerInventoryMetrics').innerHTML=cards.map((card,index)=>'<div class="seller-metric-card"><span class="seller-metric-icon" aria-hidden="true">'+metricIcons[index]+'</span><div class="seller-metric-copy"><span class="seller-metric-label">'+sellerEscape(card[0])+'</span><strong class="seller-metric-value">'+sellerEscape(card[1])+'</strong><span class="seller-metric-detail">'+sellerEscape(card[2])+'</span></div></div>').join('');
     }
     function sellerSetInventoryFilterOptions(products,variants){
       const categorySelect=$('sellerInventoryCategoryFilter'),variantSelect=$('sellerInventoryVariantFilter');
@@ -17953,6 +17963,6 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-7">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-8">
 </body>
 </html>
