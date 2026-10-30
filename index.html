@@ -17963,7 +17963,7 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-15">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-16">
 
 <script id="genmerch-inventory-freeze-navigation">
 (function () {
@@ -18086,6 +18086,50 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
   }
   buildStickyHead();
   scheduleLayout();
+})();
+</script>
+
+
+<script id="genmerch-movements-wheel-scroll-fix">
+(function () {
+  'use strict';
+  var panel = document.getElementById('sellerMovementsPanel');
+  var tableWrap = panel ? panel.querySelector('.seller-movements-table-wrap') : null;
+  if (!panel || !tableWrap || window.__GENMERCH_MOVEMENTS_WHEEL_SCROLL_READY__) return;
+  window.__GENMERCH_MOVEMENTS_WHEEL_SCROLL_READY__ = true;
+
+  // Route vertical wheel input from any movement-table cell to the tab's
+  // main scroll panel. The table wrapper remains horizontally scrollable.
+  tableWrap.addEventListener('wheel', function (event) {
+    if (event.ctrlKey || !event.deltaY) return;
+
+    var delta = event.deltaY;
+    if (event.deltaMode === 1) delta *= 16;
+    else if (event.deltaMode === 2) delta *= Math.max(1, panel.clientHeight);
+
+    if (!Number.isFinite(delta) || delta === 0) return;
+
+    var maxScroll = Math.max(0, panel.scrollHeight - panel.clientHeight);
+    if (maxScroll <= 0) return;
+
+    var nextTop = Math.max(0, Math.min(maxScroll, panel.scrollTop + delta));
+    panel.scrollTop = nextTop;
+
+    // Prevent the nested horizontal table viewport from swallowing vertical
+    // mouse-wheel input or scrolling the page behind the Seller Centre modal.
+    event.preventDefault();
+  }, { passive: false });
+
+  // Keep the active Recent Movements panel as the predictable vertical
+  // scrolling surface when users return to this tab.
+  var tab = document.getElementById('sellerMovementsTab');
+  if (tab) {
+    tab.addEventListener('click', function () {
+      window.requestAnimationFrame(function () {
+        panel.scrollTop = Math.max(0, panel.scrollTop);
+      });
+    });
+  }
 })();
 </script>
 
