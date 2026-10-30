@@ -6,6 +6,11 @@
     profile: null,
     avatarPath: null,
     avatarUrl: null,
+    avatarOwnerId: null,
+    avatarUrlExpiresAt: 0,
+    avatarRequestToken: 0,
+    avatarRefreshTimer: null,
+    avatarNeedsRefresh: false,
     uploadingAvatar: false,
     orders: [],
     orderItems: [],
@@ -77,6 +82,151 @@
       return '<img class="gmca-avatar-image" src="' + esc(state.avatarUrl) + '" alt="" draggable="false" referrerpolicy="no-referrer">';
     }
     return esc(makeInitials(identity || 'GM'));
+  }
+
+  function syncStorefrontCustomerAvatar(url, identity) {
+    const button = $('customerAccountButton');
+    const icon = button && button.querySelector('.header-icon');
+    if (!button || !icon) return;
+
+    const signedIn = button.classList.contains('customer-account-signed-in');
+    let image = icon.querySelector('.gmca-storefront-avatar-image');
+    if (!url || !signedIn) {
+      if (image) image.remove();
+      button.classList.remove('gmca-storefront-has-avatar');
+      return;
+    }
+
+    if (!image) {
+      image = document.createElement('img');
+      image.className = 'gmca-storefront-avatar-image';
+      image.alt = '';
+      image.setAttribute('aria-hidden', 'true');
+      image.setAttribute('draggable', 'false');
+      image.setAttribute('referrerpolicy', 'no-referrer');
+      image.decoding = 'async';
+      image.addEventListener('error', () => {
+        button.classList.remove('gmca-storefront-has-avatar');
+        image.remove();
+        console.warn('GENMERCH storefront avatar image could not be displayed; it will be refreshed on the next account sync.');
+      }, { once: true });
+      icon.appendChild(image);
+    }
+
+    image.src = url;
+    image.title = identity ? String(identity) + ' profile photo' : 'Customer profile photo';
+    button.classList.add('gmca-storefront-has-avatar');
+  }
+
+  function clearStorefrontAvatarRefreshTimer() {
+    if (state.avatarRefreshTimer !== null) {
+      window.clearTimeout(state.avatarRefreshTimer);
+      state.avatarRefreshTimer = null;
+    }
+  }
+
+  function clearCustomerAvatarForSignedOut() {
+    state.avatarRequestToken += 1;
+    clearStorefrontAvatarRefreshTimer();
+    state.avatarPath = null;
+    state.avatarUrl = null;
+    state.avatarOwnerId = null;
+    state.avatarUrlExpiresAt = 0;
+    state.avatarNeedsRefresh = false;
+    syncStorefrontCustomerAvatar(null);
+  }
+
+  function scheduleStorefrontAvatarRefresh(userId) {
+    clearStorefrontAvatarRefreshTimer();
+    if (!state.avatarUrl || !userId) return;
+    const refreshDelay = Math.max(60000, (CUSTOMER_AVATAR_URL_TTL_SECONDS - 120) * 1000);
+    state.avatarRefreshTimer = window.setTimeout(async () => {
+      state.avatarRefreshTimer = null;
+      if (document.visibilityState === 'hidden') {
+        state.avatarNeedsRefresh = true;
+        return;
+      }
+      const currentUser = state.session && state.session.user;
+      if (currentUser && String(currentUser.id) === String(userId)) {
+        await refreshStorefrontAvatarForSession(state.session);
+      }
+    }, refreshDelay);
+  }
+
+  async function refreshStorefrontAvatarForSession(session) {
+    const user = session && session.user ? session.user : null;
+    if (!user || !user.id) {
+      clearCustomerAvatarForSignedOut();
+      return;
+    }
+
+    const userId = String(user.id);
+    const requestToken = ++state.avatarRequestToken;
+    if (state.avatarOwnerId !== userId) {
+      clearStorefrontAvatarRefreshTimer();
+      state.avatarOwnerId = userId;
+      state.avatarPath = null;
+      state.avatarUrl = null;
+      state.avatarUrlExpiresAt = 0;
+      state.avatarNeedsRefresh = false;
+      syncStorefrontCustomerAvatar(null);
+    }
+
+    try {
+      const db = client();
+      const profileResult = await db.from('profiles')
+        .select('avatar_path')
+        .eq('id', userId)
+        .maybeSingle();
+      if (requestToken !== state.avatarRequestToken) return;
+      if (profileResult.error) throw profileResult.error;
+
+      const path = String(profileResult.data && profileResult.data.avatar_path || '').trim();
+      if (!path || !path.startsWith(userId + '/')) {
+        clearStorefrontAvatarRefreshTimer();
+        state.avatarPath = null;
+        state.avatarUrl = null;
+        state.avatarUrlExpiresAt = 0;
+        state.avatarNeedsRefresh = false;
+        syncStorefrontCustomerAvatar(null);
+        return;
+      }
+
+      const signedResult = await db.storage
+        .from(CUSTOMER_AVATAR_BUCKET)
+        .createSignedUrl(path, CUSTOMER_AVATAR_URL_TTL_SECONDS);
+      if (requestToken !== state.avatarRequestToken) return;
+      if (signedResult.error) throw signedResult.error;
+
+      const signedUrl = signedResult.data && signedResult.data.signedUrl
+        ? signedResult.data.signedUrl
+        : null;
+      if (!signedUrl) throw new Error('Supabase did not return a signed avatar URL.');
+
+      state.avatarOwnerId = userId;
+      state.avatarPath = path;
+      state.avatarUrl = signedUrl;
+      state.avatarUrlExpiresAt = Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000;
+      state.avatarNeedsRefresh = false;
+
+      const identity = currentUserName(user, state.profile) || user.email || 'Customer';
+      syncStorefrontCustomerAvatar(signedUrl, identity);
+      scheduleStorefrontAvatarRefresh(userId);
+    } catch (error) {
+      if (requestToken === state.avatarRequestToken) {
+        console.warn('GENMERCH storefront avatar sync could not refresh:', error.message || error);
+      }
+    }
+  }
+
+  function handleStorefrontAvatarVisibilityChange() {
+    if (document.visibilityState !== 'visible') return;
+    const user = state.session && state.session.user;
+    if (!user) return;
+    if (state.avatarNeedsRefresh ||
+        (state.avatarUrlExpiresAt && Date.now() >= state.avatarUrlExpiresAt - 120000)) {
+      refreshStorefrontAvatarForSession(state.session);
+    }
   }
 
   const asArray = (result) => result && Array.isArray(result.data) ? result.data : [];
@@ -434,8 +584,7 @@
       if (error) throw error;
       state.session = null;
       state.profile = null;
-      state.avatarPath = null;
-      state.avatarUrl = null;
+      clearCustomerAvatarForSignedOut();
       state.checkoutBalance = 0;
       state.selectedPoints = 0;
       window.genmerchSelectedLoyaltyPoints = 0;
@@ -470,6 +619,7 @@
 
     state.profile = profileResult.data || null;
     state.avatarPath = String(state.profile && state.profile.avatar_path || '').trim() || null;
+    state.avatarOwnerId = String(userId);
     state.avatarUrl = null;
     if (state.avatarPath && state.avatarPath.startsWith(String(userId) + '/')) {
       try {
@@ -484,6 +634,12 @@
     } else {
       state.avatarPath = null;
     }
+    state.avatarUrlExpiresAt = state.avatarUrl
+      ? Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000
+      : 0;
+    syncStorefrontCustomerAvatar(state.avatarUrl, currentUserName(user, state.profile) || user.email || 'Customer');
+    if (state.avatarUrl) scheduleStorefrontAvatarRefresh(userId);
+    else clearStorefrontAvatarRefreshTimer();
     state.orders = asArray(orderResult);
     state.orderCount = typeof orderResult.count === 'number' ? orderResult.count : state.orders.length;
     state.addresses = asArray(addressResult);
@@ -713,7 +869,9 @@
 
       const savedPath = uploadedPath;
       uploadedPath = null;
+      state.avatarRequestToken += 1;
       state.avatarPath = savedPath;
+      state.avatarOwnerId = String(user.id);
       state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
       try {
         const signedResult = await db.storage
@@ -726,6 +884,19 @@
       } catch (signedUrlError) {
         state.avatarUrl = null;
         console.warn('GENMERCH saved the customer avatar, but could not create its preview URL:', signedUrlError.message || signedUrlError);
+      }
+
+      state.avatarUrlExpiresAt = state.avatarUrl
+        ? Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000
+        : 0;
+      syncStorefrontCustomerAvatar(
+        state.avatarUrl,
+        currentUserName(user, state.profile) || user.email || 'Customer'
+      );
+      if (state.avatarUrl) scheduleStorefrontAvatarRefresh(user.id);
+      else {
+        clearStorefrontAvatarRefreshTimer();
+        refreshStorefrontAvatarForSession(state.session);
       }
 
       if (previousPath && previousPath !== savedPath && previousPath.startsWith(String(user.id) + '/')) {
@@ -771,8 +942,14 @@
       }, { onConflict: 'id' });
       if (profileResult.error) throw profileResult.error;
 
+      state.avatarRequestToken += 1;
       state.avatarPath = null;
       state.avatarUrl = null;
+      state.avatarOwnerId = String(user.id);
+      state.avatarUrlExpiresAt = 0;
+      state.avatarNeedsRefresh = false;
+      clearStorefrontAvatarRefreshTimer();
+      syncStorefrontCustomerAvatar(null);
       state.profile = { ...(state.profile || {}), id: user.id, avatar_path: null };
       renderAllPanes();
 
@@ -1976,21 +2153,45 @@
     installUpdateCartHook();
     renderCheckoutPoints();
 
+    window.addEventListener('genmerch:customer-auth-changed', (event) => {
+      const session = event && event.detail && event.detail.user ? event.detail : null;
+      state.session = session;
+      if (session) {
+        refreshStorefrontAvatarForSession(session);
+      } else {
+        clearCustomerAvatarForSignedOut();
+      }
+    });
+    document.addEventListener('visibilitychange', handleStorefrontAvatarVisibilityChange);
+    window.addEventListener('focus', handleStorefrontAvatarVisibilityChange, { passive: true });
+
     try {
       const auth = client().auth;
+      auth.getSession().then((result) => {
+        if (result && result.error) throw result.error;
+        const initialSession = result && result.data ? result.data.session : null;
+        if (!initialSession || !initialSession.user) {
+          if (!state.session || !state.session.user) clearCustomerAvatarForSignedOut();
+          return;
+        }
+        state.session = initialSession;
+        refreshStorefrontAvatarForSession(initialSession);
+      }).catch((error) => {
+        console.warn('GENMERCH initial storefront avatar session check failed:', error.message || error);
+      });
       auth.onAuthStateChange((event, session) => {
         window.setTimeout(async () => {
           state.session = session && session.user ? session : null;
           if (event === 'SIGNED_OUT') {
             state.profile = null;
-            state.avatarPath = null;
-            state.avatarUrl = null;
+            clearCustomerAvatarForSignedOut();
             state.checkoutBalance = 0;
             state.selectedPoints = 0;
             window.genmerchSelectedLoyaltyPoints = 0;
             if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) closeAccount();
             renderCheckoutPoints();
           } else if (session && session.user) {
+            refreshStorefrontAvatarForSession(session);
             await refreshPointsBalance();
             if (state.openAfterLogin) { state.openAfterLogin = false; await openAccount(); }
           }
