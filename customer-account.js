@@ -32,6 +32,23 @@
   };
 
   const $ = (id) => document.getElementById(id);
+  const ACCOUNT_PANEL_OPEN_KEY = 'genmerch.accountPanel.open';
+  const ACCOUNT_PANEL_TAB_KEY = 'genmerch.accountPanel.tab';
+  function accountPanelStorageGet(key) {
+    try { return window.sessionStorage.getItem(key); } catch (_) { return null; }
+  }
+  function accountPanelStorageSet(key, value) {
+    try { window.sessionStorage.setItem(key, String(value)); } catch (_) {}
+  }
+  function clearAccountPanelRestoreState() {
+    try {
+      window.sessionStorage.removeItem(ACCOUNT_PANEL_OPEN_KEY);
+      window.sessionStorage.removeItem(ACCOUNT_PANEL_TAB_KEY);
+    } catch (_) {}
+  }
+  function accountPanelRestoreRequested() {
+    return accountPanelStorageGet(ACCOUNT_PANEL_OPEN_KEY) === '1';
+  }
   const CUSTOMER_AVATAR_BUCKET = 'customer-avatars';
   const CUSTOMER_AVATAR_MAX_BYTES = 2 * 1024 * 1024;
   const CUSTOMER_AVATAR_URL_TTL_SECONDS = 900;
@@ -312,7 +329,7 @@
     document.body.appendChild(overlay);
     ensureSignOutConfirmation();
     overlay.addEventListener('click', (event) => {
-      if (event.target === overlay) closeAccount();
+      // Backdrop taps do not dismiss the account panel; use the explicit close control.
       const avatarTrigger = event.target.closest('[data-gmca-avatar-upload]');
       if (avatarTrigger) {
         event.preventDefault();
@@ -512,6 +529,12 @@
     }
     state.activeTab = paneTab;
     state.navTab = navTab;
+    if (accountPanelRestoreRequested()) {
+      const savedTab = state.activeTab === 'activity'
+        ? state.activityTab
+        : (state.activeTab === 'addresses' || state.activeTab === 'landmarks' ? 'settings' : state.activeTab);
+      accountPanelStorageSet(ACCOUNT_PANEL_TAB_KEY, savedTab);
+    }
     document.querySelectorAll('#gmcaTabs [data-gmca-section]').forEach((button) => {
       const active = button.getAttribute('data-gmca-section') === state.navTab;
       button.setAttribute('aria-selected', String(active));
@@ -531,7 +554,7 @@
   }
 
 
-  async function openAccount() {
+  async function openAccount(restoreSavedTab) {
     ensureModal();
     try {
       const { data, error } = await client().auth.getSession();
@@ -544,12 +567,16 @@
       }
       state.session = session;
       state.loading = true;
+      accountPanelStorageSet(ACCOUNT_PANEL_OPEN_KEY, '1');
       $('gmcaOverlay').classList.add('open');
       $('gmcaOverlay').setAttribute('aria-hidden', 'false');
       $('gmcaLoading').hidden = false;
       document.querySelectorAll('[data-gmca-pane]').forEach((pane) => { pane.hidden = true; });
       document.body.style.overflow = 'hidden';
-      switchTab('overview');
+      const savedTab = restoreSavedTab === true
+        ? (accountPanelStorageGet(ACCOUNT_PANEL_TAB_KEY) || 'overview')
+        : 'overview';
+      switchTab(savedTab);
       await loadAccountData();
     } catch (error) {
       if ($('gmcaOverlay')) {
@@ -567,6 +594,7 @@
     if (!overlay) return;
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
+    clearAccountPanelRestoreState();
     if (!$('customerAuthOverlay')?.classList.contains('open') &&
         !$('customerOrdersOverlay')?.classList.contains('open') &&
         !$('cartModal')?.classList.contains('open') &&
@@ -2168,10 +2196,12 @@
         const initialSession = result && result.data ? result.data.session : null;
         if (!initialSession || !initialSession.user) {
           if (!state.session || !state.session.user) clearCustomerAvatarForSignedOut();
+          if (accountPanelRestoreRequested()) clearAccountPanelRestoreState();
           return;
         }
         state.session = initialSession;
         refreshStorefrontAvatarForSession(initialSession);
+        if (accountPanelRestoreRequested()) await openAccount(true);
       }).catch((error) => {
         console.warn('GENMERCH initial storefront avatar session check failed:', error.message || error);
       });
