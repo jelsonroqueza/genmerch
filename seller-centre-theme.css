@@ -1,0 +1,763 @@
+/* GENMERCH Seller Centre — Customer Account charcoal/orange visual system.
+   Presentation-only stylesheet. No workflow, auth, data, or permission logic is changed. */
+
+#sellerDashboardOverlay,
+#sellerPasscodeOverlay {
+  --sc-bg: #202124;
+  --sc-panel: #27282b;
+  --sc-panel-raised: #2e2f32;
+  --sc-panel-deep: #18191b;
+  --sc-border: #514237;
+  --sc-border-orange: rgba(255, 132, 45, .58);
+  --sc-orange: #ff842b;
+  --sc-orange-light: #ffad61;
+  --sc-text: #eee9e4;
+  --sc-muted: #c0b5ab;
+  --sc-soft: #968b82;
+  --sc-shadow: 0 26px 75px rgba(0,0,0,.56);
+  color-scheme: dark;
+}
+
+/* Modal frame and backdrop match the Customer Account window. */
+#sellerDashboardOverlay.seller-modal-overlay,
+#sellerPasscodeOverlay.seller-modal-overlay {
+  background: rgba(10, 11, 13, .78) !important;
+  -webkit-backdrop-filter: blur(11px) saturate(.82) !important;
+  backdrop-filter: blur(11px) saturate(.82) !important;
+  padding: clamp(10px, 2.2vw, 28px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#sellerDashboardOverlay > .seller-dashboard-modal {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(1480px, calc(100vw - 48px)) !important;
+  max-width: min(1480px, calc(100vw - 48px)) !important;
+  height: min(94dvh, 1060px) !important;
+  max-height: min(94dvh, 1060px) !important;
+  min-height: 0 !important;
+  margin: auto !important;
+  overflow: hidden !important;
+  border: 1px solid #d96d26 !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(ellipse at 96% 0%, rgba(255, 111, 28, .14), transparent 31%),
+    linear-gradient(145deg, #252629 0%, #1e1f22 58%, #21170f 100%) !important;
+  color: var(--sc-text) !important;
+  box-shadow: 0 0 0 1px rgba(255, 133, 43, .13), var(--sc-shadow), inset 0 1px 0 rgba(255,255,255,.07) !important;
+  scrollbar-color: #ed812f #222326;
+}
+#sellerPasscodeOverlay > .seller-modal {
+  width: min(560px, calc(100vw - 28px)) !important;
+  max-width: min(560px, calc(100vw - 28px)) !important;
+  max-height: min(92dvh, 780px) !important;
+  border: 1px solid #d96d26 !important;
+  border-radius: 19px !important;
+  background: linear-gradient(145deg, #292a2d 0%, #1d1e21 72%, #28180e 100%) !important;
+  color: var(--sc-text) !important;
+  box-shadow: 0 0 0 1px rgba(255,133,43,.12), 0 28px 80px rgba(0,0,0,.6) !important;
+}
+
+/* Consistent charcoal header with the orange eyebrow used by Customer Account. */
+#sellerDashboardOverlay .seller-modal-head,
+#sellerPasscodeOverlay .seller-modal-head {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: clamp(15px, 1.6vw, 22px) clamp(16px, 2vw, 27px) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 132, 45, .42) !important;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255, 126, 39, .16), transparent 42%),
+    linear-gradient(110deg, #2c2927 0%, #242528 60%, #2a1b12 100%) !important;
+  color: var(--sc-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 15px rgba(0,0,0,.12) !important;
+}
+#sellerDashboardOverlay .seller-modal-head > div:first-child,
+#sellerPasscodeOverlay .seller-modal-head > div:first-child {
+  min-width: 0 !important;
+}
+#sellerDashboardOverlay .seller-modal-head h2,
+#sellerPasscodeOverlay .seller-modal-head h2 {
+  margin: 4px 0 3px !important;
+  color: #f1ece7 !important;
+  font-size: clamp(1.08rem, 1.65vw, 1.42rem) !important;
+  font-weight: 950 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.025em !important;
+}
+#sellerDashboardOverlay .seller-modal-head h2::before,
+#sellerPasscodeOverlay .seller-modal-head h2::before {
+  content: "GENMERCH ADMINISTRATION";
+  display: block;
+  margin-bottom: 5px;
+  color: #ff8c3b;
+  font-size: .62rem;
+  font-weight: 950;
+  letter-spacing: .12em;
+  line-height: 1.2;
+}
+#sellerDashboardOverlay .seller-modal-head p,
+#sellerPasscodeOverlay .seller-modal-head p {
+  margin: 4px 0 0 !important;
+  color: #c1b6ad !important;
+  font-size: .8rem !important;
+  line-height: 1.45 !important;
+  opacity: 1 !important;
+}
+#sellerDashboardOverlay .seller-dashboard-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 9px !important;
+  flex: 0 0 auto !important;
+}
+#sellerDashboardOverlay .seller-modal-close,
+#sellerPasscodeOverlay .seller-modal-close {
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  border: 1px solid rgba(255, 177, 112, .4) !important;
+  border-radius: 11px !important;
+  background: linear-gradient(145deg, #37383b, #252629) !important;
+  color: #ff9a50 !important;
+  font-size: 1.5rem !important;
+  line-height: 1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 9px rgba(0,0,0,.2) !important;
+}
+#sellerDashboardOverlay .seller-modal-close:hover,
+#sellerPasscodeOverlay .seller-modal-close:hover {
+  border-color: #ffad70 !important;
+  background: linear-gradient(145deg, #4a3428, #30231b) !important;
+  color: #ffd0a7 !important;
+}
+#sellerDashboardOverlay #sellerCentreLogoutButton {
+  min-width: 112px !important;
+  border: 1px solid rgba(255, 115, 83, .6) !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #4b2925, #30201e) !important;
+  color: #ffb0a1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 3px 9px rgba(0,0,0,.2) !important;
+}
+#sellerDashboardOverlay #sellerCentreLogoutButton:hover {
+  border-color: #ff8e78 !important;
+  background: linear-gradient(145deg, #5b302a, #39201d) !important;
+  color: #fff0eb !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Tabs use the same charcoal surface and warm active state as Customer Account. */
+#sellerDashboardOverlay .seller-tabs {
+  position: relative !important;
+  top: auto !important;
+  z-index: 4 !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  padding: 10px clamp(12px, 1.5vw, 22px) 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 132, 45, .32) !important;
+  background: #222326 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #bd662b #222326 !important;
+}
+#sellerDashboardOverlay .seller-tab-button {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 10px 15px 11px !important;
+  border: 1px solid transparent !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 9px 9px 0 0 !important;
+  background: transparent !important;
+  color: #c0b5ac !important;
+  font-size: .82rem !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  transition: color .16s ease, background .16s ease, border-color .16s ease !important;
+}
+#sellerDashboardOverlay .seller-tab-button:hover {
+  border-color: rgba(255, 132, 45, .18) !important;
+  background: rgba(255, 132, 45, .07) !important;
+  color: #ffd0aa !important;
+}
+#sellerDashboardOverlay .seller-tab-button.active,
+#sellerDashboardOverlay .seller-tab-button[aria-selected="true"] {
+  border-color: rgba(255, 132, 45, .38) !important;
+  border-bottom-color: #ff8a32 !important;
+  background: linear-gradient(180deg, rgba(255, 130, 43, .18), rgba(255, 130, 43, .055)) !important;
+  color: #ffb477 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045) !important;
+}
+#sellerDashboardOverlay .seller-deleted-count {
+  background: #5b2c1c !important;
+  color: #ffbd8a !important;
+  border: 1px solid rgba(255, 150, 79, .35) !important;
+}
+#sellerDashboardOverlay .seller-tab-tools {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  padding: 0 0 7px !important;
+}
+#sellerDashboardOverlay .seller-panel {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  padding: clamp(14px, 1.7vw, 24px) !important;
+  background: transparent !important;
+  color: var(--sc-text) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #b9652d #222326 !important;
+}
+#sellerDashboardOverlay .seller-panel[hidden] { display: none !important; }
+
+/* Section titles, descriptive text and collapsible headings. */
+#sellerDashboardOverlay .seller-panel-title {
+  margin: 0 0 4px !important;
+  color: #f1ebe5 !important;
+  font-size: clamp(.98rem, 1.2vw, 1.12rem) !important;
+  font-weight: 950 !important;
+  letter-spacing: -.015em !important;
+}
+#sellerDashboardOverlay .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-muted,
+#sellerDashboardOverlay .seller-field-hint,
+#sellerDashboardOverlay .seller-gallery-upload-help {
+  color: #b8aca2 !important;
+}
+#sellerDashboardOverlay .seller-panel-subtitle {
+  margin: 4px 0 15px !important;
+  font-size: .78rem !important;
+  line-height: 1.5 !important;
+}
+#sellerDashboardOverlay .seller-section-heading,
+#sellerDashboardOverlay .seller-products-topbar,
+#sellerDashboardOverlay .seller-inventory-heading {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin-bottom: 13px !important;
+}
+#sellerDashboardOverlay .seller-collapse-button,
+#sellerDashboardOverlay .seller-dashboard-toggle-group button {
+  min-height: 35px !important;
+  padding: 7px 11px !important;
+  border: 1px solid #594330 !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #343538, #27282b) !important;
+  color: #f0c19c !important;
+  font-size: .74rem !important;
+  font-weight: 850 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+#sellerDashboardOverlay .seller-collapse-button:hover,
+#sellerDashboardOverlay .seller-dashboard-toggle-group button:hover:not(:disabled) {
+  border-color: #d17b3d !important;
+  background: linear-gradient(145deg, #483426, #30251f) !important;
+  color: #ffd0a7 !important;
+}
+#sellerDashboardOverlay .seller-dashboard-toggle-group button:disabled {
+  opacity: .42 !important;
+}
+
+/* Dark elevated content cards and product editing surfaces. */
+#sellerDashboardOverlay .seller-product-form,
+#sellerDashboardOverlay .seller-inventory-tools,
+#sellerDashboardOverlay .seller-file-picker,
+#sellerDashboardOverlay .seller-gallery-item,
+#sellerDashboardOverlay .seller-product-card,
+#sellerDashboardOverlay .seller-section-card,
+#sellerDashboardOverlay .seller-inventory-summary,
+#sellerDashboardOverlay .seller-filter-toolbar,
+#sellerDashboardOverlay .seller-filter-field,
+#sellerDashboardOverlay .gm-waybill-queue-bar,
+#sellerDashboardOverlay .seller-empty-state,
+#sellerDashboardOverlay .seller-order-card,
+#sellerDashboardOverlay .seller-order-detail-card {
+  border: 1px solid #4c4037 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(145deg, #2a2b2e 0%, #222326 74%, #2b211a 100%) !important;
+  color: #eee7e1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 5px 16px rgba(0,0,0,.12) !important;
+}
+#sellerDashboardOverlay .seller-product-form {
+  padding: clamp(12px, 1.35vw, 18px) !important;
+  margin-bottom: 18px !important;
+}
+#sellerDashboardOverlay .seller-product-form.editing {
+  border-color: #b76b37 !important;
+  background: linear-gradient(145deg, #352a23, #252326) !important;
+  box-shadow: 0 0 0 1px rgba(255, 137, 57, .18), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+#sellerDashboardOverlay .seller-filter-toolbar {
+  padding: 12px !important;
+  margin-bottom: 12px !important;
+}
+#sellerDashboardOverlay .seller-inventory-tools { padding: 13px !important; }
+#sellerDashboardOverlay .seller-file-picker { padding: 10px 12px !important; }
+#sellerDashboardOverlay .seller-file-picker > label,
+#sellerDashboardOverlay .seller-gallery-color-label {
+  color: #e2d4c8 !important;
+}
+#sellerDashboardOverlay .seller-file-picker > label span { color: #a9998d !important; }
+#sellerDashboardOverlay .seller-gallery-item {
+  background: #242528 !important;
+}
+#sellerDashboardOverlay .seller-gallery-item img,
+#sellerDashboardOverlay .seller-product-thumb {
+  border-color: #57483d !important;
+  background: #17181a !important;
+}
+#sellerDashboardOverlay .seller-gallery-file-name { color: #c8bcb2 !important; }
+#sellerDashboardOverlay .seller-gallery-empty { color: #a99b90 !important; }
+#sellerDashboardOverlay .seller-gallery-count { color: #ffd0a8 !important; }
+
+/* KPI tiles echo the alternating orange and charcoal cards in My GENMERCH Account. */
+#sellerDashboardOverlay .seller-metrics-grid {
+  gap: 11px !important;
+  margin: 14px 0 20px !important;
+}
+#sellerDashboardOverlay .seller-metric-card {
+  min-width: 0 !important;
+  padding: 15px 14px !important;
+  border: 1px solid #57473b !important;
+  border-radius: 13px !important;
+  background: linear-gradient(145deg, #303135 0%, #252629 70%, #342216 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 4px 12px rgba(0,0,0,.18) !important;
+}
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1),
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) {
+  border-color: #f4a45b !important;
+  background: linear-gradient(145deg, #ffab4e 0%, #ff7a1b 48%, #d74a06 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.52), inset 0 -2px 0 rgba(116,38,0,.18), 0 5px 13px rgba(255,103,14,.14) !important;
+}
+#sellerDashboardOverlay .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-detail {
+  color: #d5c9bf !important;
+}
+#sellerDashboardOverlay .seller-metric-value {
+  color: #ffac68 !important;
+}
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-value,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+1) .seller-metric-detail,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-label,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-value,
+#sellerDashboardOverlay .seller-metric-card:nth-child(4n+3) .seller-metric-detail {
+  color: #fff7ef !important;
+}
+#sellerDashboardOverlay .seller-inventory-heading .seller-panel-subtitle { max-width: 850px !important; }
+
+/* Inputs, selects and textareas use the dark form fields of the account theme. */
+#sellerDashboardOverlay .seller-field label,
+#sellerDashboardOverlay .seller-filter-field label {
+  color: #e4d9d0 !important;
+  font-size: .77rem !important;
+  font-weight: 850 !important;
+}
+#sellerDashboardOverlay .seller-field input,
+#sellerDashboardOverlay .seller-field textarea,
+#sellerDashboardOverlay .seller-field select,
+#sellerDashboardOverlay .seller-filter-field input,
+#sellerDashboardOverlay .seller-filter-field select,
+#sellerDashboardOverlay .seller-filter-field textarea,
+#sellerDashboardOverlay .seller-inventory-tools input,
+#sellerDashboardOverlay .seller-inventory-tools select,
+#sellerDashboardOverlay .seller-stock-input,
+#sellerPasscodeOverlay .seller-field input {
+  min-width: 0 !important;
+  border: 1px solid #5a4b40 !important;
+  border-radius: 9px !important;
+  background: linear-gradient(180deg, #17181a, #202124) !important;
+  color: #f2ece6 !important;
+  font-size: .86rem !important;
+  outline: none !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.28) !important;
+  color-scheme: dark !important;
+}
+#sellerDashboardOverlay .seller-field input::placeholder,
+#sellerDashboardOverlay .seller-field textarea::placeholder,
+#sellerDashboardOverlay .seller-filter-field input::placeholder {
+  color: #93877d !important;
+  opacity: 1 !important;
+}
+#sellerDashboardOverlay .seller-field input:focus,
+#sellerDashboardOverlay .seller-field textarea:focus,
+#sellerDashboardOverlay .seller-field select:focus,
+#sellerDashboardOverlay .seller-filter-field input:focus,
+#sellerDashboardOverlay .seller-filter-field select:focus,
+#sellerDashboardOverlay .seller-inventory-tools input:focus,
+#sellerDashboardOverlay .seller-inventory-tools select:focus,
+#sellerPasscodeOverlay .seller-field input:focus {
+  border-color: #ff984e !important;
+  box-shadow: 0 0 0 3px rgba(255, 132, 43, .18), inset 0 1px 3px rgba(0,0,0,.24) !important;
+}
+#sellerDashboardOverlay .seller-field input[readonly],
+#sellerDashboardOverlay .seller-field input:disabled,
+#sellerDashboardOverlay .seller-field select:disabled {
+  background: #292a2d !important;
+  color: #a99d93 !important;
+}
+#sellerDashboardOverlay input[type="checkbox"],
+#sellerDashboardOverlay input[type="radio"],
+#sellerDashboardOverlay input[type="range"],
+#sellerPasscodeOverlay input[type="checkbox"] {
+  accent-color: #ff842b !important;
+}
+#sellerDashboardOverlay .seller-size-choice {
+  border-color: #59483b !important;
+  background: #292a2d !important;
+  color: #e5d9cf !important;
+}
+#sellerDashboardOverlay .seller-size-choice:has(input:checked) {
+  border-color: #ff8c3a !important;
+  background: #422a1d !important;
+  color: #ffd0aa !important;
+  box-shadow: 0 0 0 1px rgba(255,140,58,.16) !important;
+}
+
+/* Primary, neutral and destructive controls retain their semantic roles. */
+#sellerDashboardOverlay .seller-primary-button,
+#sellerPasscodeOverlay .seller-primary-button {
+  min-height: 40px !important;
+  padding: 10px 14px !important;
+  border: 1px solid #ff9b4e !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #ff9e43 0%, #ff7518 58%, #d94b06 100%) !important;
+  color: #fff !important;
+  font-size: .81rem !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 2px rgba(93, 34, 0, .38) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.42), 0 3px 0 #8f360e, 0 6px 13px rgba(255,100,14,.16) !important;
+  transition: filter .16s ease, transform .16s ease, box-shadow .16s ease !important;
+}
+#sellerDashboardOverlay .seller-primary-button:hover:not(:disabled),
+#sellerPasscodeOverlay .seller-primary-button:hover:not(:disabled) {
+  filter: brightness(1.06) saturate(1.04) !important;
+  transform: translateY(-1px) !important;
+}
+#sellerDashboardOverlay .seller-primary-button:active:not(:disabled),
+#sellerPasscodeOverlay .seller-primary-button:active:not(:disabled) {
+  transform: translateY(1px) !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.2), 0 1px 0 #8f360e !important;
+}
+#sellerDashboardOverlay .seller-secondary-button,
+#sellerPasscodeOverlay .seller-secondary-button {
+  min-height: 39px !important;
+  padding: 9px 13px !important;
+  border: 1px solid #5b4b3e !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #393a3d, #28292c) !important;
+  color: #f0e4d9 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.065), 0 2px 6px rgba(0,0,0,.13) !important;
+}
+#sellerDashboardOverlay .seller-secondary-button:hover:not(:disabled),
+#sellerPasscodeOverlay .seller-secondary-button:hover:not(:disabled) {
+  border-color: #bb7440 !important;
+  background: linear-gradient(145deg, #49362a, #30251e) !important;
+  color: #ffd1ad !important;
+}
+#sellerDashboardOverlay .seller-danger-button,
+#sellerDashboardOverlay .seller-inventory-delete-button {
+  border: 1px solid rgba(241, 130, 118, .5) !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #482925, #2d2020) !important;
+  color: #ffb2a9 !important;
+}
+#sellerDashboardOverlay .seller-danger-button:hover,
+#sellerDashboardOverlay .seller-inventory-delete-button:hover {
+  border-color: #ee887d !important;
+  background: #542c28 !important;
+  color: #fff0ed !important;
+}
+#sellerDashboardOverlay button:disabled,
+#sellerPasscodeOverlay button:disabled {
+  opacity: .52 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Data tables: charcoal surfaces, warm separators and readable sticky headers. */
+#sellerDashboardOverlay .seller-table-wrap {
+  border: 1px solid #514238 !important;
+  border-radius: 11px !important;
+  background: #202124 !important;
+  box-shadow: 0 5px 16px rgba(0,0,0,.15) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #b96730 #202124 !important;
+}
+#sellerDashboardOverlay .seller-table {
+  background: #222326 !important;
+  color: #e9e1da !important;
+}
+#sellerDashboardOverlay .seller-table th {
+  background: linear-gradient(110deg, #3a2a20, #2b2928 65%, #3b2517) !important;
+  color: #ffc08c !important;
+  border-bottom: 1px solid rgba(255,132,45,.42) !important;
+}
+#sellerDashboardOverlay .seller-table td {
+  color: #e3d9d1 !important;
+  border-bottom: 1px solid rgba(255,255,255,.075) !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr {
+  background: #242528 !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even) {
+  background: #292a2d !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr:hover {
+  background: #34271f !important;
+}
+#sellerDashboardOverlay .seller-table-empty {
+  background: #242528 !important;
+  color: #bfb2a7 !important;
+}
+#sellerDashboardOverlay .seller-product-name { color: #fff0e4 !important; }
+#sellerDashboardOverlay .seller-product-thumb { background: #17181a !important; }
+#sellerDashboardOverlay .seller-status-pill {
+  border: 1px solid rgba(255,255,255,.08) !important;
+}
+#sellerDashboardOverlay .seller-status-pill.inactive {
+  background: #38393c !important;
+  color: #d0c6bd !important;
+}
+
+/* Feedback and notes retain meaning without bright white panels. */
+#sellerDashboardOverlay .seller-feedback,
+#sellerPasscodeOverlay .seller-feedback {
+  border: 1px solid #54483e !important;
+  border-radius: 9px !important;
+  background: #2b2c2f !important;
+  color: #e6ddd5 !important;
+}
+#sellerDashboardOverlay .seller-feedback.error,
+#sellerPasscodeOverlay .seller-feedback.error {
+  border-color: #85443d !important;
+  background: #3b2424 !important;
+  color: #ffc0b8 !important;
+}
+#sellerDashboardOverlay .seller-feedback.success,
+#sellerPasscodeOverlay .seller-feedback.success {
+  border-color: #426b4a !important;
+  background: #203629 !important;
+  color: #b6edc1 !important;
+}
+#sellerDashboardOverlay .seller-security-note,
+#sellerPasscodeOverlay .seller-security-note {
+  margin: 14px 18px 16px !important;
+  border: 1px solid #8a6531 !important;
+  border-radius: 10px !important;
+  background: linear-gradient(145deg, #3b3020, #2b261e) !important;
+  color: #f2d39b !important;
+}
+#sellerDashboardOverlay .seller-dashboard-foot {
+  flex: 0 0 auto !important;
+  padding: 12px clamp(14px, 1.6vw, 23px) !important;
+  border-top: 1px solid rgba(255,132,45,.28) !important;
+  background: #1a1b1d !important;
+  color: #b7aaa0 !important;
+}
+#sellerDashboardOverlay .seller-dashboard-foot,
+#sellerDashboardOverlay .seller-dashboard-foot * {
+  color: #b7aaa0 !important;
+}
+#sellerDashboardOverlay .seller-deleted-count[hidden],
+#sellerDashboardOverlay [hidden] {
+  display: none !important;
+}
+
+/* Inventory, stock movements, status badges and printable queue. */
+#sellerDashboardOverlay .seller-stock-count { color: #ffb477 !important; }
+#sellerDashboardOverlay .seller-movement-kind {
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: #393a3d !important;
+  color: #e5d9cf !important;
+}
+#sellerDashboardOverlay .seller-movement-kind.restock {
+  background: #203a2b !important;
+  color: #b6edc1 !important;
+}
+#sellerDashboardOverlay .seller-movement-kind.sale {
+  background: #482b1d !important;
+  color: #ffc18f !important;
+}
+#sellerDashboardOverlay .seller-movement-kind.cancellation_return {
+  background: #24354a !important;
+  color: #b8d7ff !important;
+}
+#sellerDashboardOverlay .seller-movement-kind.adjustment {
+  background: #44391c !important;
+  color: #ffdf91 !important;
+}
+#sellerDashboardOverlay .seller-edit-button {
+  border-color: #9a633e !important;
+  background: #38291f !important;
+  color: #ffc08c !important;
+}
+#sellerDashboardOverlay .seller-edit-button:hover {
+  border-color: #d18a54 !important;
+  background: #493222 !important;
+}
+#sellerDashboardOverlay #gmWaybillQueueBar {
+  border-color: #86522b !important;
+  background: linear-gradient(110deg, #39281d, #282629 72%, #3a2518) !important;
+  color: #f2e7dd !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 5px 14px rgba(0,0,0,.14) !important;
+}
+#sellerDashboardOverlay #gmWaybillQueueBar strong { color: #ffb477 !important; }
+#sellerDashboardOverlay #gmWaybillQueueBar span,
+#sellerDashboardOverlay #gmWaybillQueueBar small { color: #d0c2b7 !important; }
+
+/* Pagination and keyboard focus remain clear on dark surfaces. */
+#sellerDashboardOverlay .seller-table-pagination button,
+#sellerDashboardOverlay .seller-pagination button {
+  border: 1px solid #57483d !important;
+  border-radius: 8px !important;
+  background: #2c2d30 !important;
+  color: #eadfd6 !important;
+}
+#sellerDashboardOverlay .seller-table-pagination button.active,
+#sellerDashboardOverlay .seller-pagination button.active {
+  border-color: #ff9b50 !important;
+  background: linear-gradient(145deg, #ff9f47, #e65b0c) !important;
+  color: #fff !important;
+}
+#sellerDashboardOverlay button:focus-visible,
+#sellerDashboardOverlay input:focus-visible,
+#sellerDashboardOverlay textarea:focus-visible,
+#sellerDashboardOverlay select:focus-visible,
+#sellerPasscodeOverlay button:focus-visible,
+#sellerPasscodeOverlay input:focus-visible {
+  outline: 2px solid #ffb16f !important;
+  outline-offset: 2px !important;
+}
+
+/* Responsive behavior: preserve the dashboard hierarchy on tablets and phones. */
+@media (max-width: 900px) {
+  #sellerDashboardOverlay.seller-modal-overlay,
+  #sellerPasscodeOverlay.seller-modal-overlay {
+    padding: 9px !important;
+  }
+  #sellerDashboardOverlay > .seller-dashboard-modal {
+    width: calc(100vw - 18px) !important;
+    max-width: calc(100vw - 18px) !important;
+    height: min(96dvh, 1000px) !important;
+    max-height: min(96dvh, 1000px) !important;
+    border-radius: 15px !important;
+  }
+  #sellerDashboardOverlay .seller-modal-head { padding: 13px 15px !important; }
+  #sellerDashboardOverlay .seller-tabs {
+    gap: 3px !important;
+    padding: 8px 10px 0 !important;
+  }
+  #sellerDashboardOverlay .seller-tab-button {
+    min-height: 39px !important;
+    padding: 9px 11px 10px !important;
+    font-size: .76rem !important;
+  }
+  #sellerDashboardOverlay .seller-panel { padding: 14px 12px !important; }
+  #sellerDashboardOverlay .seller-dashboard-foot { padding: 10px 12px !important; }
+}
+@media (max-width: 760px) {
+  #sellerDashboardOverlay.seller-modal-overlay,
+  #sellerPasscodeOverlay.seller-modal-overlay {
+    padding: 0 !important;
+  }
+  #sellerDashboardOverlay > .seller-dashboard-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+  #sellerDashboardOverlay .seller-modal-head {
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 12px 12px !important;
+  }
+  #sellerDashboardOverlay .seller-modal-head h2 { font-size: 1rem !important; }
+  #sellerDashboardOverlay .seller-modal-head p { font-size: .72rem !important; }
+  #sellerDashboardOverlay .seller-dashboard-actions { gap: 6px !important; }
+  #sellerDashboardOverlay #sellerCentreLogoutButton {
+    min-width: 90px !important;
+    height: 36px !important;
+    padding: 0 9px !important;
+    font-size: .72rem !important;
+  }
+  #sellerDashboardOverlay .seller-modal-close {
+    flex-basis: 34px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+  #sellerDashboardOverlay .seller-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 7px 8px 0 !important;
+    scrollbar-width: thin !important;
+  }
+  #sellerDashboardOverlay .seller-tab-button { flex: 0 0 auto !important; }
+  #sellerDashboardOverlay .seller-tab-tools { margin-left: auto !important; }
+  #sellerDashboardOverlay .seller-tab-tools button { min-height: 33px !important; padding: 7px 9px !important; }
+  #sellerDashboardOverlay .seller-panel { padding: 12px 10px !important; }
+  #sellerDashboardOverlay .seller-metrics-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 8px !important; }
+  #sellerDashboardOverlay .seller-metric-card { padding: 11px 10px !important; }
+  #sellerDashboardOverlay .seller-section-heading,
+  #sellerDashboardOverlay .seller-products-topbar,
+  #sellerDashboardOverlay .seller-inventory-heading { flex-wrap: wrap !important; }
+  #sellerDashboardOverlay .seller-product-form { padding: 11px !important; }
+  #sellerDashboardOverlay .seller-form-grid { grid-template-columns: minmax(0,1fr) !important; }
+  #sellerDashboardOverlay .seller-field.full { grid-column: auto !important; }
+  #sellerPasscodeOverlay > .seller-modal { width: calc(100vw - 20px) !important; }
+  #sellerPasscodeOverlay .seller-modal-head { padding: 13px 15px !important; }
+}
+@media (max-width: 420px) {
+  #sellerDashboardOverlay .seller-modal-head h2 { font-size: .92rem !important; }
+  #sellerDashboardOverlay .seller-modal-head h2::before { font-size: .55rem !important; }
+  #sellerDashboardOverlay .seller-dashboard-actions { gap: 5px !important; }
+  #sellerDashboardOverlay #sellerCentreLogoutButton {
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 0 8px !important;
+    font-size: .67rem !important;
+  }
+  #sellerDashboardOverlay .seller-tab-button { padding-inline: 9px !important; font-size: .7rem !important; }
+  #sellerDashboardOverlay .seller-tab-tools button { font-size: .66rem !important; }
+  #sellerDashboardOverlay .seller-metric-label { font-size: .63rem !important; }
+  #sellerDashboardOverlay .seller-metric-detail { font-size: .61rem !important; }
+  #sellerDashboardOverlay .seller-metric-value { font-size: 1.2rem !important; }
+  #sellerDashboardOverlay .seller-product-form .seller-form-actions button { flex: 1 1 auto !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sellerDashboardOverlay *,
+  #sellerPasscodeOverlay * {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
