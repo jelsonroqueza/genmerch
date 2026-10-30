@@ -2150,3 +2150,57 @@
 @media(prefers-reduced-motion:reduce){
   #gmcaOverlay .gmca-notification-button{transition:none}
 }
+
+/* Customer Account fixes: preserve greeting contrast and center the sign-out action. */
+#gmcaOverlay .gmca-welcome-card h3::first-letter{
+  color:#111d33;
+  text-shadow:none;
+}
+#gmcaOverlay .gmca-footer{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  justify-content:initial;
+  justify-items:stretch;
+}
+#gmcaOverlay .gmca-footer>span{
+  grid-column:1;
+  justify-self:start;
+}
+#gmcaOverlay .gmca-footer::after{
+  content:"";
+  display:block;
+  grid-column:3;
+  grid-row:1;
+  min-width:0;
+}
+#gmcaOverlay .gmca-footer .gmca-signout{
+  grid-column:2;
+  grid-row:1;
+  justify-self:center;
+  align-self:center;
+  min-width:94px;
+  margin:0;
+}
+@media(max-width:760px){
+  #gmcaOverlay .gmca-footer{
+    grid-template-columns:minmax(0,1fr);
+    justify-items:center;
+    gap:8px;
+    text-align:center;
+  }
+  #gmcaOverlay .gmca-footer>span{
+    grid-column:1;
+    justify-self:center;
+    text-align:center;
+  }
+  #gmcaOverlay .gmca-footer::after{
+    display:none;
+  }
+  #gmcaOverlay .gmca-footer .gmca-signout{
+    grid-column:1;
+    grid-row:auto;
+    justify-self:center;
+    width:min(230px,100%);
+  }
+}
