@@ -128,6 +128,19 @@
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
     $('gmcaSectionTrigger').addEventListener('click', toggleSectionMenu);
+    $('gmcaSectionMenu').addEventListener('keydown', (event) => {
+      const options = [...$('gmcaSectionMenu').querySelectorAll('[data-gmca-section]')];
+      if (!options.length) return;
+      const current = options.indexOf(document.activeElement);
+      let target = current;
+      if (event.key === 'ArrowDown') target = (current + 1 + options.length) % options.length;
+      else if (event.key === 'ArrowUp') target = (current - 1 + options.length) % options.length;
+      else if (event.key === 'Home') target = 0;
+      else if (event.key === 'End') target = options.length - 1;
+      else return;
+      event.preventDefault();
+      options[target].focus();
+    });
     $('gmcaClose').addEventListener('click', closeAccount);
     $('gmcaSignOut').addEventListener('click', openSignOutConfirmation);
     overlay.addEventListener('submit', (event) => {
