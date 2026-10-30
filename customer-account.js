@@ -1317,6 +1317,10 @@
       try { syncCheckoutFullName(); } catch (_) {}
     }
     ['firstName','lastName','custPhone','streetAddress','province','city','barangay','postalCode','landmark','specialInstructions'].forEach(notifyCheckoutField);
+    const sharedAddress = window.genmerchAddressReference;
+    if (sharedAddress && typeof sharedAddress.restoreContext === 'function') {
+      sharedAddress.restoreContext().catch((error) => console.warn('Could not rebuild checkout address suggestions:', error));
+    }
     if (typeof window.updateCart === 'function') window.updateCart();
     const picker = $('gmcaCheckoutAddressFeedback');
     if (picker) {
