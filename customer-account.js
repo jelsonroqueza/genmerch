@@ -16,6 +16,7 @@
     activeTab: 'overview',
     navTab: 'overview',
     activityTab: 'wishlist',
+    notificationBadgeObserver: null,
     checkoutBalance: 0,
     selectedPoints: 0,
     baseCheckoutTotal: '',
@@ -77,6 +78,17 @@
     });
   }
 
+  function syncAccountNotificationBadge() {
+    const source = $('genmerchNotificationBadge');
+    const badge = $('gmcaNotificationBadge');
+    const button = $('gmcaNotificationButton');
+    if (!badge || !button) return;
+    const unread = source && !source.hidden ? Math.max(0, Number(source.textContent) || 0) : 0;
+    badge.textContent = String(unread > 99 ? 99 : unread);
+    badge.hidden = unread <= 0;
+    button.setAttribute('aria-label', unread ? 'Order notifications, ' + unread + ' unread updates' : 'Order notifications');
+  }
+
   function ensureModal() {
     if ($('gmcaOverlay')) return;
     const overlay = document.createElement('div');
@@ -95,6 +107,7 @@
               '</div>' +
             '</div>' +
             '<div class="gmca-header-actions">' +
+              '<button type="button" class="gmca-notification-button" id="gmcaNotificationButton" aria-label="Order notifications" title="Order notifications"><span class="gmca-notification-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="gmca-notification-badge" id="gmcaNotificationBadge" hidden>0</span></span></button>' +
               '<div class="gmca-user-chip"><span class="gmca-user-avatar" id="gmcaUserAvatar" aria-hidden="true">GM</span><span class="gmca-user-copy"><strong id="gmcaUserName">Customer</strong><small>Customer</small></span></div>' +
               '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
@@ -134,6 +147,18 @@
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
     $('gmcaClose').addEventListener('click', closeAccount);
+    $('gmcaNotificationButton').addEventListener('click', () => {
+      if (typeof window.toggleGenmerchNotifications === 'function') window.toggleGenmerchNotifications();
+      else showAlert('Order notifications are temporarily unavailable. Please refresh and try again.', 'warning');
+    });
+    syncAccountNotificationBadge();
+    if (typeof MutationObserver === 'function') {
+      const sourceBadge = $('genmerchNotificationBadge');
+      if (sourceBadge && !state.notificationBadgeObserver) {
+        state.notificationBadgeObserver = new MutationObserver(syncAccountNotificationBadge);
+        state.notificationBadgeObserver.observe(sourceBadge, { attributes: true, childList: true, characterData: true, subtree: true });
+      }
+    }
     $('gmcaSignOut').addEventListener('click', openSignOutConfirmation);
     overlay.addEventListener('submit', (event) => {
       if (event.target && event.target.id === 'gmcaProfileForm') {
