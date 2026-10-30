@@ -3334,3 +3334,19 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* GENMERCH Recent Movements — native-speed scroll; no smooth-wheel animation. */
+#sellerDashboardOverlay #sellerMovementsPanel {
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: auto !important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table-wrap {
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #sellerDashboardOverlay #sellerMovementsPanel {
+    scroll-behavior: auto !important;
+  }
+}
