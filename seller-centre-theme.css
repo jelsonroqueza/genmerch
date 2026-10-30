@@ -2988,3 +2988,24 @@
 #sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table .seller-order-value {
   color: #64748B !important;
 }
+
+
+/* Remove the generated administration eyebrow from the Seller Centre heading. */
+#sellerDashboardOverlay .seller-modal-head h2::before {
+  content: none !important;
+  display: none !important;
+  margin: 0 !important;
+}
+#sellerDashboardOverlay .seller-modal-head h2 {
+  margin: 0 !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-divider {
+  display: inline-block !important;
+  margin: 0 .28em !important;
+  color: #94A3B8 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+}
+#sellerDashboardOverlay #sellerDashboardTitle .seller-brand-section {
+  margin-left: 0 !important;
+}
