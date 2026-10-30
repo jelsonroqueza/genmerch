@@ -17963,7 +17963,7 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-14">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-15">
 
 <script id="genmerch-inventory-freeze-navigation">
 (function () {
@@ -18051,6 +18051,12 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
     animationPending = true;
     window.requestAnimationFrame(updateLayout);
   }
+
+  function updateBlurShield() {
+    panel.setAttribute('data-scroll-active', panel.scrollTop > 2 ? 'true' : 'false');
+  }
+  panel.addEventListener('scroll', updateBlurShield, { passive: true });
+  updateBlurShield();
 
   tableWrap.addEventListener('scroll', scheduleLayout, { passive: true });
   window.addEventListener('resize', scheduleLayout, { passive: true });
