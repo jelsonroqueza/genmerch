@@ -2086,3 +2086,67 @@
     transition-duration:.01ms!important;
   }
 }
+
+
+/* Reuse the storefront order-notification panel from inside Customer Account. */
+#gmcaOverlay .gmca-header-actions{gap:12px}
+#gmcaOverlay .gmca-notification-button{
+  position:relative;
+  display:grid;
+  place-items:center;
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  min-width:44px;
+  min-height:44px;
+  padding:0;
+  border:0;
+  border-radius:12px;
+  background:#f8fafc;
+  color:#17243b;
+  cursor:pointer;
+  transition:background .15s ease,transform .15s ease;
+}
+#gmcaOverlay .gmca-notification-button:hover{background:#fff1e8;color:#d94d13}
+#gmcaOverlay .gmca-notification-button:active{transform:scale(.96)}
+#gmcaOverlay .gmca-notification-button:focus-visible{outline:3px solid rgba(238,95,29,.3);outline-offset:2px}
+#gmcaOverlay .gmca-notification-wrap{position:relative;display:grid;place-items:center;width:30px;height:30px}
+#gmcaOverlay .gmca-notification-wrap svg{
+  display:block;
+  width:27px;
+  height:27px;
+  fill:none;
+  stroke:#293c59;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#gmcaOverlay .gmca-notification-button:hover .gmca-notification-wrap svg{stroke:#d94d13}
+#gmcaOverlay .gmca-notification-badge{
+  position:absolute;
+  top:-5px;
+  right:-7px;
+  display:grid;
+  place-items:center;
+  min-width:18px;
+  height:18px;
+  padding:0 4px;
+  border:2px solid #fff;
+  border-radius:999px;
+  background:#e52c35;
+  color:#fff;
+  font-size:.62rem;
+  font-weight:950;
+  line-height:1;
+  box-shadow:0 1px 4px rgba(10,20,35,.18);
+}
+#gmcaOverlay .gmca-notification-badge[hidden]{display:none!important}
+@media(max-width:480px){
+  #gmcaOverlay .gmca-header-actions{gap:6px}
+  #gmcaOverlay .gmca-notification-button{flex-basis:38px;width:38px;height:38px;min-width:38px;min-height:38px}
+  #gmcaOverlay .gmca-notification-wrap{width:27px;height:27px}
+  #gmcaOverlay .gmca-notification-wrap svg{width:24px;height:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  #gmcaOverlay .gmca-notification-button{transition:none}
+}
