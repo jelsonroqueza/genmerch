@@ -467,7 +467,7 @@
     const user = state.session.user;
     const name = currentUserName(user, state.profile);
     pane.innerHTML =
-      '<div class="gmca-welcome-card"><div><span class="gmca-eyebrow">YOUR CUSTOMER SPACE</span><h3>' + (name ? 'Hi, ' + esc(name.split(/\s+/)[0]) + '!' : 'Welcome to GENMERCH!') + '</h3><p>Track your purchases, manage your profile and use points toward eligible orders.</p></div><span class="gmca-welcome-icon" aria-hidden="true">✦</span></div>' +
+      '<div class="gmca-welcome-card"><div><span class="gmca-eyebrow">YOUR CUSTOMER SPACE</span><h3>' + (name ? 'Hi, ' + esc(name.split(/\s+/)[0]) + '!' : 'Welcome to GENMERCH!') + '</h3><p>Track your purchases, manage your profile and use points toward eligible orders.</p></div><span class="gmca-welcome-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><rect x="8" y="6.5" width="32" height="35" rx="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="18.5" r="5.2" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M14.5 33c1.9-4.6 5.1-6.8 9.5-6.8s7.6 2.2 9.5 6.8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M12 12h2M34 12h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>' +
       '<div class="gmca-metric-grid">' +
         metricCard('LOYALTY BALANCE', String(Math.max(0, Number(state.points.points_balance) || 0)), 'points', 'points') +
         metricCard('TOTAL ORDERS', String(Number(state.orderCount) || 0), 'orders', 'orders') +
