@@ -55,6 +55,17 @@
     const metadata = user && user.user_metadata ? user.user_metadata : {};
     return String((profile && profile.phone) || metadata.phone || user.phone || '').trim();
   };
+  function makeInitials(identity) {
+    const value = String(identity || '').trim();
+    if (!value) return 'GM';
+    if (value.includes('@')) {
+      const local = value.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+      return (local.slice(0, 2) || 'GM').toUpperCase();
+    }
+    const parts = value.split(/\s+/).filter(Boolean);
+    if (parts.length > 1) return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    return (parts[0].replace(/[^a-zA-Z0-9]/g, '').slice(0, 2) || 'GM').toUpperCase();
+  }
   const asArray = (result) => result && Array.isArray(result.data) ? result.data : [];
   async function tryQuery(factory, fallback) {
     try {
