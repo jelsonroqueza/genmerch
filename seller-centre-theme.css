@@ -761,3 +761,216 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* VIDEO-VERIFIED CASCADE REPAIR — keep all Seller Centre UI surfaces consistently dark.
+   Loaded last from index.html so older legacy inline styles cannot repaint cards and table cells white. */
+
+/* Product, order and inventory section headers/cards that previously retained cream backgrounds. */
+#sellerDashboardOverlay .seller-products-topbar,
+#sellerDashboardOverlay .seller-section-heading,
+#sellerDashboardOverlay .seller-collapsible-section-heading,
+#sellerDashboardOverlay .seller-inventory-heading,
+#sellerDashboardOverlay .seller-orders-heading,
+#sellerDashboardOverlay .seller-products-heading,
+#sellerDashboardOverlay .seller-deleted-heading {
+  border: 1px solid #514238 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(145deg, #2d2e31 0%, #252629 72%, #332317 100%) !important;
+  color: #eee7e1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 4px 13px rgba(0,0,0,.13) !important;
+}
+#sellerDashboardOverlay .seller-products-topbar {
+  align-items: center !important;
+  padding: 14px 16px !important;
+  margin: 0 0 13px !important;
+}
+#sellerDashboardOverlay .seller-section-heading,
+#sellerDashboardOverlay .seller-collapsible-section-heading {
+  padding: 13px 15px !important;
+  margin: 13px 0 10px !important;
+}
+#sellerDashboardOverlay .seller-products-topbar .seller-panel-title,
+#sellerDashboardOverlay .seller-section-heading .seller-panel-title,
+#sellerDashboardOverlay .seller-inventory-heading .seller-panel-title {
+  color: #f3ece6 !important;
+}
+#sellerDashboardOverlay .seller-products-topbar .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-section-heading .seller-panel-subtitle,
+#sellerDashboardOverlay .seller-inventory-heading .seller-panel-subtitle {
+  color: #c2b6ac !important;
+}
+
+/* Cell-level paint overrides are necessary: old styles paint individual TDs cream,
+   which sits above the dark TR background and caused the white stripe problem in the video. */
+#sellerDashboardOverlay .seller-table-wrap,
+#sellerDashboardOverlay .seller-products-table-wrap,
+#sellerDashboardOverlay .seller-table {
+  border-color: #514238 !important;
+  background: #202124 !important;
+  color: #eee7e1 !important;
+}
+#sellerDashboardOverlay .seller-table thead th,
+#sellerDashboardOverlay .seller-products-table thead th,
+#sellerDashboardOverlay .seller-orders-table thead th,
+#sellerDashboardOverlay .seller-inventory-table thead th,
+#sellerDashboardOverlay .seller-movements-table thead th {
+  background: linear-gradient(110deg, #3c2a1e 0%, #2d2927 58%, #3b2618 100%) !important;
+  color: #ffc28f !important;
+  border-color: rgba(255,132,45,.34) !important;
+  box-shadow: inset 0 -1px 0 rgba(255,132,45,.18) !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even),
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd) {
+  background: #252629 !important;
+  color: #e9e1da !important;
+}
+#sellerDashboardOverlay .seller-table tbody td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-table tbody tr:nth-child(odd) td,
+#sellerDashboardOverlay .seller-products-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-products-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:hover td,
+#seller-inventory-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:nth-child(even) td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:hover td {
+  background: #252629 !important;
+  color: #e8dfd7 !important;
+  border-bottom-color: rgba(255,255,255,.075) !important;
+}
+#sellerDashboardOverlay .seller-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-products-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-orders-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-inventory-table tbody tr:hover td,
+#sellerDashboardOverlay .seller-movements-table tbody tr:hover td {
+  background: #382a20 !important;
+  color: #fff0e4 !important;
+}
+#sellerDashboardOverlay .seller-table td strong,
+#sellerDashboardOverlay .seller-table td b {
+  color: #f5e8dd !important;
+}
+#sellerDashboardOverlay .seller-table .seller-product-name {
+  color: #fff0e4 !important;
+}
+#sellerDashboardOverlay .seller-table .seller-muted {
+  color: #b5a89d !important;
+}
+#sellerDashboardOverlay .seller-table .seller-table-empty {
+  background: #252629 !important;
+  color: #c8bcb2 !important;
+}
+#sellerDashboardOverlay .seller-table-pagination {
+  border-color: #514238 !important;
+  background: #242528 !important;
+  color: #d8ccc2 !important;
+}
+
+/* Search/filter panels and table toolbars: eliminate unthemed ivory surfaces. */
+#sellerDashboardOverlay .seller-filter-toolbar,
+#sellerDashboardOverlay .seller-products-filter-toolbar,
+#sellerDashboardOverlay .seller-orders-filter-toolbar,
+#sellerDashboardOverlay .seller-inventory-filter-toolbar,
+#sellerDashboardOverlay .seller-inventory-tools,
+#sellerDashboardOverlay .seller-inventory-tools .seller-field,
+#sellerDashboardOverlay .seller-products-filter-toolbar .seller-filter-field,
+#sellerDashboardOverlay .seller-orders-filter-toolbar .seller-filter-field {
+  border-color: #514238 !important;
+  background: linear-gradient(145deg, #292a2d, #222326 72%, #2c2119) !important;
+  color: #eee7e1 !important;
+}
+#sellerDashboardOverlay .seller-filter-result-count,
+#sellerDashboardOverlay .seller-products-filter-result-count,
+#sellerDashboardOverlay .seller-orders-filter-result-count {
+  color: #ffb477 !important;
+}
+
+/* Order queue, shipment summary and order detail panels. */
+#sellerDashboardOverlay .gm-waybill-queue-bar,
+#sellerDashboardOverlay .seller-shipment-summary,
+#sellerDashboardOverlay .seller-order-detail,
+#sellerDashboardOverlay .seller-order-detail-row,
+#sellerDashboardOverlay .seller-order-card,
+#sellerDashboardOverlay .seller-order-summary,
+#sellerDashboardOverlay .seller-payment-summary {
+  border-color: #514238 !important;
+  background: linear-gradient(145deg, #2b2c2f, #222326 72%, #312116) !important;
+  color: #e9e1da !important;
+}
+#sellerDashboardOverlay .seller-shipment-summary strong,
+#sellerDashboardOverlay .seller-order-detail strong,
+#sellerDashboardOverlay .seller-order-card strong,
+#sellerDashboardOverlay .seller-payment-summary strong {
+  color: #ffd0a8 !important;
+}
+
+/* Product editor is a separate overlay from the dashboard; apply the same theme there too. */
+.seller-product-editor-overlay {
+  background: rgba(10,11,13,.8) !important;
+  -webkit-backdrop-filter: blur(11px) !important;
+  backdrop-filter: blur(11px) !important;
+}
+.seller-product-editor-modal {
+  border: 1px solid #d96d26 !important;
+  border-radius: 18px !important;
+  background: linear-gradient(145deg, #27282b, #1e1f22 70%, #2b1c11) !important;
+  color: #eee7e1 !important;
+  box-shadow: 0 0 0 1px rgba(255,132,45,.12), 0 28px 80px rgba(0,0,0,.58) !important;
+}
+.seller-product-editor-modal .seller-modal-head {
+  background: linear-gradient(110deg, #302820, #252629 65%, #332014) !important;
+  border-bottom: 1px solid rgba(255,132,45,.4) !important;
+  color: #f3ece6 !important;
+}
+.seller-product-editor-modal .seller-modal-head h2,
+.seller-product-editor-modal .seller-panel-title {
+  color: #f3ece6 !important;
+}
+.seller-product-editor-modal .seller-modal-head p,
+.seller-product-editor-modal .seller-panel-subtitle,
+.seller-product-editor-modal .seller-field-hint,
+.seller-product-editor-modal .seller-gallery-upload-help {
+  color: #c0b4aa !important;
+}
+.seller-product-editor-body,
+.seller-product-editor-modal .seller-product-form,
+.seller-product-editor-modal .seller-size-field,
+.seller-product-editor-modal .seller-file-picker,
+.seller-product-editor-modal .seller-form-actions {
+  border-color: #514238 !important;
+  background: linear-gradient(145deg, #2a2b2e, #222326 72%, #302117) !important;
+  color: #eee7e1 !important;
+}
+.seller-product-editor-modal .seller-field label,
+.seller-product-editor-modal .seller-size-field label,
+.seller-product-editor-modal .seller-file-picker label {
+  color: #e5d9cf !important;
+}
+.seller-product-editor-modal .seller-field input,
+.seller-product-editor-modal .seller-field textarea,
+.seller-product-editor-modal .seller-field select,
+.seller-product-editor-modal .seller-photo-color-input,
+.seller-product-editor-modal .seller-gallery-color-input {
+  border-color: #5a4b40 !important;
+  background: #191a1c !important;
+  color: #f2ece6 !important;
+  color-scheme: dark !important;
+}
+.seller-product-editor-modal .seller-file-picker input[type=file] {
+  color: #d4c6bb !important;
+}
+.seller-product-editor-modal .seller-form-actions {
+  border-top: 1px solid #554337 !important;
+  background: rgba(31,32,35,.97) !important;
+}
+@media(max-width:760px) {
+  .seller-product-editor-modal {
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+}
