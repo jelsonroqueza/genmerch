@@ -1731,3 +1731,43 @@
     refreshPointsBalance();
   });
 })();
+
+/* Keep the signed-in account badge as initials on desktop, tablet, and mobile. */
+(function installGenmerchResponsiveAccountInitials(){
+  'use strict';
+  function makeInitials(identity){
+    const value=String(identity||'').trim();
+    if(!value)return 'GM';
+    if(value.includes('@')){
+      const local=value.split('@')[0].replace(/[^a-zA-Z0-9]/g,'');
+      return (local.slice(0,2)||'GM').toUpperCase();
+    }
+    const parts=value.split(/\s+/).filter(Boolean);
+    if(parts.length>1)return (parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase();
+    return (parts[0].replace(/[^a-zA-Z0-9]/g,'').slice(0,2)||'GM').toUpperCase();
+  }
+  function start(){
+    const button=document.getElementById('customerAccountButton');
+    const label=document.getElementById('customerAccountLabel');
+    if(!button||!label)return;
+    function apply(){
+      if(!button.classList.contains('customer-account-signed-in'))return;
+      const identity=String(label.dataset.fullName||button.getAttribute('title')||'').trim();
+      if(!identity)return;
+      const initials=makeInitials(identity);
+      if(label.textContent.trim()!==initials)label.textContent=initials;
+      label.setAttribute('aria-label','Customer account initials '+initials);
+    }
+    apply();
+    if(typeof MutationObserver==='function'){
+      const labelObserver=new MutationObserver(apply);
+      labelObserver.observe(label,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-full-name']});
+      const buttonObserver=new MutationObserver(apply);
+      buttonObserver.observe(button,{attributes:true,attributeFilter:['class','title']});
+    }
+    window.addEventListener('resize',apply,{passive:true});
+    window.addEventListener('orientationchange',apply,{passive:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
+  else start();
+})();
