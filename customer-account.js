@@ -282,7 +282,6 @@
             '</div>' +
             '<div class="gmca-header-actions">' +
               '<button type="button" class="gmca-notification-button" id="gmcaNotificationButton" aria-label="Order notifications" title="Order notifications"><span class="gmca-notification-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="gmca-notification-badge" id="gmcaNotificationBadge" hidden>0</span></span></button>' +
-              '<div class="gmca-user-chip"><span class="gmca-user-avatar-wrap"><span class="gmca-user-avatar" id="gmcaUserAvatar" aria-hidden="true">GM</span><button type="button" class="gmca-avatar-camera gmca-header-avatar-camera" data-gmca-avatar-upload aria-label="Change profile photo" title="Change profile photo">✎</button></span><span class="gmca-user-copy"><strong id="gmcaUserName">Customer</strong><small>Customer</small></span></div>' +
               '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
           '</div>' +
@@ -682,8 +681,6 @@
 
     const name = currentUserName(user, state.profile);
     $('gmcaWelcome').textContent = 'Your shopping activity, rewards and personal information.';
-    if ($('gmcaUserName')) $('gmcaUserName').textContent = name || user.email || 'Customer';
-    if ($('gmcaUserAvatar')) $('gmcaUserAvatar').innerHTML = avatarMarkup(name || user.email || 'GM');
     $('gmcaLoading').hidden = true;
     renderAllPanes();
     renderCheckoutPoints();
@@ -905,7 +902,6 @@
       }
 
       const name = currentUserName(user, state.profile);
-      if ($('gmcaUserAvatar')) $('gmcaUserAvatar').innerHTML = avatarMarkup(name || user.email || 'GM');
       renderAllPanes();
       showAlert(state.avatarUrl
         ? 'Your profile photo has been updated.'

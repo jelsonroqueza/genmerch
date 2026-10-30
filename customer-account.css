@@ -1159,14 +1159,14 @@
 #gmcaOverlay .gmca-welcome-avatar{
   display:grid;
   place-items:center;
-  flex:0 0 clamp(64px,7vw,88px);
-  width:clamp(64px,7vw,88px);
-  height:clamp(64px,7vw,88px);
-  border:3px solid #fff;
+  flex:0 0 clamp(76px,8vw,96px);
+  width:clamp(76px,8vw,96px);
+  height:clamp(76px,8vw,96px);
+  border:1.5px solid #d7b867;
   border-radius:50%;
   background:linear-gradient(145deg,#d6e5f4,#f7fbff);
   color:#24466e;
-  box-shadow:0 3px 12px rgba(40,68,102,.15);
+  box-shadow:0 2px 9px rgba(153,117,37,.18);
   font-size:clamp(1.1rem,2.2vw,1.55rem);
   font-weight:950;
 }
@@ -1952,7 +1952,7 @@
   }
   #gmcaOverlay .gmca-welcome-card{min-height:116px;padding:15px;gap:8px}
   #gmcaOverlay .gmca-welcome-profile{gap:11px}
-  #gmcaOverlay .gmca-welcome-avatar{flex-basis:62px;width:62px;height:62px}
+  #gmcaOverlay .gmca-welcome-avatar{flex-basis:70px;width:70px;height:70px}
   #gmcaOverlay .gmca-welcome-card h3{font-size:1.28rem}
   #gmcaOverlay .gmca-welcome-card p{font-size:.77rem}
   #gmcaOverlay .gmca-welcome-art{flex-basis:95px;min-height:90px;margin-right:-8px}
@@ -2001,7 +2001,7 @@
   #gmcaOverlay .gmca-tabs button{min-height:46px;padding:8px 10px;font-size:.72rem}
   #gmcaOverlay .gmca-content{padding:10px 9px 14px}
   #gmcaOverlay .gmca-welcome-card{padding:12px;min-height:105px}
-  #gmcaOverlay .gmca-welcome-avatar{flex-basis:51px;width:51px;height:51px;font-size:1rem}
+  #gmcaOverlay .gmca-welcome-avatar{flex-basis:66px;width:66px;height:66px;font-size:1rem}
   #gmcaOverlay .gmca-welcome-card h3{font-size:1.12rem}
   #gmcaOverlay .gmca-welcome-card p{font-size:.7rem}
   #gmcaOverlay .gmca-welcome-art{flex-basis:64px;min-height:72px}
@@ -2232,9 +2232,9 @@
 #gmcaOverlay .gmca-welcome-avatar-wrap{
   position:relative;
   display:block;
-  flex:0 0 clamp(64px,7vw,88px);
-  width:clamp(64px,7vw,88px);
-  height:clamp(64px,7vw,88px);
+  flex:0 0 clamp(76px,8vw,96px);
+  width:clamp(76px,8vw,96px);
+  height:clamp(76px,8vw,96px);
 }
 #gmcaOverlay .gmca-welcome-avatar-wrap .gmca-welcome-avatar{
   box-sizing:border-box;
@@ -2307,7 +2307,7 @@
 #gmcaOverlay .gmca-avatar-remove-button{border-color:#75412b;background:#261914;color:#ffb39a}
 #gmcaOverlay .gmca-avatar-remove-button:hover{border-color:#c86442;background:#3b1d15;color:#fff}
 @media(max-width:760px){
-  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:62px;width:62px;height:62px}
+  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:70px;width:70px;height:70px}
   #gmcaOverlay .gmca-footer{padding-bottom:max(9px,env(safe-area-inset-bottom))}
   #gmcaOverlay .gmca-profile-photo-card{flex-wrap:wrap;gap:11px}
   #gmcaOverlay .gmca-profile-photo-actions{flex:1 0 100%}
@@ -2315,7 +2315,7 @@
 }
 @media(max-width:480px){
   #gmcaOverlay .gmca-user-avatar-wrap{flex-basis:34px;width:34px;height:34px}
-  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:51px;width:51px;height:51px}
+  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:66px;width:66px;height:66px}
   #gmcaOverlay .gmca-avatar-camera{width:23px;height:23px}
   #gmcaOverlay .gmca-header-avatar-camera{width:17px;height:17px;font-size:.56rem}
   #gmcaOverlay .gmca-welcome-avatar-camera{width:25px;height:25px}
@@ -2324,6 +2324,8 @@
 @media(max-width:359px){
   #gmcaOverlay .gmca-user-avatar-wrap{flex-basis:30px;width:30px;height:30px}
   #gmcaOverlay .gmca-header-avatar-camera{right:-3px;bottom:-3px;width:16px;height:16px}
+  #gmcaOverlay .gmca-welcome-avatar-wrap{flex-basis:58px;width:58px;height:58px}
+  #gmcaOverlay .gmca-welcome-avatar{flex-basis:58px;width:58px;height:58px}
 }
 @media(prefers-reduced-motion:reduce){
   #gmcaOverlay .gmca-avatar-camera{transition:none}
@@ -2348,7 +2350,7 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
   max-height:34px!important;
   margin:0!important;
   padding:0!important;
-  border:2px solid #fff!important;
+  border:1.5px solid #d7b867!important;
   border-radius:50%!important;
   background:#f4e7de!important;
   box-shadow:0 2px 6px rgba(22,30,42,.22)!important;
