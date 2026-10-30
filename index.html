@@ -6856,7 +6856,6 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
           </tr></thead>
           <tbody id="sellerInventoryTableBody"><tr><td colspan="7" class="seller-table-empty">Open this tab to load stock levels.</td></tr></tbody>
         </table></div>
-        <div class="seller-table-pagination" id="sellerInventoryPagination" role="navigation" aria-label="Inventory table pages"></div>
           </div>
         </div>
         </section>
@@ -12327,7 +12326,6 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
     let sellerOrdersCurrentPage = 1;
     let sellerOrdersSortKey = 'created_at';
     let sellerOrdersSortDirection = 'desc';
-    let sellerInventoryCurrentPage = 1;
     let sellerInventorySortKey = 'product';
     let sellerInventorySortDirection = 'asc';
     const SELLER_TABLE_PAGE_SIZE = 10;
@@ -13615,46 +13613,22 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
       if(!allowed.includes(key))return;
       if(sellerInventorySortKey===key)sellerInventorySortDirection=sellerInventorySortDirection==='asc'?'desc':'asc';
       else{sellerInventorySortKey=key;sellerInventorySortDirection=key==='stock'||key==='price'?'desc':'asc';}
-      sellerInventoryCurrentPage=1;
       sellerRenderInventoryRows();
     }
     function sellerInventoryThumbMarkup(productId,productName,colorLabel){
       const rows=sellerImageRowsByProductId.get(String(productId))||[];
       const requestedColor=sellerNormalizeColorLabel(colorLabel);
-      // Color variants must use the gallery photo explicitly linked to that color, not the product's primary image.
+      // Color variants use the gallery photo explicitly linked to that color.
       const image=requestedColor
         ?rows.find(row=>sellerNormalizeColorLabel(row.color_label)===requestedColor)
         :(rows.find(row=>row.is_primary)||rows[0]);
       const url=image?safeCatalogImageUrl(image.image_url):'';
       const imageLabel=(productName||'Product')+(requestedColor?' — '+requestedColor:'')+' photo';
-      if(url)return '<img class="seller-inventory-product-thumb" src="'+sellerEscape(url)+'" alt="'+sellerEscape(imageLabel)+'" title="'+sellerEscape(imageLabel)+'" loading="lazy">';
+      if(url)return '<button class="seller-inventory-image-button" type="button" data-genmerch-seller-image-viewer="true" data-image-url="'+sellerEscape(url)+'" data-image-alt="'+sellerEscape(imageLabel)+'" aria-label="Open larger image: '+sellerEscape(imageLabel)+'" title="Click to view larger image"><img class="seller-inventory-product-thumb" src="'+sellerEscape(url)+'" alt="'+sellerEscape(imageLabel)+'" loading="lazy"></button>';
       const fallbackTitle=requestedColor?'No gallery photo linked to '+requestedColor+'. Check the product photo color label.':'No product photo available.';
       return '<span class="seller-inventory-product-thumb seller-inventory-product-thumb-fallback" title="'+sellerEscape(fallbackTitle)+'" aria-label="'+sellerEscape(fallbackTitle)+'">👕</span>';
     }
-    function sellerRenderInventoryPagination(totalRows){
-      const node=$('sellerInventoryPagination');if(!node)return;
-      const pageCount=Math.max(1,Math.ceil(totalRows/SELLER_TABLE_PAGE_SIZE));
-      sellerInventoryCurrentPage=Math.min(Math.max(1,sellerInventoryCurrentPage),pageCount);
-      if(totalRows===0){node.innerHTML='<span class="seller-pagination-summary">No matching inventory items</span>';return;}
-      const start=(sellerInventoryCurrentPage-1)*SELLER_TABLE_PAGE_SIZE+1,end=Math.min(totalRows,sellerInventoryCurrentPage*SELLER_TABLE_PAGE_SIZE);
-      const buttons=[];
-      buttons.push('<button class="seller-pagination-button" type="button" data-inventory-page="'+(sellerInventoryCurrentPage-1)+'" aria-label="Previous inventory page" '+(sellerInventoryCurrentPage===1?'disabled':'')+'>&lsaquo;</button>');
-      let pages=[];
-      if(pageCount<=5)pages=Array.from({length:pageCount},(_,i)=>i+1);
-      else pages=Array.from(new Set([1,Math.max(1,sellerInventoryCurrentPage-1),sellerInventoryCurrentPage,Math.min(pageCount,sellerInventoryCurrentPage+1),pageCount])).sort((a,b)=>a-b);
-      pages.forEach((page,index)=>{
-        if(index>0&&page-pages[index-1]>1)buttons.push('<span class="seller-muted" aria-hidden="true">…</span>');
-        buttons.push('<button class="seller-pagination-button'+(page===sellerInventoryCurrentPage?' active':'')+'" type="button" data-inventory-page="'+page+'" aria-label="Inventory page '+page+'" aria-current="'+(page===sellerInventoryCurrentPage?'page':'false')+'">'+page+'</button>');
-      });
-      buttons.push('<button class="seller-pagination-button" type="button" data-inventory-page="'+(sellerInventoryCurrentPage+1)+'" aria-label="Next inventory page" '+(sellerInventoryCurrentPage===pageCount?'disabled':'')+'>&rsaquo;</button>');
-      node.innerHTML='<span class="seller-pagination-summary">Showing '+start+'–'+end+' of '+totalRows+' product variant(s)</span>'+buttons.join('');
-      node.querySelectorAll('[data-inventory-page]').forEach(button=>button.addEventListener('click',()=>{
-        if(button.disabled)return;
-        sellerInventoryCurrentPage=Number(button.dataset.inventoryPage)||1;
-        sellerRenderInventoryRows();
-      }));
-    }
-    function sellerRenderInventoryRows(resetPage=false){
+    function sellerRenderInventoryRows(){
       const query=String($('sellerInventorySearch').value||'').trim().toLowerCase();
       const categoryFilter=String($('sellerInventoryCategoryFilter')?.value||'');
       const variantFilter=String($('sellerInventoryVariantFilter')?.value||'');
@@ -13671,7 +13645,6 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         const matchesStatus=!statusFilter||currentStatus===statusFilter;
         return matchesQuery&&matchesCategory&&matchesVariant&&matchesStatus;
       });
-      if(resetPage)sellerInventoryCurrentPage=1;
       rows.sort((a,b)=>{
         const ap=a.product||{},av=a.variant||{},bp=b.product||{},bv=b.variant||{};
         let result=0;
@@ -13685,13 +13658,10 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
         }
         return sellerInventorySortDirection==='asc'?result:-result;
       });
-      const totalRows=rows.length,pageCount=Math.max(1,Math.ceil(totalRows/SELLER_TABLE_PAGE_SIZE));
-      sellerInventoryCurrentPage=Math.min(Math.max(1,sellerInventoryCurrentPage),pageCount);
-      const displayStart=(sellerInventoryCurrentPage-1)*SELLER_TABLE_PAGE_SIZE;
-      const displayRows=rows.slice(displayStart,displayStart+SELLER_TABLE_PAGE_SIZE);
+      const totalRows=rows.length;
+      const displayRows=rows;
       const count=$('sellerInventoryFilterCount');
       if(count)count.textContent='Total Products: '+totalRows;
-      sellerRenderInventoryPagination(totalRows);
       const thead=document.querySelector('.seller-inventory-table thead');
       if(thead)thead.querySelectorAll('[data-inventory-sort]').forEach(button=>{
         const key=button.dataset.inventorySort,span=button.querySelector('span');
@@ -14839,6 +14809,11 @@ footer .footer-about-footer .footer-registry .footer-registry-image{
  document.addEventListener('click',function(e){
    const target=e.target;
    if(!(target instanceof Element))return;
+   const sellerInventoryImage=target.closest('[data-genmerch-seller-image-viewer]');
+   if(sellerInventoryImage){
+     const src=sellerInventoryImage.getAttribute('data-image-url')||'';
+     if(src){e.preventDefault();open(src,sellerInventoryImage.getAttribute('data-image-alt')||'Product image enlarged');return;}
+   }
    const productImage=target.closest('#productGalleryMainImage');
    if(productImage&&productImage.src){e.preventDefault();open(productImage.currentSrc||productImage.src,productImage.alt);return;}
    const modalImage=target.closest('#productModalIcon img');
@@ -17976,6 +17951,6 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 }
 </style>
 
-<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-3">
+<link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-4">
 </body>
 </html>

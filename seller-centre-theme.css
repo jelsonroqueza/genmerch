@@ -1006,3 +1006,81 @@
     min-width:720px!important;
   }
 }
+
+
+/* Inventory: remove pagination and let the full variant list flow in the Seller Centre panel. */
+#sellerDashboardOverlay .seller-inventory-table-wrap {
+  max-height: none !important;
+  height: auto !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  overscroll-behavior: auto !important;
+}
+#sellerDashboardOverlay .seller-inventory-table {
+  min-width: 950px !important;
+}
+#sellerDashboardOverlay #sellerInventoryTableBody > tr {
+  scroll-margin-top: 12px;
+}
+
+/* Product thumbnails are buttons and open the existing GENMERCH image lightbox. */
+#sellerDashboardOverlay .seller-inventory-image-button {
+  display: block !important;
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: zoom-in !important;
+  line-height: 0 !important;
+}
+#sellerDashboardOverlay .seller-inventory-image-button .seller-inventory-product-thumb {
+  display: block !important;
+  flex: none !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+  border: 1px solid #f0a76d !important;
+  border-radius: 7px !important;
+  background: #202124 !important;
+  padding: 2px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.22) !important;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+#sellerDashboardOverlay .seller-inventory-image-button:hover .seller-inventory-product-thumb {
+  transform: translateY(-1px) scale(1.055) !important;
+  border-color: #ffc18c !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,.28) !important;
+}
+#sellerDashboardOverlay .seller-inventory-image-button:focus-visible {
+  outline: 2px solid #ffb477 !important;
+  outline-offset: 3px !important;
+}
+#sellerDashboardOverlay .seller-inventory-product-thumb-fallback {
+  cursor: default !important;
+}
+@media(max-width:760px) {
+  #sellerDashboardOverlay .seller-inventory-table-wrap {
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #sellerDashboardOverlay .seller-inventory-image-button .seller-inventory-product-thumb {
+    transition: none !important;
+  }
+}
