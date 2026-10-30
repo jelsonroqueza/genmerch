@@ -28,7 +28,7 @@
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261028-1">
   <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261030-9">
+  <link rel="stylesheet" href="/customer-account.css?v=20261030-10">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     :root{--primary:#ee4d2d;--primary-hover:#d7381a;--accent:#00a650;--bg:#f5f5f5;--card:#fff;--text:#222;--muted:#666;--line:#ddd;--shadow:0 12px 36px rgba(0,0,0,.18);--r:12px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -17882,5 +17882,96 @@ main.container .catalog-search:focus-within {
   #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-width:58px;min-height:32px;padding:5px 8px;border:1px solid #ead7c9;border-radius:7px;background:#fff4eb;color:#69483a;font-size:.76rem;font-weight:850;cursor:pointer;}
   #customerAuthOverlay .customer-auth-recovery-form .customer-auth-password-toggle:hover{background:#f2e2d7;}
 </style>
+
+<style id="genmerch-account-header-shared-alignment-v2">
+/* Signed-in Account shares the same navigation cell, icon rail and label rhythm as its six siblings. */
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in {
+  display:flex!important;flex:1 1 0!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;justify-self:stretch!important;align-self:start!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  margin:0!important;padding:3px 1px 2px!important;gap:3px!important;overflow:visible!important;
+  border:0!important;border-radius:0!important;background:transparent!important;color:#242424!important;
+  box-shadow:none!important;text-shadow:none!important;transform:none!important;filter:none!important;
+  box-sizing:border-box!important;line-height:1.1!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+  position:relative!important;display:flex!important;flex:0 0 42px!important;align-items:center!important;justify-content:center!important;
+  width:42px!important;min-width:42px!important;max-width:42px!important;height:42px!important;min-height:42px!important;max-height:42px!important;
+  margin:0 auto!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;box-sizing:border-box!important;line-height:1!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon svg {display:none!important}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::before {
+  content:""!important;position:absolute!important;top:50%!important;left:50%!important;display:block!important;
+  width:34px!important;height:34px!important;margin:0!important;border:1px solid rgba(255,177,112,.95)!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#ffab58 0%,#f87523 60%,#d84b0b 100%)!important;
+  box-shadow:0 2px 5px rgba(120,45,5,.19),inset 0 1px 0 rgba(255,255,255,.48)!important;
+  transform:translate(-50%,-50%)!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::after {
+  content:attr(data-initials)!important;position:absolute!important;top:50%!important;left:50%!important;display:grid!important;place-items:center!important;
+  width:34px!important;height:34px!important;margin:0!important;color:#fff!important;font-size:14px!important;font-weight:950!important;
+  line-height:1!important;letter-spacing:.035em!important;text-align:center!important;text-shadow:0 1px 2px rgba(103,35,0,.48)!important;
+  transform:translate(-50%,-50%)!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+  position:static!important;inset:auto!important;display:flex!important;flex:0 0 auto!important;align-items:flex-start!important;justify-content:center!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:2.2em!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:transparent!important;
+  color:#242424!important;font-family:inherit!important;font-size:clamp(.60rem,.75vw,.73rem)!important;font-weight:650!important;
+  line-height:1.12!important;letter-spacing:-.015em!important;text-align:center!important;text-transform:none!important;text-shadow:none!important;
+  white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in:hover,
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in:active {
+  transform:none!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:none!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in:hover > .header-icon::before {
+  border-color:#ffe0c4!important;filter:brightness(1.045)!important;
+  box-shadow:0 3px 8px rgba(120,45,5,.24),inset 0 1px 0 rgba(255,255,255,.55)!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in:focus-visible {
+  outline:2px solid #ffb26f!important;outline-offset:3px!important;border-radius:8px!important;
+}
+@media (min-width:761px) and (max-width:1000px) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+    font-size:clamp(.56rem,.78vw,.68rem)!important;
+  }
+}
+@media (max-width:760px) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in {padding:2px 1px 1px!important;gap:3px!important}
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+    flex-basis:36px!important;width:36px!important;min-width:36px!important;max-width:36px!important;
+    height:36px!important;min-height:36px!important;max-height:36px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::before,
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::after {
+    width:30px!important;height:30px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::after {font-size:13px!important}
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+    min-height:2.3em!important;font-size:clamp(7.4px,2.15vw,10px)!important;line-height:1.1!important;letter-spacing:-.025em!important;
+  }
+}
+@media (max-width:390px) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+    flex-basis:30px!important;width:30px!important;min-width:30px!important;max-width:30px!important;
+    height:30px!important;min-height:30px!important;max-height:30px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::before,
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::after {
+    width:27px!important;height:27px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::after {font-size:11px!important}
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+    min-height:2.5em!important;font-size:7.2px!important;line-height:1.1!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in,
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::before {transition:none!important}
+}
+</style>
+
 </body>
 </html>
