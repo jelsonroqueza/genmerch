@@ -89,7 +89,7 @@
           '<div class="gmca-section-switcher" id="gmcaSectionSwitcher">' +
             '<label for="gmcaSectionTrigger">ACCOUNT SECTION</label>' +
             '<button type="button" class="gmca-section-trigger" id="gmcaSectionTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="gmcaSectionMenu">' +
-              '<span id="gmcaSectionCurrent">Overview</span><span class="gmca-section-chevron" aria-hidden="true">⌄</span>' +
+              '<span id="gmcaSectionCurrent">Overview</span><span class="gmca-section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m6.5 9 5.5 5.5L17.5 9"/></svg></span>' +
             '</button>' +
             '<div class="gmca-section-menu" id="gmcaSectionMenu" role="listbox" aria-label="Account sections" hidden>' +
               '<button type="button" role="option" aria-selected="true" data-gmca-section="overview">Overview</button>' +
