@@ -2897,3 +2897,94 @@
   #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-value { font-size: 1.22rem !important; }
   #sellerDashboardOverlay #sellerInventoryMetrics > .seller-metric-card .seller-metric-detail { font-size: .59rem !important; }
 }
+
+
+/* Thumbnail white-surface consistency across Products, Inventory and Deleted tabs. */
+#sellerDashboardOverlay .seller-product-image-button,
+#sellerDashboardOverlay .seller-inventory-image-button {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 9px !important;
+  box-shadow: 0 1px 3px rgba(38,50,56,.06) !important;
+}
+#sellerDashboardOverlay .seller-product-image-button .seller-product-thumb,
+#sellerDashboardOverlay .seller-table .seller-product-thumb,
+#sellerDashboardOverlay .seller-inventory-image-button .seller-inventory-product-thumb {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  object-fit: contain !important;
+  padding: 2px !important;
+  box-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-product-image-button:hover,
+#sellerDashboardOverlay .seller-inventory-image-button:hover {
+  background: #FFFFFF !important;
+  border-color: #F4B183 !important;
+  box-shadow: 0 2px 6px rgba(38,50,56,.08) !important;
+}
+#sellerDashboardOverlay .seller-product-image-button:hover .seller-product-thumb,
+#sellerDashboardOverlay .seller-inventory-image-button:hover .seller-inventory-product-thumb {
+  background: #FFFFFF !important;
+  border-color: #F4B183 !important;
+  box-shadow: none !important;
+}
+
+/* Recent Movements: quiet pastel badges instead of dark/high-saturation chips. */
+#sellerDashboardOverlay .seller-movements-table .seller-movement-kind,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-kind {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 24px !important;
+  padding: 5px 9px !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  font-size: .68rem !important;
+  font-weight: 750 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+#sellerDashboardOverlay .seller-movements-table .seller-movement-kind.restock,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-kind.restock {
+  background: #DCFCE7 !important;
+  border-color: #BBF7D0 !important;
+  color: #166534 !important;
+}
+#sellerDashboardOverlay .seller-movements-table .seller-movement-kind.sale,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-kind.sale {
+  background: #FFEDD5 !important;
+  border-color: #FED7AA !important;
+  color: #9A3412 !important;
+}
+#sellerDashboardOverlay .seller-movements-table .seller-movement-kind.cancellation_return,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-kind.cancellation_return {
+  background: #DBEAFE !important;
+  border-color: #BFDBFE !important;
+  color: #1D4ED8 !important;
+}
+#sellerDashboardOverlay .seller-movements-table .seller-movement-kind.adjustment,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movement-kind.adjustment {
+  background: #FEF3C7 !important;
+  border-color: #FDE68A !important;
+  color: #92400E !important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table tbody td,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table tbody tr,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table tbody tr:nth-child(even) td {
+  background: #FFFFFF !important;
+  color: #263238 !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table tbody tr:hover td {
+  background: #F8FAFC !important;
+}
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table .seller-muted,
+#sellerDashboardOverlay #sellerMovementsPanel .seller-movements-table .seller-order-value {
+  color: #64748B !important;
+}
