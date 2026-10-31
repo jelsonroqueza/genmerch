@@ -20,7 +20,8 @@
     openAfterLogin: false,
     wishlist: [],
     reviews: [],
-    points: { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] },
+    points: { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [], membership_level: 'bronze', qualifying_spend: 0, next_membership_level: 'silver', next_level_requirement: 5000, remaining_spend: 5000, progress_percentage: 0 },
+    pointsSummaryAvailable: false,
     activeTab: 'overview',
     navTab: 'overview',
     activityTab: 'wishlist',
@@ -924,7 +925,8 @@
       state.reviews = asArray(reviewResult);
       state.points = pointsResult.data && typeof pointsResult.data === 'object'
         ? pointsResult.data
-        : { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+        : { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [], membership_level: 'bronze', qualifying_spend: 0, next_membership_level: 'silver', next_level_requirement: 5000, remaining_spend: 5000, progress_percentage: 0 };
+      state.pointsSummaryAvailable = Boolean(pointsResult && !pointsResult.error && pointsResult.data && typeof pointsResult.data === 'object');
       state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
       state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
       window.genmerchSelectedLoyaltyPoints = state.selectedPoints;
@@ -1091,6 +1093,66 @@
     renderLandmarksPane();
   }
 
+  function renderMembershipCardMarkup() {
+    if (!state.pointsSummaryAvailable) {
+      return '<section class="gmca-membership-card gmca-membership-unavailable"><div><span class="gmca-membership-kicker">GENMERCH MEMBERSHIP</span><h3>Membership status unavailable</h3><p>Your membership summary could not be loaded. Refresh your account to try again.</p></div></section>';
+    }
+
+    const tiers = {
+      bronze: { label: 'Bronze', icon: '🥉', className: 'bronze' },
+      silver: { label: 'Silver', icon: '🥈', className: 'silver' },
+      gold: { label: 'Gold', icon: '🥇', className: 'gold' },
+      platinum: { label: 'Platinum', icon: '💎', className: 'platinum' }
+    };
+    const summary = state.points || {};
+    const levelKey = String(summary.membership_level || 'bronze').toLowerCase();
+    const tier = tiers[levelKey] || tiers.bronze;
+    const nextKey = String(summary.next_membership_level || '').toLowerCase();
+    const nextTier = tiers[nextKey] || null;
+    const qualifyingSpend = Math.max(0, Number(summary.qualifying_spend) || 0);
+    const remainingSpend = Math.max(0, Number(summary.remaining_spend) || 0);
+    const progress = Math.max(0, Math.min(100, Number(summary.progress_percentage) || 0));
+    const progressLabel = nextTier
+      ? php(remainingSpend) + ' more to reach ' + nextTier.label
+      : 'You have reached the highest membership level.';
+
+    return '<section class="gmca-membership-card gmca-membership-level-' + esc(tier.className) + '">' +
+      '<div class="gmca-membership-identity">' +
+        '<span class="gmca-membership-kicker">YOUR GENMERCH MEMBERSHIP</span>' +
+        '<div class="gmca-membership-level-row"><span class="gmca-membership-medal" aria-hidden="true">' + tier.icon + '</span><div><h3>' + esc(tier.label.toUpperCase()) + ' MEMBER</h3><p>Your current customer membership level</p></div></div>' +
+      '</div>' +
+      '<div class="gmca-membership-data">' +
+        '<div class="gmca-membership-spend"><span>QUALIFYING PURCHASES · LAST 12 MONTHS</span><strong>' + esc(php(qualifyingSpend)) + '</strong><small>Paid and delivered orders · discounts deducted · shipping excluded</small></div>' +
+        '<div class="gmca-membership-progress">' +
+          '<div class="gmca-membership-progress-heading"><strong>' + (nextTier ? 'Progress to ' + esc(nextTier.label) : 'Highest membership reached') + '</strong><b>' + esc(progress.toFixed(0)) + '%</b></div>' +
+          '<div class="gmca-membership-track" role="progressbar" aria-label="Membership progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + esc(progress.toFixed(0)) + '"><span style="width:' + progress.toFixed(2) + '%"></span></div>' +
+          '<p>' + esc(progressLabel) + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<details class="gmca-membership-guide">' +
+        '<summary>How membership levels work <span aria-hidden="true">⌄</span></summary>' +
+        '<div class="gmca-membership-guide-content">' +
+          '<p>Your level is based on qualifying merchandise spending from paid and delivered orders within a rolling 12-month period.</p>' +
+          '<div class="gmca-membership-tier-list">' +
+            '<div class="gmca-membership-tier-row gmca-membership-tier-row-bronze"><strong>🥉 Bronze</strong><span>₱0 – ₱4,999.99</span></div>' +
+            '<div class="gmca-membership-tier-row gmca-membership-tier-row-silver"><strong>🥈 Silver</strong><span>₱5,000 – ₱14,999.99</span></div>' +
+            '<div class="gmca-membership-tier-row gmca-membership-tier-row-gold"><strong>🥇 Gold</strong><span>₱15,000 – ₱29,999.99</span></div>' +
+            '<div class="gmca-membership-tier-row gmca-membership-tier-row-platinum"><strong>💎 Platinum</strong><span>₱30,000 and above</span></div>' +
+          '</div>' +
+          '<ul>' +
+            '<li>Only successfully paid and delivered orders qualify.</li>' +
+            '<li>The 12-month period is rolling and uses the order delivery date.</li>' +
+            '<li>Promotion and redeemed-points discounts are deducted. Shipping fees are excluded.</li>' +
+            '<li>Cancelled and refunded orders do not qualify.</li>' +
+            '<li>Your level is automatically recalculated when your rewards summary refreshes. It can move up or down as purchases enter or leave the 12-month period.</li>' +
+            '<li>Loyalty points are separate from membership level. Your existing points earning and redemption rules remain unchanged.</li>' +
+            '<li>New customer accounts start at Bronze.</li>' +
+          '</ul>' +
+        '</div>' +
+      '</details>' +
+    '</section>';
+  }
+
   function renderOverviewPane() {
     const pane = document.querySelector('[data-gmca-pane="overview"]');
     if (!pane || !state.session) return;
@@ -1104,6 +1166,7 @@
         '<div class="gmca-welcome-profile"><span class="gmca-welcome-avatar-wrap"><span class="gmca-welcome-avatar" id="gmcaWelcomeAvatar" aria-hidden="true">' + avatarMarkup(name || user.email || 'GM') + '</span><button type="button" class="gmca-avatar-camera gmca-welcome-avatar-camera" data-gmca-avatar-upload aria-label="Change profile photo" title="Change profile photo">✎</button></span><div><span class="gmca-eyebrow">YOUR GENMERCH ACCOUNT</span><h3>Hi, ' + esc(firstName) + '!</h3><p>Welcome back. Track your purchases, manage your profile, and enjoy your member rewards.</p></div></div>' +
         '<div class="gmca-welcome-art" aria-hidden="true"><span class="gmca-art-orb gmca-art-orb-one"></span><span class="gmca-art-orb gmca-art-orb-two"></span><span class="gmca-art-bag"><b>GEN</b><strong>MERCH</strong></span><span class="gmca-art-shirt">✦</span></div>' +
       '</section>' +
+      renderMembershipCardMarkup() +
       '<div class="gmca-metric-grid">' +
         metricCard('TOTAL ORDERS', String(Number(state.orderCount) || 0), 'Lifetime orders', 'orders', '▣') +
         metricCard('WISHLIST ITEMS', String(state.wishlist.length), 'Saved products', 'wishlist', '♥') +
@@ -2488,15 +2551,18 @@
       state.session = result.data && result.data.session ? result.data.session : null;
       if (!state.session || !state.session.user) {
         state.checkoutBalance = 0;
-        state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+        state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [], membership_level: 'bronze', qualifying_spend: 0, next_membership_level: 'silver', next_level_requirement: 5000, remaining_spend: 5000, progress_percentage: 0 };
+        state.pointsSummaryAvailable = false;
       } else {
         const summary = await client().rpc('get_my_genmerch_loyalty_summary');
         if (summary.error) {
           console.warn('GENMERCH points summary could not be refreshed:', summary.error.message || summary.error);
-          state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+          state.points = { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [], membership_level: 'bronze', qualifying_spend: 0, next_membership_level: 'silver', next_level_requirement: 5000, remaining_spend: 5000, progress_percentage: 0 };
+          state.pointsSummaryAvailable = false;
           state.checkoutBalance = 0;
         } else {
-          state.points = summary.data || { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+          state.points = summary.data || { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [], membership_level: 'bronze', qualifying_spend: 0, next_membership_level: 'silver', next_level_requirement: 5000, remaining_spend: 5000, progress_percentage: 0 };
+          state.pointsSummaryAvailable = Boolean(summary.data && typeof summary.data === 'object');
           state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
         }
       }
@@ -2582,6 +2648,7 @@
             state.profile = null;
             clearCustomerAvatarForSignedOut();
             state.checkoutBalance = 0;
+            state.pointsSummaryAvailable = false;
             state.selectedPoints = 0;
             window.genmerchSelectedLoyaltyPoints = 0;
             if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) closeAccount();
