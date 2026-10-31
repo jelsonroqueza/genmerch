@@ -3388,6 +3388,7 @@
   box-shadow: 0 1px 3px rgba(38,50,56,.10) !important;
   opacity: 1 !important;
   visibility: visible !important;
+  pointer-events: auto !important;
   cursor: pointer !important;
 }
 #sellerProductEditorOverlay button#sellerProductEditorCloseButton.seller-modal-close:hover {
