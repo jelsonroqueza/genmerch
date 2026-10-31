@@ -2799,3 +2799,27 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   .gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-description,
   .customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-description{margin-bottom:18px;font-size:15px}
 }
+
+
+/* Keep the customer welcome portrait properly cropped inside its circular avatar. */
+#gmcaOverlay .gmca-welcome-avatar-wrap .gmca-welcome-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+}
+#gmcaOverlay .gmca-welcome-avatar-wrap .gmca-welcome-avatar > .gmca-avatar-image {
+  display: block;
+  box-sizing: border-box;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100%;
+  min-height: 100%;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 50%;
+  object-fit: cover !important;
+  object-position: 50% 36% !important;
+}
