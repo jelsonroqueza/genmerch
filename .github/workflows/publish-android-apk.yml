@@ -28,7 +28,7 @@ jobs:
           name: GENMERCH-Android-test-APK
           path: incoming
           repository: jelsonroqueza/genmerch
-          run-id: 41229191335
+          run-id: 41229660378
           github-token: ${{ github.token }}
 
       - name: Prepare public APK
