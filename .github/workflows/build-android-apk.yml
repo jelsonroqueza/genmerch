@@ -47,9 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p android-app/app/src/main/res/drawable-nodpi
-          curl --fail --silent --show-error --location \\
-            https://raw.githubusercontent.com/jelsonroqueza/genmerch/main/icons/genmerch-app-192.png \\
-            --output android-app/app/src/main/res/drawable-nodpi/ic_launcher.png
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/jelsonroqueza/genmerch/main/icons/genmerch-app-192.png --output android-app/app/src/main/res/drawable-nodpi/ic_launcher.png
           file android-app/app/src/main/res/drawable-nodpi/ic_launcher.png
 
       - name: Build APK
