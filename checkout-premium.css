@@ -2020,3 +2020,40 @@
     font-size:12px !important;
   }
 }
+
+
+/* GENMERCH premium checkout payment selector — current brand marks and 3D method cards. */
+.payment-section{position:relative;margin-top:17px!important;padding:18px!important;border:1px solid #e7e9ef!important;border-radius:18px!important;background:linear-gradient(145deg,#fff 0%,#fbfcff 58%,#f5f7fb 100%)!important;box-shadow:0 8px 24px rgba(22,34,57,.055),inset 0 1px 0 rgba(255,255,255,.95)!important}
+.payment-title{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;margin:0 0 14px!important;color:#17253d!important;line-height:1.3!important}
+.payment-kicker{color:#e64a2e!important;font-size:10px!important;font-weight:950!important;letter-spacing:.16em!important;line-height:1.2!important}
+.payment-heading{color:#17253d!important;font-size:17px!important;font-weight:950!important;letter-spacing:-.035em!important}
+.payment-subtitle{color:#778196!important;font-size:12px!important;font-weight:550!important}
+.payment-options{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:11px!important;align-items:stretch!important}
+.payment-options .pay-opt{--pay-accent:#d9e0eb;--pay-tint:#f8fafc;position:relative!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:0!important;min-width:0!important;min-height:142px!important;padding:13px 11px 12px!important;overflow:hidden!important;isolation:isolate!important;border:1px solid #e1e6ef!important;border-radius:16px!important;background:linear-gradient(155deg,#fff 0%,#f8f9fc 58%,#eef2f7 100%)!important;color:#1e2c43!important;text-align:left!important;box-shadow:0 5px 13px rgba(24,39,65,.075),inset 0 1px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(28,46,70,.035)!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease!important}
+.payment-options .pay-opt::before{content:""!important;position:absolute!important;z-index:-1!important;inset:0!important;pointer-events:none!important;background:radial-gradient(ellipse at 12% 0%,rgba(255,255,255,.96),transparent 62%)!important;opacity:.85!important}
+.payment-options .pay-opt::after{content:""!important;position:absolute!important;top:0!important;left:0!important;right:0!important;height:4px!important;border-radius:16px 16px 0 0!important;background:linear-gradient(90deg,var(--pay-accent),rgba(255,255,255,.1))!important;opacity:.76!important}
+.payment-options .pay-opt-cod{--pay-accent:#179765;--pay-tint:#e9f9ef;background:linear-gradient(150deg,#fff 0%,#f1fbf4 52%,#e5f4e9 100%)!important}
+.payment-options .pay-opt-gcash{--pay-accent:#1972f9;--pay-tint:#e8f2ff;background:linear-gradient(150deg,#fff 0%,#f0f6ff 52%,#e3edff 100%)!important}
+.payment-options .pay-opt-maya{--pay-accent:#198e4f;--pay-tint:#e9f8ef;background:linear-gradient(150deg,#fff 0%,#f1fbf4 52%,#e4f5e9 100%)!important}
+.payment-options .pay-opt-bank{--pay-accent:#bf9137;--pay-tint:#eff2f8;background:linear-gradient(150deg,#fff 0%,#f4f6fa 52%,#e8edf5 100%)!important}
+.pay-opt-visual{display:flex!important;align-items:center!important;justify-content:center!important;align-self:center!important;width:100%!important;height:62px!important;min-height:62px!important;margin:1px 0 8px!important;border:1px solid rgba(255,255,255,.9)!important;border-radius:12px!important;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(255,255,255,.56))!important;box-shadow:0 4px 10px rgba(28,43,65,.075),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(35,53,77,.04)!important}
+.pay-opt-visual svg{display:block!important;width:67px!important;height:52px!important;overflow:visible!important;filter:drop-shadow(0 3px 2px rgba(20,36,58,.12))!important}
+.pay-opt-brand-logo{display:block!important;width:auto!important;max-width:112px!important;height:auto!important;max-height:36px!important;object-fit:contain!important;object-position:center!important;filter:drop-shadow(0 2px 1px rgba(16,38,77,.10))!important}
+.pay-opt-gcash-logo{width:118px!important;max-width:90%!important;max-height:31px!important}
+.pay-opt-maya-logo{width:104px!important;max-width:88%!important;max-height:34px!important}
+.pay-opt-name{display:block!important;width:100%!important;color:#1b2940!important;font-size:13px!important;font-weight:950!important;line-height:1.25!important;letter-spacing:-.018em!important;text-align:center!important;overflow-wrap:anywhere!important}
+.pay-opt-detail{display:block!important;width:100%!important;margin-top:4px!important;color:#738096!important;font-size:10px!important;font-weight:650!important;line-height:1.3!important;text-align:center!important;overflow-wrap:anywhere!important}
+.pay-opt-check{position:absolute!important;top:9px!important;right:9px!important;z-index:3!important;display:grid!important;place-items:center!important;width:22px!important;height:22px!important;border:1px solid rgba(255,255,255,.95)!important;border-radius:50%!important;background:linear-gradient(145deg,#e8edf4,#cbd4e1)!important;color:#fff!important;box-shadow:0 2px 5px rgba(20,34,55,.12),inset 0 1px 0 rgba(255,255,255,.7)!important;opacity:0!important;transform:scale(.78)!important;transition:opacity .16s ease,transform .16s ease,background .16s ease!important}
+.pay-opt-check svg{width:13px!important;height:13px!important}
+.payment-options .pay-opt.active{padding:13px 11px 12px!important;border:2px solid var(--pay-accent)!important;background:linear-gradient(150deg,#fff 0%,var(--pay-tint) 64%,rgba(255,255,255,.88) 100%)!important;color:#17253d!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--pay-accent) 13%,transparent),0 8px 18px rgba(20,37,65,.11),inset 0 1px 0 #fff,inset 0 -2px 0 rgba(20,37,65,.035)!important}
+.payment-options .pay-opt.active .pay-opt-check{opacity:1!important;transform:scale(1)!important;background:linear-gradient(145deg,#2dc47b,#087c4f)!important}
+.payment-options .pay-opt-gcash.active .pay-opt-check{background:linear-gradient(145deg,#4d9bff,#155bd7)!important}
+.payment-options .pay-opt-maya.active .pay-opt-check{background:linear-gradient(145deg,#45bf78,#147b46)!important}
+.payment-options .pay-opt-bank.active .pay-opt-check{background:linear-gradient(145deg,#d8ae5b,#98671e)!important}
+.payment-brand-attribution{margin:9px 0 0!important;color:#929bad!important;font-size:9px!important;font-weight:550!important;line-height:1.35!important;text-align:right!important}
+.payment-brand-attribution a{color:#64738b!important;text-decoration:underline!important;text-underline-offset:2px!important}
+.payment-options .pay-opt:focus-visible{outline:3px solid color-mix(in srgb,var(--pay-accent) 34%,transparent)!important;outline-offset:3px!important}
+@media(hover:hover) and (pointer:fine){.payment-options .pay-opt:not(.active):hover{transform:translateY(-3px)!important;border-color:var(--pay-accent)!important;box-shadow:0 9px 20px rgba(24,39,65,.12),inset 0 1px 0 rgba(255,255,255,.98)!important}.payment-options .pay-opt.active:hover{transform:translateY(-2px)!important}}
+@media(max-width:760px){.payment-section{padding:15px!important;border-radius:16px!important}.payment-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.payment-options .pay-opt{min-height:132px!important;padding:11px 10px!important;border-radius:14px!important}.payment-options .pay-opt.active{padding:11px 10px!important}.pay-opt-visual{height:56px!important;min-height:56px!important;margin-bottom:7px!important}.pay-opt-name{font-size:13px!important}.pay-opt-detail{font-size:10px!important}}
+@media(max-width:360px){.payment-section{padding:12px!important}.payment-options{gap:7px!important}.payment-options .pay-opt{min-height:126px!important;padding:9px!important}.payment-options .pay-opt.active{padding:9px!important}.pay-opt-visual{height:52px!important;min-height:52px!important}.pay-opt-brand-logo{max-width:96px!important}}
+@media(prefers-reduced-motion:reduce){.payment-options .pay-opt,.payment-options .pay-opt *{transition:none!important}}
