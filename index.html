@@ -129,6 +129,7 @@
 
   <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-header-content-edge-align-3">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-17">
+  <link rel="stylesheet" href="/checkout-premium.css?v=20261031-1">
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -787,12 +788,26 @@
         <div class="checkout-order-scroll" id="checkoutOrderScroll">
           <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
           <div class="checkout-step-summary">
-      <div class="summary" id="summaryBox" style="display:none">
-        <div class="summary-row"><span>Subtotal:</span><span id="subtotalText">₱0</span></div>
-        <div class="summary-row"><span>Delivery Fee:</span><span id="shippingText">Enter address</span></div>
-        <div class="summary-row total"><span>Total Amount:</span><span id="finalTotalText">—</span></div>
-        <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
-        <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
+      <div class="checkout-summary-stack" id="summaryBox" style="display:none">
+        <section class="checkout-order-summary-card" aria-labelledby="checkoutOrderSummaryTitle">
+          <div class="checkout-card-heading">
+            <span class="checkout-card-icon" aria-hidden="true">🛒</span>
+            <h3 id="checkoutOrderSummaryTitle">Order Summary</h3>
+          </div>
+          <div class="checkout-order-totals">
+            <div class="checkout-order-total-row"><span>Subtotal</span><strong id="subtotalText">₱0</strong></div>
+            <div class="checkout-order-total-row"><span>Delivery Fee</span><strong id="shippingText">Enter address</strong></div>
+            <div class="checkout-order-total-row grand-total"><span>Total Amount</span><strong id="finalTotalText">—</strong></div>
+          </div>
+        </section>
+        <section class="checkout-shipping-information-card" aria-labelledby="checkoutShippingInformationTitle">
+          <div class="checkout-shipping-heading">
+            <span class="checkout-card-icon" aria-hidden="true">📍</span>
+            <h3 id="checkoutShippingInformationTitle">Shipping Information</h3>
+          </div>
+          <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
+          <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
+        </section>
       </div>
           </div>
         </div>
@@ -809,8 +824,24 @@
       <form id="checkoutForm" novalidate>
 
         <div class="checkout-delivery-scroll" id="checkoutDeliveryScroll">
+        <section class="checkout-address-card" aria-labelledby="checkoutAddressTitle">
+          <div class="checkout-address-card-head">
+            <div class="checkout-card-title">
+              <span class="checkout-card-icon" aria-hidden="true">📍</span>
+              <h3 id="checkoutAddressTitle">Shipping Address</h3>
+            </div>
+            <button type="button" class="checkout-address-edit" id="checkoutAddressEditButton" hidden aria-controls="checkoutAddressFields" aria-expanded="false">✎ Edit</button>
+          </div>
+          <div class="checkout-address-preview" id="checkoutAddressPreview" hidden>
+            <strong id="checkoutAddressPreviewName"></strong>
+            <p id="checkoutAddressPreviewPhone"></p>
+            <p id="checkoutAddressPreviewStreet"></p>
+            <p class="checkout-address-zone"><span aria-hidden="true">⌖</span><span id="checkoutAddressPreviewLocality"></span></p>
+            <p id="checkoutAddressPreviewLandmark"></p>
+            <p id="checkoutAddressPreviewInstructions"></p>
+          </div>
+          <div class="checkout-address-fields" id="checkoutAddressFields">
         <div class="checkout-grid">
-          <div class="form-section-title">📦 Delivery Information</div>
           <input id="custName" name="fullName" type="hidden" autocomplete="name" aria-hidden="true" tabindex="-1">
           <div class="field">
             <label for="firstName">First Name *</label>
@@ -876,6 +907,24 @@
           </div>
         </div>
         <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
+          </div>
+        </section>
+
+        <section class="checkout-delivery-method-card" aria-labelledby="checkoutDeliveryMethodTitle">
+          <div class="checkout-delivery-method-head">
+            <span class="checkout-card-icon" aria-hidden="true">🚚</span>
+            <h3 id="checkoutDeliveryMethodTitle">Delivery Method</h3>
+          </div>
+          <div class="checkout-delivery-method-selection">
+            <span class="checkout-delivery-method-mark" aria-hidden="true">✓</span>
+            <div class="checkout-delivery-method-copy">
+              <strong>Standard Delivery</strong>
+              <p id="checkoutDeliveryMethodDetails">Enter your city or municipality and province to display the applicable standard base-rate estimate.</p>
+            </div>
+            <strong class="checkout-delivery-method-fee" id="checkoutDeliveryMethodFee">Awaiting address</strong>
+          </div>
+          <p class="checkout-delivery-method-footnote" id="checkoutDeliveryMethodFootnote">The displayed amount follows the existing GENMERCH base-rate rules. The checkout and backend remain authoritative for the final order fee.</p>
+        </section>
 
         <section class="checkout-email-section" aria-labelledby="receiptEmailSectionTitle">
           <div class="checkout-email-heading" id="receiptEmailSectionTitle">✉️ Order Confirmation Email</div>
@@ -915,6 +964,17 @@
             <div class="checkout-review-total-row"><span>Delivery Fee</span><strong id="checkoutReviewShipping">Awaiting address</strong></div>
             <div class="checkout-review-total-row grand-total"><span>Total Amount</span><strong id="checkoutMiniTotal">—</strong></div>
           </div>
+        </section>
+        <section class="checkout-important-information" aria-labelledby="checkoutImportantInformationTitle">
+          <div class="checkout-important-heading">
+            <span class="checkout-card-icon" aria-hidden="true">!</span>
+            <h3 id="checkoutImportantInformationTitle">Important Information</h3>
+          </div>
+          <ul>
+            <li>Please confirm your delivery address and contact information before placing your order.</li>
+            <li>Delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments.</li>
+            <li>If a shipping discrepancy or excess fee is incurred upon dispatch, GENMERCH will notify you; applicable overpayments will be refunded.</li>
+          </ul>
         </section>
           </div>
           <div class="checkout-delivery-actions">
@@ -4313,7 +4373,7 @@
       }
       const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
       const delivery=detectDeliveryRegion();
-      $('summaryBox').style.display=cart.length?'block':'none';
+      $('summaryBox').style.display=cart.length?'grid':'none';
       $('subtotalText').textContent=money(subtotal);
 
       if (!cart.length) {
@@ -9329,5 +9389,6 @@
 })();
 </script>
 
+<script src="/checkout-premium.js?v=20261031-1"></script>
 </body>
 </html>
