@@ -133,7 +133,7 @@
 
 
 
-  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-speed-optimization-1">
+  <link rel="stylesheet" href="/genmerch-inline.css?v=20261101-responsive-header-1">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2">
   <link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1">
 </head>
@@ -170,6 +170,7 @@
     </div>
     <div class="main-header">
       <div class="nav">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-controls="mainNavigation" aria-expanded="false" aria-label="Open navigation menu" title="Open menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH Home">
           <span class="brand-type genmerch-metal-wordmark-wrap"><svg class="brand-word genmerch-svg-metal-wordmark" viewBox="0 0 1320 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GENMERCH | SUOT APPAREL" focusable="false">
   <defs>
@@ -205,6 +206,12 @@
   </g>
 </svg></span>
         </button>
+        <div class="search catalog-search" role="search" aria-label="Search products">
+      <button id="searchButton" type="button" aria-label="Search products" title="Search products">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.9"></circle><path d="m16 16 5 5"></path></svg>
+      </button>
+      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
+    </div>
         <div class="header-actions">
           <button class="header-action genmerch-notification-button" id="genmerchNotificationButton" type="button" onclick="toggleGenmerchNotifications()" aria-label="Order notifications" title="Order notifications">
   <span class="header-icon genmerch-bell-wrap"><svg class="genmerch-bell-svg" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="gmBellGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff7b0"/><stop offset=".22" stop-color="#ffd84a"/><stop offset=".52" stop-color="#e9a900"/><stop offset=".76" stop-color="#ffdf58"/><stop offset="1" stop-color="#9e6500"/></linearGradient><linearGradient id="gmBellHighlight" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><radialGradient id="gmBellGlow"><stop offset="0" stop-color="#ffd84a" stop-opacity=".4"/><stop offset="1" stop-color="#ffd84a" stop-opacity="0"/></radialGradient></defs><path d="M10 27.5c2.3-2.8 3.1-6.1 3.1-12.1a6.9 6.9 0 0 1 13.8 0c0 6 1 9.3 3.1 12.1.6.8.1 1.8-.9 1.8H10.9c-1 0-1.5-1-.9-1.8Z" fill="url(#gmBellGold)" stroke="#9b6800" stroke-width="1.5" stroke-linejoin="round"/><path d="M15.3 13.2c.4-2.3 2-3.6 4.1-3.8" fill="none" stroke="url(#gmBellHighlight)" stroke-width="2.3" stroke-linecap="round"/><path d="M16 31.2a4 4 0 0 0 8 0" fill="url(#gmBellGold)" stroke="#9b6800" stroke-width="1.4"/><circle cx="20" cy="7.1" r="1.4" fill="#f6c52e" stroke="#9b6800" stroke-width=".8"/><path d="M7 8.2C4.8 10.3 3.9 12.7 4 15.1M33 8.2c2.2 2.1 3.1 4.5 3 6.9" fill="none" stroke="#f08a00" stroke-width="2.2" stroke-linecap="round"/><path d="M8.4 10.2c-1.2 1.5-1.7 2.8-1.8 4.2M31.6 10.2c1.2 1.5 1.7 2.8 1.8 4.2" fill="none" stroke="#ffd45a" stroke-width="1" stroke-linecap="round"/><path class="genmerch-bell-dome-gloss" d="M12.6 13.2C13.4 9.5 16.2 7.1 19.5 6.5" fill="none" stroke="#fffde8" stroke-width="1.7" stroke-linecap="round" opacity=".72"/><path class="genmerch-bell-rim-glint" d="M7.8 27.7C11.8 29 27.9 29.1 32.1 27.4" fill="none" stroke="#fff1a3" stroke-width="1.05" stroke-linecap="round" opacity=".82"/></svg><span id="genmerchNotificationBadge" class="genmerch-notification-badge" hidden>0</span></span>
@@ -232,9 +239,14 @@
           </button>
         </div>
       </div>
-      <nav class="desktop-links" aria-label="Main navigation">
+      <nav id="mainNavigation" class="desktop-links" aria-label="Main navigation">
         <button class="active genmerch-hard-reload-nav" type="button" onclick="performGenmerchHardReload(this)" aria-label="Reload GENMERCH and sync latest data" title="Reload the shop and sync the latest data"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="genmerch-hard-reload-label">Reload</span></button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" class="store-rating-nav" id="storeRatingNavButton" onclick="showStoreRatingDetails()" title="Overall average from all published customer product reviews" aria-label="Overall GENMERCH store rating"><b class="store-rating-nav-label">Store Rating</b><b class="store-rating-star" aria-hidden="true">★</b><b class="store-rating-nav-value" id="storeRatingNavValue" aria-live="polite">…</b></button><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" class="seller-centre-text-link" id="openSellerCentreButton" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">Seller Centre</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
-      </nav>
+                <div class="mobile-menu-shortcuts" aria-label="More GENMERCH options">
+            <div class="mobile-menu-action-slot" data-mobile-action-slot="notifications"></div>
+            <div class="mobile-menu-action-slot" data-mobile-action-slot="rate"></div>
+            <div class="mobile-social-slot" data-mobile-action-slot="social"></div>
+          </div></nav>
+    <button class="mobile-nav-scrim" id="mobileNavScrim" type="button" aria-label="Close navigation menu" hidden></button>
     </div>
   </header>
 
@@ -483,12 +495,7 @@
       <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustSecureStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9d4d"/><stop offset=".55" stop-color="#f0442d"/><stop offset="1" stop-color="#b91f30"/></linearGradient><linearGradient id="trustSecureFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf3"/><stop offset="1" stop-color="#f7d9cd"/></linearGradient></defs><path d="M24 4.5 39 10v10.7c0 10.6-6.2 18-15 22.8C15.2 38.7 9 31.3 9 20.7V10z" fill="url(#trustSecureFill)" stroke="url(#trustSecureStroke)" stroke-width="2.1" stroke-linejoin="round"/><rect x="16.5" y="21" width="15" height="11.5" rx="2.5" fill="url(#trustSecureStroke)" stroke="#d62d2b" stroke-width="1.1"/><path d="M19.5 21v-3.5a4.5 4.5 0 0 1 9 0V21" fill="none" stroke="#bd2a2c" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="26.1" r="1.5" fill="#fff6ec"/><path d="M24 27.2v2.2" stroke="#fff6ec" stroke-width="1.5" stroke-linecap="round"/><path d="M15.2 11.7 24 8.5l8.8 3.2" fill="none" stroke="#ffc17e" stroke-width="1.5" stroke-linecap="round"/></svg></span><p><b>Secure Checkout</b><small>Your information is safe with us</small></p></div>
       <div><span class="trust-icon" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><defs><linearGradient id="trustHeartFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9e76"/><stop offset=".35" stop-color="#ff4c36"/><stop offset=".72" stop-color="#ed2029"/><stop offset="1" stop-color="#b7132c"/></linearGradient><linearGradient id="trustHeartGloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset=".8" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><path d="M24 40.5 8.4 25.8C-.1 17.8 11.8 4.8 21.3 13.4l2.7 2.5 2.7-2.5c9.5-8.6 21.4 4.4 12.9 12.4z" fill="url(#trustHeartFace)" stroke="#c92a2d" stroke-width="1.6" stroke-linejoin="round"/><path d="M13.7 16.5c2-2.4 5.2-2.3 7.4-.7" fill="none" stroke="url(#trustHeartGloss)" stroke-width="3.1" stroke-linecap="round"/><path d="M10.8 23.1c-.2 1.9.8 3.7 2.5 5.1l9.1 8.6" fill="none" stroke="#ffb7a0" stroke-width="1.2" stroke-linecap="round" opacity=".6"/></svg></span><p><b>Made for Fans</b><small>Wear your passion with pride</small></p></div>
     </section>
-    <div class="search catalog-search" role="search" aria-label="Search products">
-      <button id="searchButton" type="button" aria-label="Search products" title="Search products">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.9"></circle><path d="m16 16 5 5"></path></svg>
-      </button>
-      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
-    </div>
+    
 
     <nav class="categories" id="categoryFilters" aria-label="Product categories"></nav>
 
@@ -697,10 +704,11 @@
 </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="nav-item active genmerch-hard-reload-mobile" type="button" onclick="performGenmerchHardReload(this)" aria-label="Reload GENMERCH and sync latest data" title="Reload GENMERCH"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="genmerch-hard-reload-label">Reload</span></button>
-    <button class="nav-item" onclick="openCart()"><span>🛒</span><span>Cart</span></button>
-    <button class="nav-item" type="button" onclick="openCustomerOrders()" aria-label="View order updates"><span>📦</span><span>Orders</span></button>
-    <button class="nav-item" onclick="openCustomerAuth()"><span>👤</span><span>Me</span></button>
+    <button class="nav-item active" type="button" onclick="resetCatalog()" aria-label="Go to Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Home</span></button>
+    <button class="nav-item" id="mobileCategoriesButton" type="button" aria-controls="mainNavigation" aria-expanded="false" aria-label="Open product categories"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>Categories</span></button>
+    <div class="mobile-action-slot" data-mobile-action-slot="wishlist"></div>
+    <div class="mobile-action-slot" data-mobile-action-slot="orders"></div>
+    <div class="mobile-action-slot" data-mobile-action-slot="account"></div>
   </nav>
 
   <div class="overlay" id="productOverlay" aria-hidden="true">
@@ -9815,5 +9823,59 @@
 </script>
 
 <script src="/checkout-premium.js?v=20261031-1"></script>
-</body>
+<script>
+(function(){
+  'use strict';
+  var menu=document.getElementById('mainNavigation');
+  var toggle=document.getElementById('mobileMenuToggle');
+  var categoriesButton=document.getElementById('mobileCategoriesButton');
+  var scrim=document.getElementById('mobileNavScrim');
+  if(!menu||!toggle||!scrim)return;
+  var mobile=window.matchMedia('(max-width: 760px)');
+  var relocations=[
+    ['#genmerchNotificationButton','notifications'],
+    ['.wishlist-header-button','wishlist'],
+    ['#openCustomerRateButton','rate'],
+    ['#openCustomerOrdersButton','orders'],
+    ['#customerAccountButton','account'],
+    ['.social-links','social']
+  ].map(function(entry){
+    var node=document.querySelector(entry[0]);
+    var slot=document.querySelector('[data-mobile-action-slot="'+entry[1]+'"]');
+    if(!node||!slot||!node.parentNode)return null;
+    var marker=document.createComment('genmerch-mobile-action-origin');
+    node.parentNode.insertBefore(marker,node);
+    return {node:node,slot:slot,marker:marker};
+  }).filter(Boolean);
+  function relocateActions(){
+    relocations.forEach(function(item){
+      if(mobile.matches){
+        if(item.node.parentNode!==item.slot)item.slot.appendChild(item.node);
+      }else if(item.marker.parentNode&&item.node.parentNode!==item.marker.parentNode){
+        item.marker.parentNode.insertBefore(item.node,item.marker);
+      }
+    });
+  }
+  function setMenuOpen(open){
+    var visible=!!open&&mobile.matches;
+    menu.classList.toggle('is-open',visible);
+    scrim.hidden=!visible;
+    toggle.setAttribute('aria-expanded',String(visible));
+    toggle.setAttribute('aria-label',visible?'Close navigation menu':'Open navigation menu');
+    if(categoriesButton)categoriesButton.setAttribute('aria-expanded',String(visible));
+    document.body.classList.toggle('gm-mobile-menu-open',visible);
+  }
+  toggle.addEventListener('click',function(){setMenuOpen(!menu.classList.contains('is-open'));});
+  if(categoriesButton)categoriesButton.addEventListener('click',function(){setMenuOpen(!menu.classList.contains('is-open'));});
+  scrim.addEventListener('click',function(){setMenuOpen(false);});
+  menu.addEventListener('click',function(event){
+    if(event.target.closest('button,a'))setMenuOpen(false);
+  });
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&menu.classList.contains('is-open'))setMenuOpen(false);});
+  if(mobile.addEventListener)mobile.addEventListener('change',function(){setMenuOpen(false);relocateActions();});
+  else if(mobile.addListener)mobile.addListener(function(){setMenuOpen(false);relocateActions();});
+  relocateActions();
+})();
+</script>
+  </body>
 </html>
