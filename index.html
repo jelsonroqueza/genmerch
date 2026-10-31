@@ -129,7 +129,7 @@
 
   <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-header-content-edge-align-3">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-17">
-  <link rel="stylesheet" href="/checkout-premium.css?v=20261031-compact-adaptive-4">
+  <link rel="stylesheet" href="/checkout-premium.css?v=20261031-trashbin-vector-1">
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -4419,7 +4419,7 @@
           const stockMarkup=Number.isFinite(currentStock)?(currentStock>0?'<div class="item-stock">'+currentStock+' available</div>':'<div class="item-stock unavailable">Currently unavailable — remove this item or choose another size.</div>'):'';
           const plusDisabled=Number.isFinite(currentStock)&&(currentStock<1||item.qty>=currentStock);
           return `
-          <div class="cart-item"><div class="item-icon">${photoMarkup}</div><div><div class="item-name">${escapeHtml(item.name)}</div>${item.color?'<div class="item-size">Color: '+escapeHtml(item.color)+'</div>':''}<div class="item-size">Size: ${escapeHtml(displaySizeLabel(item.size))}</div>${stockMarkup}<div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}" ${plusDisabled?'disabled':''}>+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">🗑</button></div>`;
+          <div class="cart-item"><div class="item-icon">${photoMarkup}</div><div><div class="item-name">${escapeHtml(item.name)}</div>${item.color?'<div class="item-size">Color: '+escapeHtml(item.color)+'</div>':''}<div class="item-size">Size: ${escapeHtml(displaySizeLabel(item.size))}</div>${stockMarkup}<div class="item-price">${money(item.price*item.qty)}</div><div class="qty-row"><button class="qty-btn" data-qty="-1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Decrease quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}">−</button><span class="qty-number">${item.qty}</span><button class="qty-btn" data-qty="1" data-cart-key="${escapeHtml(cartLineKey(item))}" aria-label="Increase quantity for ${escapeHtml(item.name)}, ${escapeHtml(item.size)}" ${plusDisabled?'disabled':''}>+</button></div></div><button class="remove-btn" data-remove-key="${escapeHtml(cartLineKey(item))}" aria-label="Remove ${escapeHtml(item.name)}, ${escapeHtml(item.size)}"><svg class="remove-btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.2 6.4 9.05 3.8A1.9 1.9 0 0 1 10.85 2.5h2.3a1.9 1.9 0 0 1 1.8 1.3l.85 2.6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.1 6.1h17.8v.45a1.7 1.7 0 0 1-1.7 1.7H4.8a1.7 1.7 0 0 1-1.7-1.7V6.1Z" fill="currentColor"/><path d="M4.8 9.1h14.4l-1.25 11.1a2.1 2.1 0 0 1-2.08 1.86H8.13a2.1 2.1 0 0 1-2.08-1.86L4.8 9.1Z" fill="currentColor"/><path d="M9 11.4v7.8M12 11.4v7.8M15 11.4v7.8" fill="none" stroke="#fff" stroke-width="1.35" stroke-linecap="round"/></svg></button></div>`;
         }).join('');
       }
       const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);

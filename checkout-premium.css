@@ -1717,3 +1717,60 @@
     backdrop-filter: none !important;
   }
 }
+
+
+/* GENMERCH checkout trash control — crisp vector icon and consistent touch target. */
+.cart-item .remove-btn {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  border: 1px solid #efb2b2 !important;
+  border-radius: 12px !important;
+  background: #fff0f0 !important;
+  color: #c93434 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 1px 3px rgba(127, 29, 29, .08);
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+.cart-item .remove-btn-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  overflow: visible;
+  pointer-events: none;
+  shape-rendering: geometricPrecision;
+}
+.cart-item .remove-btn:hover {
+  border-color: #d97777 !important;
+  background: #ffe2e2 !important;
+  box-shadow: 0 2px 7px rgba(127, 29, 29, .12);
+}
+.cart-item .remove-btn:focus-visible {
+  outline: 3px solid rgba(201, 52, 52, .3);
+  outline-offset: 2px;
+}
+.cart-item .remove-btn:active { transform: translateY(1px) scale(.97); }
+@media (max-width: 480px) {
+  .cart-item { grid-template-columns: 58px minmax(0, 1fr) 44px !important; }
+}
+@media (max-width: 390px) {
+  .cart-item { grid-template-columns: 56px minmax(0, 1fr) 44px !important; }
+}
+@media (hover: none) and (pointer: coarse) {
+  .cart-item .remove-btn:hover {
+    border-color: #efb2b2 !important;
+    background: #fff0f0 !important;
+    box-shadow: 0 1px 3px rgba(127, 29, 29, .08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-item .remove-btn { transition: none; }
+}
