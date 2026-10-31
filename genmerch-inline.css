@@ -9678,3 +9678,80 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
     max-height:36px!important;
   }
 }
+
+
+/* Desktop-only correction: match the hero content width and align Account with the five sibling actions. */
+@media (min-width:761px) {
+  .site-header > .main-header {
+    display:block!important;
+    width:100%!important;
+    max-width:var(--store-max,1600px)!important;
+    margin:0 auto!important;
+    padding:12px clamp(16px,2.6vw,42px) 0!important;
+    box-sizing:border-box!important;
+  }
+  .site-header > .main-header > .nav {
+    display:grid!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  /* Override the legacy signed-in rule that pins Account to the top of the icon rail. */
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    justify-self:stretch!important;
+    align-self:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:76px!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:7px 2px 5px!important;
+    gap:5px!important;
+    box-sizing:border-box!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+    display:flex!important;
+    flex:0 0 48px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    align-self:center!important;
+    width:48px!important;
+    min-width:48px!important;
+    max-width:48px!important;
+    height:48px!important;
+    min-height:48px!important;
+    max-height:48px!important;
+    margin:0 auto!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label {
+    display:flex!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    justify-content:center!important;
+    align-self:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:1.6em!important;
+    margin:0!important;
+    padding:0!important;
+    line-height:1.1!important;
+    text-align:center!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image {
+    width:39px!important;
+    height:39px!important;
+    min-width:39px!important;
+    max-width:39px!important;
+    min-height:39px!important;
+    max-height:39px!important;
+  }
+}
