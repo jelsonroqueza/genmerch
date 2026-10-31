@@ -2823,3 +2823,86 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   object-fit: cover !important;
   object-position: 50% 36% !important;
 }
+
+
+/* GENMERCH membership tiers */
+.gmca-membership-card{
+  --gmca-tier-accent:#ff9a52;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(260px,.95fr);
+  gap:18px;
+  align-items:center;
+  margin:15px 0 17px;
+  padding:19px 20px;
+  border:1px solid color-mix(in srgb,var(--gmca-tier-accent) 58%,#292b2f);
+  border-radius:16px;
+  background:
+    radial-gradient(ellipse at 92% 0%,color-mix(in srgb,var(--gmca-tier-accent) 17%,transparent),transparent 42%),
+    linear-gradient(125deg,#090a0c 0%,#17191c 58%,#21170f 100%);
+  color:#f7f7f7;
+  box-shadow:0 10px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.gmca-membership-level-bronze{--gmca-tier-accent:#d99a66}
+.gmca-membership-level-silver{--gmca-tier-accent:#c8d2dc}
+.gmca-membership-level-gold{--gmca-tier-accent:#f1c85e}
+.gmca-membership-level-platinum{--gmca-tier-accent:#a9d9ef}
+.gmca-membership-unavailable{grid-template-columns:1fr;--gmca-tier-accent:#ff9a52}
+.gmca-membership-kicker{
+  display:block;
+  margin-bottom:9px;
+  color:var(--gmca-tier-accent);
+  font-size:.65rem;
+  font-weight:950;
+  letter-spacing:.14em;
+}
+.gmca-membership-level-row{display:flex;align-items:center;gap:12px;min-width:0}
+.gmca-membership-medal{
+  display:grid;
+  place-items:center;
+  flex:0 0 52px;
+  width:52px;
+  height:52px;
+  border:1px solid color-mix(in srgb,var(--gmca-tier-accent) 64%,transparent);
+  border-radius:15px;
+  background:color-mix(in srgb,var(--gmca-tier-accent) 12%,#101113);
+  font-size:1.75rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.gmca-membership-level-row h3{margin:0;color:var(--gmca-tier-accent);font-size:clamp(1.12rem,2vw,1.45rem);font-weight:950;letter-spacing:.035em}
+.gmca-membership-level-row p,.gmca-membership-unavailable p{margin:4px 0 0;color:#b8b9bc;font-size:.76rem;line-height:1.45}
+.gmca-membership-data{display:grid;gap:13px;min-width:0}
+.gmca-membership-spend{display:grid;gap:4px}
+.gmca-membership-spend>span{color:#b9babe;font-size:.65rem;font-weight:900;letter-spacing:.08em}
+.gmca-membership-spend>strong{color:#fff;font-size:clamp(1.45rem,3vw,1.9rem);font-weight:950;line-height:1.15}
+.gmca-membership-spend>small{color:#aaaeb3;font-size:.68rem;line-height:1.45}
+.gmca-membership-progress{padding-top:11px;border-top:1px solid rgba(255,255,255,.1)}
+.gmca-membership-progress-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#f4f4f4;font-size:.75rem}
+.gmca-membership-progress-heading strong{font-weight:850}
+.gmca-membership-progress-heading b{color:var(--gmca-tier-accent);font-weight:950}
+.gmca-membership-track{height:9px;margin-top:9px;overflow:hidden;border-radius:999px;background:#34383d;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.gmca-membership-track span{display:block;height:100%;min-width:0;border-radius:inherit;background:linear-gradient(90deg,color-mix(in srgb,var(--gmca-tier-accent) 72%,#fff),var(--gmca-tier-accent));box-shadow:0 0 12px color-mix(in srgb,var(--gmca-tier-accent) 38%,transparent);transition:width .25s ease}
+.gmca-membership-progress>p{margin:7px 0 0;color:#c6c8cb;font-size:.72rem;line-height:1.4}
+.gmca-membership-guide{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.12);padding-top:11px}
+.gmca-membership-guide>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;color:#fff;font-size:.76rem;font-weight:900;cursor:pointer}
+.gmca-membership-guide>summary::-webkit-details-marker{display:none}
+.gmca-membership-guide>summary span{color:var(--gmca-tier-accent);font-size:1rem;transition:transform .15s ease}
+.gmca-membership-guide[open]>summary span{transform:rotate(180deg)}
+.gmca-membership-guide-content{padding-top:10px}
+.gmca-membership-guide-content>p{margin:0 0 10px;color:#c4c6ca;font-size:.73rem;line-height:1.5}
+.gmca-membership-tier-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.gmca-membership-tier-row{display:grid;gap:4px;padding:9px;border:1px solid rgba(255,255,255,.11);border-radius:9px;background:rgba(255,255,255,.045)}
+.gmca-membership-tier-row strong{font-size:.7rem;color:#fff}
+.gmca-membership-tier-row span{font-size:.64rem;color:#c5c7ca;line-height:1.35}
+.gmca-membership-tier-row-bronze{border-color:rgba(217,154,102,.36)}
+.gmca-membership-tier-row-silver{border-color:rgba(200,210,220,.36)}
+.gmca-membership-tier-row-gold{border-color:rgba(241,200,94,.36)}
+.gmca-membership-tier-row-platinum{border-color:rgba(169,217,239,.36)}
+.gmca-membership-guide-content ul{display:grid;gap:5px;margin:10px 0 0;padding-left:18px;color:#c5c7ca;font-size:.7rem;line-height:1.5}
+@media(max-width:760px){
+  .gmca-membership-card{grid-template-columns:1fr;gap:14px;margin:12px 0;padding:15px}
+  .gmca-membership-guide{grid-column:1}
+  .gmca-membership-tier-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+  .gmca-membership-track span,.gmca-membership-guide>summary span{transition:none}
+}
