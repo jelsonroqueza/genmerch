@@ -1774,3 +1774,168 @@
 @media (prefers-reduced-motion: reduce) {
   .cart-item .remove-btn { transition: none; }
 }
+
+
+/* GENMERCH checkout refinement: crisp 3D progress indicators and more breathing room around footer actions. */
+.checkout-progress-three .checkout-progress-step > span {
+  box-sizing:border-box !important;
+  position:relative;
+  isolation:isolate;
+  border:1px solid rgba(255,255,255,.86) !important;
+  border-radius:50% !important;
+  background:linear-gradient(145deg,#ffffff 0%,#f1f5f9 100%) !important;
+  color:#66758a !important;
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important;
+  font-size:15px !important;
+  font-weight:900 !important;
+  font-variant-numeric:tabular-nums;
+  line-height:1 !important;
+  text-align:center;
+  text-shadow:0 1px 0 rgba(255,255,255,.9);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+  box-shadow:
+    0 2px 0 #d6dee8,
+    0 4px 8px rgba(24,39,58,.11),
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 -2px 3px rgba(76,91,112,.07);
+  transform:translateZ(0);
+}
+.checkout-progress-three .checkout-progress-step.active > span,
+.checkout-progress-three .checkout-progress-step.complete > span {
+  border-color:rgba(255,255,255,.64) !important;
+  background:linear-gradient(145deg,#ffad78 0%,#f47b35 48%,#db5d20 100%) !important;
+  color:#fff !important;
+  text-shadow:0 1px 1px rgba(105,38,10,.32);
+  box-shadow:
+    0 3px 0 #b64b18,
+    0 5px 10px rgba(220,91,32,.2),
+    0 0 0 3px rgba(244,123,53,.11),
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -2px 3px rgba(117,42,10,.12);
+}
+.checkout-progress-three .checkout-progress-step.complete > span {
+  font-size:0 !important;
+}
+.checkout-progress-three .checkout-progress-step.complete > span::after {
+  color:#fff !important;
+  font-size:18px !important;
+  font-weight:950 !important;
+  line-height:1 !important;
+  text-shadow:0 1px 1px rgba(105,38,10,.28);
+}
+.checkout-progress-three .checkout-progress-step > strong {
+  color:inherit;
+  font-weight:850;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+  letter-spacing:.005em;
+}
+
+/* All checkout footers: separate the action buttons from the scroll area and modal edge. */
+.cart-modal .checkout-step-actions,
+.cart-modal .checkout-delivery-actions {
+  box-sizing:border-box !important;
+  gap:12px !important;
+  padding:16px 20px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  border-top:1px solid rgba(214,222,232,.92) !important;
+  background:rgba(255,255,255,.99) !important;
+  box-shadow:0 -7px 18px rgba(20,34,51,.055) !important;
+}
+.cart-modal .checkout-step-actions .checkout-btn,
+.cart-modal .checkout-delivery-actions .checkout-btn,
+.cart-modal .checkout-delivery-actions .checkout-back-button {
+  min-height:56px !important;
+  margin:0 !important;
+  border-radius:12px !important;
+  line-height:1.25 !important;
+  box-shadow:
+    0 3px 0 rgba(135,53,24,.13),
+    0 5px 12px rgba(39,35,32,.07),
+    inset 0 1px 0 rgba(255,255,255,.48) !important;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease !important;
+}
+.cart-modal .checkout-step-actions .checkout-btn:active:not(:disabled),
+.cart-modal .checkout-delivery-actions .checkout-btn:active:not(:disabled),
+.cart-modal .checkout-delivery-actions .checkout-back-button:active {
+  transform:translateY(2px) !important;
+  box-shadow:0 1px 0 rgba(135,53,24,.13),0 2px 5px rgba(39,35,32,.06) !important;
+}
+.cart-modal .checkout-delivery-actions .checkout-back-button {
+  border:1px solid #cbd5e1 !important;
+  background:linear-gradient(180deg,#ffffff 0%,#f2f5f8 100%) !important;
+  color:#26384e !important;
+}
+.cart-modal .checkout-delivery-actions .checkout-back-button:hover {
+  background:linear-gradient(180deg,#ffffff 0%,#eaf0f6 100%) !important;
+}
+.cart-modal .checkout-delivery-actions .checkout-btn {
+  background:linear-gradient(180deg,#ff6846 0%,#f0441d 56%,#d93818 100%) !important;
+}
+
+/* Phone and tablet: taller footer breathing room, safe-area support and relaxed button gap. */
+@media (max-width:760px) {
+  .checkout-progress-three { padding-top:12px !important; padding-bottom:12px !important; }
+  .checkout-progress-three .checkout-progress-step > span {
+    flex-basis:34px !important;
+    width:34px !important;
+    height:34px !important;
+    font-size:15px !important;
+  }
+  .checkout-progress-three .checkout-progress-step.active > span,
+  .checkout-progress-three .checkout-progress-step.complete > span { font-size:15px !important; }
+  .checkout-progress-three .checkout-progress-step.complete > span { font-size:0 !important; }
+  .checkout-progress-three .checkout-progress-step > strong {
+    font-size:clamp(11px,2.7vw,13px) !important;
+    line-height:1.2 !important;
+  }
+  .cart-modal .checkout-step-actions,
+  .cart-modal .checkout-delivery-actions {
+    gap:12px !important;
+    padding:15px 16px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .cart-modal .checkout-step-actions .checkout-btn,
+  .cart-modal .checkout-delivery-actions .checkout-btn,
+  .cart-modal .checkout-delivery-actions .checkout-back-button {
+    min-height:56px !important;
+    padding:12px 12px !important;
+    font-size:clamp(14px,3.4vw,16px) !important;
+  }
+}
+@media (max-width:430px) {
+  .checkout-progress-three { gap:5px !important; padding-right:10px !important; padding-left:10px !important; }
+  .checkout-progress-three .checkout-progress-step > span {
+    flex-basis:32px !important;
+    width:32px !important;
+    height:32px !important;
+    font-size:14px !important;
+  }
+  .checkout-progress-three .checkout-progress-step.active > span,
+  .checkout-progress-three .checkout-progress-step.complete > span { font-size:14px !important; }
+  .checkout-progress-three .checkout-progress-step.complete > span { font-size:0 !important; }
+  .checkout-progress-three .checkout-progress-step > strong {
+    font-size:clamp(10px,2.8vw,11.5px) !important;
+    min-height:2.4em;
+  }
+  .cart-modal .checkout-step-actions,
+  .cart-modal .checkout-delivery-actions {
+    gap:10px !important;
+    padding:14px 14px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+@media (max-width:360px) {
+  .checkout-progress-three .checkout-progress-step > strong {
+    font-size:10px !important;
+    line-height:1.2 !important;
+  }
+  .cart-modal .checkout-step-actions,
+  .cart-modal .checkout-delivery-actions {
+    padding-right:12px !important;
+    padding-left:12px !important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .cart-modal .checkout-step-actions .checkout-btn,
+  .cart-modal .checkout-delivery-actions .checkout-btn,
+  .cart-modal .checkout-delivery-actions .checkout-back-button { transition:none !important; }
+}
