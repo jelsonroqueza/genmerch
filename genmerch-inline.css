@@ -9773,3 +9773,68 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
     box-sizing:border-box!important;
   }
 }
+
+
+/* GENMERCH master Reload controls — subtle 3D depth with an accessible sync state. */
+.desktop-links button.genmerch-hard-reload-nav {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:36px;
+  padding:7px 15px;
+  border:1px solid #a91519 !important;
+  border-radius:999px !important;
+  background:linear-gradient(180deg,#ff665a 0%,#ed3028 54%,#c91921 100%) !important;
+  color:#fff !important;
+  box-shadow:0 3px 0 #92131b,0 5px 10px rgba(112,15,20,.2),inset 0 1px 0 rgba(255,255,255,.5);
+  text-shadow:0 1px 1px rgba(100,0,0,.28);
+  font-weight:900;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+.desktop-links button.genmerch-hard-reload-nav svg {
+  display:block;
+  width:15px;
+  height:15px;
+  flex:0 0 15px;
+}
+.desktop-links button.genmerch-hard-reload-nav:hover:not(:disabled) {
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+  box-shadow:0 4px 0 #92131b,0 7px 13px rgba(112,15,20,.22),inset 0 1px 0 rgba(255,255,255,.56);
+}
+.desktop-links button.genmerch-hard-reload-nav:active:not(:disabled) {
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #92131b,0 2px 5px rgba(112,15,20,.16),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.desktop-links button.genmerch-hard-reload-nav:focus-visible,
+.bottom-nav .nav-item.genmerch-hard-reload-mobile:focus-visible {
+  outline:3px solid rgba(239,68,68,.32);
+  outline-offset:3px;
+}
+.desktop-links button.genmerch-hard-reload-nav:disabled,
+.bottom-nav .nav-item.genmerch-hard-reload-mobile:disabled {
+  opacity:.82;
+  cursor:wait;
+}
+.bottom-nav .nav-item.genmerch-hard-reload-mobile svg {
+  display:block;
+  width:22px;
+  height:22px;
+  color:inherit;
+}
+.genmerch-hard-reload-nav.is-loading svg,
+.genmerch-hard-reload-mobile.is-loading svg {
+  animation:genmerchMasterReloadSpin .8s linear infinite;
+}
+@keyframes genmerchMasterReloadSpin { to { transform:rotate(360deg); } }
+@media (max-width:480px) {
+  .bottom-nav .nav-item.genmerch-hard-reload-mobile { color:var(--primary); }
+  .bottom-nav .nav-item.genmerch-hard-reload-mobile.is-loading { opacity:.78; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .genmerch-hard-reload-nav,
+  .genmerch-hard-reload-mobile { transition:none !important; }
+  .genmerch-hard-reload-nav.is-loading svg,
+  .genmerch-hard-reload-mobile.is-loading svg { animation:none !important; }
+}

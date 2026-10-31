@@ -31,6 +31,8 @@
     loading: false,
     openingPromise: null,
     accountLoadPromise: null,
+    accountRefreshPromise: null,
+    accountLastLoadHadErrors: false,
     accountLoadToken: 0,
     accountLoadedUserId: null,
     avatarSyncPending: false
@@ -335,6 +337,7 @@
               '</div>' +
             '</div>' +
             '<div class="gmca-header-actions">' +
+              '<button type="button" class="gmca-reload-button" id="gmcaReloadButton" aria-label="Reload account data" title="Fetch the latest account information and notifications from the database"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reload</span></button>' +
               '<button type="button" class="gmca-notification-button" id="gmcaNotificationButton" aria-label="Order notifications" title="Order notifications"><span class="gmca-notification-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="gmca-notification-badge" id="gmcaNotificationBadge" hidden>0</span></span></button>' +
               '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
@@ -388,6 +391,7 @@
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
     $('gmcaClose').addEventListener('click', closeAccount);
+    $('gmcaReloadButton').addEventListener('click', () => reloadAccountDataFromHeader());
     $('gmcaNotificationButton').addEventListener('click', () => {
       if (typeof window.toggleGenmerchNotifications === 'function') window.toggleGenmerchNotifications();
       else showAlert('Order notifications are temporarily unavailable. Please refresh and try again.', 'warning');
@@ -793,6 +797,7 @@
           !state.session || !state.session.user ||
           String(state.session.user.id) !== userId) return;
 
+      state.accountLastLoadHadErrors = [profileResult,orderResult,addressResult,wishlistResult,reviewResult,pointsResult,landmarksResult].some((result) => result && result.error);
       state.profile = profileResult.data || null;
       if (!profileResult.error) {
         syncCustomerAvatarFromProfile(user, userId, state.profile && state.profile.avatar_path, db);
@@ -832,13 +837,18 @@
       renderCheckoutPoints();
       renderCheckoutAddressPicker();
 
-      if ([profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult].some((result) => result && result.error)) {
-        showAlert('Some account information could not be loaded. Check your connection and tap Refresh account.', 'warning');
+      if (state.accountLastLoadHadErrors) {
+        showAlert('Some account information could not be loaded. Check your connection and tap Reload to retry.', 'warning');
       }
 
-      // Supporting lookups no longer hold the account screen behind the loading indicator.
-      loadAccountSupplementalData(db, userId, requestToken, orderIds, wishlistProductIds)
-        .catch((error) => console.warn('GENMERCH account detail enrichment could not finish:', error.message || error));
+      // Wait for order items, shipment status and saved product details so Reload reports only after its supporting reads finish.
+      try {
+        await loadAccountSupplementalData(db, userId, requestToken, orderIds, wishlistProductIds);
+      } catch (error) {
+        state.accountLastLoadHadErrors = true;
+        console.warn('GENMERCH account detail enrichment could not finish:', error.message || error);
+        showAlert('Some order, shipment or Wishlist details could not be refreshed. Tap Reload to retry.', 'warning');
+      }
     })();
 
     state.accountLoadPromise = loadPromise;
@@ -846,6 +856,68 @@
       await loadPromise;
     } finally {
       if (state.accountLoadPromise === loadPromise) state.accountLoadPromise = null;
+    }
+  }
+
+  async function reloadAccountDataFromHeader(options = {}) {
+    const silent = options.silent === true;
+    if (state.accountRefreshPromise) return state.accountRefreshPromise;
+
+    const button = $('gmcaReloadButton');
+    const overlayOpen = Boolean($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open'));
+    if (button && !silent) {
+      button.disabled = true;
+      button.setAttribute('aria-busy','true');
+      button.classList.add('is-loading');
+    }
+
+    const refreshPromise = (async () => {
+      const sessionResult = await client().auth.getSession();
+      if (sessionResult.error) throw sessionResult.error;
+      const session = sessionResult.data && sessionResult.data.session && sessionResult.data.session.user
+        ? sessionResult.data.session : null;
+      if (!session) {
+        state.session = null;
+        if (!silent && overlayOpen) showAlert('Please sign in again to reload account information.','warning');
+        return false;
+      }
+
+      state.session = session;
+      if (state.accountLoadPromise) {
+        try { await state.accountLoadPromise; } catch (_) {}
+      }
+      await loadAccountData();
+
+      if (!options.skipNotifications && typeof window.loadGenmerchNotifications === 'function') {
+        await window.loadGenmerchNotifications();
+      }
+
+      if (!silent && $('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
+        if (state.accountLastLoadHadErrors) {
+          showAlert('Some records could not be refreshed. Your account remains available; tap Reload to retry.','warning');
+        } else {
+          showAlert('✓ Account records and notifications are up to date.','success');
+        }
+      }
+      return !state.accountLastLoadHadErrors;
+    })();
+
+    state.accountRefreshPromise = refreshPromise;
+    try {
+      return await refreshPromise;
+    } catch (error) {
+      console.error('GENMERCH account Reload failed.',error);
+      if (!silent && $('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
+        showAlert(error && error.message ? error.message : 'Account data could not be refreshed. Please try again.','error');
+      }
+      return false;
+    } finally {
+      if (state.accountRefreshPromise === refreshPromise) state.accountRefreshPromise = null;
+      if (button && !silent) {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        button.classList.remove('is-loading');
+      }
     }
   }
 
@@ -865,6 +937,15 @@
     if (requestToken !== state.accountLoadToken ||
         !state.session || !state.session.user ||
         String(state.session.user.id) !== String(userId)) return;
+
+    const supplementalHadErrors = Boolean(
+      (orderDetails && (orderDetails[0].error || orderDetails[1].error)) ||
+      (productResult && productResult.error)
+    );
+    if (supplementalHadErrors) {
+      state.accountLastLoadHadErrors = true;
+      showAlert('Some order, shipment or Wishlist details could not be refreshed. Tap Reload to retry.','warning');
+    }
 
     let ordersUpdated = false;
     if (orderDetails) {
@@ -2348,6 +2429,7 @@
   window.closeGenmerchCustomerAccount = closeAccount;
   window.genmerchSelectedLoyaltyPoints = 0;
   window.genmerchRefreshLoyaltyPoints = refreshPointsBalance;
+  window.genmerchReloadCustomerAccount = reloadAccountDataFromHeader;
   window.genmerchSaveUsedCheckoutAddress = saveUsedCheckoutAddress;
 
   document.addEventListener('DOMContentLoaded', () => {

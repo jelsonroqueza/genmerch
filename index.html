@@ -28,7 +28,7 @@
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261028-1">
   <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261031-7">
+  <link rel="stylesheet" href="/customer-account.css?v=20261031-hard-reload-1">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   
@@ -56,7 +56,7 @@
   
   
   <script src="/install-flow.js?v=20261030-1" defer></script>
-  <script src="/customer-account.js?v=20261031-8" defer></script>
+  <script src="/customer-account.js?v=20261031-hard-reload-1" defer></script>
 
 
 
@@ -127,7 +127,7 @@
 
 
 
-  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-header-content-edge-align-3">
+  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-hard-reload-1">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-17">
   <link rel="stylesheet" href="/checkout-premium.css?v=20261031-trashbin-vector-1">
 </head>
@@ -227,7 +227,7 @@
         </div>
       </div>
       <nav class="desktop-links" aria-label="Main navigation">
-        <button class="active" onclick="resetCatalog()">Home</button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" class="store-rating-nav" id="storeRatingNavButton" onclick="showStoreRatingDetails()" title="Overall average from all published customer product reviews" aria-label="Overall GENMERCH store rating"><b class="store-rating-nav-label">Store Rating</b><b class="store-rating-star" aria-hidden="true">★</b><b class="store-rating-nav-value" id="storeRatingNavValue" aria-live="polite">…</b></button><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" class="seller-centre-text-link" id="openSellerCentreButton" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">Seller Centre</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
+        <button class="active genmerch-hard-reload-nav" type="button" onclick="performGenmerchHardReload(this)" aria-label="Reload GENMERCH and sync latest data" title="Reload the shop and sync the latest data"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="genmerch-hard-reload-label">Reload</span></button><button onclick="setCategoryByLabel('T-Shirts')">T-Shirts</button><button onclick="setCategoryByLabel('Shorts')">Shorts</button><button onclick="setCategoryByLabel('Hoodies')">Hoodies</button><button onclick="setCategoryByLabel('Caps')">Caps</button><button onclick="setCategoryByLabel('Bags')">Bags</button><button onclick="showInfo('New Arrivals')">New Arrivals</button><button onclick="showInfo('Best Sellers')">Best Sellers</button><button onclick="showInfo('Promos')">Promos</button><span></span><button type="button" class="store-rating-nav" id="storeRatingNavButton" onclick="showStoreRatingDetails()" title="Overall average from all published customer product reviews" aria-label="Overall GENMERCH store rating"><b class="store-rating-nav-label">Store Rating</b><b class="store-rating-star" aria-hidden="true">★</b><b class="store-rating-nav-value" id="storeRatingNavValue" aria-live="polite">…</b></button><button type="button" onclick="openCustomerOrders()" aria-label="Track a GENMERCH order">Track Order</button><button type="button" class="seller-centre-text-link" id="openSellerCentreButton" onclick="openSellerCentre()" aria-label="Open Seller Centre" title="Seller Centre — admin access required">Seller Centre</button><button type="button" onclick="openHelpCenter()" aria-label="Open GENMERCH Help Center">Help</button>
       </nav>
     </div>
   </header>
@@ -686,7 +686,7 @@
 </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="nav-item active" onclick="resetCatalog()"><span>🏠</span><span>Home</span></button>
+    <button class="nav-item active genmerch-hard-reload-mobile" type="button" onclick="performGenmerchHardReload(this)" aria-label="Reload GENMERCH and sync latest data" title="Reload GENMERCH"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="genmerch-hard-reload-label">Reload</span></button>
     <button class="nav-item" onclick="openCart()"><span>🛒</span><span>Cart</span></button>
     <button class="nav-item" type="button" onclick="openCustomerOrders()" aria-label="View order updates"><span>📦</span><span>Orders</span></button>
     <button class="nav-item" onclick="openCustomerAuth()"><span>👤</span><span>Me</span></button>
@@ -1456,6 +1456,101 @@
         if (liveCatalogRefreshPromise === pending) liveCatalogRefreshPromise = null;
       }
     }
+
+    let genmerchHardReloadPromise = null;
+    window.performGenmerchHardReload = async function(button) {
+      if (genmerchHardReloadPromise) return genmerchHardReloadPromise;
+      const target = button instanceof HTMLElement ? button : null;
+      let navigated = false;
+      if (target) {
+        target.disabled = true;
+        target.setAttribute('aria-busy','true');
+        target.classList.add('is-loading');
+        const label = target.querySelector('.genmerch-hard-reload-label');
+        if (label) label.textContent = 'Syncing…';
+      }
+
+      const task = (async function() {
+        try {
+          if (!saveDraftState()) {
+            throw new Error('Your cart or checkout draft could not be saved in this browser. Reload was stopped to protect your changes.');
+          }
+
+          const authResult = await getCustomerAuthClient().auth.getSession();
+          if (authResult.error) throw authResult.error;
+          const session = authResult.data && authResult.data.session && authResult.data.session.user
+            ? authResult.data.session : null;
+          customerAuthCurrentSession = session;
+          syncCustomerOrdersBadgeRealtime(session);
+
+          const outcomes = await Promise.allSettled([
+            loadSupabaseCatalog(),
+            session ? syncCustomerDraftForSession(session,true) : Promise.resolve(true),
+            syncWishlistForCustomerSession(session,true),
+            loadStoreRatingSummary(),
+            refreshCustomerOrdersBadge(session),
+            refreshCustomerRateBadge(session),
+            typeof window.loadGenmerchNotifications === 'function'
+              ? window.loadGenmerchNotifications() : Promise.resolve(true),
+            session && typeof window.genmerchReloadCustomerAccount === 'function'
+              ? window.genmerchReloadCustomerAccount({silent:true,skipNotifications:true})
+              : Promise.resolve(true)
+          ]);
+
+          if (outcomes[0].status !== 'fulfilled') {
+            throw outcomes[0].reason || new Error('The live product catalogue could not be refreshed from Supabase.');
+          }
+
+          renderCategoryFilters();
+          renderProducts();
+          updateCart();
+
+          const warnings = [];
+          const labels = ['catalogue','saved cart and checkout details','wishlist','store rating','order badge','review badge','notifications','account'];
+          outcomes.forEach((result,index) => {
+            if (result.status === 'rejected' || result.value === false) {
+              if (index !== 0) warnings.push(labels[index]);
+            }
+          });
+          if (wishlistCloudSyncError && !warnings.includes('wishlist')) warnings.push('wishlist');
+          if (loadStoreRatingSummary.summary && loadStoreRatingSummary.summary.error && !warnings.includes('store rating')) warnings.push('store rating');
+
+          const notice = {
+            refreshedAt: new Date().toISOString(),
+            warning: warnings.length ? 'Some information may still be unavailable: ' + warnings.join(', ') + '.' : ''
+          };
+          try { sessionStorage.setItem('genmerch.lastHardReloadNotice',JSON.stringify(notice)); } catch (_) {}
+
+          if (target) {
+            const label = target.querySelector('.genmerch-hard-reload-label');
+            if (label) label.textContent = 'Reloading…';
+          }
+          const nextUrl = new URL(window.location.href);
+          nextUrl.searchParams.set('_gm_reload',String(Date.now()));
+          navigated = true;
+          window.location.replace(nextUrl.toString());
+          return true;
+        } catch (error) {
+          console.error('GENMERCH master Reload could not complete.',error);
+          showToast('Reload stopped: ' + (error && error.message ? error.message : 'Unable to sync the latest data.'));
+          return false;
+        }
+      })();
+
+      genmerchHardReloadPromise = task;
+      try {
+        return await task;
+      } finally {
+        if (genmerchHardReloadPromise === task) genmerchHardReloadPromise = null;
+        if (target && !navigated) {
+          target.disabled = false;
+          target.removeAttribute('aria-busy');
+          target.classList.remove('is-loading');
+          const label = target.querySelector('.genmerch-hard-reload-label');
+          if (label) label.textContent = 'Reload';
+        }
+      }
+    };
 
     // Best-effort persistent draft storage for this browser/device. Cross-device sync requires a secure backend/account.
     const GENMERCH_DRAFT_STORAGE_KEY = 'genmerch.customerDraft.v1';
@@ -8268,6 +8363,21 @@
       }
       await restoreSellerCentreAfterRefresh();
       await restoreAddressReferenceContext();
+
+      const reloadMarker = new URLSearchParams(window.location.search).get('_gm_reload');
+      if (reloadMarker) {
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('_gm_reload');
+        window.history.replaceState(window.history.state,'',cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+        let notice = null;
+        try {
+          notice = JSON.parse(sessionStorage.getItem('genmerch.lastHardReloadNotice') || 'null');
+          sessionStorage.removeItem('genmerch.lastHardReloadNotice');
+        } catch (_) {}
+        showToast(notice && notice.warning
+          ? 'Reload complete. ' + notice.warning
+          : 'GENMERCH reloaded. Latest available database updates are synced.');
+      }
     }
     window.GENMERCH_INITIALIZATION_PROMISE=initializeStorefront();
 

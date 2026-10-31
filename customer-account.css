@@ -2419,3 +2419,70 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
 @media(prefers-reduced-motion:reduce){
   #gmcaOverlay .gmca-loading-spinner{animation:none;border-top-color:#ff812b}
 }
+
+
+/* GENMERCH My Account header Reload — compact orange 3D control beside Notifications. */
+#gmcaOverlay .gmca-header-actions { gap:10px; }
+#gmcaOverlay .gmca-reload-button {
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-width:88px;
+  min-height:40px;
+  padding:7px 12px;
+  border:1px solid #d44a16;
+  border-radius:11px;
+  background:linear-gradient(180deg,#ff9a43 0%,#f36a20 54%,#d84c12 100%);
+  color:#fff;
+  box-shadow:0 3px 0 #a83a0d,0 5px 10px rgba(153,63,12,.16),inset 0 1px 0 rgba(255,255,255,.58);
+  font:inherit;
+  font-size:.76rem;
+  font-weight:950;
+  line-height:1;
+  text-shadow:0 1px 1px rgba(108,38,0,.22);
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+#gmcaOverlay .gmca-reload-button svg {
+  display:block;
+  flex:0 0 17px;
+  width:17px;
+  height:17px;
+}
+#gmcaOverlay .gmca-reload-button:hover:not(:disabled) {
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+  box-shadow:0 4px 0 #a83a0d,0 7px 13px rgba(153,63,12,.19),inset 0 1px 0 rgba(255,255,255,.62);
+}
+#gmcaOverlay .gmca-reload-button:active:not(:disabled) {
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #a83a0d,0 2px 5px rgba(153,63,12,.15),inset 0 1px 0 rgba(255,255,255,.42);
+}
+#gmcaOverlay .gmca-reload-button:focus-visible {
+  outline:3px solid rgba(234,88,12,.28);
+  outline-offset:3px;
+}
+#gmcaOverlay .gmca-reload-button:disabled {
+  opacity:.82;
+  cursor:wait;
+}
+#gmcaOverlay .gmca-reload-button.is-loading svg {
+  animation:gmcaAccountReloadSpin .8s linear infinite;
+}
+@keyframes gmcaAccountReloadSpin { to { transform:rotate(360deg); } }
+@media (max-width:600px) {
+  #gmcaOverlay .gmca-header-actions { gap:7px; }
+  #gmcaOverlay .gmca-reload-button { min-width:74px; min-height:38px; gap:5px; padding:6px 8px; font-size:.7rem; }
+  #gmcaOverlay .gmca-reload-button svg { width:15px; height:15px; flex-basis:15px; }
+}
+@media (max-width:390px) {
+  #gmcaOverlay .gmca-reload-button { min-width:36px; width:36px; padding:6px; }
+  #gmcaOverlay .gmca-reload-button span { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #gmcaOverlay .gmca-reload-button { transition:none; }
+  #gmcaOverlay .gmca-reload-button.is-loading svg { animation:none; }
+}
