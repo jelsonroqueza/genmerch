@@ -28,7 +28,7 @@
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261028-1">
   <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261031-hard-reload-1">
+  <link rel="stylesheet" href="/customer-account.css?v=20261031-premium-signout-1">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   
@@ -56,7 +56,7 @@
   
   
   <script src="/install-flow.js?v=20261030-1" defer></script>
-  <script src="/customer-account.js?v=20261031-speed-optimization-1" defer></script>
+  <script src="/customer-account.js?v=20261031-premium-signout-1" defer></script>
 
 
 
@@ -1372,23 +1372,18 @@
     </section>
   </div>
 
-  <div class="customer-logout-confirm-overlay" id="customerLogoutConfirmOverlay" aria-hidden="true">
-    <section class="customer-logout-confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="customerLogoutConfirmTitle" aria-describedby="customerLogoutConfirmMessage">
-      <div class="customer-logout-confirm-icon" aria-hidden="true">↗</div>
-      <h2 id="customerLogoutConfirmTitle">Confirm Your Sign Out</h2>
-      <p id="customerLogoutConfirmMessage">For your account’s protection, please enter the complete email address you use to sign in before continuing.</p>
-      <div class="customer-logout-email-field">
-        <label for="customerLogoutEmailInput">Account email address</label>
-        <input id="customerLogoutEmailInput" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="Enter your full email address" aria-describedby="customerLogoutFeedback">
-        <p class="customer-logout-feedback" id="customerLogoutFeedback" role="status" aria-live="polite" hidden></p>
-      </div>
-      <div class="customer-logout-preserve-note">
-        <strong>Your saved items are safe.</strong>
-        Your wishlist, order history, and account information will not be deleted by signing out. Sign back in with the same account to access them again.
-      </div>
-      <div class="customer-logout-confirm-actions">
-        <button class="customer-logout-cancel" id="customerLogoutCancelButton" type="button">Keep Me Signed In</button>
-        <button class="customer-logout-accept" id="customerLogoutConfirmButton" type="button">Confirm Logout</button>
+  <div class="customer-logout-confirm-overlay gm-premium-signout-overlay" id="customerLogoutConfirmOverlay" aria-hidden="true">
+    <section class="customer-logout-confirm-modal gm-premium-signout-card" role="alertdialog" aria-modal="true" aria-labelledby="customerLogoutConfirmTitle" aria-describedby="customerLogoutConfirmMessage" tabindex="-1">
+      <button type="button" class="gm-premium-signout-close" id="customerLogoutCloseButton" aria-label="Close sign-out confirmation"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <div class="gm-premium-signout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <h2 class="gm-premium-signout-title" id="customerLogoutConfirmTitle">Sign out of <span class="gm-premium-signout-gen">GEN</span><span class="gm-premium-signout-merch">MERCH</span>?</h2>
+      <p class="gm-premium-signout-description" id="customerLogoutConfirmMessage">Are you sure you want to sign out of your customer account?</p>
+      <div class="gm-premium-signout-account"><div class="gm-premium-signout-avatar" id="customerLogoutAvatar" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c.7-4.6 3.4-7 8-7s7.3 2.4 8 7"></path></svg></div><div class="gm-premium-signout-account-copy"><span>Account:</span><strong id="customerLogoutAccountEmail"></strong></div></div>
+      <div class="gm-premium-signout-reassurance"><span class="gm-premium-signout-lock" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 1 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><p>You can sign in again anytime using your registered account.</p></div>
+      <p class="gm-premium-signout-feedback" id="customerLogoutFeedback" role="status" aria-live="polite" hidden></p>
+      <div class="gm-premium-signout-actions">
+        <button class="gm-premium-signout-cancel" id="customerLogoutCancelButton" type="button">Cancel</button>
+        <button class="gm-premium-signout-confirm" id="customerLogoutConfirmButton" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span>Sign Out</span></button>
       </div>
     </section>
   </div>
@@ -5986,45 +5981,65 @@
         }
       }
     });
+    let customerLogoutReturnFocus = null;
+
     function setCustomerLogoutFeedback(message,type=''){
       const node=$('customerLogoutFeedback');
       if(!node)return;
       node.textContent=message||'';
-      node.className='customer-logout-feedback'+(type?' '+type:'');
+      node.className='gm-premium-signout-feedback'+(type?' '+type:'');
       node.hidden=!message;
-    }
-    function customerLogoutEmailMatches(){
-      const session=customerAuthCurrentSession;
-      const expected=String(session&&session.user&&session.user.email||'').trim().toLowerCase();
-      const entered=String($('customerLogoutEmailInput').value||'').trim().toLowerCase();
-      return Boolean(expected&&entered&&entered===expected);
     }
     function openCustomerLogoutConfirmation(){
       if(customerAuthBusy)return;
       const session=customerAuthCurrentSession;
-      if(!session||!session.user||!String(session.user.email||'').trim()){
-        setCustomerAuthMessage('We could not verify the email address for this session. Please refresh and sign in again.','error');
+      if(!session||!session.user){
+        setCustomerAuthMessage('We could not verify your signed-in session. Please refresh and try again.','error');
         return;
       }
+      customerLogoutReturnFocus=document.activeElement;
+      $('customerLogoutAccountEmail').textContent=String(session.user.email||'').trim()||'Email unavailable for this session';
+      const avatar=$('customerLogoutAvatar');
+      if(avatar&&!avatar.querySelector('img')){
+        const metadata=session.user.user_metadata||{};
+        const candidate=String(metadata.avatar_url||metadata.picture||'').trim();
+        if(candidate){
+          try{
+            const parsed=new URL(candidate,window.location.href);
+            if(parsed.protocol==='https:'){
+              const image=document.createElement('img');
+              image.src=parsed.href;
+              image.alt='';
+              image.draggable=false;
+              image.referrerPolicy='no-referrer';
+              avatar.replaceChildren(image);
+            }
+          }catch(_){}
+        }
+      }
       const overlay=$('customerLogoutConfirmOverlay');
-      $('customerLogoutEmailInput').value='';
-      $('customerLogoutEmailInput').disabled=false;
       $('customerLogoutCancelButton').disabled=false;
+      $('customerLogoutCloseButton').disabled=false;
       $('customerLogoutConfirmButton').disabled=false;
-      $('customerLogoutConfirmButton').textContent='Confirm Logout';
+      $('customerLogoutConfirmButton').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span>Sign Out</span>';
       setCustomerLogoutFeedback('');
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
-      $('customerLogoutEmailInput').focus();
+      $('customerLogoutCancelButton').focus();
     }
     function closeCustomerLogoutConfirmation(restoreFocus=true){
+      if(customerAuthBusy&&restoreFocus)return;
       const overlay=$('customerLogoutConfirmOverlay');
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden','true');
-      if(restoreFocus&&!customerAuthBusy){
-        const trigger=$('customerAuthSignOut');
-        if(trigger&&!trigger.disabled)trigger.focus();
+      if(restoreFocus){
+        const trigger=customerLogoutReturnFocus||$('customerAuthSignOut');
+        if(trigger&&typeof trigger.focus==='function')trigger.focus();
+      }
+      customerLogoutReturnFocus=null;
+      if(!$('customerAuthOverlay').classList.contains('open')&&!$('customerLogoutSuccessOverlay').classList.contains('open')&&!$('customerOrdersOverlay').classList.contains('open')&&!$('cartModal').classList.contains('open')&&!$('productOverlay').classList.contains('open')){
+        document.body.style.overflow='';
       }
     }
     function openCustomerLogoutSuccess(){
@@ -6048,23 +6063,23 @@
     }
     async function performCustomerSignOut(){
       if(customerAuthBusy)return;
-      if(!customerLogoutEmailMatches()){
-        setCustomerLogoutFeedback('The email address does not match your signed-in account. Please check and try again.','error');
-        $('customerLogoutEmailInput').focus();
+      const session=customerAuthCurrentSession;
+      if(!session||!session.user){
+        setCustomerLogoutFeedback('We could not verify your signed-in session. Please refresh and try again.','error');
         return;
       }
       const button=$('customerAuthSignOut');
       const confirmButton=$('customerLogoutConfirmButton');
       const cancelButton=$('customerLogoutCancelButton');
-      const emailInput=$('customerLogoutEmailInput');
+      const closeButton=$('customerLogoutCloseButton');
       customerAuthBusy=true;
-      button.disabled=true;
-      button.textContent='Signing Out…';
+      if(button){button.disabled=true;button.textContent='Signing Out…';}
       confirmButton.disabled=true;
-      confirmButton.textContent='Signing out…';
+      confirmButton.innerHTML='<span>Signing out…</span>';
       cancelButton.disabled=true;
-      emailInput.disabled=true;
-      setCustomerLogoutFeedback('Verifying your session and signing you out securely…','success');
+      closeButton.disabled=true;
+      $('customerLogoutConfirmOverlay').setAttribute('aria-busy','true');
+      setCustomerLogoutFeedback('Signing you out securely…','success');
       try{
         const client=getCustomerAuthClient();
         const {error}=await client.auth.signOut();
@@ -6078,41 +6093,37 @@
         openCustomerLogoutSuccess();
       }catch(error){
         console.error('GENMERCH could not complete customer sign out.',error);
-        setCustomerLogoutFeedback('We couldn’t complete your sign out right now. Check your connection and try again.','error');
+        setCustomerLogoutFeedback('We couldn’t complete your sign out right now. Your account may still be signed in; please try again.','error');
       }finally{
         customerAuthBusy=false;
-        button.disabled=false;
-        button.textContent='Log Out';
+        $('customerLogoutConfirmOverlay').removeAttribute('aria-busy');
+        if(button){button.disabled=false;button.textContent='Log Out';}
         cancelButton.disabled=false;
-        emailInput.disabled=false;
+        closeButton.disabled=false;
         confirmButton.disabled=false;
-        confirmButton.textContent='Confirm Logout';
+        confirmButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span>Sign Out</span>';
       }
     }
     $('customerAuthSignOut').addEventListener('click',openCustomerLogoutConfirmation);
-    $('customerLogoutEmailInput').addEventListener('input',()=>{
-      if(customerLogoutEmailMatches()){
-        setCustomerLogoutFeedback('Email confirmed. You may continue.','success');
-      }else{
-        setCustomerLogoutFeedback('');
-      }
-    });
-    $('customerLogoutEmailInput').addEventListener('keydown',event=>{
-      if(event.key==='Enter'){
-        event.preventDefault();
-        performCustomerSignOut();
-      }
-    });
+    $('customerLogoutCloseButton').addEventListener('click',()=>closeCustomerLogoutConfirmation());
     $('customerLogoutCancelButton').addEventListener('click',()=>closeCustomerLogoutConfirmation());
     $('customerLogoutConfirmButton').addEventListener('click',()=>performCustomerSignOut());
     $('customerLogoutConfirmOverlay').addEventListener('click',event=>{
       if(event.target===$('customerLogoutConfirmOverlay')){event.preventDefault();event.stopPropagation();}
     });
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&$('customerLogoutConfirmOverlay').classList.contains('open')){
+      const confirmOverlay=$('customerLogoutConfirmOverlay');
+      if(event.key==='Escape'&&confirmOverlay.classList.contains('open')){
         event.preventDefault();
         event.stopPropagation();
         closeCustomerLogoutConfirmation();
+      }else if(event.key==='Tab'&&confirmOverlay.classList.contains('open')){
+        const dialog=confirmOverlay.querySelector('.customer-logout-confirm-modal');
+        const focusable=dialog?Array.from(dialog.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex]:not([tabindex="-1"])')):[];
+        if(!focusable.length){event.preventDefault();dialog&&dialog.focus();return;}
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
       }else if(event.key==='Escape'&&$('customerLogoutSuccessOverlay').classList.contains('open')){
         event.preventDefault();
         event.stopPropagation();
