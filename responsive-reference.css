@@ -2317,3 +2317,292 @@ main.container {
     z-index: 1300 !important;
   }
 }
+
+
+/* ============================================================
+   GENMERCH desktop alignment correction — v3
+   Desktop only. Tablet and phone layouts intentionally untouched.
+   ============================================================ */
+@media (min-width: 1101px) {
+  /* Match the header's outer edges to the visible hero/content edges.
+     main.container is 1600px wide with 20px gutters, so its content
+     width is 1560px on wide screens and viewport minus 40px otherwise. */
+  .site-header {
+    display: block !important;
+    width: calc(100% - 40px) !important;
+    max-width: 1560px !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: 0 2px 14px rgba(28, 22, 18, .055) !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 8px 0 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .nav {
+    display: grid !important;
+    grid-template-columns: minmax(205px, 285px) minmax(260px, 1fr) max-content !important;
+    grid-template-rows: 66px !important;
+    align-items: center !important;
+    justify-items: stretch !important;
+    column-gap: clamp(16px, 1.7vw, 26px) !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 66px !important;
+    margin: 0 !important;
+    padding: 2px 0 8px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .nav > .brand-lockup {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-metal-wordmark-wrap {
+    width: clamp(205px, 20vw, 280px) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: 0 1 auto !important;
+  }
+
+  .site-header > .main-header > .nav > .catalog-search {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  /* Four equal action cells: no stretched gap before Account. */
+  .site-header > .main-header > .nav > .header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 58px) !important;
+    grid-auto-flow: column !important;
+    align-items: center !important;
+    justify-items: center !important;
+    justify-content: end !important;
+    align-content: center !important;
+    gap: clamp(10px, 1.15vw, 18px) !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 62px !important;
+    min-height: 62px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #openCustomerRateButton,
+  .site-header > .main-header > .nav > .header-actions > #openCustomerOrdersButton {
+    display: none !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #genmerchNotificationButton,
+  .site-header > .main-header > .nav > .header-actions > .wishlist-header-button,
+  .site-header > .main-header > .nav > .header-actions > #openCartButton,
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton {
+    display: flex !important;
+    flex: 0 0 58px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    justify-self: center !important;
+    align-self: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 62px !important;
+    min-height: 62px !important;
+    max-height: 62px !important;
+    margin: 0 !important;
+    padding: 1px 0 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #171717 !important;
+    box-shadow: none !important;
+    gap: 3px !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #genmerchNotificationButton > .header-icon,
+  .site-header > .main-header > .nav > .header-actions > .wishlist-header-button > .header-icon,
+  .site-header > .main-header > .nav > .header-actions > #openCartButton > .header-icon,
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton > .header-icon {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    display: grid !important;
+    flex: 0 0 40px !important;
+    place-items: center !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #genmerchNotificationButton .genmerch-bell-svg,
+  .site-header > .main-header > .nav > .header-actions > .wishlist-header-button .genmerch-premium-heart,
+  .site-header > .main-header > .nav > .header-actions > #openCartButton .genmerch-premium-cart-icon,
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton .genmerch-premium-account-icon {
+    display: block !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon {
+    flex-basis: 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    object-fit: cover !important;
+  }
+
+  .site-header > .main-header > .nav > .header-actions > #genmerchNotificationButton > small,
+  .site-header > .main-header > .nav > .header-actions > .wishlist-header-button > small,
+  .site-header > .main-header > .nav > .header-actions > #openCartButton > small,
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton > .customer-account-label {
+    position: static !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 1.45em !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #171717 !important;
+    font-size: .67rem !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-shadow: none !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Hide the close-menu control inserted for phones; keep it available on mobile. */
+  .site-header > .main-header > .desktop-links > .gm-mobile-menu-close {
+    display: none !important;
+  }
+
+  /* Six real navigation links, centered as a compact group. */
+  .site-header > .main-header > .desktop-links {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(24px, 2.8vw, 42px) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 6px 0 8px !important;
+    border-top: 1px solid #eee8e4 !important;
+    background: #fff !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .site-header > .main-header > .desktop-links > .gm-mobile-menu-close,
+  .site-header > .main-header > .desktop-links > button.genmerch-hard-reload-nav,
+  .site-header > .main-header > .desktop-links > button[onclick*="setCategoryByLabel"],
+  .site-header > .main-header > .desktop-links > .store-rating-nav,
+  .site-header > .main-header > .desktop-links > span {
+    display: none !important;
+  }
+
+  .site-header > .main-header > .desktop-links > button:not(.gm-mobile-menu-close) {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    border: 0 !important;
+    border-radius: 22px !important;
+    background: transparent !important;
+    color: #171717 !important;
+    font-size: .82rem !important;
+    font-weight: 750 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+  }
+
+  .site-header > .main-header > .desktop-links > button[onclick*="New Arrivals"] {
+    padding-right: 22px !important;
+    padding-left: 22px !important;
+    background: linear-gradient(120deg, #ff3825, #e91513) !important;
+    color: #fff !important;
+  }
+}
