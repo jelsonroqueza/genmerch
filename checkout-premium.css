@@ -1939,3 +1939,84 @@
   .cart-modal .checkout-delivery-actions .checkout-btn,
   .cart-modal .checkout-delivery-actions .checkout-back-button { transition:none !important; }
 }
+
+
+/* GENMERCH checkout cleanup: keep the review and delivery steps compact. */
+#checkoutBackendNote,
+#checkoutAddressFields .address-data-credit {
+  display:none !important;
+}
+
+/* Retain automatic cloud/local draft sync in the background, while removing its large UI panel. */
+.cart-modal .checkout-review-scroll .draft-storage-panel {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+  font-size:0 !important;
+  line-height:0 !important;
+}
+.cart-modal .draft-storage-panel .draft-storage-status,
+.cart-modal .draft-storage-panel .draft-storage-description,
+.cart-modal .draft-storage-panel .draft-sync-now-btn {
+  display:none !important;
+}
+.cart-modal .draft-storage-panel .draft-storage-actions {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  flex:0 1 auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  gap:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.cart-modal .draft-storage-panel .draft-clear-btn {
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:auto !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  min-height:40px !important;
+  margin:0 !important;
+  padding:9px 13px !important;
+  border:1px solid #e4b4a5 !important;
+  border-radius:9px !important;
+  background:linear-gradient(180deg,#fff 0%,#fff4ef 100%) !important;
+  color:#9d321b !important;
+  font-size:12px !important;
+  font-weight:850 !important;
+  line-height:1.2 !important;
+  white-space:normal !important;
+  box-shadow:0 2px 0 rgba(157,50,27,.08),inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+.cart-modal .draft-storage-panel .draft-clear-btn:hover {
+  border-color:#df9b86 !important;
+  background:linear-gradient(180deg,#fff 0%,#ffebe2 100%) !important;
+}
+.cart-modal .draft-storage-panel .draft-clear-btn:active {
+  transform:translateY(1px);
+}
+@media (max-width:600px) {
+  .cart-modal .draft-storage-panel {
+    margin:0 !important;
+    padding:0 !important;
+  }
+  .cart-modal .draft-storage-panel .draft-clear-btn {
+    min-height:40px !important;
+    width:auto !important;
+    padding:9px 12px !important;
+    font-size:12px !important;
+  }
+}
