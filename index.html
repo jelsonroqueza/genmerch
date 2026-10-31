@@ -8660,6 +8660,32 @@
   var topInset=0;
   var hideDistance=18;
 
+  /* Desktop sticky border follows the live hero section edges exactly. */
+  function clearDesktopStickyBounds(){
+    ['left','right','width','max-width','margin-left','margin-right','box-sizing'].forEach(function(property){
+      navRow.style.removeProperty(property);
+    });
+  }
+  function syncDesktopStickyBounds(){
+    if(!window.matchMedia || !window.matchMedia('(min-width:1101px)').matches){
+      clearDesktopStickyBounds();
+      return;
+    }
+    var heroRegion=document.querySelector('main.container .hero') || document.querySelector('.hero');
+    if(!heroRegion)return;
+    var heroRect=heroRegion.getBoundingClientRect();
+    var viewportWidth=document.documentElement.clientWidth || window.innerWidth;
+    var leftInset=Math.max(0,heroRect.left);
+    var rightInset=Math.max(0,viewportWidth-heroRect.right);
+    navRow.style.setProperty('left',leftInset.toFixed(2)+'px','important');
+    navRow.style.setProperty('right',rightInset.toFixed(2)+'px','important');
+    navRow.style.setProperty('width','auto','important');
+    navRow.style.setProperty('max-width','none','important');
+    navRow.style.setProperty('margin-left','0','important');
+    navRow.style.setProperty('margin-right','0','important');
+    navRow.style.setProperty('box-sizing','border-box','important');
+  }
+
   function readScrollY(){
     var root=document.scrollingElement||document.documentElement||document.body;
     return Math.max(0,window.scrollY||window.pageYOffset||(root&&root.scrollTop)||0);
@@ -8676,17 +8702,19 @@
   }
   function pinRow(){
     if(pinned)return;
-    spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
     navRow.classList.add('genmerch-sticky-fixed');
     navRow.classList.remove('genmerch-sticky-hidden');
     navRow.classList.add('genmerch-sticky-revealed');
     pinned=true;
+    syncDesktopStickyBounds();
+    spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
     state='visible';
     downDistance=0;
   }
   function unpinRow(){
     if(!pinned)return;
     navRow.classList.remove('genmerch-sticky-fixed','genmerch-sticky-hidden','genmerch-sticky-revealed');
+    clearDesktopStickyBounds();
     spacer.style.height='0px';
     pinned=false;
     state='visible';
@@ -8731,14 +8759,20 @@
   window.addEventListener('scroll',schedule,{passive:true});
   document.addEventListener('scroll',schedule,{capture:true,passive:true});
   window.addEventListener('resize',function(){
-    if(pinned)spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    if(pinned){
+      syncDesktopStickyBounds();
+      spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    }
     lastY=readScrollY();
     schedule();
   },{passive:true});
   window.addEventListener('orientationchange',function(){
     lastY=readScrollY();
     downDistance=0;
-    if(pinned)spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    if(pinned){
+      syncDesktopStickyBounds();
+      spacer.style.height=Math.ceil(navRow.getBoundingClientRect().height)+'px';
+    }
     schedule();
   },{passive:true});
   window.addEventListener('pageshow',function(){
@@ -8749,6 +8783,7 @@
 
   /* A fresh load begins with the row in its original position, not fixed over the hero. */
   navRow.classList.remove('genmerch-sticky-fixed','genmerch-sticky-hidden','genmerch-sticky-revealed');
+  clearDesktopStickyBounds();
   spacer.style.height='0px';
   pinned=false;
   state='visible';
