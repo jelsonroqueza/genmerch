@@ -31,17 +31,28 @@ jobs:
           run-id: 41229660378
           github-token: ${{ github.token }}
 
-      - name: Prepare public APK
+      - name: Download verified Windows installer artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ShopGenMerch-Windows-Installer
+          path: incoming-windows
+          repository: jelsonroqueza/genmerch
+          run-id: 41231919051
+          github-token: ${{ github.token }}
+
+      - name: Prepare public Android and Windows downloads
         run: |
           set -euo pipefail
-          mkdir -p downloads
+          mkdir -p downloads/windows
           test -s incoming/app-debug.apk
+          test -s incoming-windows/ShopGenMerch-Setup.exe
           cp incoming/app-debug.apk downloads/ShopGenMerch.apk
-          sha256sum downloads/ShopGenMerch.apk
+          cp incoming-windows/ShopGenMerch-Setup.exe downloads/windows/ShopGenMerch-Setup.exe
+          sha256sum downloads/ShopGenMerch.apk downloads/windows/ShopGenMerch-Setup.exe
 
-      - name: Publish APK to website repository
+      - name: Publish Android and Windows installers to website repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Publish ShopGenMerch Android APK download"
+          commit_message: "Publish ShopGenMerch Android and Windows app installers"
           branch: main
-          file_pattern: "downloads/ShopGenMerch.apk"
+          file_pattern: "downloads/**"
