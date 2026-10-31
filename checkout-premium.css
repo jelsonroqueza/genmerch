@@ -879,3 +879,45 @@
   .checkout-delivery-method-card,
   .checkout-important-information { border: 1px solid CanvasText; }
 }
+
+
+/* Final touch-target guard: keep checkout actions usable even on 320px phones. */
+@media (max-width: 430px) {
+  .qty-btn {
+    flex-basis: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .remove-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .cart-item {
+    grid-template-columns: 66px minmax(0, 1fr) 44px !important;
+  }
+  .checkout-address-edit {
+    min-width: 84px !important;
+    min-height: 44px !important;
+  }
+  .checkout-edit-order { min-height: 44px !important; }
+  .checkout-delivery-actions .checkout-back-button { min-height: 56px !important; }
+  .draft-storage-actions button {
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+  }
+  #checkoutAddressFields .gmca-checkout-manage { min-height: 44px !important; }
+}
+@media (max-width: 360px) {
+  .cart-item {
+    grid-template-columns: 58px minmax(0, 1fr) 44px !important;
+  }
+  .qty-btn {
+    flex-basis: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .remove-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
