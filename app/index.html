@@ -55,7 +55,7 @@
     .platform-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:30px 0 0;text-align:left}
     .platform-card{border:1px solid var(--line);border-radius:15px;padding:18px;background:#fff;min-width:0}
     .platform-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-    .platform-symbol{width:42px;height:42px;border-radius:12px;background:#fff1f0;color:var(--red);display:grid;place-items:center;font-size:23px;font-weight:900;flex:0 0 42px}
+    .platform-symbol{width:52px;height:52px;border-radius:15px;background:linear-gradient(145deg,#fff7f6,#ffe8e6);display:grid;place-items:center;flex:0 0 52px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 8px rgba(0,0,0,.045);overflow:hidden}\n    .platform-symbol img{display:block;width:43px;height:43px;object-fit:contain}
     .platform-card h2{font-size:18px;margin:0 0 4px}
     .platform-card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0}
     .platform-card .download{width:100%;margin:16px 0 8px;padding:14px 12px;min-height:52px;font-size:15px}
@@ -90,7 +90,7 @@
       <div class="platform-options" aria-label="Choose your device">
         <section class="platform-card" aria-labelledby="android-title">
           <div class="platform-top">
-            <div class="platform-symbol" aria-hidden="true">▣</div>
+            <div class="platform-symbol"><img src="/icons/platform-android.svg" alt="Android robot logo" width="43" height="43"></div>
             <div><h2 id="android-title">Android</h2><p>For Android phones and tablets</p></div>
           </div>
           <a class="download" href="/downloads/ShopGenMerch.apk" download="ShopGenMerch.apk" aria-label="Download ShopGenMerch Android APK"><span aria-hidden="true">↓</span> Download for Android</a>
@@ -98,7 +98,7 @@
         </section>
         <section class="platform-card" aria-labelledby="windows-title">
           <div class="platform-top">
-            <div class="platform-symbol" aria-hidden="true">▦</div>
+            <div class="platform-symbol"><img src="/icons/platform-windows.svg" alt="Windows logo" width="43" height="43"></div>
             <div><h2 id="windows-title">Windows PC</h2><p>For Windows 10 and Windows 11 (64-bit)</p></div>
           </div>
           <a class="download" href="/downloads/windows/ShopGenMerch-Setup.exe" download="ShopGenMerch-Setup.exe" aria-label="Download ShopGenMerch Windows installer"><span aria-hidden="true">↓</span> Download for Windows</a>
