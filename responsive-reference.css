@@ -2606,3 +2606,96 @@ main.container {
     color: #fff !important;
   }
 }
+
+
+/* GENMERCH desktop account cell lock — v4
+   Equalizes the signed-in avatar and guest account cell against the other three actions. */
+@media (min-width: 1101px) {
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton.customer-account-signed-in,
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 58px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    justify-self: center !important;
+    align-self: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 62px !important;
+    min-height: 62px !important;
+    max-height: 62px !important;
+    margin: 0 !important;
+    padding: 1px 0 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    gap: 3px !important;
+    box-sizing: border-box !important;
+  }
+
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon,
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    display: grid !important;
+    flex: 0 0 40px !important;
+    place-items: center !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton.customer-account-signed-in > .customer-account-label,
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .customer-account-label {
+    position: static !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 1.45em !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #171717 !important;
+    font-size: .67rem !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-shadow: none !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  body .site-header > .main-header > .nav > .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    object-fit: cover !important;
+  }
+}
