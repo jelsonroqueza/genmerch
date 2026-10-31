@@ -59,6 +59,36 @@
   const CUSTOMER_AVATAR_BUCKET = 'customer-avatars';
   const CUSTOMER_AVATAR_MAX_BYTES = 2 * 1024 * 1024;
   const CUSTOMER_AVATAR_URL_TTL_SECONDS = 900;
+  const CUSTOMER_AVATAR_CACHE_PREFIX = 'genmerch.customerAvatar.v1:';
+  function readCustomerAvatarCache(userId){
+    if(!userId)return null;
+    try{
+      const raw=window.sessionStorage.getItem(CUSTOMER_AVATAR_CACHE_PREFIX+String(userId));
+      if(!raw)return null;
+      const cached=JSON.parse(raw);
+      const path=String(cached&&cached.path||'').trim();
+      const url=String(cached&&cached.url||'').trim();
+      const expiresAt=Number(cached&&cached.expiresAt||0);
+      const parsedUrl=new URL(url,window.location.href);
+      if(!path.startsWith(String(userId)+'/')||parsedUrl.protocol!=='https:'||!parsedUrl.hostname.endsWith('.supabase.co')||!parsedUrl.pathname.includes('/storage/v1/object/sign/customer-avatars/')||expiresAt<=Date.now()+120000){
+        window.sessionStorage.removeItem(CUSTOMER_AVATAR_CACHE_PREFIX+String(userId));
+        return null;
+      }
+      return {path,url,expiresAt};
+    }catch(_){return null;}
+  }
+  function writeCustomerAvatarCache(userId,path,url,expiresAt){
+    if(!userId||!path||!url||!expiresAt)return;
+    try{
+      window.sessionStorage.setItem(CUSTOMER_AVATAR_CACHE_PREFIX+String(userId),JSON.stringify({
+        path:String(path),url:String(url),expiresAt:Number(expiresAt)
+      }));
+    }catch(_){}
+  }
+  function clearCustomerAvatarCache(userId){
+    if(!userId)return;
+    try{window.sessionStorage.removeItem(CUSTOMER_AVATAR_CACHE_PREFIX+String(userId));}catch(_){}
+  }
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[ch]));
@@ -142,6 +172,10 @@
       image.setAttribute('draggable', 'false');
       image.setAttribute('referrerpolicy', 'no-referrer');
       image.decoding = 'async';
+      image.loading = 'eager';
+      image.fetchPriority = 'high';
+      image.width = 44;
+      image.height = 44;
       image.addEventListener('error', () => {
         button.classList.remove('gmca-storefront-has-avatar');
         image.remove();
@@ -156,7 +190,9 @@
       icon.appendChild(image);
     }
 
-    image.src = url;
+    if (image.src !== url) image.src = url;
+    image.loading = 'eager';
+    image.fetchPriority = 'high';
     image.title = identity ? String(identity) + ' profile photo' : 'Customer profile photo';
     button.classList.add('gmca-storefront-has-avatar');
   }
@@ -169,6 +205,7 @@
   }
 
   function clearCustomerAvatarForSignedOut() {
+    clearCustomerAvatarCache(state.avatarOwnerId);
     state.avatarRequestToken += 1;
     clearStorefrontAvatarRefreshTimer();
     state.avatarPath = null;
@@ -207,6 +244,23 @@
     }
 
     const userId = String(user.id);
+    const identity = currentUserName(user, state.profile) || user.email || 'Customer';
+    if(state.avatarSyncPending&&state.avatarOwnerId===userId)return;
+    if(state.avatarOwnerId===userId&&state.avatarUrl&&state.avatarUrlExpiresAt>Date.now()+120000){
+      syncStorefrontCustomerAvatar(state.avatarUrl,identity);
+      scheduleStorefrontAvatarRefresh(userId);
+      return;
+    }
+    const cachedAvatar=readCustomerAvatarCache(userId);
+    if(cachedAvatar){
+      state.avatarOwnerId=userId;
+      state.avatarPath=cachedAvatar.path;
+      state.avatarUrl=cachedAvatar.url;
+      state.avatarUrlExpiresAt=cachedAvatar.expiresAt;
+      state.avatarNeedsRefresh=false;
+      syncStorefrontCustomerAvatar(cachedAvatar.url,identity);
+      scheduleStorefrontAvatarRefresh(userId);
+    }
     const requestToken = ++state.avatarRequestToken;
     state.avatarSyncPending = true;
     if (state.avatarOwnerId !== userId) {
@@ -240,7 +294,6 @@
       }
 
       if (state.avatarPath === path && state.avatarUrl && state.avatarUrlExpiresAt > Date.now() + 120000) {
-        const identity = currentUserName(user, state.profile) || user.email || 'Customer';
         syncStorefrontCustomerAvatar(state.avatarUrl, identity);
         scheduleStorefrontAvatarRefresh(userId);
         return;
@@ -262,8 +315,8 @@
       state.avatarUrl = signedUrl;
       state.avatarUrlExpiresAt = Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000;
       state.avatarNeedsRefresh = false;
+      writeCustomerAvatarCache(userId,path,signedUrl,state.avatarUrlExpiresAt);
 
-      const identity = currentUserName(user, state.profile) || user.email || 'Customer';
       syncStorefrontCustomerAvatar(signedUrl, identity);
       scheduleStorefrontAvatarRefresh(userId);
     } catch (error) {
@@ -725,6 +778,17 @@
     }
 
     const sameAvatar = state.avatarOwnerId === String(userId) && state.avatarPath === validPath;
+    const cachedAvatar = readCustomerAvatarCache(userId);
+    if(cachedAvatar&&cachedAvatar.path===validPath){
+      state.avatarPath=validPath;
+      state.avatarOwnerId=String(userId);
+      state.avatarUrl=cachedAvatar.url;
+      state.avatarUrlExpiresAt=cachedAvatar.expiresAt;
+      state.avatarNeedsRefresh=false;
+      syncStorefrontCustomerAvatar(cachedAvatar.url,identity);
+      scheduleStorefrontAvatarRefresh(userId);
+      return;
+    }
     state.avatarPath = validPath;
     state.avatarOwnerId = String(userId);
     if (sameAvatar && state.avatarUrl && state.avatarUrlExpiresAt > Date.now() + 120000) {
@@ -752,6 +816,7 @@
         state.avatarUrl = signedUrl;
         state.avatarUrlExpiresAt = Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000;
         state.avatarNeedsRefresh = false;
+        writeCustomerAvatarCache(userId,validPath,signedUrl,state.avatarUrlExpiresAt);
         syncStorefrontCustomerAvatar(signedUrl, identity);
         scheduleStorefrontAvatarRefresh(userId);
       })

@@ -5609,7 +5609,7 @@ html.genmerch-initial-loading body{overflow:hidden!important}
   opacity:1;
   visibility:visible;
   pointer-events:auto;
-  transition:opacity .32s ease,visibility .32s ease;
+  transition:opacity .16s ease,visibility .16s ease;
   isolation:isolate;
 }
 #genmerchInitialLoader.is-hidden{

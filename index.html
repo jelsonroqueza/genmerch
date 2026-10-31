@@ -56,7 +56,7 @@
   
   
   <script src="/install-flow.js?v=20261030-1" defer></script>
-  <script src="/customer-account.js?v=20261031-hard-reload-1" defer></script>
+  <script src="/customer-account.js?v=20261031-speed-optimization-1" defer></script>
 
 
 
@@ -116,6 +116,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin>
   <link rel="preconnect" href="https://csbaxyzfcaxhyyzxfxjw.supabase.co" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
@@ -127,7 +128,7 @@
 
 
 
-  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-mobile-hero-centered-1">
+  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-speed-optimization-1">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-17">
   <link rel="stylesheet" href="/checkout-premium.css?v=20261031-compact-checkout-notes-1">
 </head>
@@ -1401,6 +1402,31 @@
     let productDetailQuantity = 1;
     let productOptionsExpanded = false;
     let catalogLoadState = 'loading';
+    const GENMERCH_CATALOG_CACHE_KEY = 'genmerch.catalog.snapshot.v1';
+    const GENMERCH_CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
+    function restoreCatalogFromCache(){
+      try{
+        const raw=sessionStorage.getItem(GENMERCH_CATALOG_CACHE_KEY);
+        if(!raw)return false;
+        const cached=JSON.parse(raw);
+        if(!cached||!Array.isArray(cached.products)||!cached.products.length)return false;
+        const age=Date.now()-Number(cached.savedAt||0);
+        if(!Number.isFinite(age)||age<0||age>GENMERCH_CATALOG_CACHE_TTL_MS)return false;
+        const safeProducts=cached.products.filter(product=>product&&typeof product==='object'&&product.id!==undefined&&product.name);
+        if(!safeProducts.length)return false;
+        products.splice(0,products.length,...safeProducts);
+        catalogLoadState='cached';
+        return true;
+      }catch(_){return false;}
+    }
+    function persistCatalogToCache(mappedProducts){
+      try{
+        sessionStorage.setItem(GENMERCH_CATALOG_CACHE_KEY,JSON.stringify({savedAt:Date.now(),products:mappedProducts}));
+      }catch(error){
+        // The live catalogue remains usable if browser storage is full or unavailable.
+        console.warn('GENMERCH catalogue cache was not saved in this tab.',error);
+      }
+    }
 
     const $ = id => document.getElementById(id);
     const money = value => '₱' + Number(value || 0).toLocaleString('en-PH', { maximumFractionDigits: 2 });
@@ -1450,11 +1476,51 @@
       });
       products.splice(0,products.length,...mapped);
       catalogLoadState='connected';
+      persistCatalogToCache(mapped);
       return mapped.length;
     }
 
     // Refresh live inventory without forcing every caller to block or repaint the storefront.
     let liveCatalogRefreshPromise = null;
+    const productStockRefreshPromises = new Map();
+    const productStockRefreshTimes = new Map();
+    function refreshProductVariantsInBackground(productId){
+      const id=String(productId||'');
+      if(!id)return Promise.resolve(false);
+      const existing=productStockRefreshPromises.get(id);
+      if(existing)return existing;
+      const lastRefresh=productStockRefreshTimes.get(id)||0;
+      if(Date.now()-lastRefresh<15000)return Promise.resolve(true);
+      const query='select=id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active&is_active=eq.true&product_id=eq.'+encodeURIComponent(id);
+      const task=fetchSupabaseTable('product_variants',query).then(rows=>{
+        const product=products.find(item=>String(item.id)===id);
+        if(!product)return false;
+        const variants=rows.map(row=>({
+          id:String(row.id),
+          sku:row.sku||'',
+          size:String(row.size_label||'One Size'),
+          color:String(row.color_label||''),
+          price:row.price_override===null||row.price_override===undefined?null:Number(row.price_override),
+          stock:Math.max(0,Math.floor(Number(row.stock_quantity)||0))
+        })).sort((a,b)=>a.size.localeCompare(b.size));
+        product.variants=variants;
+        product.totalStock=variants.reduce((sum,variant)=>sum+variant.stock,0);
+        product.sold=product.totalStock>0?(product.isDemo?'Demo Only':'In stock'):'Out of stock';
+        productStockRefreshTimes.set(id,Date.now());
+        if(String(openProductDetailId)===id&&$('productOverlay')&&$('productOverlay').classList.contains('open')){
+          renderProductModalSizes(product);
+          updateProductModalAddButton(product);
+        }
+        return true;
+      }).catch(error=>{
+        console.warn('GENMERCH targeted product stock refresh failed; the last catalogue snapshot remains available.',error);
+        return false;
+      }).finally(()=>{
+        if(productStockRefreshPromises.get(id)===task)productStockRefreshPromises.delete(id);
+      });
+      productStockRefreshPromises.set(id,task);
+      return task;
+    }
     async function refreshCatalogForLiveStock(renderUI=true) {
       const pending = liveCatalogRefreshPromise || (liveCatalogRefreshPromise = loadSupabaseCatalog());
       try {
@@ -1471,95 +1537,46 @@
 
     let genmerchHardReloadPromise = null;
     window.performGenmerchHardReload = async function(button) {
-      if (genmerchHardReloadPromise) return genmerchHardReloadPromise;
-      const target = button instanceof HTMLElement ? button : null;
-      let navigated = false;
-      if (target) {
-        target.disabled = true;
+      if(genmerchHardReloadPromise)return genmerchHardReloadPromise;
+      const target=button instanceof HTMLElement?button:null;
+      let navigated=false;
+      if(target){
+        target.disabled=true;
         target.setAttribute('aria-busy','true');
         target.classList.add('is-loading');
-        const label = target.querySelector('.genmerch-hard-reload-label');
-        if (label) label.textContent = 'Syncing…';
+        const label=target.querySelector('.genmerch-hard-reload-label');
+        if(label)label.textContent='Reloading…';
       }
-
-      const task = (async function() {
-        try {
-          if (!saveDraftState()) {
-            throw new Error('Your cart or checkout draft could not be saved in this browser. Reload was stopped to protect your changes.');
-          }
-
-          const authResult = await getCustomerAuthClient().auth.getSession();
-          if (authResult.error) throw authResult.error;
-          const session = authResult.data && authResult.data.session && authResult.data.session.user
-            ? authResult.data.session : null;
-          customerAuthCurrentSession = session;
-          syncCustomerOrdersBadgeRealtime(session);
-
-          const outcomes = await Promise.allSettled([
-            loadSupabaseCatalog(),
-            session ? syncCustomerDraftForSession(session,true) : Promise.resolve(true),
-            syncWishlistForCustomerSession(session,true),
-            loadStoreRatingSummary(),
-            refreshCustomerOrdersBadge(session),
-            refreshCustomerRateBadge(session),
-            typeof window.loadGenmerchNotifications === 'function'
-              ? window.loadGenmerchNotifications() : Promise.resolve(true),
-            session && typeof window.genmerchReloadCustomerAccount === 'function'
-              ? window.genmerchReloadCustomerAccount({silent:true,skipNotifications:true})
-              : Promise.resolve(true)
-          ]);
-
-          if (outcomes[0].status !== 'fulfilled') {
-            throw outcomes[0].reason || new Error('The live product catalogue could not be refreshed from Supabase.');
-          }
-
-          renderCategoryFilters();
-          renderProducts();
-          updateCart();
-
-          const warnings = [];
-          const labels = ['catalogue','saved cart and checkout details','wishlist','store rating','order badge','review badge','notifications','account'];
-          outcomes.forEach((result,index) => {
-            if (result.status === 'rejected' || result.value === false) {
-              if (index !== 0) warnings.push(labels[index]);
-            }
-          });
-          if (wishlistCloudSyncError && !warnings.includes('wishlist')) warnings.push('wishlist');
-          if (loadStoreRatingSummary.summary && loadStoreRatingSummary.summary.error && !warnings.includes('store rating')) warnings.push('store rating');
-
-          const notice = {
-            refreshedAt: new Date().toISOString(),
-            warning: warnings.length ? 'Some information may still be unavailable: ' + warnings.join(', ') + '.' : ''
-          };
-          try { sessionStorage.setItem('genmerch.lastHardReloadNotice',JSON.stringify(notice)); } catch (_) {}
-
-          if (target) {
-            const label = target.querySelector('.genmerch-hard-reload-label');
-            if (label) label.textContent = 'Reloading…';
-          }
-          const nextUrl = new URL(window.location.href);
+      const task=(async function(){
+        try{
+          if(!saveDraftState())throw new Error('Your cart or checkout draft could not be saved in this browser. Reload was stopped to protect your changes.');
+          try{
+            sessionStorage.setItem('genmerch.lastHardReloadNotice',JSON.stringify({
+              refreshedAt:new Date().toISOString(),
+              warning:'Your storefront is refreshing now; catalogue and account data will sync in the background.'
+            }));
+          }catch(_){}
+          const nextUrl=new URL(window.location.href);
           nextUrl.searchParams.set('_gm_reload',String(Date.now()));
-          navigated = true;
+          navigated=true;
           window.location.replace(nextUrl.toString());
           return true;
-        } catch (error) {
-          console.error('GENMERCH master Reload could not complete.',error);
-          showToast('Reload stopped: ' + (error && error.message ? error.message : 'Unable to sync the latest data.'));
+        }catch(error){
+          console.error('GENMERCH Reload could not complete.',error);
+          showToast('Reload stopped: '+(error&&error.message?error.message:'Unable to save the current cart.'));
           return false;
         }
       })();
-
-      genmerchHardReloadPromise = task;
-      try {
-        return await task;
-      } finally {
-        if (genmerchHardReloadPromise === task) genmerchHardReloadPromise = null;
-        if (target && !navigated) {
-          target.disabled = false;
+      genmerchHardReloadPromise=task;
+      try{return await task;}
+      finally{
+        if(genmerchHardReloadPromise===task)genmerchHardReloadPromise=null;
+        if(target&&!navigated){
+          target.disabled=false;
           target.removeAttribute('aria-busy');
           target.classList.remove('is-loading');
-          const label = target.querySelector('.genmerch-hard-reload-label');
-          if (label) label.textContent = 'Reload';
+          const label=target.querySelector('.genmerch-hard-reload-label');
+          if(label)label.textContent='Reload';
         }
       }
     };
@@ -1819,6 +1836,18 @@
         const localBelongsToUser=!owner||owner===userId;
         const cloudResult=await client.from('customer_saved_state').select('draft_state,updated_at').eq('user_id',userId).maybeSingle();
         if(cloudResult.error)throw cloudResult.error;
+        // Re-read local state after the network round trip so a customer typing or adding items
+        // while startup sync is running always wins over an older cloud snapshot.
+        try{
+          const newestRaw=localStorage.getItem(GENMERCH_DRAFT_STORAGE_KEY)||'';
+          const newestUpdatedAt=Number(localStorage.getItem(GENMERCH_DRAFT_UPDATED_AT_KEY))||0;
+          if(newestUpdatedAt>localUpdatedAt){
+            owner=localStorage.getItem(GENMERCH_DRAFT_OWNER_KEY)||'';
+            localRaw=newestRaw;
+            localSnapshot=parseCustomerDraftSnapshot(newestRaw);
+            localUpdatedAt=newestUpdatedAt;
+          }
+        }catch(_){}
         const cloudRow=cloudResult.data||null;
         const cloudUpdatedAt=cloudRow&&cloudRow.updated_at?new Date(cloudRow.updated_at).getTime():0;
         if(cloudRow&&localSnapshot&&owner===userId&&localUpdatedAt>cloudUpdatedAt){
@@ -3831,9 +3860,7 @@
         });
         return;
       }
-      if(!skipBackgroundRefresh){
-        refreshCatalogForLiveStock(false).catch(error=>console.warn('GENMERCH background stock refresh failed.',error));
-      }
+      if(!skipBackgroundRefresh)refreshProductVariantsInBackground(p.id);
       openProductDetailId=p.id;
       updateWishlistDetailButton(p.id);
       productDetailSelectedSize='';
@@ -4106,10 +4133,8 @@
         return;
       }
       if(!validateProductOptionSelections(currentForOptions))return;
-      showCenteredActionStatus('Adding item to your cart, please wait...','loading');
       addButton.disabled=true;buyButton.disabled=true;
       try{
-        await refreshCatalogForLiveStock();
         const currentProduct=products.find(item=>String(item.id)===String(openProductDetailId));
         if(!currentProduct){showToast('This product is no longer available.');closeProduct();return;}
         renderProductModalSizes(currentProduct);
@@ -4214,9 +4239,7 @@
         });
         return;
       }
-      if(!skipBackgroundRefresh){
-        refreshCatalogForLiveStock(false).catch(error=>console.warn('GENMERCH background stock refresh failed.',error));
-      }
+      if(!skipBackgroundRefresh)refreshProductVariantsInBackground(product.id);
       pendingSizeProductId=product.id;pendingSelectedSize='';pendingSelectedVariantId=null;
       $('sizeProductName').textContent=product.name;
       const colorMapping=getProductColorMapping(product);
@@ -4265,9 +4288,7 @@
       if(pendingSizeProductId===null||!pendingSelectedSize)return;
       const button=$('confirmSizeButton'),id=pendingSizeProductId,size=pendingSelectedSize,variantId=pendingSelectedVariantId;
       button.disabled=true;
-      showCenteredActionStatus('Adding item to your cart, please wait...','loading');
       try{
-        await refreshCatalogForLiveStock();
         const product=products.find(item=>String(item.id)===String(id));
         if(!product){showToast('This product is no longer available.');closeSizeSelector();return;}
         if(Array.isArray(product.variants)){
@@ -4306,22 +4327,14 @@
       if(typeof window.playGenmerchNotificationChime==='function'){
         window.playGenmerchNotificationChime('cart:add:'+String(id)+':'+String(variant?variant.id||size:size)+':'+Date.now(),'cart');
       }
-      showCenteredActionStatus('Item added to your cart successfully!','success',1550);
+      showToast('Added to your cart successfully!',1500);
       return true;
     }
     async function changeQuantity(key,delta){
       const item=cart.find(product=>cartLineKey(product)===key);if(!item)return;
-      if(delta>0){
-        try{
-          await refreshCatalogForLiveStock();
-          const product=products.find(row=>String(row.id)===String(item.id));
-          if(!product||!Array.isArray(product.variants)){showToast('Unable to verify this item’s current stock.');return;}
-          const variant=product.variants.find(row=>String(row.id)===String(item.variantId||''));
-          if(!variant||Number(variant.stock)<1){item.availableStock=0;updateCart();showToast('This size is no longer available. Remove it or choose another size.');return;}
-          item.availableStock=Number(variant.stock);
-          if(item.qty+delta>Number(variant.stock)){updateCart();showToast('Only '+variant.stock+' unit(s) remain for this size.');return;}
-          item.image=getProductImageForColor(product,item.color)||product.image;item.images=product.images;item.name=product.name;item.price=variant.price!==null?variant.price:product.price;
-        }catch(error){console.error('GENMERCH could not refresh cart stock.',error);showToast('Unable to verify live stock. Please try again.');return;}
+      if(delta>0&&Number.isFinite(item.availableStock)&&item.qty+delta>item.availableStock){
+        showToast('Only '+item.availableStock+' unit(s) remain for this size.');
+        return;
       }
       if(delta>0&&Number.isFinite(item.availableStock)&&item.qty>=item.availableStock){showToast('No more stock is available for this size.');return;}
       item.qty+=delta;
@@ -4866,15 +4879,7 @@
       if(button){button.disabled=true;button.textContent='Submitting order…';}
       checkoutFeedback('Checking current prices and stock, then submitting your order securely…');
       try{
-        // Refresh visible stock first; the database function independently validates stock/prices atomically.
-        await refreshCatalogForLiveStock();
-        for(const line of lines){
-          const product=products.find(row=>String(row.id)===line.product_id);
-          const variant=product&&Array.isArray(product.variants)?product.variants.find(row=>String(row.id)===line.variant_id):null;
-          if(!product||!variant||Number(variant.stock)<line.quantity){
-            throw new Error('Stock changed for a cart item. Please review your cart, update the quantity, and try again.');
-          }
-        }
+        // The order RPC performs authoritative price/stock checks and row locks in one database transaction.
         const client=getCustomerAuthClient();
         const requestId=checkoutRequestIdForPayload(requestPayload);
         const result=await client.rpc('create_genmerch_order',{
@@ -4915,7 +4920,9 @@
           console.warn('GENMERCH order was saved, but the confirmation email was not sent.',emailError);
           receiptEmailResult={ok:false,recipient_email:requestPayload.receipt_email,message:emailError&&emailError.message?emailError.message:'Automatic email confirmation could not be sent right now.'};
         }
-        try{await refreshCatalogForLiveStock();}catch(stockRefreshError){console.warn('The order is saved, but the catalog stock refresh will retry on the next product view.',stockRefreshError);}
+        Promise.all([...new Set(lines.map(line=>line.product_id))].map(refreshProductVariantsInBackground))
+          .then(()=>{renderProducts();})
+          .catch(stockRefreshError=>console.warn('The order is saved; product stock will refresh on the next view.',stockRefreshError));
         try{sessionStorage.removeItem(GENMERCH_PENDING_CHECKOUT_KEY);}catch(_){}
         checkoutFeedback('');
         resetDraftInMemory();
@@ -8436,35 +8443,83 @@
     }
 
     async function initializeStorefront(){
-      try{await loadSupabaseCatalog();}
-      catch(error){catalogLoadState='fallback';console.error('GENMERCH catalog could not load from Supabase; using local demo catalog.',error);}
-      await syncCustomerDraftForSession(undefined,false);restoreDraftState();await syncWishlistForCustomerSession(undefined,false);renderCategoryFilters();renderProducts();updateCart();loadStoreRatingSummary();
-      try{
-        const authResult=await getCustomerAuthClient().auth.getSession();
-        if(authResult.error)throw authResult.error;
-        customerAuthCurrentSession=authResult.data&&authResult.data.session&&authResult.data.session.user?authResult.data.session:null;
-        syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
-        refreshCustomerRateBadge(customerAuthCurrentSession);
-      }catch(error){
-        console.warn('GENMERCH could not initialize the Orders badge from the customer session.',error);
+      const hasWarmCatalog=restoreCatalogFromCache();
+      if(hasWarmCatalog){
+        // Paint the last live catalogue snapshot immediately; refresh it from Supabase in the background.
+        restoreDraftState();
+        renderCategoryFilters();
+        renderProducts();
+        updateCart();
+      }else{
+        try{await loadSupabaseCatalog();}
+        catch(error){
+          catalogLoadState='fallback';
+          console.error('GENMERCH catalogue could not load from Supabase; using the local fallback catalogue.',error);
+        }
+        restoreDraftState();
+        renderCategoryFilters();
+        renderProducts();
+        updateCart();
       }
-      await restoreSellerCentreAfterRefresh();
-      await restoreAddressReferenceContext();
+      // Ratings are secondary content and must never keep the first storefront render waiting.
+      loadStoreRatingSummary();
+      window.setTimeout(async function(){
+        const backgroundTasks=[];
+        if(hasWarmCatalog){
+          backgroundTasks.push(loadSupabaseCatalog().then(()=>{
+            renderCategoryFilters();
+            renderProducts();
+            updateCart();
+          }).catch(error=>console.warn('GENMERCH live catalogue refresh failed; the cached catalogue remains visible.',error)));
+        }
+        let session=customerAuthCurrentSession;
+        try{
+          const authResult=await getCustomerAuthClient().auth.getSession();
+          if(authResult.error)throw authResult.error;
+          session=authResult.data&&authResult.data.session&&authResult.data.session.user?authResult.data.session:null;
+          customerAuthCurrentSession=session;
+        }catch(error){
+          console.warn('GENMERCH could not resolve the customer session during background startup.',error);
+        }
+        if(session){
+          syncCustomerOrdersBadgeRealtime(session);
+          refreshCustomerRateBadge(session);
+          if(typeof window.loadGenmerchNotifications==='function'){
+            Promise.resolve(window.loadGenmerchNotifications()).catch(error=>console.warn('GENMERCH notifications are still syncing.',error));
+          }
+        }
+        backgroundTasks.push(syncCustomerDraftForCustomerStartup(session));
+        backgroundTasks.push(syncWishlistForCustomerSession(session,false));
+        backgroundTasks.push(restoreSellerCentreAfterRefresh());
+        await Promise.allSettled(backgroundTasks);
+        // Apply any newer cloud draft only after safely re-reading the latest local snapshot.
+        restoreDraftState();
+        updateCart();
+        await restoreAddressReferenceContext();
+        renderProducts();
+      },0);
 
-      const reloadMarker = new URLSearchParams(window.location.search).get('_gm_reload');
-      if (reloadMarker) {
-        const cleanUrl = new URL(window.location.href);
+      const reloadMarker=new URLSearchParams(window.location.search).get('_gm_reload');
+      if(reloadMarker){
+        const cleanUrl=new URL(window.location.href);
         cleanUrl.searchParams.delete('_gm_reload');
-        window.history.replaceState(window.history.state,'',cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
-        let notice = null;
-        try {
-          notice = JSON.parse(sessionStorage.getItem('genmerch.lastHardReloadNotice') || 'null');
+        window.history.replaceState(window.history.state,'',cleanUrl.pathname+cleanUrl.search+cleanUrl.hash);
+        let notice=null;
+        try{
+          notice=JSON.parse(sessionStorage.getItem('genmerch.lastHardReloadNotice')||'null');
           sessionStorage.removeItem('genmerch.lastHardReloadNotice');
-        } catch (_) {}
-        showToast(notice && notice.warning
-          ? 'Reload complete. ' + notice.warning
-          : 'GENMERCH reloaded. Latest available database updates are synced.');
+        }catch(_){}
+        showToast(notice&&notice.warning
+          ?'Storefront reloaded. '+notice.warning
+          :'GENMERCH storefront reloaded. Latest catalogue and account data are syncing in the background.');
       }
+    }
+    async function syncCustomerDraftForCustomerStartup(session){
+      if(!session||!session.user){
+        customerDraftCloudReadyUserId='';
+        return false;
+      }
+      return syncCustomerDraftForSession(session,false);
     }
     window.GENMERCH_INITIALIZATION_PROMISE=initializeStorefront();
 
@@ -8893,20 +8948,17 @@
   var overlay=document.getElementById('genmerchInitialLoader');
   if(!overlay)return;
   var startedAt=Date.now();
-  var minVisibleMs=420;
-  var safetyTimeoutMs=16000;
-  var pageLoaded=document.readyState==='complete';
+  var minVisibleMs=180;
+  var safetyTimeoutMs=10000;
   var appReady=!window.GENMERCH_INITIALIZATION_PROMISE;
   var hiding=false;
   var dismissed=false;
   var minTimer=null;
   var removeTimer=null;
-
   function dismiss(){
     if(dismissed||hiding)return;
     hiding=true;
-    var elapsed=Date.now()-startedAt;
-    var delay=Math.max(0,minVisibleMs-elapsed);
+    var delay=Math.max(0,minVisibleMs-(Date.now()-startedAt));
     minTimer=window.setTimeout(function(){
       if(dismissed)return;
       overlay.classList.add('is-hidden');
@@ -8914,16 +8966,10 @@
       removeTimer=window.setTimeout(function(){
         if(overlay&&overlay.isConnected)overlay.remove();
         dismissed=true;
-      },360);
+      },190);
     },delay);
   }
-  function checkReady(){
-    if(pageLoaded&&appReady)dismiss();
-  }
-
-  if(!pageLoaded){
-    window.addEventListener('load',function(){pageLoaded=true;checkReady();},{once:true});
-  }
+  function checkReady(){if(appReady)dismiss();}
   if(window.GENMERCH_INITIALIZATION_PROMISE&&typeof window.GENMERCH_INITIALIZATION_PROMISE.then==='function'){
     Promise.resolve(window.GENMERCH_INITIALIZATION_PROMISE)
       .catch(function(error){console.warn('GENMERCH startup finished with a recoverable initialization error.',error);})
@@ -8932,15 +8978,14 @@
     appReady=true;
     checkReady();
   }
-
-  // Never leave a customer behind an overlay if a slow network request stalls startup.
+  // Keep the storefront accessible when a slow network stalls initial catalogue loading.
   window.setTimeout(function(){
     if(dismissed)return;
     if(minTimer!==null)window.clearTimeout(minTimer);
     if(removeTimer!==null)window.clearTimeout(removeTimer);
     overlay.classList.add('is-hidden');
     document.documentElement.classList.remove('genmerch-initial-loading');
-    window.setTimeout(function(){if(overlay&&overlay.isConnected)overlay.remove();dismissed=true;},360);
+    window.setTimeout(function(){if(overlay&&overlay.isConnected)overlay.remove();dismissed=true;},190);
   },safetyTimeoutMs);
 })();
 </script>
