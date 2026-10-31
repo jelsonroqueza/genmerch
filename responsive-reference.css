@@ -1321,3 +1321,999 @@ main.container {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* ============================================================
+   GENMERCH approved reference alignment — v2
+   Resolves legacy !important header rules; presentation only.
+   Existing IDs, click handlers, commerce functions and Supabase
+   integrations are intentionally left unchanged.
+   ============================================================ */
+
+:root {
+  --gm-responsive-max: 1600px;
+}
+
+/* Shared header shell */
+.site-header,
+.site-header > .main-header {
+  width: 100% !important;
+  max-width: 1600px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background: #fff !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 14px rgba(28, 22, 18, .06) !important;
+}
+.site-header > .main-header {
+  padding: 10px 24px 0 !important;
+}
+.site-header > .main-header > .nav {
+  display: grid !important;
+  grid-template-columns: minmax(205px, .82fr) minmax(290px, 1.42fr) minmax(330px, 1.1fr) !important;
+  grid-template-rows: 66px !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  gap: 0 22px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 66px !important;
+  margin: 0 !important;
+  padding: 4px 0 10px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+.site-header > .main-header > .nav > .brand-lockup {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+.site-header > .main-header > .nav > .brand-lockup .genmerch-metal-wordmark-wrap {
+  display: block !important;
+  width: clamp(205px, 21vw, 285px) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
+  line-height: 0 !important;
+}
+.site-header > .main-header > .nav > .brand-lockup .genmerch-svg-metal-wordmark {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 42px !important;
+  filter: none !important;
+}
+.site-header > .main-header > .nav > .catalog-search {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  order: initial !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 50px !important;
+  height: 50px !important;
+  margin: 0 !important;
+  padding: 0 0 0 14px !important;
+  border: 1px solid #e6e1de !important;
+  border-radius: 28px !important;
+  background: #f8f7f6 !important;
+  box-shadow: 0 3px 12px rgba(30, 22, 17, .06) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.site-header > .main-header > .nav > .catalog-search::before {
+  content: "" !important;
+  display: block !important;
+  flex: 0 0 22px !important;
+  width: 22px !important;
+  height: 22px !important;
+  margin-right: 8px !important;
+  background: #333 !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.8' cy='10.8' r='6.9'/%3E%3Cpath d='m16 16 5 5'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.8' cy='10.8' r='6.9'/%3E%3Cpath d='m16 16 5 5'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+.site-header > .main-header > .nav > .catalog-search > input {
+  order: 1 !important;
+  display: block !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: #252525 !important;
+  font-size: .92rem !important;
+  box-shadow: none !important;
+}
+.site-header > .main-header > .nav > .catalog-search > button {
+  order: 2 !important;
+  display: grid !important;
+  flex: 0 0 62px !important;
+  place-items: center !important;
+  width: 62px !important;
+  min-width: 62px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 26px 26px 0 !important;
+  background: linear-gradient(135deg, #f42c1d, #ca1115) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.site-header > .main-header > .nav > .catalog-search > button svg {
+  width: 23px !important;
+  height: 23px !important;
+  fill: none !important;
+  stroke: #fff !important;
+  stroke-width: 2 !important;
+}
+.site-header > .main-header > .nav > .header-actions {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: clamp(12px, 1.55vw, 23px) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.site-header > .main-header > .nav > .header-actions > .header-action {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 43px !important;
+  width: auto !important;
+  min-height: 55px !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 4px 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #171717 !important;
+  box-shadow: none !important;
+  gap: 3px !important;
+}
+.site-header > .main-header > .nav > .header-actions > .header-action > .header-icon {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.site-header > .main-header > .nav > .header-actions > .header-action > .header-icon svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+.site-header > .main-header > .nav > .header-actions > .header-action > small,
+.site-header > .main-header > .nav > .header-actions > #customerAccountButton .customer-account-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 1.5em !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #171717 !important;
+  font-size: .68rem !important;
+  font-weight: 650 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  position: relative !important;
+  width: auto !important;
+  min-width: 43px !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 55px !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+.site-header > .main-header > .nav > .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .customer-account-label {
+  position: static !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 1.5em !important;
+  max-height: none !important;
+  color: #171717 !important;
+  font-size: .68rem !important;
+  text-shadow: none !important;
+}
+.site-header > .main-header > .nav > .header-actions > .genmerch-rate-trigger,
+.site-header > .main-header > .nav > .header-actions > #openCustomerOrdersButton {
+  display: none !important;
+}
+
+/* Clean secondary navigation: retain the requested customer destinations. */
+.site-header > .main-header > .desktop-links {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: clamp(10px, 1.8vw, 26px) !important;
+  width: 100% !important;
+  min-height: 54px !important;
+  margin: 0 !important;
+  padding: 7px 0 9px !important;
+  border-top: 1px solid #eee8e4 !important;
+  background: #fff !important;
+  overflow: visible !important;
+}
+.site-header > .main-header > .desktop-links > button.genmerch-hard-reload-nav,
+.site-header > .main-header > .desktop-links > button[onclick*="setCategoryByLabel"],
+.site-header > .main-header > .desktop-links > .store-rating-nav,
+.site-header > .main-header > .desktop-links > span {
+  display: none !important;
+}
+.site-header > .main-header > .desktop-links > button {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border: 0 !important;
+  border-radius: 22px !important;
+  background: transparent !important;
+  color: #171717 !important;
+  font-size: .82rem !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+.site-header > .main-header > .desktop-links > button[onclick*="New Arrivals"] {
+  padding-inline: 22px !important;
+  background: linear-gradient(120deg, #ff3825, #e91513) !important;
+  color: #fff !important;
+}
+.site-header > .main-header > .desktop-links > button:hover {
+  color: #e51e17 !important;
+}
+.gm-mobile-menu-button,
+.gm-mobile-menu-backdrop {
+  display: none !important;
+}
+
+/* Desktop hero: split copy and models with a diagonal photo edge. */
+@media (min-width: 1101px) {
+  main.container {
+    width: 100% !important;
+    max-width: 1600px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
+  }
+  .hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%) !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: clamp(430px, 30vw, 485px) !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 24px 24px 24px 30px !important;
+    border: 0 !important;
+    border-radius: 0 0 14px 14px !important;
+    background: linear-gradient(108deg, #fff8ed 0%, #ffefdf 51%, #ff801e 51.1%, #ed4b12 100%) !important;
+    box-shadow: 0 8px 24px rgba(81, 43, 20, .08) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .hero > .hero-copy {
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 8px 0 0 !important;
+    text-align: left !important;
+  }
+  .hero .hero-brand-lockup {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 12px !important;
+    gap: 12px !important;
+  }
+  .hero .hero-cart {
+    flex: 0 0 auto !important;
+    width: clamp(70px, 7vw, 105px) !important;
+    max-width: 24% !important;
+    height: auto !important;
+  }
+  .hero .hero-wordmark {
+    min-width: 0 !important;
+    font-size: clamp(2.5rem, 4.2vw, 4.5rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -.065em !important;
+    white-space: nowrap !important;
+  }
+  .hero .hero-tagline {
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 18px !important;
+    padding: 9px 19px !important;
+    border: 1px solid rgba(255,255,255,.8) !important;
+    border-radius: 30px !important;
+    background: rgba(255, 247, 237, .92) !important;
+    color: #28221f !important;
+    font-size: clamp(.85rem, 1.1vw, 1.08rem) !important;
+    font-weight: 850 !important;
+    letter-spacing: 2px !important;
+    text-align: center !important;
+    white-space: normal !important;
+  }
+  .hero .hero-benefits.genmerch-benefit-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 18px !important;
+    padding: 0 !important;
+  }
+  .hero .hero-benefits .hero-benefit-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    min-height: 56px !important;
+    padding: 7px 8px !important;
+    gap: 7px !important;
+    border: 1px solid rgba(255,255,255,.95) !important;
+    border-radius: 13px !important;
+    background: rgba(255,255,255,.5) !important;
+    box-shadow: 0 3px 10px rgba(84,41,17,.07) !important;
+  }
+  .hero .hero-benefit-icon {
+    flex: 0 0 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+  .hero .hero-benefit-copy strong {
+    font-size: clamp(.61rem, .74vw, .76rem) !important;
+    line-height: 1.2 !important;
+  }
+  .hero .shop-now {
+    display: inline-flex !important;
+    align-self: center !important;
+    justify-content: center !important;
+    width: min(78%, 300px) !important;
+    min-width: 210px !important;
+    min-height: 58px !important;
+    margin: 0 auto !important;
+  }
+  .hero .flash-deals-banner {
+    display: none !important;
+  }
+  .hero > .hero-art {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: 114% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 0 0 -14% !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    clip-path: polygon(17% 0, 100% 0, 100% 100%, 0 100%) !important;
+  }
+  .hero > .hero-art > .hero-models-photo {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: 52% 28% !important;
+  }
+  .trust-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+/* Tablet: logo/actions first row, search gets a dedicated full-width second row. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .site-header > .main-header {
+    padding: 8px 18px 0 !important;
+  }
+  .site-header > .main-header > .nav {
+    grid-template-columns: minmax(165px, .9fr) minmax(0, 1.1fr) !important;
+    grid-template-rows: 60px 48px !important;
+    gap: 7px 14px !important;
+    min-height: 0 !important;
+    padding: 5px 0 11px !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-metal-wordmark-wrap {
+    width: clamp(170px, 24vw, 250px) !important;
+  }
+  .site-header > .main-header > .nav > .header-actions {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    gap: clamp(4px, .8vw, 11px) !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > .header-action {
+    min-width: 35px !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > .header-action > small,
+  .site-header > .main-header > .nav > .header-actions > #customerAccountButton .customer-account-label {
+    font-size: .58rem !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    min-height: 46px !important;
+    height: 46px !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search > button {
+    height: 46px !important;
+    min-height: 46px !important;
+  }
+  .site-header > .main-header > .desktop-links {
+    justify-content: space-between !important;
+    gap: 5px !important;
+  }
+  .site-header > .main-header > .desktop-links > button {
+    padding-inline: 8px !important;
+    font-size: .68rem !important;
+  }
+  .hero {
+    height: 385px !important;
+    min-height: 385px !important;
+    grid-template-columns: minmax(0, 50%) minmax(0, 50%) !important;
+    padding: 18px 16px !important;
+  }
+  .hero > .hero-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+  }
+  .hero .hero-wordmark {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+  }
+  .hero .hero-benefits.genmerch-benefit-strip {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+  .hero .hero-art {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 112% !important;
+    margin-left: -12% !important;
+    clip-path: polygon(16% 0,100% 0,100% 100%,0 100%) !important;
+  }
+  .hero .hero-art .hero-models-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .hero .flash-deals-banner {
+    display: none !important;
+  }
+}
+
+/* Phone reference: hamburger + centered wordmark + cart, then search. */
+@media (max-width: 760px) {
+  .site-header,
+  .site-header > .main-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: 0 2px 12px rgba(35,22,16,.07) !important;
+  }
+  .site-header > .main-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1251 !important;
+    padding: 8px 12px 10px !important;
+  }
+  .site-header > .main-header > .nav {
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) 44px !important;
+    grid-template-rows: 42px 43px !important;
+    align-items: center !important;
+    justify-items: stretch !important;
+    gap: 8px 7px !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .site-header > .main-header > .nav > .gm-mobile-menu-button {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 9px !important;
+    background: transparent !important;
+    color: #171717 !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-metal-wordmark-wrap {
+    width: min(100%, 190px) !important;
+    max-width: 100% !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-svg-metal-wordmark {
+    max-height: 27px !important;
+  }
+  .site-header > .main-header > .nav > .header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 44px !important;
+    max-width: 44px !important;
+    min-width: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > .header-action:not(#openCartButton) {
+    display: none !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > #openCartButton {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > #openCartButton > small {
+    display: none !important;
+  }
+  .site-header > .main-header > .nav > .header-actions > #openCartButton .cart-icon {
+    font-size: 1.5rem !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding-left: 12px !important;
+    border: 1px solid #e7e1dd !important;
+    border-radius: 24px !important;
+    background: #f8f7f6 !important;
+    box-shadow: 0 2px 8px rgba(25,18,14,.05) !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search::before {
+    flex-basis: 19px !important;
+    width: 19px !important;
+    height: 19px !important;
+    margin-right: 5px !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search > input {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 8px !important;
+    font-size: 16px !important;
+  }
+  .site-header > .main-header > .nav > .catalog-search > button {
+    flex-basis: 52px !important;
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    border-radius: 0 22px 22px 0 !important;
+  }
+  .site-header > .main-header > .desktop-links {
+    display: none !important;
+    position: fixed !important;
+    top: calc(111px + env(safe-area-inset-top)) !important;
+    right: 12px !important;
+    left: 12px !important;
+    z-index: 1202 !important;
+    width: auto !important;
+    max-width: 520px !important;
+    max-height: calc(100dvh - 130px - env(safe-area-inset-top)) !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 12px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    border: 1px solid #eee1da !important;
+    border-radius: 17px !important;
+    background: #fff !important;
+    box-shadow: 0 18px 55px rgba(24,14,9,.24) !important;
+  }
+  .site-header > .main-header > .desktop-links.is-open {
+    display: flex !important;
+  }
+  .site-header > .main-header > .desktop-links > span {
+    display: none !important;
+  }
+  .site-header > .main-header > .desktop-links > button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    min-height: 43px !important;
+    padding: 10px 13px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    color: #26211e !important;
+    font-size: .9rem !important;
+    font-weight: 750 !important;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+  .site-header > .main-header > .desktop-links > button.genmerch-hard-reload-nav,
+  .site-header > .main-header > .desktop-links > button[onclick*="setCategoryByLabel"],
+  .site-header > .main-header > .desktop-links > .store-rating-nav {
+    display: none !important;
+  }
+  .site-header > .main-header > .desktop-links > button.gm-mobile-menu-close {
+    display: flex !important;
+    justify-content: space-between !important;
+    min-height: 42px !important;
+    margin-bottom: 5px !important;
+    border-bottom: 1px solid #f0e7e1 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+  }
+  .gm-mobile-menu-backdrop.is-visible {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1201 !important;
+    background: rgba(20,14,12,.34) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+
+  /* Mobile hero: models first, call-to-action on image, four benefits immediately below. */
+  main.container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+  }
+  main.container > .hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto minmax(235px, 70vw) auto !important;
+    gap: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 10px 0 0 !important;
+    padding: 13px 10px 12px !important;
+    border: 1px solid #f1e1d5 !important;
+    border-radius: 15px !important;
+    background: linear-gradient(145deg, #fff9f0 0%, #ffecd8 72%, #ffe0c5 100%) !important;
+    box-shadow: 0 6px 18px rgba(72,39,20,.065) !important;
+    overflow: hidden !important;
+    text-align: center !important;
+  }
+  main.container > .hero > .hero-copy {
+    display: contents !important;
+  }
+  main.container > .hero .hero-brand-lockup {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto 7px !important;
+    padding: 0 !important;
+    gap: 7px !important;
+  }
+  main.container > .hero .hero-cart {
+    flex: 0 0 auto !important;
+    width: clamp(48px, 13vw, 66px) !important;
+    max-width: 22% !important;
+    height: auto !important;
+  }
+  main.container > .hero .hero-wordmark {
+    font-size: clamp(1.7rem, 7.2vw, 2.65rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -.06em !important;
+    white-space: nowrap !important;
+  }
+  main.container > .hero .hero-tagline {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-self: center !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 auto 10px !important;
+    padding: 6px 12px !important;
+    border: 1px solid rgba(255,255,255,.85) !important;
+    border-radius: 20px !important;
+    background: rgba(255,247,237,.93) !important;
+    font-size: clamp(.64rem, 2.65vw, .82rem) !important;
+    letter-spacing: clamp(.5px, .35vw, 1.2px) !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+  }
+  main.container > .hero > .hero-art {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 10px !important;
+    clip-path: none !important;
+    background: #ff8a31 !important;
+  }
+  main.container > .hero > .hero-art > .hero-models-photo {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: 50% 29% !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits.genmerch-benefit-strip {
+    grid-column: 1 !important;
+    grid-row: 4 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    align-items: start !important;
+    justify-items: stretch !important;
+    gap: 5px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 11px auto 0 !important;
+    padding: 0 !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    padding: 0 2px !important;
+    gap: 5px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-align: center !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-icon {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 39px !important;
+    width: 39px !important;
+    height: 39px !important;
+    padding: 8px !important;
+    border: 1px solid #f6e1d5 !important;
+    border-radius: 50% !important;
+    background: #fff8f2 !important;
+    color: #ef2a1c !important;
+    box-shadow: 0 2px 7px rgba(120,65,35,.1) !important;
+    box-sizing: border-box !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-copy {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-copy strong {
+    display: block !important;
+    font-size: clamp(.53rem, 1.85vw, .66rem) !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+  }
+  main.container > .hero > .shop-now {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    z-index: 3 !important;
+    align-self: end !important;
+    justify-self: center !important;
+    width: min(82%, 270px) !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    margin: 0 0 13px !important;
+    padding: 10px 18px !important;
+    border: 1px solid rgba(255,255,255,.7) !important;
+    border-radius: 28px !important;
+    background: linear-gradient(100deg, #ff3038, #e70e17) !important;
+    box-shadow: 0 5px 15px rgba(111,22,14,.28), inset 0 1px 0 rgba(255,255,255,.45) !important;
+    color: #fff !important;
+    font-size: 1.02rem !important;
+  }
+  main.container > .hero > .flash-deals-banner {
+    display: none !important;
+  }
+  main.container > .trust-strip {
+    display: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header > .main-header {
+    padding: 7px 10px 9px !important;
+  }
+  .site-header > .main-header > .nav {
+    grid-template-columns: 34px minmax(0,1fr) 40px !important;
+    grid-template-rows: 40px 42px !important;
+    gap: 7px 6px !important;
+  }
+  .site-header > .main-header > .nav > .gm-mobile-menu-button {
+    width: 34px !important;
+    height: 36px !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-metal-wordmark-wrap {
+    width: min(100%, 178px) !important;
+  }
+  .site-header > .main-header > .nav > .brand-lockup .genmerch-svg-metal-wordmark {
+    max-height: 25px !important;
+  }
+  .site-header > .main-header > .nav > .header-actions,
+  .site-header > .main-header > .nav > .header-actions > #openCartButton {
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+  main.container > .hero {
+    grid-template-rows: auto auto minmax(225px, 69vw) auto !important;
+    padding: 11px 8px 11px !important;
+  }
+  main.container > .hero .hero-wordmark {
+    font-size: clamp(1.55rem, 7vw, 1.9rem) !important;
+  }
+  main.container > .hero .hero-tagline {
+    padding: 5px 9px !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-icon {
+    flex-basis: 35px !important;
+    width: 35px !important;
+    height: 35px !important;
+    padding: 7px !important;
+  }
+  main.container > .hero > .hero-copy > .hero-benefits .hero-benefit-copy strong {
+    font-size: .53rem !important;
+  }
+  main.container > .hero > .shop-now {
+    min-height: 44px !important;
+    margin-bottom: 10px !important;
+  }
+}
+
+/* Ensure the fixed phone navigation stays above page content. */
+@media (max-width: 760px) {
+  .bottom-nav {
+    z-index: 1300 !important;
+  }
+}
