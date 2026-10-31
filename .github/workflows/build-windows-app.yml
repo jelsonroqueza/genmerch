@@ -1,0 +1,78 @@
+name: Build ShopGenMerch Windows Installer
+
+on:
+  push:
+    branches:
+      - windows-app-build
+    paths:
+      - "windows-app/**"
+      - ".github/workflows/build-windows-app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Windows 64-bit setup installer
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out Windows app source
+        uses: actions/checkout@v4
+
+      - name: Set up stable Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Python for Windows icon generation
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Create official GENMERCH Windows icon
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force "windows-app/src-tauri/icons" | Out-Null
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/jelsonroqueza/genmerch/main/icons/genmerch-app-192.png" -OutFile "windows-app/src-tauri/icons/genmerch-logo.png"
+          python -m pip install --quiet Pillow
+          @'
+          from PIL import Image
+          source = Image.open("windows-app/src-tauri/icons/genmerch-logo.png").convert("RGBA")
+          source.save(
+              "windows-app/src-tauri/icons/icon.ico",
+              format="ICO",
+              sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)],
+          )
+          '@ | python -
+          if (!(Test-Path "windows-app/src-tauri/icons/icon.ico")) {
+            throw "Windows application icon was not generated."
+          }
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --locked
+
+      - name: Build ShopGenMerch NSIS installer
+        working-directory: windows-app/src-tauri
+        run: cargo tauri build --bundles nsis
+
+      - name: Prepare Windows installer download
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $installer = Get-ChildItem "windows-app/src-tauri/target/release/bundle/nsis" -Filter "*-setup.exe" | Select-Object -First 1
+          if (!$installer) {
+            throw "Tauri did not produce a Windows NSIS setup executable."
+          }
+          New-Item -ItemType Directory -Force "windows-app/dist" | Out-Null
+          Copy-Item $installer.FullName "windows-app/dist/ShopGenMerch-Setup.exe" -Force
+          Get-Item "windows-app/dist/ShopGenMerch-Setup.exe" | Select-Object Name, Length
+
+      - name: Upload Windows installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShopGenMerch-Windows-Installer
+          path: windows-app/dist/ShopGenMerch-Setup.exe
+          if-no-files-found: error
+          retention-days: 14
