@@ -9755,3 +9755,21 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
     max-height:39px!important;
   }
 }
+
+
+/* GENMERCH desktop edge alignment: keep the header shell on the same outer grid as main.container. */
+@media (min-width:1101px) {
+  .site-header > .main-header {
+    width:100%!important;
+    max-width:1800px!important;
+    margin:0 auto!important;
+    padding:12px clamp(16px,2.05vw,36px) 0!important;
+    box-sizing:border-box!important;
+  }
+  .site-header > .main-header > .nav {
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+}
