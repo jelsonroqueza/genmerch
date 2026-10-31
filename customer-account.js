@@ -2191,7 +2191,7 @@
 
     try {
       const auth = client().auth;
-      auth.getSession().then((result) => {
+      auth.getSession().then(async (result) => {
         if (result && result.error) throw result.error;
         const initialSession = result && result.data ? result.data.session : null;
         if (!initialSession || !initialSession.user) {

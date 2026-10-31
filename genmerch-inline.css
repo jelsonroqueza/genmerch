@@ -4161,7 +4161,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
  }
  .site-header .main-header .nav .header-actions{
    grid-column:1!important;grid-row:2!important;width:100%!important;max-width:100%!important;min-width:0!important;
-   display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+   display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
    align-items:start!important;justify-content:stretch!important;gap:2px!important;margin:0!important
  }
  .site-header .main-header .nav .header-action{
@@ -4290,7 +4290,7 @@ footer .footer-partner-card .footer-partner-contact p:last-child{
   .site-header .main-header .nav .header-actions{
     grid-column:1!important;grid-row:2!important;justify-self:stretch!important;
     width:100%!important;max-width:100%!important;min-width:0!important;
-    display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
     align-items:start!important;justify-content:stretch!important;gap:0!important;
     margin:0!important;padding:0!important
   }
@@ -8087,11 +8087,11 @@ main.container .catalog-search:focus-within {
 /* Equalize alignment and optical size of the six glossy 3D objects on every screen. */
 .site-header .main-header .nav .header-actions {
   display: grid !important;
-  grid-template-columns: repeat(7,minmax(0,1fr)) !important;
+  grid-template-columns: repeat(6,minmax(0,1fr)) !important;
   align-items: start !important;
   justify-content: stretch !important;
   gap: clamp(2px,.45vw,7px) !important;
-  width: min(100%,720px) !important;
+  width: min(100%,600px) !important;
   max-width: 100% !important;
   min-width: 0 !important;
   margin: 0 !important;
@@ -8258,7 +8258,7 @@ main.container .catalog-search:focus-within {
     grid-column: 1 !important; grid-row: 2 !important;
     justify-self: stretch !important;
     width: 100% !important; max-width: 100% !important; min-width: 0 !important;
-    grid-template-columns: repeat(7,minmax(0,1fr)) !important;
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
     gap: 0 !important; align-items: start !important;
     margin: 0 !important; padding: 0 !important;
   }
@@ -9164,4 +9164,32 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 @media (prefers-reduced-motion:reduce) {
   body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in,
   body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in > .header-icon::before {transition:none!important}
+}
+
+
+/* GENMERCH header action alignment: six real actions, centered compactly beside the wordmark. */
+@media (min-width: 1001px) {
+  .site-header .main-header .nav .header-actions {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+    width: min(100%,600px) !important;
+    justify-self: center !important;
+    margin-inline: auto !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .site-header .main-header .nav .header-actions {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+    width: min(100%,560px) !important;
+    justify-self: center !important;
+    margin-inline: auto !important;
+  }
+}
+@media (max-width: 760px) {
+  .site-header .main-header .nav .header-actions {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
+    margin: 0 !important;
+  }
 }
