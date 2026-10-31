@@ -611,14 +611,14 @@ main.container {
 
   .site-header {
     position: relative;
-    z-index: 1000;
+    z-index: 1250;
     box-shadow: 0 2px 12px rgba(35, 22, 16, .07);
   }
 
   .site-header .main-header {
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1251;
     width: 100%;
     max-width: 100%;
     margin: 0;
