@@ -10177,3 +10177,37 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
 @media(max-width:380px){
   #productOverlay #productModalWishlistButton{margin-right:0!important;margin-left:auto!important}
 }
+
+
+/* GENMERCH price and wishlist same-row alignment: keep the amount and wishlist control on one balanced line. */
+#productOverlay .product-modal-body{display:flow-root!important}
+#productOverlay #productModalPrice{
+  float:left!important;
+  display:flex!important;
+  align-items:center!important;
+  width:auto!important;
+  max-width:calc(100% - 158px)!important;
+  min-height:40px!important;
+  margin:0 0 18px!important;
+  line-height:1.15!important;
+}
+#productOverlay #productModalWishlistButton{
+  float:right!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  max-width:calc(100% - 120px)!important;
+  min-height:40px!important;
+  margin:0 0 18px auto!important;
+  vertical-align:middle!important;
+}
+#productOverlay #productModalDescription{clear:both!important}
+@media(max-width:420px){
+  #productOverlay #productModalPrice{max-width:calc(100% - 142px)!important;min-height:38px!important;margin-bottom:15px!important;font-size:clamp(1.25rem,6vw,1.55rem)!important}
+  #productOverlay #productModalWishlistButton{max-width:calc(100% - 112px)!important;min-height:38px!important;margin-bottom:15px!important;padding:8px 11px!important;font-size:.72rem!important}
+}
+@media(max-width:350px){
+  #productOverlay #productModalPrice{max-width:calc(100% - 128px)!important;font-size:1.2rem!important}
+  #productOverlay #productModalWishlistButton{max-width:calc(100% - 100px)!important;padding-inline:8px!important;font-size:.68rem!important}
+}
