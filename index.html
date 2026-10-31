@@ -2701,6 +2701,15 @@
       toastTimer = setTimeout(()=>$('toast').classList.remove('show'),duration);
     }
 
+    // Show the reload confirmation only after the startup overlay has fully disappeared.
+    let pendingGenmerchReloadNotice='';
+    window.addEventListener('genmerch:initial-loader-dismissed',()=>{
+      if(!pendingGenmerchReloadNotice)return;
+      const message=pendingGenmerchReloadNotice;
+      pendingGenmerchReloadNotice='';
+      showToast(message,4500);
+    });
+
     let genmerchActionStatusTimer=null;
     let genmerchActionStatusToken=0;
     let genmerchActionStatusType='';
@@ -8610,9 +8619,9 @@
           notice=JSON.parse(sessionStorage.getItem('genmerch.lastHardReloadNotice')||'null');
           sessionStorage.removeItem('genmerch.lastHardReloadNotice');
         }catch(_){}
-        showToast(notice&&notice.warning
-          ?'Storefront reloaded. '+notice.warning
-          :'GENMERCH storefront reloaded. Latest catalogue and account data are syncing in the background.');
+        pendingGenmerchReloadNotice=notice&&notice.warning
+          ?'GENMERCH reloaded successfully. '+notice.warning
+          :'GENMERCH storefront reloaded. Latest catalogue and account data are syncing in the background.';
       }
     }
     async function syncCustomerDraftForCustomerStartup(session){
@@ -9056,6 +9065,12 @@
   var dismissed=false;
   var minTimer=null;
   var removeTimer=null;
+  var readyEventSent=false;
+  function notifyInitialLoaderDismissed(){
+    if(readyEventSent)return;
+    readyEventSent=true;
+    window.dispatchEvent(new Event('genmerch:initial-loader-dismissed'));
+  }
   function dismiss(){
     if(dismissed||hiding)return;
     hiding=true;
@@ -9067,6 +9082,7 @@
       removeTimer=window.setTimeout(function(){
         if(overlay&&overlay.isConnected)overlay.remove();
         dismissed=true;
+        notifyInitialLoaderDismissed();
       },190);
     },delay);
   }
@@ -9086,7 +9102,11 @@
     if(removeTimer!==null)window.clearTimeout(removeTimer);
     overlay.classList.add('is-hidden');
     document.documentElement.classList.remove('genmerch-initial-loading');
-    window.setTimeout(function(){if(overlay&&overlay.isConnected)overlay.remove();dismissed=true;},190);
+    window.setTimeout(function(){
+      if(overlay&&overlay.isConnected)overlay.remove();
+      dismissed=true;
+      notifyInitialLoaderDismissed();
+    },190);
   },safetyTimeoutMs);
 })();
 </script>
