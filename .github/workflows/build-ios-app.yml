@@ -1,0 +1,54 @@
+name: Build GENMERCH iOS device app
+
+on:
+  push:
+    branches:
+      - ios-app-build
+    paths:
+      - "ios-app/**"
+      - ".github/workflows/build-ios-app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile unsigned iOS device app
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out iOS app branch
+        uses: actions/checkout@v6
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build for generic iOS device
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project ios-app/GENMERCH.xcodeproj \
+            -scheme GENMERCH \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/GENMERCHDerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tee "$RUNNER_TEMP/GENMERCH-xcodebuild.log"
+
+      - name: Package unsigned app bundle
+        run: |
+          APP_PATH="$RUNNER_TEMP/GENMERCHDerivedData/Build/Products/Release-iphoneos/GENMERCH.app"
+          test -d "$APP_PATH"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$RUNNER_TEMP/GENMERCH-iOS-unsigned-app.zip"
+
+      - name: Upload unsigned iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: GENMERCH-iOS-device-app-unsigned
+          path: |
+            ${{ runner.temp }}/GENMERCH-iOS-unsigned-app.zip
+            ${{ runner.temp }}/GENMERCH-xcodebuild.log
+          if-no-files-found: error
+          retention-days: 14
