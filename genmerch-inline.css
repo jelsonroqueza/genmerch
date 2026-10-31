@@ -9838,3 +9838,103 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
   .genmerch-hard-reload-nav.is-loading svg,
   .genmerch-hard-reload-mobile.is-loading svg { animation:none !important; }
 }
+
+
+/* Keep the master Reload label visible on phone and tablet despite generic nav span rules. */
+.site-header .desktop-links button.genmerch-hard-reload-nav > .genmerch-hard-reload-label {
+  display:inline-flex !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:visible !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  color:inherit !important;
+  white-space:nowrap !important;
+  line-height:1.1 !important;
+  align-items:center !important;
+}
+@media (max-width:1100px) {
+  .site-header .desktop-links button.genmerch-hard-reload-nav {
+    flex:0 0 auto !important;
+    gap:6px !important;
+    padding-inline:clamp(10px,1.7vw,16px) !important;
+  }
+  .site-header .desktop-links button.genmerch-hard-reload-nav > .genmerch-hard-reload-label {
+    display:inline-flex !important;
+    flex:0 0 auto !important;
+  }
+}
+@media (max-width:760px) {
+  .site-header .desktop-links button.genmerch-hard-reload-nav {
+    min-width:max-content !important;
+    max-width:none !important;
+  }
+  .site-header .desktop-links button.genmerch-hard-reload-nav > .genmerch-hard-reload-label {
+    display:inline-flex !important;
+    flex:0 0 auto !important;
+    font-size:inherit !important;
+  }
+}
+
+/* Red centered product option validation, placed directly above Add to Cart / Buy Now. */
+#productOverlay .product-detail-validation-notice {
+  grid-column:1 / -1 !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  margin:0 0 2px;
+  padding:9px 12px;
+  border:1px solid #f2a5a5;
+  border-left:4px solid #dc2626;
+  border-radius:9px;
+  background:linear-gradient(180deg,#fff4f4 0%,#ffe8e8 100%);
+  color:#b42318;
+  box-shadow:0 2px 7px rgba(180,35,24,.09),inset 0 1px 0 rgba(255,255,255,.85);
+  text-align:center;
+  font-size:.78rem;
+  font-weight:850;
+  line-height:1.35;
+  animation:genmerchOptionNoticeIn .18s ease-out both;
+}
+#productOverlay .product-detail-validation-notice[hidden] { display:none !important; }
+#productOverlay .product-detail-validation-notice svg {
+  display:block;
+  flex:0 0 18px;
+  width:18px;
+  height:18px;
+}
+#productOverlay .product-detail-validation-notice span {
+  display:block;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+@keyframes genmerchOptionNoticeIn {
+  from { opacity:0; transform:translateY(4px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@media (max-width:520px) {
+  #productOverlay .product-detail-validation-notice {
+    gap:6px;
+    padding:8px 9px;
+    font-size:.72rem;
+    line-height:1.3;
+  }
+  #productOverlay .product-detail-validation-notice svg {
+    flex-basis:16px;
+    width:16px;
+    height:16px;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  #productOverlay .product-detail-validation-notice { animation:none; }
+}
