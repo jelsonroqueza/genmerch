@@ -2765,3 +2765,37 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   .gm-premium-signout-overlay *,
   .gm-premium-signout-card *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* Specificity safeguards: supersede the older dark sign-out dialog typography. */
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-title,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-title{
+  color:#263238;
+  font-size:clamp(22px,3vw,28px);
+  font-weight:850;
+  line-height:1.2;
+  text-align:center;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-description,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-description{
+  margin:0 auto 22px;
+  color:#64748b;
+  font-size:clamp(14px,1.8vw,16px);
+  line-height:1.55;
+  text-align:center;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-feedback,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-feedback{
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+  text-align:left;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-feedback.error,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-feedback.error{color:#b42332}
+@media(max-width:600px){
+  .gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-title,
+  .customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-title{font-size:clamp(20px,5.3vw,23px)}
+  .gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-description,
+  .customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-description{margin-bottom:18px;font-size:15px}
+}
