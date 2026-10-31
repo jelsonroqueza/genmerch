@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Windows logo">
+  <defs>
+    <linearGradient id="blueA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#39b7ff"/>
+      <stop offset=".42" stop-color="#087df0"/>
+      <stop offset="1" stop-color="#0750c7"/>
+    </linearGradient>
+    <linearGradient id="blueB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#168fff"/>
+      <stop offset="1" stop-color="#0644bc"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".38"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>
+      <feOffset dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".24"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#ffffff" stroke-width="2.1" stroke-linejoin="round">
+    <path d="M15 31 61 23v37H12z" fill="url(#blueA)"/>
+    <path d="m67 22 49-9v47H67z" fill="url(#blueB)"/>
+    <path d="M12 66h49v39l-46-8z" fill="url(#blueB)"/>
+    <path d="m67 66h49v43l-49-9z" fill="url(#blueA)"/>
+    <path d="M15 31 61 23v17L14 48zM67 22l49-9v17l-49 9z" fill="url(#shine)" stroke="none"/>
+  </g>
+</svg>
