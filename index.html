@@ -774,10 +774,12 @@
       <span id="cartTitle" class="cart-title-wrap"><span id="cartTitleText">Shopping Cart</span> <span id="drawerCountWrap">(<span id="drawerCount">0</span>)</span><small class="checkout-step-indicator" id="checkoutStepIndicator">STEP 1 OF 2</small></span>
       <button class="icon-btn" id="closeCartButton" aria-label="Close shopping cart">×</button>
     </div>
-    <div class="checkout-progress" role="group" aria-label="Checkout progress">
+    <div class="checkout-progress checkout-progress-three" role="group" aria-label="Checkout progress">
       <div class="checkout-progress-step active" id="checkoutProgressOrder" aria-current="step"><span aria-hidden="true">1</span><strong>Order Details</strong></div>
       <span class="checkout-progress-connector" id="checkoutProgressConnector" aria-hidden="true"></span>
       <div class="checkout-progress-step" id="checkoutProgressDelivery"><span aria-hidden="true">2</span><strong>Delivery Information</strong></div>
+      <span class="checkout-progress-connector" id="checkoutProgressConnectorTwo" aria-hidden="true"></span>
+      <div class="checkout-progress-step" id="checkoutProgressReview"><span aria-hidden="true">3</span><strong>Order Review</strong></div>
     </div>
     <div class="cart-content" id="cartContent">
       <section class="checkout-step checkout-step-order" id="checkoutStepOrder" aria-labelledby="cartTitleText">
@@ -787,28 +789,18 @@
         </div>
         <div class="checkout-order-scroll" id="checkoutOrderScroll">
           <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
-          <div class="checkout-step-summary">
-      <div class="checkout-summary-stack" id="summaryBox" style="display:none">
-        <section class="checkout-order-summary-card" aria-labelledby="checkoutOrderSummaryTitle">
-          <div class="checkout-card-heading">
-            <span class="checkout-card-icon" aria-hidden="true">🛒</span>
-            <h3 id="checkoutOrderSummaryTitle">Order Summary</h3>
-          </div>
-          <div class="checkout-order-totals">
-            <div class="checkout-order-total-row"><span>Subtotal</span><strong id="subtotalText">₱0</strong></div>
-            <div class="checkout-order-total-row"><span>Delivery Fee</span><strong id="shippingText">Enter address</strong></div>
-            <div class="checkout-order-total-row grand-total"><span>Total Amount</span><strong id="finalTotalText">—</strong></div>
-          </div>
-        </section>
-        <section class="checkout-shipping-information-card" aria-labelledby="checkoutShippingInformationTitle">
-          <div class="checkout-shipping-heading">
-            <span class="checkout-card-icon" aria-hidden="true">📍</span>
-            <h3 id="checkoutShippingInformationTitle">Shipping Information</h3>
-          </div>
-          <div class="shipping-estimate" id="shippingEstimate" role="status" aria-live="polite">Enter your city/municipality and province to estimate the delivery fee automatically.</div>
-          <p class="shipping-disclosure" id="shippingDisclosure">Note: These delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
-        </section>
-      </div>
+          <div class="checkout-step-summary checkout-step-one-summary">
+            <section class="checkout-order-summary-card checkout-step-one-subtotal" id="summaryBox" style="display:none" aria-labelledby="checkoutOrderSummaryTitle">
+              <div class="checkout-card-heading">
+                <span class="checkout-card-icon" aria-hidden="true">🛒</span>
+                <h3 id="checkoutOrderSummaryTitle">Order Subtotal</h3>
+              </div>
+              <div class="checkout-order-total-row checkout-step-one-subtotal-row">
+                <span>Selected products subtotal</span>
+                <strong id="subtotalText">₱0</strong>
+              </div>
+            </section>
+            <p class="checkout-shipping-preview-note">Delivery fee will be calculated automatically after you enter your delivery location in the next step.</p>
           </div>
         </div>
         <div class="checkout-step-actions">
@@ -817,176 +809,180 @@
       </section>
 
       <section class="checkout-step checkout-step-delivery" id="checkoutStepDelivery" aria-labelledby="cartTitleText" hidden>
-        <div class="checkout-step-bar checkout-delivery-topbar">
-          <span><strong>Delivery Information</strong><small>Enter your delivery details to complete your order.</small></span>
-          <span class="checkout-step-number">Required fields *</span>
-        </div>
-      <form id="checkoutForm" novalidate>
+        <form id="checkoutForm" novalidate>
+          <section class="checkout-form-stage" id="checkoutAddressStep">
+            <div class="checkout-step-bar checkout-delivery-topbar">
+              <span><strong>Delivery Information</strong><small>Enter the address where you want your order delivered.</small></span>
+              <span class="checkout-step-number">Step 2 of 3</span>
+            </div>
+            <div class="checkout-delivery-scroll" id="checkoutDeliveryScroll">
+              <section class="checkout-address-card" aria-labelledby="checkoutAddressTitle">
+                <div class="checkout-address-card-head">
+                  <div class="checkout-card-title">
+                    <span class="checkout-card-icon" aria-hidden="true">📍</span>
+                    <h3 id="checkoutAddressTitle">Shipping Address</h3>
+                  </div>
+                  <button type="button" class="checkout-address-edit" id="checkoutAddressEditButton" hidden aria-controls="checkoutAddressFields" aria-expanded="false">✎ Edit</button>
+                </div>
+                <div class="checkout-address-preview" id="checkoutAddressPreview" hidden>
+                  <strong id="checkoutAddressPreviewName"></strong>
+                  <p id="checkoutAddressPreviewPhone"></p>
+                  <p id="checkoutAddressPreviewStreet"></p>
+                  <p class="checkout-address-zone"><span aria-hidden="true">⌖</span><span id="checkoutAddressPreviewLocality"></span></p>
+                  <p id="checkoutAddressPreviewLandmark"></p>
+                  <p id="checkoutAddressPreviewInstructions"></p>
+                </div>
+                <div class="checkout-address-fields" id="checkoutAddressFields">
+                  <div class="checkout-grid">
+                    <input id="custName" name="fullName" type="hidden" autocomplete="name" aria-hidden="true" tabindex="-1">
+                    <div class="field">
+                      <label for="firstName">First Name *</label>
+                      <input id="firstName" name="firstName" type="text" autocomplete="given-name" maxlength="80" placeholder="Enter first name" required aria-describedby="firstNameError">
+                      <span class="field-error" id="firstNameError" aria-live="polite">Enter your first name (at least 2 letters). A nickname alone is not enough.</span>
+                    </div>
+                    <div class="field">
+                      <label for="lastName">Last Name *</label>
+                      <input id="lastName" name="lastName" type="text" autocomplete="family-name" maxlength="80" placeholder="Enter last name" required aria-describedby="lastNameError">
+                      <span class="field-error" id="lastNameError" aria-live="polite">Enter your last name (at least 2 letters); first name or nickname alone is not enough.</span>
+                    </div>
+                    <div class="field full">
+                      <label for="custPhone">Mobile Number *</label>
+                      <input id="custPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="11" placeholder="09XXXXXXXXX" required>
+                      <span class="field-error" id="phoneError">Enter a valid Philippine mobile number starting with 09 (11 digits).</span>
+                    </div>
+                    <div class="field full">
+                      <label for="streetAddress">House/Unit No. and Street *</label>
+                      <input id="streetAddress" name="streetAddress" type="text" autocomplete="address-line1" placeholder="House no., building, street name" required>
+                      <span class="field-error" id="streetError">Please enter the house/unit number and street.</span>
+                    </div>
+                    <div class="field">
+                      <label for="province">Province *</label>
+                      <div class="autocomplete-wrap">
+                        <input id="province" name="province" type="text" autocomplete="address-level1" placeholder="Type to search province" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="provinceSuggestions" required>
+                        <div class="address-suggestions" id="provinceSuggestions" role="listbox" aria-label="Province suggestions"></div>
+                      </div>
+                      <span class="field-error" id="provinceError">Please choose a province from suggestions or enter it manually.</span>
+                    </div>
+                    <div class="field">
+                      <label for="city">City/Municipality *</label>
+                      <div class="autocomplete-wrap">
+                        <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Choose province, then search city" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" required>
+                        <div class="address-suggestions" id="citySuggestions" role="listbox" aria-label="City and municipality suggestions"></div>
+                      </div>
+                      <span class="field-error" id="cityError">Please enter the city or municipality.</span>
+                    </div>
+                    <div class="field">
+                      <label for="barangay">Barangay *</label>
+                      <div class="autocomplete-wrap">
+                        <input id="barangay" name="barangay" type="text" autocomplete="address-level3" placeholder="Choose city, then search barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="barangaySuggestions" required>
+                        <div class="address-suggestions" id="barangaySuggestions" role="listbox" aria-label="Barangay suggestions"></div>
+                      </div>
+                      <span class="field-error" id="barangayError">Please enter the barangay.</span>
+                    </div>
+                    <div class="field">
+                      <label for="postalCode">Postal Code *</label>
+                      <div class="autocomplete-wrap">
+                        <input id="postalCode" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="4" placeholder="Suggested from chosen barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="postalSuggestions" required>
+                        <div class="address-suggestions" id="postalSuggestions" role="listbox" aria-label="Postal code suggestions"></div>
+                      </div>
+                      <span class="field-error" id="postalError">Enter a 4-digit postal code.</span>
+                    </div>
+                    <div class="field full">
+                      <label for="landmark">Landmark / Directions *</label>
+                      <input id="landmark" name="landmark" type="text" placeholder="Enter a landmark or type N/A if none" required aria-describedby="landmarkError">
+                      <span class="field-error" id="landmarkError" aria-live="polite">Enter a landmark or type N/A if none applies.</span>
+                    </div>
+                    <div class="field full">
+                      <label for="specialInstructions">Special Instructions *</label>
+                      <textarea id="specialInstructions" name="specialInstructions" placeholder="Enter delivery instructions or type N/A if none" required aria-describedby="specialInstructionsError"></textarea>
+                      <span class="field-error" id="specialInstructionsError" aria-live="polite">Enter delivery instructions or type N/A if none applies.</span>
+                    </div>
+                  </div>
+                  <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
+                </div>
+              </section>
+            </div>
+            <div class="checkout-delivery-actions checkout-address-actions">
+              <button type="button" class="checkout-back-button" id="checkoutBackFooterButton">← Back to Order</button>
+              <button type="button" class="checkout-btn" id="checkoutDeliveryContinueButton">Continue to Review →</button>
+            </div>
+          </section>
 
-        <div class="checkout-delivery-scroll" id="checkoutDeliveryScroll">
-        <section class="checkout-address-card" aria-labelledby="checkoutAddressTitle">
-          <div class="checkout-address-card-head">
-            <div class="checkout-card-title">
-              <span class="checkout-card-icon" aria-hidden="true">📍</span>
-              <h3 id="checkoutAddressTitle">Shipping Address</h3>
+          <section class="checkout-step checkout-step-review" id="checkoutStepReview" aria-labelledby="checkoutReviewTitle" hidden>
+            <div class="checkout-step-bar checkout-review-topbar">
+              <span><strong id="checkoutReviewTitle">Order Review &amp; Confirmation</strong><small>Review your items, delivery fee and payment preference before placing your order.</small></span>
+              <span class="checkout-step-number">Step 3 of 3</span>
             </div>
-            <button type="button" class="checkout-address-edit" id="checkoutAddressEditButton" hidden aria-controls="checkoutAddressFields" aria-expanded="false">✎ Edit</button>
-          </div>
-          <div class="checkout-address-preview" id="checkoutAddressPreview" hidden>
-            <strong id="checkoutAddressPreviewName"></strong>
-            <p id="checkoutAddressPreviewPhone"></p>
-            <p id="checkoutAddressPreviewStreet"></p>
-            <p class="checkout-address-zone"><span aria-hidden="true">⌖</span><span id="checkoutAddressPreviewLocality"></span></p>
-            <p id="checkoutAddressPreviewLandmark"></p>
-            <p id="checkoutAddressPreviewInstructions"></p>
-          </div>
-          <div class="checkout-address-fields" id="checkoutAddressFields">
-        <div class="checkout-grid">
-          <input id="custName" name="fullName" type="hidden" autocomplete="name" aria-hidden="true" tabindex="-1">
-          <div class="field">
-            <label for="firstName">First Name *</label>
-            <input id="firstName" name="firstName" type="text" autocomplete="given-name" maxlength="80" placeholder="Enter first name" required aria-describedby="firstNameError">
-            <span class="field-error" id="firstNameError" aria-live="polite">Enter your first name (at least 2 letters). A nickname alone is not enough.</span>
-          </div>
-          <div class="field">
-            <label for="lastName">Last Name *</label>
-            <input id="lastName" name="lastName" type="text" autocomplete="family-name" maxlength="80" placeholder="Enter last name" required aria-describedby="lastNameError">
-            <span class="field-error" id="lastNameError" aria-live="polite">Enter your last name (at least 2 letters); first name or nickname alone is not enough.</span>
-          </div>
-          <div class="field full">
-            <label for="custPhone">Mobile Number *</label>
-            <input id="custPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="11" placeholder="09XXXXXXXXX" required>
-            <span class="field-error" id="phoneError">Enter a valid Philippine mobile number starting with 09 (11 digits).</span>
-          </div>
-          <div class="field full">
-            <label for="streetAddress">House/Unit No. and Street *</label>
-            <input id="streetAddress" name="streetAddress" type="text" autocomplete="address-line1" placeholder="House no., building, street name" required>
-            <span class="field-error" id="streetError">Please enter the house/unit number and street.</span>
-          </div>
-          <div class="field">
-            <label for="province">Province *</label>
-            <div class="autocomplete-wrap">
-              <input id="province" name="province" type="text" autocomplete="address-level1" placeholder="Type to search province" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="provinceSuggestions" required>
-              <div class="address-suggestions" id="provinceSuggestions" role="listbox" aria-label="Province suggestions"></div>
-            </div>
-            <span class="field-error" id="provinceError">Please choose a province from suggestions or enter it manually.</span>
-          </div>
-          <div class="field">
-            <label for="city">City/Municipality *</label>
-            <div class="autocomplete-wrap">
-              <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Choose province, then search city" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" required>
-              <div class="address-suggestions" id="citySuggestions" role="listbox" aria-label="City and municipality suggestions"></div>
-            </div>
-            <span class="field-error" id="cityError">Please enter the city or municipality.</span>
-          </div>
-          <div class="field">
-            <label for="barangay">Barangay *</label>
-            <div class="autocomplete-wrap">
-              <input id="barangay" name="barangay" type="text" autocomplete="address-level3" placeholder="Choose city, then search barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="barangaySuggestions" required>
-              <div class="address-suggestions" id="barangaySuggestions" role="listbox" aria-label="Barangay suggestions"></div>
-            </div>
-            <span class="field-error" id="barangayError">Please enter the barangay.</span>
-          </div>
-          <div class="field">
-            <label for="postalCode">Postal Code *</label>
-            <div class="autocomplete-wrap">
-              <input id="postalCode" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="4" placeholder="Suggested from chosen barangay" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="postalSuggestions" required>
-              <div class="address-suggestions" id="postalSuggestions" role="listbox" aria-label="Postal code suggestions"></div>
-            </div>
-            <span class="field-error" id="postalError">Enter a 4-digit postal code.</span>
-          </div>
-          <div class="field full">
-            <label for="landmark">Landmark / Directions *</label>
-            <input id="landmark" name="landmark" type="text" placeholder="Enter a landmark or type N/A if none" required aria-describedby="landmarkError">
-            <span class="field-error" id="landmarkError" aria-live="polite">Enter a landmark or type N/A if none applies.</span>
-          </div>
-          <div class="field full">
-            <label for="specialInstructions">Special Instructions *</label>
-            <textarea id="specialInstructions" name="specialInstructions" placeholder="Enter delivery instructions or type N/A if none" required aria-describedby="specialInstructionsError"></textarea>
-            <span class="field-error" id="specialInstructionsError" aria-live="polite">Enter delivery instructions or type N/A if none applies.</span>
-          </div>
-        </div>
-        <p class="address-data-credit">Address suggestions use <a href="https://openadmindata.org/api/ph/" target="_blank" rel="noopener noreferrer">Open Admin Data</a> (CC BY 4.0). Postal codes are shown where available; please confirm your delivery details.</p>
-          </div>
-        </section>
+            <div class="checkout-review-scroll" id="checkoutReviewScroll">
+              <section class="checkout-review-summary" id="checkoutReviewSummary" aria-label="Order summary">
+                <div class="checkout-review-summary-head">
+                  <strong>🛒 Order Summary</strong>
+                  <button type="button" class="checkout-edit-order" id="checkoutEditOrderButton">✎ Edit delivery details</button>
+                </div>
+                <div class="checkout-review-items" id="checkoutReviewItems"><p class="checkout-review-empty">Your selected items will appear here.</p></div>
+                <div class="checkout-review-totals">
+                  <div class="checkout-review-total-row"><span>Subtotal</span><strong id="checkoutReviewSubtotal">₱0</strong></div>
+                  <div class="checkout-review-total-row"><span>Delivery Fee</span><strong id="checkoutReviewShipping">Awaiting address</strong></div>
+                  <div class="checkout-review-total-row grand-total"><span>Total Amount</span><strong id="checkoutMiniTotal">—</strong></div>
+                </div>
+              </section>
 
-        <section class="checkout-delivery-method-card" aria-labelledby="checkoutDeliveryMethodTitle">
-          <div class="checkout-delivery-method-head">
-            <span class="checkout-card-icon" aria-hidden="true">🚚</span>
-            <h3 id="checkoutDeliveryMethodTitle">Delivery Method</h3>
-          </div>
-          <div class="checkout-delivery-method-selection">
-            <span class="checkout-delivery-method-mark" aria-hidden="true">✓</span>
-            <div class="checkout-delivery-method-copy">
-              <strong>Standard Delivery</strong>
-              <p id="checkoutDeliveryMethodDetails">Enter your city or municipality and province to display the applicable standard base-rate estimate.</p>
+              <div class="checkout-system-shipping-values" hidden aria-hidden="true">
+                <span id="shippingText">Awaiting address</span>
+                <span id="finalTotalText">—</span>
+                <div class="shipping-estimate" id="shippingEstimate">Complete your delivery address to calculate the shipping fee.</div>
+                <p class="shipping-disclosure" id="shippingDisclosure">Delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments. If there is any discrepancy or excess shipping fee incurred upon dispatch, we will notify the customer immediately, and any applicable overpayments will be duly refunded.</p>
+              </div>
+
+              <section class="checkout-email-section" aria-labelledby="receiptEmailSectionTitle">
+                <div class="checkout-email-heading" id="receiptEmailSectionTitle">✉️ Order Confirmation Email</div>
+                <p class="checkout-email-description">We'll send your order number, item details, delivery address, order total, and payment instructions to this email.</p>
+                <div class="field full">
+                  <label for="receiptEmail">Email address for order details *</label>
+                  <input id="receiptEmail" name="receiptEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
+                  <span class="field-error" id="receiptEmailError">Enter a valid email address where you want to receive the order details.</span>
+                  <small class="checkout-email-hint" id="receiptEmailHint">When you are signed in, we'll use your GENMERCH sign-in email by default. You can change it to another email address.</small>
+                </div>
+              </section>
+
+              <section class="payment-section">
+                <div class="payment-title">💳 Preferred Payment Method</div>
+                <div class="payment-options" role="group" aria-label="Preferred payment method">
+                  <button type="button" class="pay-opt active" data-payment="COD">💵 COD</button>
+                  <button type="button" class="pay-opt" data-payment="GCash">💙 GCash</button>
+                  <button type="button" class="pay-opt" data-payment="Maya">💚 Maya</button>
+                  <button type="button" class="pay-opt" data-payment="Bank Transfer">🏦 Bank</button>
+                </div>
+              </section>
+
+              <p class="checkout-note" id="checkoutBackendNote">Live checkout is connected. Submitting creates a real order and reserves stock. COD is paid on delivery. GCash, Maya, and Bank Transfer are saved as your preferred method only; no online payment is charged automatically.</p>
+              <div class="checkout-submit-feedback" id="checkoutSubmitFeedback" role="status" aria-live="polite" hidden></div>
+
+              <div class="draft-storage-panel" aria-label="Saved cart and delivery information">
+                <span class="draft-storage-status" id="draftSaveStatus" role="status" aria-live="polite">Preparing automatic save…</span>
+                <span class="draft-storage-description" id="customerDraftSyncDescription">When signed in, your cart and checkout details can sync to your GENMERCH account across devices. Guest drafts remain on this browser only. Avoid syncing personal details on a shared/public device.</span>
+                <div class="draft-storage-actions"><button class="draft-sync-now-btn" id="syncCustomerDataButton" type="button">↻ Sync account data</button><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
+              </div>
+
+              <section class="checkout-important-information" aria-labelledby="checkoutImportantInformationTitle">
+                <div class="checkout-important-heading">
+                  <span class="checkout-card-icon" aria-hidden="true">!</span>
+                  <h3 id="checkoutImportantInformationTitle">Important Information</h3>
+                </div>
+                <ul>
+                  <li>Please confirm your delivery address and contact information before placing your order.</li>
+                  <li>Delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments.</li>
+                  <li>If a shipping discrepancy or excess fee is incurred upon dispatch, GENMERCH will notify you; applicable overpayments will be refunded.</li>
+                </ul>
+              </section>
             </div>
-            <strong class="checkout-delivery-method-fee" id="checkoutDeliveryMethodFee">Awaiting address</strong>
-          </div>
-          <p class="checkout-delivery-method-footnote" id="checkoutDeliveryMethodFootnote">The displayed amount follows the existing GENMERCH base-rate rules. The checkout and backend remain authoritative for the final order fee.</p>
-        </section>
-
-        <section class="checkout-email-section" aria-labelledby="receiptEmailSectionTitle">
-          <div class="checkout-email-heading" id="receiptEmailSectionTitle">✉️ Order Confirmation Email</div>
-          <p class="checkout-email-description">We'll send your order number, item details, delivery address, order total, and payment instructions to this email.</p>
-          <div class="field full">
-            <label for="receiptEmail">Email address for order details *</label>
-            <input id="receiptEmail" name="receiptEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
-            <span class="field-error" id="receiptEmailError">Enter a valid email address where you want to receive the order details.</span>
-            <small class="checkout-email-hint" id="receiptEmailHint">When you are signed in, we'll use your GENMERCH sign-in email by default. You can change it to another email address.</small>
-          </div>
-        </section>
-
-        <div class="payment-section">
-          <div class="payment-title">💳 Preferred Payment Method</div>
-          <div class="payment-options" role="group" aria-label="Preferred payment method">
-            <button type="button" class="pay-opt active" data-payment="COD">💵 COD</button>
-            <button type="button" class="pay-opt" data-payment="GCash">💙 GCash</button>
-            <button type="button" class="pay-opt" data-payment="Maya">💚 Maya</button>
-            <button type="button" class="pay-opt" data-payment="Bank Transfer">🏦 Bank</button>
-          </div>
-        </div>
-        <p class="checkout-note" id="checkoutBackendNote">Live checkout is connected. Submitting creates a real order and reserves stock. COD is paid on delivery. GCash, Maya, and Bank Transfer are saved as your preferred method only; no online payment is charged automatically.</p>
-        <div class="checkout-submit-feedback" id="checkoutSubmitFeedback" role="status" aria-live="polite" hidden></div>
-        <div class="draft-storage-panel" aria-label="Saved cart and delivery information">
-          <span class="draft-storage-status" id="draftSaveStatus" role="status" aria-live="polite">Preparing automatic save…</span>
-          <span class="draft-storage-description" id="customerDraftSyncDescription">When signed in, your cart and checkout details can sync to your GENMERCH account across devices. Guest drafts remain on this browser only. Avoid syncing personal details on a shared/public device.</span>
-          <div class="draft-storage-actions"><button class="draft-sync-now-btn" id="syncCustomerDataButton" type="button">↻ Sync account data</button><button class="draft-clear-btn" id="clearSavedDraftButton" type="button">Clear saved cart &amp; details</button></div>
-        </div>
-        <section class="checkout-review-summary" id="checkoutReviewSummary" aria-label="Order summary">
-          <div class="checkout-review-summary-head">
-            <strong>🛒 Order Summary</strong>
-            <button type="button" class="checkout-edit-order" id="checkoutEditOrderButton">✎ Back to edit</button>
-          </div>
-          <div class="checkout-review-items" id="checkoutReviewItems"><p class="checkout-review-empty">Your selected items will appear here.</p></div>
-          <div class="checkout-review-totals">
-            <div class="checkout-review-total-row"><span>Subtotal</span><strong id="checkoutReviewSubtotal">₱0</strong></div>
-            <div class="checkout-review-total-row"><span>Delivery Fee</span><strong id="checkoutReviewShipping">Awaiting address</strong></div>
-            <div class="checkout-review-total-row grand-total"><span>Total Amount</span><strong id="checkoutMiniTotal">—</strong></div>
-          </div>
-        </section>
-        <section class="checkout-important-information" aria-labelledby="checkoutImportantInformationTitle">
-          <div class="checkout-important-heading">
-            <span class="checkout-card-icon" aria-hidden="true">!</span>
-            <h3 id="checkoutImportantInformationTitle">Important Information</h3>
-          </div>
-          <ul>
-            <li>Please confirm your delivery address and contact information before placing your order.</li>
-            <li>Delivery fees are standard base rates for lightweight parcels up to 0.5 kg and may change based on actual weight, dimensions, destination, and courier adjustments.</li>
-            <li>If a shipping discrepancy or excess fee is incurred upon dispatch, GENMERCH will notify you; applicable overpayments will be refunded.</li>
-          </ul>
-        </section>
-          </div>
-          <div class="checkout-delivery-actions">
-            <button type="button" class="checkout-back-button" id="checkoutBackFooterButton">← Back to order</button>
-            <button type="submit" class="checkout-btn">Place Order</button>
-          </div>
-      
-      </form>
+            <div class="checkout-delivery-actions checkout-review-actions">
+              <button type="button" class="checkout-back-button" id="checkoutReviewBackButton">← Back to Delivery</button>
+              <button type="submit" class="checkout-btn">Place Order</button>
+            </div>
+          </section>
+        </form>
       </section>
-    </div>
-  </section>
-
   <div class="overlay" id="noticeOverlay" aria-hidden="true">
     <section class="notice-modal" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
       <h2 id="noticeTitle">Checkout Not Available Yet</h2>
@@ -4331,34 +4327,79 @@
         :'Sign in to use your GENMERCH email automatically, or enter the email address where you want to receive the order details.';
     }
     function setCheckoutStep(step){
-      checkoutCurrentStep=step==='delivery'?'delivery':'order';
+      checkoutCurrentStep=step==='delivery'?'delivery':step==='review'?'review':'order';
+      const orderStep=checkoutCurrentStep==='order';
       const deliveryStep=checkoutCurrentStep==='delivery';
-      $('checkoutStepOrder').hidden=deliveryStep;
-      $('checkoutStepDelivery').hidden=!deliveryStep;
-      $('cartTitleText').textContent=deliveryStep?'Checkout (2/2)':'Checkout (1/2)';
+      const reviewStep=checkoutCurrentStep==='review';
+      $('checkoutStepOrder').hidden=!orderStep;
+      $('checkoutStepDelivery').hidden=orderStep;
+      $('checkoutAddressStep').hidden=!deliveryStep;
+      $('checkoutStepReview').hidden=!reviewStep;
+      const stepNumber=orderStep?1:deliveryStep?2:3;
+      $('cartTitleText').textContent='Checkout ('+stepNumber+'/3)';
       $('drawerCountWrap').hidden=true;
-      $('checkoutStepIndicator').textContent=deliveryStep?'STEP 2 OF 2':'STEP 1 OF 2';
-      $('checkoutProgressOrder').classList.toggle('active',!deliveryStep);
-      $('checkoutProgressOrder').classList.toggle('complete',deliveryStep);
+      $('checkoutStepIndicator').textContent='STEP '+stepNumber+' OF 3';
+
+      $('checkoutProgressOrder').classList.toggle('active',orderStep);
+      $('checkoutProgressOrder').classList.toggle('complete',!orderStep);
       $('checkoutProgressDelivery').classList.toggle('active',deliveryStep);
-      $('checkoutProgressConnector').classList.toggle('active',deliveryStep);
-      $('checkoutProgressOrder').removeAttribute('aria-current');
-      $('checkoutProgressDelivery').removeAttribute('aria-current');
-      (deliveryStep ? $('checkoutProgressDelivery') : $('checkoutProgressOrder')).setAttribute('aria-current','step');
+      $('checkoutProgressDelivery').classList.toggle('complete',reviewStep);
+      $('checkoutProgressReview').classList.toggle('active',reviewStep);
+      $('checkoutProgressConnector').classList.toggle('active',!orderStep);
+      $('checkoutProgressConnectorTwo').classList.toggle('active',reviewStep);
+
+      ['checkoutProgressOrder','checkoutProgressDelivery','checkoutProgressReview'].forEach(id=>$(id).removeAttribute('aria-current'));
+      $(orderStep?'checkoutProgressOrder':deliveryStep?'checkoutProgressDelivery':'checkoutProgressReview').setAttribute('aria-current','step');
+
       $('checkoutContinueButton').disabled=!cart.length;
       if(deliveryStep){
-        syncCheckoutReceiptEmailDefault();
         $('checkoutDeliveryScroll').scrollTop=0;
+      }else if(reviewStep){
+        syncCheckoutReceiptEmailDefault();
+        $('checkoutReviewScroll').scrollTop=0;
+        if(typeof window.genmerchRefreshLoyaltyPoints==='function'){
+          Promise.resolve(window.genmerchRefreshLoyaltyPoints()).catch(error=>console.warn('GENMERCH loyalty balance refresh failed before order review.',error));
+        }
       }else{
         $('checkoutOrderScroll').scrollTop=0;
       }
+    }
+    function validateCheckoutAddressBeforeReview(){
+      syncCheckoutFullName();
+      let valid=true;
+      let firstInvalid=null;
+      requiredFields.filter(field=>field.id!=='receiptEmail').forEach(field=>{
+        const input=$(field.id);
+        const error=$(field.error);
+        const value=String(input&&input.value||'').trim();
+        const fieldValid=Boolean(input)&&Boolean(field.valid(value));
+        if(error)error.classList.toggle('show',!fieldValid);
+        if(input)input.setAttribute('aria-invalid',String(!fieldValid));
+        if(!fieldValid){
+          valid=false;
+          if(!firstInvalid&&input)firstInvalid=input;
+        }
+      });
+      if(!valid){
+        checkoutFeedback('Please complete your delivery address before continuing to order review.','error');
+        if(firstInvalid)firstInvalid.focus({preventScroll:false});
+        return false;
+      }
+      checkoutFeedback('');
+      return true;
     }
     $('checkoutContinueButton').addEventListener('click',()=>{
       if(!cart.length){showToast('Your cart is empty. Add a product before continuing.');return;}
       setCheckoutStep('delivery');
     });
-    $('checkoutEditOrderButton').addEventListener('click',()=>setCheckoutStep('order'));
+    $('checkoutDeliveryContinueButton').addEventListener('click',()=>{
+      if(!validateCheckoutAddressBeforeReview())return;
+      updateCart();
+      setCheckoutStep('review');
+    });
+    $('checkoutEditOrderButton').addEventListener('click',()=>setCheckoutStep('delivery'));
     $('checkoutBackFooterButton').addEventListener('click',()=>setCheckoutStep('order'));
+    $('checkoutReviewBackButton').addEventListener('click',()=>setCheckoutStep('delivery'));
 
     function updateCart(){
       const count=cart.reduce((sum,item)=>sum+item.qty,0);
