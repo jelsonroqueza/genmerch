@@ -6000,19 +6000,24 @@
       customerLogoutReturnFocus=document.activeElement;
       $('customerLogoutAccountEmail').textContent=String(session.user.email||'').trim()||'Email unavailable for this session';
       const avatar=$('customerLogoutAvatar');
-      if(avatar&&!avatar.querySelector('img')){
+      if(avatar){
+        const storefrontAvatar=$('customerAccountButton')?.querySelector('.gmca-storefront-avatar-image');
         const metadata=session.user.user_metadata||{};
-        const candidate=String(metadata.avatar_url||metadata.picture||'').trim();
+        const candidate=String((storefrontAvatar&&storefrontAvatar.currentSrc)||(storefrontAvatar&&storefrontAvatar.src)||metadata.avatar_url||metadata.picture||'').trim();
         if(candidate){
           try{
             const parsed=new URL(candidate,window.location.href);
-            if(parsed.protocol==='https:'){
+            const allowedPrivateAvatar=parsed.protocol==='https:'&&parsed.hostname.endsWith('.supabase.co')&&parsed.pathname.includes('/storage/v1/object/sign/customer-avatars/');
+            const allowedProviderAvatar=parsed.protocol==='https:'&&(parsed.hostname==='lh3.googleusercontent.com'||parsed.hostname.endsWith('.googleusercontent.com')||parsed.hostname.endsWith('.fbcdn.net'));
+            if(allowedPrivateAvatar||allowedProviderAvatar){
               const image=document.createElement('img');
               image.src=parsed.href;
               image.alt='';
               image.draggable=false;
               image.referrerPolicy='no-referrer';
               avatar.replaceChildren(image);
+            }else{
+              avatar.innerHTML='<svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c.7-4.6 3.4-7 8-7s7.3 2.4 8 7"></path></svg>';
             }
           }catch(_){}
         }
