@@ -9938,3 +9938,167 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
 @media (prefers-reduced-motion:reduce) {
   #productOverlay .product-detail-validation-notice { animation:none; }
 }
+
+
+/* Guest Sign in avatar alignment: keep the coral 3D circle centered in the same icon rail.
+   Deliberately excludes .customer-account-signed-in so existing member avatars are unchanged. */
+body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+  position:relative!important;
+  display:block!important;
+  flex:0 0 64px!important;
+  justify-self:center!important;
+  align-self:center!important;
+  width:64px!important;
+  min-width:64px!important;
+  max-width:64px!important;
+  height:64px!important;
+  min-height:64px!important;
+  max-height:64px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon {
+  position:absolute!important;
+  top:8px!important;
+  left:50%!important;
+  display:flex!important;
+  flex:0 0 25px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:25px!important;
+  min-width:25px!important;
+  max-width:25px!important;
+  height:25px!important;
+  min-height:25px!important;
+  max-height:25px!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translateX(-50%)!important;
+  overflow:visible!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon > .genmerch-premium-account-icon {
+  display:block!important;
+  width:24px!important;
+  height:24px!important;
+  min-width:24px!important;
+  min-height:24px!important;
+  max-width:24px!important;
+  max-height:24px!important;
+}
+body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .customer-account-label {
+  position:absolute!important;
+  right:2px!important;
+  bottom:8px!important;
+  left:2px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  height:10px!important;
+  min-height:10px!important;
+  max-height:10px!important;
+  margin:0!important;
+  padding:0!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  line-height:1!important;
+  letter-spacing:-.025em!important;
+  text-align:center!important;
+  text-shadow:0 1px 1px rgba(115,48,35,.52)!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  transform:none!important;
+}
+
+/* Phone and portrait tablet: match the sibling icon-cell height and keep both icon and label inside the circle. */
+@media (max-width:760px) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+    flex:0 0 54px!important;
+    justify-self:center!important;
+    align-self:center!important;
+    width:54px!important;
+    min-width:54px!important;
+    max-width:54px!important;
+    height:54px!important;
+    min-height:54px!important;
+    max-height:54px!important;
+    margin:0 auto!important;
+    padding:0!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon {
+    top:6px!important;
+    flex-basis:22px!important;
+    width:22px!important;
+    min-width:22px!important;
+    max-width:22px!important;
+    height:22px!important;
+    min-height:22px!important;
+    max-height:22px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon > .genmerch-premium-account-icon {
+    width:21px!important;
+    height:21px!important;
+    min-width:21px!important;
+    min-height:21px!important;
+    max-width:21px!important;
+    max-height:21px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .customer-account-label {
+    right:2px!important;
+    bottom:7px!important;
+    left:2px!important;
+    height:9px!important;
+    min-height:9px!important;
+    max-height:9px!important;
+    font-size:7.2px!important;
+  }
+}
+
+/* Very narrow phones: retain a readable label while keeping the complete Sign in circle inside its grid cell. */
+@media (max-width:390px) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+    flex-basis:44px!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon {
+    top:4px!important;
+    flex-basis:18px!important;
+    width:18px!important;
+    min-width:18px!important;
+    max-width:18px!important;
+    height:18px!important;
+    min-height:18px!important;
+    max-height:18px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .header-icon > .genmerch-premium-account-icon {
+    width:17px!important;
+    height:17px!important;
+    min-width:17px!important;
+    min-height:17px!important;
+    max-width:17px!important;
+    max-height:17px!important;
+  }
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) > .customer-account-label {
+    right:1px!important;
+    bottom:5px!important;
+    left:1px!important;
+    height:8px!important;
+    min-height:8px!important;
+    max-height:8px!important;
+    font-size:6.5px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  body .site-header .main-header .nav .header-actions > #customerAccountButton:not(.customer-account-signed-in) {
+    transition:none!important;
+  }
+}
