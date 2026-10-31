@@ -2221,7 +2221,12 @@
     box.innerHTML =
       '<div class="gmca-checkout-points-top"><div><strong><span class="gmca-checkout-points-icon" aria-hidden="true">₱</span> Use GENMERCH Points</strong><p id="gmcaCheckoutPointsHelp">Sign in to view your available points.</p></div><label class="gmca-switch"><input type="checkbox" id="gmcaUsePoints" disabled><span></span><em>Apply</em></label></div>' +
       '<div class="gmca-checkout-points-foot"><span id="gmcaCheckoutPointsBalance">Available: 0 points</span><span id="gmcaCheckoutPointsMax">Maximum discount: ₱0</span></div>';
-    totals.parentNode.insertBefore(box, totals);
+    const deliveryRow = totals.querySelector('#checkoutReviewShipping')?.closest('.checkout-review-total-row');
+    if (deliveryRow && deliveryRow.parentNode === totals) {
+      totals.insertBefore(box, deliveryRow.nextSibling);
+    } else {
+      totals.parentNode.insertBefore(box, totals);
+    }
     const row = document.createElement('div');
     row.id = 'gmcaCheckoutPointsRow';
     row.className = 'checkout-review-total-row gmca-checkout-points-row';
