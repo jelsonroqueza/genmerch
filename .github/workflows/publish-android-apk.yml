@@ -1,0 +1,46 @@
+name: Publish ShopGenMerch Android APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "download/index.html"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download verified Android build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: GENMERCH-Android-test-APK
+          path: incoming
+          repository: jelsonroqueza/genmerch
+          run-id: 41225509322
+          github-token: ${{ github.token }}
+
+      - name: Prepare public APK
+        run: |
+          set -euo pipefail
+          mkdir -p downloads
+          test -s incoming/app-debug.apk
+          cp incoming/app-debug.apk downloads/ShopGenMerch.apk
+          sha256sum downloads/ShopGenMerch.apk
+
+      - name: Publish APK to website repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Publish ShopGenMerch Android APK download"
+          branch: main
+          file_pattern: "downloads/ShopGenMerch.apk"
