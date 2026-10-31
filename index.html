@@ -1415,7 +1415,7 @@
         const safeProducts=cached.products.filter(product=>product&&typeof product==='object'&&product.id!==undefined&&product.name);
         if(!safeProducts.length)return false;
         products.splice(0,products.length,...safeProducts);
-        catalogLoadState='cached';
+        catalogLoadState='connected';
         return true;
       }catch(_){return false;}
     }
@@ -1491,21 +1491,38 @@
       if(existing)return existing;
       const lastRefresh=productStockRefreshTimes.get(id)||0;
       if(Date.now()-lastRefresh<15000)return Promise.resolve(true);
+      if(catalogLoadState!=='connected')return Promise.resolve(false);
       const query='select=id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active&is_active=eq.true&product_id=eq.'+encodeURIComponent(id);
-      const task=fetchSupabaseTable('product_variants',query).then(rows=>{
+      const productQuery='select=id,base_price,compare_at_price,regular_price,promotion_type,promotion_value,is_demo,is_active,is_deleted&id=eq.'+encodeURIComponent(id);
+      const task=Promise.all([
+        fetchSupabaseTable('product_variants',query),
+        fetchSupabaseTable('products',productQuery)
+      ]).then(([rows,productRows])=>{
         const product=products.find(item=>String(item.id)===id);
         if(!product)return false;
-        const variants=rows.map(row=>({
-          id:String(row.id),
-          sku:row.sku||'',
-          size:String(row.size_label||'One Size'),
-          color:String(row.color_label||''),
-          price:row.price_override===null||row.price_override===undefined?null:Number(row.price_override),
-          stock:Math.max(0,Math.floor(Number(row.stock_quantity)||0))
-        })).sort((a,b)=>a.size.localeCompare(b.size));
-        product.variants=variants;
-        product.totalStock=variants.reduce((sum,variant)=>sum+variant.stock,0);
-        product.sold=product.totalStock>0?(product.isDemo?'Demo Only':'In stock'):'Out of stock';
+        const currentProduct=productRows[0];
+        if(!currentProduct||currentProduct.is_active!==true||currentProduct.is_deleted===true){
+          product.variants=[];
+          product.totalStock=0;
+          product.sold='Out of stock';
+        }else{
+          product.price=Number(currentProduct.base_price)||0;
+          product.regularPrice=Number(currentProduct.regular_price)||Number(currentProduct.compare_at_price)||Number(currentProduct.base_price)||0;
+          product.promotionType=String(currentProduct.promotion_type||'none');
+          product.promotionValue=Number(currentProduct.promotion_value)||0;
+          product.isDemo=currentProduct.is_demo===true;
+          const variants=rows.map(row=>({
+            id:String(row.id),
+            sku:row.sku||'',
+            size:String(row.size_label||'One Size'),
+            color:String(row.color_label||''),
+            price:row.price_override===null||row.price_override===undefined?null:Number(row.price_override),
+            stock:Math.max(0,Math.floor(Number(row.stock_quantity)||0))
+          })).sort((a,b)=>a.size.localeCompare(b.size));
+          product.variants=variants;
+          product.totalStock=variants.reduce((sum,variant)=>sum+variant.stock,0);
+          product.sold=product.totalStock>0?(product.isDemo?'Demo Only':'In stock'):'Out of stock';
+        }
         productStockRefreshTimes.set(id,Date.now());
         if(String(openProductDetailId)===id&&$('productOverlay')&&$('productOverlay').classList.contains('open')){
           renderProductModalSizes(product);

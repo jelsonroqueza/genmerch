@@ -796,7 +796,7 @@
       scheduleStorefrontAvatarRefresh(userId);
       return;
     }
-    if (state.avatarSyncPending && sameAvatar) return;
+    if (state.avatarSyncPending && state.avatarOwnerId === String(userId)) return;
 
     const requestToken = ++state.avatarRequestToken;
     clearStorefrontAvatarRefreshTimer();
