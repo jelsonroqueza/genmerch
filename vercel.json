@@ -1,0 +1,5 @@
+{
+  "version": 2,
+  "buildCommand": "node scripts/build-preview.mjs",
+  "outputDirectory": "dist"
+}
