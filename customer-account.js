@@ -610,7 +610,6 @@
 
       if (warmAccount) {
         $('gmcaLoading').hidden = true;
-        switchTab(savedTab);
       } else {
         $('gmcaLoading').hidden = false;
         document.querySelectorAll('[data-gmca-pane]').forEach((pane) => { pane.hidden = true; });
@@ -818,8 +817,10 @@
       state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
       window.genmerchSelectedLoyaltyPoints = state.selectedPoints;
 
-      state.orderItems = [];
-      state.shipments = [];
+      if (showBlockingLoader) {
+        state.orderItems = [];
+        state.shipments = [];
+      }
       const orderIds = state.orders.map((order) => order.id);
       const wishlistProductIds = [...new Set(state.wishlist.map((row) => String(row.product_id)))];
 
@@ -1068,6 +1069,7 @@
       const savedPath = uploadedPath;
       uploadedPath = null;
       state.avatarRequestToken += 1;
+      state.avatarSyncPending = false;
       state.avatarPath = savedPath;
       state.avatarOwnerId = String(user.id);
       state.profile = { ...(state.profile || {}), id: user.id, avatar_path: savedPath };
@@ -1140,6 +1142,7 @@
       if (profileResult.error) throw profileResult.error;
 
       state.avatarRequestToken += 1;
+      state.avatarSyncPending = false;
       state.avatarPath = null;
       state.avatarUrl = null;
       state.avatarOwnerId = String(user.id);
