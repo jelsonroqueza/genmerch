@@ -785,7 +785,7 @@
       <section class="checkout-step checkout-step-order" id="checkoutStepOrder" aria-labelledby="cartTitleText">
         <div class="checkout-step-bar">
           <span><strong>Your Order Details</strong><small>Review your selected items and quantity before continuing.</small></span>
-          <span class="checkout-step-number">Step 1 of 2</span>
+          <span class="checkout-step-number">Step 1 of 3</span>
         </div>
         <div class="checkout-order-scroll" id="checkoutOrderScroll">
           <div class="cart-items checkout-order-items" id="cartItemsContainer"><p class="cart-empty">Your cart is empty.</p></div>
@@ -4502,6 +4502,13 @@
     // Capture-phase guard: block the submit event before any order handler can run.
     // This is deliberately independent of the later submit handler as a fail-closed safeguard.
     function guardCheckoutSubmit(event){
+      // The order may only be submitted from the final review step.
+      // This also blocks implicit Enter-key submission from the address step.
+      if(checkoutCurrentStep!=='review'){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return false;
+      }
       checkoutValidationAttempted=true;
       syncCheckoutFullName();
       let valid=true;
