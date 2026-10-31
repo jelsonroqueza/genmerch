@@ -28,7 +28,7 @@
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261028-1">
   <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261031-5">
+  <link rel="stylesheet" href="/customer-account.css?v=20261031-6">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   
@@ -5226,7 +5226,7 @@
       const label=$('customerAccountLabel');
       if(!button||!label||!button.classList.contains('customer-account-signed-in'))return;
       const fullName=label.dataset.fullName||button.title||'';
-      label.textContent=getCustomerAuthInitials(fullName);
+      label.textContent='Account';
     }
     function updateCustomerAuthScreen(session){
       customerAuthCurrentSession=session&&session.user?session:null;
@@ -5235,7 +5235,7 @@
       const identity=signedIn?getCustomerAuthIdentity(user):'';
       const accountLabel=$('customerAccountLabel');
       const accountButton=$('customerAccountButton');
-      if(accountLabel){accountLabel.dataset.fullName=signedIn?identity:'';accountLabel.textContent=signedIn?getCustomerAuthInitials(identity):'Sign in';}
+      if(accountLabel){accountLabel.dataset.fullName=signedIn?identity:'';accountLabel.textContent=signedIn?'Account':'Sign in';}
       if(accountButton){
         accountButton.setAttribute('aria-label',signedIn?'Account: '+identity+'. Open account options':'Sign in or create your GENMERCH customer account');
         accountButton.title=signedIn?identity:'Sign in or Create Account';
@@ -5263,7 +5263,7 @@
       }else{
         $('customerPasswordRecoveryForm').hidden=true;
       }
-      if(accountLabel&&signedIn)accountLabel.textContent=getCustomerAuthInitials(identity);
+      if(accountLabel&&signedIn)accountLabel.textContent='Account';
     }
     window.addEventListener('resize',refreshCustomerAccountLabelForViewport,{passive:true});
     function openCustomerPasswordRecovery(message='Your reset link is verified. Choose a new password.',type='success'){

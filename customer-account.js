@@ -106,9 +106,8 @@
     const icon = button && button.querySelector('.header-icon');
     if (!button || !icon) return;
 
-    const signedIn = button.classList.contains('customer-account-signed-in');
     let image = icon.querySelector('.gmca-storefront-avatar-image');
-    if (!url || !signedIn) {
+    if (!url) {
       if (image) image.remove();
       button.classList.remove('gmca-storefront-has-avatar');
       return;

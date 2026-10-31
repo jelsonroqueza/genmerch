@@ -2332,12 +2332,12 @@
 }
 
 /* Use the saved customer photo in the main storefront Account icon too. */
-body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in.gmca-storefront-has-avatar > .header-icon::before,
-body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in.gmca-storefront-has-avatar > .header-icon::after{
+body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon::before,
+body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon::after{
   display:none!important;
   content:none!important;
 }
-body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
+body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
   position:absolute!important;
   top:50%!important;
   left:50%!important;
@@ -2360,12 +2360,12 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.cus
   pointer-events:none!important;
 }
 @media(max-width:760px){
-  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
     width:30px!important;height:30px!important;min-width:30px!important;max-width:30px!important;min-height:30px!important;max-height:30px!important;
   }
 }
 @media(max-width:390px){
-  body .site-header .main-header .nav .header-actions > #customerAccountButton.customer-account-signed-in.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
+  body .site-header .main-header .nav .header-actions > #customerAccountButton.gmca-storefront-has-avatar > .header-icon > .gmca-storefront-avatar-image{
     width:27px!important;height:27px!important;min-width:27px!important;max-width:27px!important;min-height:27px!important;max-height:27px!important;
   }
 }
