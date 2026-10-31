@@ -10161,3 +10161,19 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
 @media(max-width:640px){#productOverlay{padding:10px!important}#productOverlay .product-modal{width:min(640px,calc(100vw - 20px))!important;max-height:94dvh!important;border-radius:19px!important}#productOverlay .modal-head{min-height:57px!important;padding:11px 15px!important;font-size:.94rem!important}#productOverlay .product-modal-body{padding:16px!important}#productOverlay .product-modal-icon{min-height:155px!important;margin-bottom:12px!important;padding:10px!important;border-radius:15px!important}#productOverlay .product-modal-icon img,#productOverlay #productGalleryMainImage{max-height:clamp(190px,36dvh,280px)!important}#productOverlay .product-gallery-thumbnails{gap:8px!important}#productOverlay .product-gallery-thumb{flex-basis:58px!important;width:58px!important;height:58px!important;border-radius:10px!important}#productOverlay .product-detail-actions{gap:9px!important;padding:11px 13px calc(11px + env(safe-area-inset-bottom,0px))!important}#productOverlay .product-detail-action{min-height:50px!important;padding:10px 8px!important;border-radius:11px!important;font-size:.82rem!important}#productOverlay .product-description{padding:13px!important;font-size:.82rem!important}}
 @media(max-width:380px){#productOverlay .product-modal-body{padding:13px!important}#productOverlay .product-gallery-thumbnails{gap:6px!important}#productOverlay .product-gallery-thumb{flex-basis:51px!important;width:51px!important;height:51px!important}#productOverlay .product-detail-actions{gap:7px!important;padding-inline:10px!important}#productOverlay .product-detail-action{font-size:.76rem!important;padding-inline:6px!important}}
 @media(prefers-reduced-motion:reduce){#productOverlay *,#productOverlay *::before,#productOverlay *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* GENMERCH wishlist alignment — right-side balance in Product Details and Product Options. */
+#productOverlay #productModalWishlistButton{
+  display:flex!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:0 0 18px auto!important;
+  align-self:flex-end!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  clear:both!important;
+}
+@media(max-width:380px){
+  #productOverlay #productModalWishlistButton{margin-right:0!important;margin-left:auto!important}
+}
