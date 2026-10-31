@@ -50,12 +50,17 @@ jobs:
             throw "Windows application icon was not generated."
           }
 
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --locked
+      - name: Set up Node.js for the prebuilt Tauri CLI
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install prebuilt Tauri CLI
+        run: npm install --global @tauri-apps/cli@2.12.2
 
       - name: Build ShopGenMerch NSIS installer
         working-directory: windows-app/src-tauri
-        run: cargo tauri build --bundles nsis
+        run: tauri build --bundles nsis
 
       - name: Prepare Windows installer download
         shell: pwsh
