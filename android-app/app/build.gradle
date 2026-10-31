@@ -1,0 +1,29 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.shopgenmerch.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.shopgenmerch.app'
+        minSdk 23
+        targetSdk 36
+        versionCode 1
+        versionName '1.0.0-test'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+        }
+    }
+}
