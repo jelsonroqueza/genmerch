@@ -43,23 +43,13 @@ jobs:
           gradle-version: "9.6.0"
           cache-provider: basic
 
-      - name: Render official GENMERCH rainbow-cart launcher logo
+      - name: Download the official GENMERCH app logo
         run: |
           set -euo pipefail
           mkdir -p android-app/app/src/main/res/drawable-nodpi
-          curl --fail --silent --show-error --location https://raw.githubusercontent.com/jelsonroqueza/genmerch/main/icons/genmerch-install-512.svg --output /tmp/genmerch-install-512.svg
-          python -m pip install --quiet cairosvg
-          python - <<'PY'
-          import cairosvg
-          cairosvg.svg2png(
-              url="/tmp/genmerch-install-512.svg",
-              write_to="android-app/app/src/main/res/drawable-nodpi/ic_launcher.png",
-              output_width=512,
-              output_height=512,
-          )
-          PY
-          file android-app/app/src/main/res/drawable-nodpi/ic_launcher.png
-          test -s android-app/app/src/main/res/drawable-nodpi/ic_launcher.png
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/jelsonroqueza/genmerch/main/icons/genmerch-app-192.png --output android-app/app/src/main/res/drawable-nodpi/ic_launcher_genmerch.png
+          file android-app/app/src/main/res/drawable-nodpi/ic_launcher_genmerch.png
+          test -s android-app/app/src/main/res/drawable-nodpi/ic_launcher_genmerch.png
 
       - name: Build APK
         working-directory: android-app
