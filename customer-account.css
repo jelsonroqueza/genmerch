@@ -2486,3 +2486,316 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   #gmcaOverlay .gmca-reload-button { transition:none; }
   #gmcaOverlay .gmca-reload-button.is-loading svg { animation:none; }
 }
+
+
+/* GENMERCH Premium Crimson Minimalist sign-out confirmation — shared by both customer sign-out entry points. */
+.gmca-signout-overlay.gm-premium-signout-overlay,
+.customer-logout-confirm-overlay.gm-premium-signout-overlay{
+  position:fixed;
+  inset:0;
+  z-index:15000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  background:rgba(15,23,42,.58);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+}
+.gmca-signout-overlay.gm-premium-signout-overlay[hidden]{display:none!important}
+.customer-logout-confirm-overlay.gm-premium-signout-overlay{display:none}
+.customer-logout-confirm-overlay.gm-premium-signout-overlay.open{display:flex}
+.gm-premium-signout-card,
+.gmca-signout-dialog.gm-premium-signout-card,
+.customer-logout-confirm-modal.gm-premium-signout-card{
+  position:relative;
+  box-sizing:border-box;
+  width:min(600px,calc(100vw - 40px));
+  max-width:600px;
+  max-height:min(90vh,90dvh);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:clamp(26px,4vw,38px);
+  border:1px solid #e2e8f0;
+  border-radius:20px;
+  background:#fff;
+  color:#263238;
+  box-shadow:0 24px 72px rgba(15,23,42,.22),0 4px 14px rgba(15,23,42,.08);
+  text-align:center;
+  scrollbar-width:thin;
+}
+.gm-premium-signout-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:#64748b;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease;
+}
+.gm-premium-signout-close svg{display:block;width:20px;height:20px}
+.gm-premium-signout-close:hover:not(:disabled){background:#f1f5f9;color:#263238}
+.gm-premium-signout-close:disabled{opacity:.5;cursor:not-allowed}
+.gm-premium-signout-icon{
+  display:grid;
+  place-items:center;
+  width:88px;
+  height:88px;
+  margin:0 auto 20px;
+  border:0;
+  border-radius:50%;
+  background:#fff0f2;
+  color:#dc142d;
+}
+.gm-premium-signout-icon svg{display:block;width:42px;height:42px}
+.gm-premium-signout-title{
+  margin:0 42px 10px;
+  color:#263238;
+  font-size:clamp(22px,3vw,28px);
+  font-weight:850;
+  letter-spacing:-.025em;
+  line-height:1.2;
+  text-align:center;
+  text-wrap:balance;
+}
+.gm-premium-signout-gen{color:#263238}
+.gm-premium-signout-merch{color:#dc142d}
+.gm-premium-signout-description{
+  max-width:470px;
+  margin:0 auto 22px;
+  color:#64748b;
+  font-size:clamp(14px,1.8vw,16px);
+  line-height:1.55;
+  text-align:center;
+}
+.gm-premium-signout-account{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 16px;
+  padding:14px 16px;
+  border:1px solid #edf0f4;
+  border-radius:14px;
+  background:#f8fafc;
+  text-align:left;
+}
+.gm-premium-signout-avatar{
+  display:grid;
+  place-items:center;
+  flex:0 0 54px;
+  width:54px;
+  height:54px;
+  overflow:hidden;
+  border:1px solid #e2e8f0;
+  border-radius:50%;
+  background:#fff;
+  color:#94a3b8;
+}
+.gm-premium-signout-avatar img{
+  display:block;
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+  object-fit:cover;
+  object-position:center;
+}
+.gm-premium-signout-avatar svg{
+  display:block;
+  width:27px;
+  height:27px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.gm-premium-signout-account-copy{
+  display:flex;
+  flex:1 1 auto;
+  min-width:0;
+  flex-direction:column;
+  gap:4px;
+}
+.gm-premium-signout-account-copy>span{
+  color:#64748b;
+  font-size:13px;
+  font-weight:650;
+}
+.gm-premium-signout-account-copy>strong{
+  color:#263238;
+  font-size:15px;
+  font-weight:750;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.gm-premium-signout-reassurance{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  width:100%;
+  box-sizing:border-box;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#fff3ec;
+  text-align:left;
+}
+.gm-premium-signout-lock{
+  display:grid;
+  place-items:center;
+  flex:0 0 34px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#fff0f2;
+  color:#dc142d;
+}
+.gm-premium-signout-lock svg{display:block;width:19px;height:19px}
+.gm-premium-signout-reassurance p{
+  margin:0;
+  color:#64748b;
+  font-size:14px;
+  line-height:1.45;
+}
+.gm-premium-signout-feedback{
+  margin:12px 0 0;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+  text-align:left;
+}
+.gm-premium-signout-feedback[hidden]{display:none!important}
+.gm-premium-signout-feedback.error{color:#b42332}
+.gm-premium-signout-feedback.success{color:#64748b}
+.gm-premium-signout-actions{
+  display:flex;
+  align-items:stretch;
+  gap:12px;
+  width:100%;
+  margin-top:24px;
+}
+.gm-premium-signout-actions button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:1 1 0;
+  gap:9px;
+  min-width:0;
+  min-height:60px;
+  padding:12px 18px;
+  border-radius:12px;
+  font:inherit;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.2;
+  cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.gm-premium-signout-actions button svg{display:block;flex:0 0 19px;width:19px;height:19px}
+.gm-premium-signout-actions button:hover:not(:disabled){transform:translateY(-1px)}
+.gm-premium-signout-actions button:active:not(:disabled){transform:translateY(0) scale(.985)}
+.gm-premium-signout-actions button:disabled{opacity:.58;cursor:wait;transform:none}
+.gm-premium-signout-cancel{
+  border:1px solid #e2e8f0;
+  background:#f1f5f9;
+  color:#263238;
+}
+.gm-premium-signout-cancel:hover:not(:disabled){background:#e8edf3;border-color:#d6dee8}
+.gm-premium-signout-confirm{
+  border:1px solid #dc142d;
+  background:#dc142d;
+  color:#fff;
+  box-shadow:0 5px 14px rgba(220,20,45,.16);
+}
+.gm-premium-signout-confirm:hover:not(:disabled){
+  border-color:#b80f25;
+  background:#b80f25;
+  box-shadow:0 7px 18px rgba(184,15,37,.20);
+}
+.gm-premium-signout-card button:focus-visible{
+  outline:3px solid rgba(220,20,45,.28);
+  outline-offset:3px;
+}
+@media(max-width:600px){
+  .gm-premium-signout-card,
+  .gmca-signout-dialog.gm-premium-signout-card,
+  .customer-logout-confirm-modal.gm-premium-signout-card{
+    width:calc(100vw - 28px);
+    padding:26px 20px 22px;
+    border-radius:18px;
+  }
+  .gm-premium-signout-icon{width:76px;height:76px;margin-bottom:17px}
+  .gm-premium-signout-icon svg{width:36px;height:36px}
+  .gm-premium-signout-title{margin-right:36px;margin-left:36px;font-size:clamp(20px,5.3vw,23px)}
+  .gm-premium-signout-description{margin-bottom:18px;font-size:15px}
+  .gm-premium-signout-account{gap:11px;padding:12px}
+  .gm-premium-signout-avatar{flex-basis:48px;width:48px;height:48px}
+  .gm-premium-signout-account-copy>strong{font-size:14px}
+  .gm-premium-signout-reassurance p{font-size:13px}
+  .gm-premium-signout-actions{gap:9px;margin-top:20px}
+  .gm-premium-signout-actions button{min-height:54px;padding:11px 12px;font-size:15px}
+}
+@media(max-width:350px){
+  .gm-premium-signout-actions{flex-direction:column}
+  .gm-premium-signout-actions button{width:100%;min-height:48px}
+}
+@media(max-height:560px){
+  .gm-premium-signout-card,
+  .gmca-signout-dialog.gm-premium-signout-card,
+  .customer-logout-confirm-modal.gm-premium-signout-card{
+    max-height:calc(100dvh - 28px);
+    padding-top:22px;
+    padding-bottom:20px;
+  }
+  .gm-premium-signout-icon{width:64px;height:64px;margin-bottom:12px}
+  .gm-premium-signout-icon svg{width:30px;height:30px}
+  .gm-premium-signout-description{margin-bottom:14px}
+  .gm-premium-signout-actions{margin-top:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gm-premium-signout-overlay *,
+  .gm-premium-signout-card *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+
+/* Specificity safeguards: supersede the older dark sign-out dialog typography. */
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-title,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-title{
+  color:#263238;
+  font-size:clamp(22px,3vw,28px);
+  font-weight:850;
+  line-height:1.2;
+  text-align:center;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-description,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-description{
+  margin:0 auto 22px;
+  color:#64748b;
+  font-size:clamp(14px,1.8vw,16px);
+  line-height:1.55;
+  text-align:center;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-feedback,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-feedback{
+  color:#64748b;
+  font-size:13px;
+  line-height:1.45;
+  text-align:left;
+}
+.gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-feedback.error,
+.customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-feedback.error{color:#b42332}
+@media(max-width:600px){
+  .gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-title,
+  .customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-title{font-size:clamp(20px,5.3vw,23px)}
+  .gmca-signout-dialog.gm-premium-signout-card .gm-premium-signout-description,
+  .customer-logout-confirm-modal.gm-premium-signout-card .gm-premium-signout-description{margin-bottom:18px;font-size:15px}
+}
