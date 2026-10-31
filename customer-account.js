@@ -35,7 +35,8 @@
     accountLastLoadHadErrors: false,
     accountLoadToken: 0,
     accountLoadedUserId: null,
-    avatarSyncPending: false
+    avatarSyncPending: false,
+    signOutBusy: false
   };
 
   const $ = (id) => document.getElementById(id);
@@ -133,7 +134,7 @@
 
   function updateAccountAvatarMarkup() {
     const markup = avatarMarkup();
-    ['gmcaWelcomeAvatar', 'gmcaProfileAvatar'].forEach((id) => {
+    ['gmcaWelcomeAvatar', 'gmcaProfileAvatar', 'gmcaSignOutAvatar', 'customerLogoutAvatar'].forEach((id) => {
       const node = $(id);
       if (!node) return;
       node.innerHTML = markup;
@@ -504,56 +505,82 @@
     if ($('gmcaSignOutConfirm')) return;
     const prompt = document.createElement('div');
     prompt.id = 'gmcaSignOutConfirm';
-    prompt.className = 'gmca-signout-overlay';
+    prompt.className = 'gmca-signout-overlay gm-premium-signout-overlay';
     prompt.hidden = true;
     prompt.setAttribute('aria-hidden', 'true');
     prompt.innerHTML =
-      '<section class="gmca-signout-dialog" role="alertdialog" aria-modal="true" aria-labelledby="gmcaSignOutTitle" aria-describedby="gmcaSignOutDescription">' +
-        '<div class="gmca-signout-emblem" aria-hidden="true">!</div>' +
-        '<h2 id="gmcaSignOutTitle">Confirm sign out</h2>' +
-        '<p id="gmcaSignOutDescription">For your account security, re-enter your registered email address before signing out.</p>' +
-        '<p class="gmca-signout-email-hint">Registered email: <strong id="gmcaSignOutExpectedEmail"></strong></p>' +
-        '<form id="gmcaSignOutConfirmForm" novalidate>' +
-          '<label for="gmcaSignOutEmailInput">Re-enter registered email</label>' +
-          '<input id="gmcaSignOutEmailInput" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@example.com" required>' +
-          '<p id="gmcaSignOutFeedback" class="gmca-signout-feedback" role="status" aria-live="polite"></p>' +
-          '<div class="gmca-signout-actions"><button type="button" class="gmca-secondary" id="gmcaSignOutCancel">Cancel</button><button type="submit" class="gmca-danger" id="gmcaSignOutConfirmButton">Confirm sign out</button></div>' +
-        '</form>' +
+      '<section class="gmca-signout-dialog gm-premium-signout-card" role="alertdialog" aria-modal="true" aria-labelledby="gmcaSignOutTitle" aria-describedby="gmcaSignOutDescription" tabindex="-1">' +
+        '<button type="button" class="gm-premium-signout-close" id="gmcaSignOutClose" aria-label="Close sign-out confirmation"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>' +
+        '<div class="gm-premium-signout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>' +
+        '<h2 class="gm-premium-signout-title" id="gmcaSignOutTitle">Sign out of <span class="gm-premium-signout-gen">GEN</span><span class="gm-premium-signout-merch">MERCH</span>?</h2>' +
+        '<p class="gm-premium-signout-description" id="gmcaSignOutDescription">Are you sure you want to sign out of your customer account?</p>' +
+        '<div class="gm-premium-signout-account"><div class="gm-premium-signout-avatar" id="gmcaSignOutAvatar" aria-hidden="true"></div><div class="gm-premium-signout-account-copy"><span>Account:</span><strong id="gmcaSignOutEmail"></strong></div></div>' +
+        '<div class="gm-premium-signout-reassurance"><span class="gm-premium-signout-lock" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 1 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><p>You can sign in again anytime using your registered account.</p></div>' +
+        '<p id="gmcaSignOutFeedback" class="gm-premium-signout-feedback" role="status" aria-live="polite" hidden></p>' +
+        '<div class="gm-premium-signout-actions"><button type="button" class="gm-premium-signout-cancel" id="gmcaSignOutCancel">Cancel</button><button type="button" class="gm-premium-signout-confirm" id="gmcaSignOutConfirmButton"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 17l5-5-5-5M15 12H3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span id="gmcaSignOutButtonLabel">Sign Out</span></button></div>' +
       '</section>';
     document.body.appendChild(prompt);
+    const avatar = $('gmcaSignOutAvatar');
+    if (avatar) avatar.innerHTML = avatarMarkup();
     prompt.addEventListener('click', (event) => {
       if (event.target === prompt) closeSignOutConfirmation();
     });
+    prompt.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(prompt.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+      if (!focusable.length) {
+        event.preventDefault();
+        prompt.querySelector('[role="alertdialog"]')?.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !prompt.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+    $('gmcaSignOutClose').addEventListener('click', closeSignOutConfirmation);
     $('gmcaSignOutCancel').addEventListener('click', closeSignOutConfirmation);
-    $('gmcaSignOutConfirmForm').addEventListener('submit', confirmSignOutWithEmail);
+    $('gmcaSignOutConfirmButton').addEventListener('click', confirmSignOut);
   }
 
   function openSignOutConfirmation() {
     ensureSignOutConfirmation();
-    const email = String(state.session && state.session.user && state.session.user.email || '').trim();
-    if (!email) {
-      showAlert('Your registered email could not be verified. Refresh your account session before signing out.', 'error');
+    const user = state.session && state.session.user;
+    if (!user) {
+      showAlert('Your account session could not be verified. Refresh the page and try again.', 'error');
       return;
     }
-    $('gmcaSignOutExpectedEmail').textContent = email;
-    $('gmcaSignOutEmailInput').value = '';
+    const email = String(user.email || '').trim();
+    $('gmcaSignOutEmail').textContent = email || 'Email unavailable for this session';
+    $('gmcaSignOutAvatar').innerHTML = avatarMarkup();
     $('gmcaSignOutFeedback').textContent = '';
-    $('gmcaSignOutFeedback').className = 'gmca-signout-feedback';
+    $('gmcaSignOutFeedback').hidden = true;
+    $('gmcaSignOutConfirmButton').disabled = false;
+    $('gmcaSignOutCancel').disabled = false;
+    $('gmcaSignOutClose').disabled = false;
+    $('gmcaSignOutButtonLabel').textContent = 'Sign Out';
     $('gmcaSignOutConfirm').hidden = false;
     $('gmcaSignOutConfirm').setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    window.setTimeout(() => $('gmcaSignOutEmailInput')?.focus(), 0);
+    window.setTimeout(() => $('gmcaSignOutCancel')?.focus(), 0);
   }
 
-  function closeSignOutConfirmation() {
+  function closeSignOutConfirmation(restoreFocus = true) {
     const prompt = $('gmcaSignOutConfirm');
-    if (!prompt) return;
+    if (!prompt || (state.signOutBusy && restoreFocus)) return;
     prompt.hidden = true;
     prompt.setAttribute('aria-hidden', 'true');
     if ($('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
       document.body.style.overflow = 'hidden';
-      $('gmcaSignOut')?.focus();
+      if (restoreFocus) $('gmcaSignOut')?.focus();
     } else if (!$('customerAuthOverlay')?.classList.contains('open') &&
+               !$('customerLogoutConfirmOverlay')?.classList.contains('open') &&
+               !$('customerLogoutSuccessOverlay')?.classList.contains('open') &&
                !$('customerOrdersOverlay')?.classList.contains('open') &&
                !$('cartModal')?.classList.contains('open') &&
                !$('productOverlay')?.classList.contains('open')) {
@@ -561,35 +588,50 @@
     }
   }
 
-  async function confirmSignOutWithEmail(event) {
-    event.preventDefault();
-    const expected = String(state.session && state.session.user && state.session.user.email || '').trim();
-    const entered = String($('gmcaSignOutEmailInput').value || '').trim();
+  async function confirmSignOut() {
+    if (state.signOutBusy) return;
+    const user = state.session && state.session.user;
+    const prompt = $('gmcaSignOutConfirm');
     const feedback = $('gmcaSignOutFeedback');
     const button = $('gmcaSignOutConfirmButton');
-    if (!expected) {
-      feedback.textContent = 'We could not verify the registered email. Refresh the page and try again.';
-      feedback.className = 'gmca-signout-feedback error';
+    const cancelButton = $('gmcaSignOutCancel');
+    const closeButton = $('gmcaSignOutClose');
+    const label = $('gmcaSignOutButtonLabel');
+    if (!user) {
+      feedback.textContent = 'Your account session could not be verified. Refresh the page and try again.';
+      feedback.className = 'gm-premium-signout-feedback error';
+      feedback.hidden = false;
       return;
     }
-    if (!entered || entered.toLocaleLowerCase() !== expected.toLocaleLowerCase()) {
-      feedback.textContent = 'The email does not match this account. Please enter the registered email exactly.';
-      feedback.className = 'gmca-signout-feedback error';
-      $('gmcaSignOutEmailInput').focus();
-      $('gmcaSignOutEmailInput').select();
-      return;
-    }
-    if (button) { button.disabled = true; button.textContent = 'Signing out…'; }
+    state.signOutBusy = true;
+    button.disabled = true;
+    cancelButton.disabled = true;
+    closeButton.disabled = true;
+    if (label) label.textContent = 'Signing out…';
+    prompt.setAttribute('aria-busy', 'true');
+    feedback.textContent = 'Signing you out securely…';
+    feedback.className = 'gm-premium-signout-feedback';
+    feedback.hidden = false;
     try {
       const completed = await signOut();
       if (completed) {
-        closeSignOutConfirmation();
+        closeSignOutConfirmation(false);
       } else {
         feedback.textContent = 'Sign-out failed. Your account is still signed in; please try again.';
-        feedback.className = 'gmca-signout-feedback error';
+        feedback.className = 'gm-premium-signout-feedback error';
       }
+    } catch (error) {
+      feedback.textContent = 'We could not complete sign out. Your account may still be signed in; please try again.';
+      feedback.className = 'gm-premium-signout-feedback error';
     } finally {
-      if (button) { button.disabled = false; button.textContent = 'Confirm sign out'; }
+      state.signOutBusy = false;
+      prompt.removeAttribute('aria-busy');
+      if (!prompt.hidden) {
+        button.disabled = false;
+        cancelButton.disabled = false;
+        closeButton.disabled = false;
+        if (label) label.textContent = 'Sign Out';
+      }
     }
   }
 
