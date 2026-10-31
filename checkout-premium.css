@@ -1300,3 +1300,84 @@
     touch-action: pan-y pinch-zoom !important;
   }
 }
+
+
+/* GENMERCH Step 2 mobile spacing refinement.
+   Keep the delivery title and step badge on separate rows on phones,
+   stack footer actions on narrow screens, and balance tablet buttons. */
+@media (max-width: 600px) {
+  .checkout-delivery-topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: start !important;
+    justify-items: stretch !important;
+    gap: 8px !important;
+    padding: 12px 14px 11px !important;
+  }
+  .checkout-delivery-topbar > span:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100%;
+    min-width: 0;
+    gap: 4px !important;
+  }
+  .checkout-delivery-topbar .checkout-step-number {
+    display: inline-flex !important;
+    justify-self: end !important;
+    align-self: flex-end !important;
+    flex: 0 0 auto !important;
+    width: max-content;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 5px 9px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+  }
+  .checkout-address-actions {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-items: stretch !important;
+    justify-items: stretch !important;
+    gap: 9px !important;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .checkout-address-actions .checkout-back-button,
+  .checkout-address-actions .checkout-btn {
+    display: inline-flex !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+    margin: 0 !important;
+    padding: 11px 14px !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    line-height: 1.25 !important;
+    font-size: 15px !important;
+  }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .checkout-address-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding-right: 18px !important;
+    padding-left: 18px !important;
+  }
+  .checkout-address-actions .checkout-back-button,
+  .checkout-address-actions .checkout-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    line-height: 1.25 !important;
+    font-size: 15px !important;
+  }
+}
