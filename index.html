@@ -127,7 +127,7 @@
 
 
 
-  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-price-wishlist-same-row-1">
+  <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-price-wishlist-flex-row-1">
   <link rel="stylesheet" href="/seller-centre-theme.css?v=20261030-17">
   <link rel="stylesheet" href="/checkout-premium.css?v=20261031-compact-checkout-notes-1">
 </head>
@@ -708,8 +708,10 @@
         </div>
         <h2 id="productModalName"></h2>
         <div class="genmerch-product-social-proof" id="productModalSocialProof" aria-live="polite"><span class="sold">Loading sold count…</span><span class="rating">Loading ratings…</span></div>
-        <div class="product-modal-price" id="productModalPrice"></div>
-        <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
+        <div class="product-modal-price-row" id="productModalPriceRow">
+          <div class="product-modal-price" id="productModalPrice"></div>
+          <button class="wishlist-detail-button" id="productModalWishlistButton" type="button" onclick="toggleProductWishlist(openProductDetailId)">♡ Add to Wishlist</button>
+        </div>
         <p class="product-description" id="productModalDescription"></p>
         <section class="genmerch-product-ratings" id="productModalRatings" aria-label="Product ratings and reviews">
           <h3>Product Ratings &amp; Reviews</h3><div class="genmerch-review-empty genmerch-inline-loading">Loading customer reviews…</div>
