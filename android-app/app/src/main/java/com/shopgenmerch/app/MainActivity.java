@@ -146,7 +146,7 @@ public class MainActivity extends Activity {
         cookies.setAcceptThirdPartyCookies(webView, true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            WebView.setSafeBrowsingEnabled(true);
+            settings.setSafeBrowsingEnabled(true);
         }
 
         webView.setWebViewClient(new WebViewClient() {
