@@ -3350,3 +3350,66 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Ensure the Add/Edit Product editor's close control is visible on its white header. */
+#sellerProductEditorOverlay .seller-modal-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+#sellerProductEditorOverlay .seller-modal-head > div:first-child {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+#sellerProductEditorOverlay button#sellerProductEditorCloseButton.seller-modal-close {
+  position: relative !important;
+  z-index: 4 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  border: 1px solid #D7DEE8 !important;
+  border-radius: 12px !important;
+  background: #F1F5F9 !important;
+  color: #263238 !important;
+  font-family: inherit !important;
+  font-size: 27px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  box-shadow: 0 1px 3px rgba(38,50,56,.10) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  cursor: pointer !important;
+}
+#sellerProductEditorOverlay button#sellerProductEditorCloseButton.seller-modal-close:hover {
+  border-color: #CBD5E1 !important;
+  background: #E2E8F0 !important;
+  color: #17212B !important;
+}
+#sellerProductEditorOverlay button#sellerProductEditorCloseButton.seller-modal-close:focus-visible {
+  outline: 3px solid rgba(244, 123, 53, .38) !important;
+  outline-offset: 3px !important;
+}
+@media (max-width: 680px) {
+  #sellerProductEditorOverlay .seller-modal-head {
+    gap: 10px !important;
+  }
+  #sellerProductEditorOverlay button#sellerProductEditorCloseButton.seller-modal-close {
+    flex-basis: 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    font-size: 25px !important;
+  }
+}
