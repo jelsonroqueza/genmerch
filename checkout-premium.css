@@ -2057,3 +2057,62 @@
 @media(max-width:760px){.payment-section{padding:15px!important;border-radius:16px!important}.payment-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.payment-options .pay-opt{min-height:132px!important;padding:11px 10px!important;border-radius:14px!important}.payment-options .pay-opt.active{padding:11px 10px!important}.pay-opt-visual{height:56px!important;min-height:56px!important;margin-bottom:7px!important}.pay-opt-name{font-size:13px!important}.pay-opt-detail{font-size:10px!important}}
 @media(max-width:360px){.payment-section{padding:12px!important}.payment-options{gap:7px!important}.payment-options .pay-opt{min-height:126px!important;padding:9px!important}.payment-options .pay-opt.active{padding:9px!important}.pay-opt-visual{height:52px!important;min-height:52px!important}.pay-opt-brand-logo{max-width:96px!important}}
 @media(prefers-reduced-motion:reduce){.payment-options .pay-opt,.payment-options .pay-opt *{transition:none!important}}
+
+
+/* GENMERCH payment colour vibrance refinement — restrained, richer checkout colours. */
+.payment-section{
+  background:linear-gradient(145deg,#ffffff 0%,#f8fbff 54%,#f1f6fc 100%)!important;
+}
+.payment-options .pay-opt{
+  filter:saturate(1.10) contrast(1.015)!important;
+}
+.payment-options .pay-opt-cod{
+  --pay-accent:#07965d!important;
+  --pay-tint:#ddf7e8!important;
+  background:linear-gradient(150deg,#ffffff 0%,#ecfbf2 44%,#d6f3e2 100%)!important;
+  border-color:#c0ead2!important;
+}
+.payment-options .pay-opt-gcash{
+  --pay-accent:#0867ed!important;
+  --pay-tint:#e0efff!important;
+  background:linear-gradient(150deg,#ffffff 0%,#edf5ff 43%,#d9eaff 100%)!important;
+  border-color:#c4dcff!important;
+}
+.payment-options .pay-opt-maya{
+  --pay-accent:#128b4c!important;
+  --pay-tint:#def6e7!important;
+  background:linear-gradient(150deg,#ffffff 0%,#edf9f1 43%,#d7f1e0 100%)!important;
+  border-color:#c0e8ce!important;
+}
+.payment-options .pay-opt-bank{
+  --pay-accent:#b77c16!important;
+  --pay-tint:#fff1cf!important;
+  background:linear-gradient(150deg,#ffffff 0%,#fbf5e8 43%,#f4e7c9 100%)!important;
+  border-color:#ead8b3!important;
+}
+.pay-opt-visual{
+  background:linear-gradient(145deg,#ffffff 0%,#f8fbff 52%,#edf3fb 100%)!important;
+  border-color:rgba(255,255,255,.98)!important;
+  box-shadow:0 5px 12px rgba(28,43,65,.085),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(35,53,77,.045)!important;
+  filter:saturate(1.08)!important;
+}
+.pay-opt-brand-logo{
+  image-rendering:auto!important;
+  filter:saturate(1.16) contrast(1.045) drop-shadow(0 2px 2px rgba(16,38,77,.12))!important;
+}
+.pay-opt-visual svg{
+  shape-rendering:geometricPrecision!important;
+  filter:saturate(1.13) drop-shadow(0 3px 2px rgba(20,36,58,.14))!important;
+}
+.payment-options .pay-opt.active{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--pay-accent) 16%,transparent),0 9px 20px rgba(20,37,65,.13),inset 0 1px 0 #fff,inset 0 -2px 0 rgba(20,46,65,.04)!important;
+}
+.payment-options .pay-opt-cod.active{background:linear-gradient(145deg,#ffffff 0%,#e9faef 52%,#d0f0dc 100%)!important}
+.payment-options .pay-opt-gcash.active{background:linear-gradient(145deg,#ffffff 0%,#eaf3ff 52%,#d2e5ff 100%)!important}
+.payment-options .pay-opt-maya.active{background:linear-gradient(145deg,#ffffff 0%,#e9f8ee 52%,#cdefd9 100%)!important}
+.payment-options .pay-opt-bank.active{background:linear-gradient(145deg,#ffffff 0%,#fbf1dc 52%,#f1dfb8 100%)!important}
+/* Keep the logo licence credit in the site's legal footer, not inside checkout. */
+.payment-brand-attribution{display:none!important}
+@media(prefers-reduced-motion:reduce){
+  .payment-options .pay-opt{filter:none!important}
+}
