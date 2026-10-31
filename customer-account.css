@@ -2369,3 +2369,53 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
     width:27px!important;height:27px!important;min-width:27px!important;max-width:27px!important;min-height:27px!important;max-height:27px!important;
   }
 }
+
+
+/* Fast, single-state Customer Account loading indicator. */
+#gmcaOverlay .gmca-loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  min-height:112px;
+  padding:24px 14px;
+  color:#a9b3c2;
+  font-size:.84rem;
+  font-weight:750;
+  letter-spacing:.01em;
+}
+#gmcaOverlay .gmca-loading-spinner{
+  display:block;
+  flex:0 0 23px;
+  width:23px;
+  height:23px;
+  border:2.5px solid rgba(255,137,61,.20);
+  border-top-color:#ff812b;
+  border-right-color:#f25712;
+  border-radius:50%;
+  animation:gmca-account-spin .7s linear infinite;
+}
+@keyframes gmca-account-spin{to{transform:rotate(360deg)}}
+
+/* Neutral person icon replaces all text initials while a private photo is unavailable. */
+#gmcaOverlay .gmca-avatar-placeholder{
+  display:block;
+  width:48%;
+  height:48%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.75;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.78;
+}
+#gmcaOverlay .gmca-welcome-avatar .gmca-avatar-placeholder{color:#24466e}
+#gmcaOverlay .gmca-profile-photo-preview .gmca-avatar-placeholder{color:#e8edf5}
+#gmcaOverlay .gmca-avatar-image{object-fit:cover;object-position:center}
+@media(max-width:760px){
+  #gmcaOverlay .gmca-loading{min-height:96px;font-size:.8rem}
+  #gmcaOverlay .gmca-loading-spinner{width:21px;height:21px;flex-basis:21px}
+}
+@media(prefers-reduced-motion:reduce){
+  #gmcaOverlay .gmca-loading-spinner{animation:none;border-top-color:#ff812b}
+}

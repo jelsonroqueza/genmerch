@@ -28,7 +28,12 @@
     checkoutBalance: 0,
     selectedPoints: 0,
     baseCheckoutTotal: '',
-    loading: false
+    loading: false,
+    openingPromise: null,
+    accountLoadPromise: null,
+    accountLoadToken: 0,
+    accountLoadedUserId: null,
+    avatarSyncPending: false
   };
 
   const $ = (id) => document.getElementById(id);
@@ -83,25 +88,39 @@
     const metadata = user && user.user_metadata ? user.user_metadata : {};
     return String((profile && profile.phone) || metadata.phone || user.phone || '').trim();
   };
-  function makeInitials(identity) {
-    const value = String(identity || '').trim();
-    if (!value) return 'GM';
-    if (value.includes('@')) {
-      const local = value.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
-      return (local.slice(0, 2) || 'GM').toUpperCase();
-    }
-    const parts = value.split(/\s+/).filter(Boolean);
-    if (parts.length > 1) return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-    return (parts[0].replace(/[^a-zA-Z0-9]/g, '').slice(0, 2) || 'GM').toUpperCase();
+  function avatarPlaceholderMarkup() {
+    return '<svg class="gmca-avatar-placeholder" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c.7-4.6 3.4-7 8-7s7.3 2.4 8 7"></path></svg>';
   }
-  function avatarMarkup(identity) {
+
+  function avatarMarkup() {
     if (state.avatarUrl) {
       return '<img class="gmca-avatar-image" src="' + esc(state.avatarUrl) + '" alt="" draggable="false" referrerpolicy="no-referrer">';
     }
-    return esc(makeInitials(identity || 'GM'));
+    return avatarPlaceholderMarkup();
+  }
+
+  function updateAccountAvatarMarkup() {
+    const markup = avatarMarkup();
+    ['gmcaWelcomeAvatar', 'gmcaProfileAvatar'].forEach((id) => {
+      const node = $(id);
+      if (!node) return;
+      node.innerHTML = markup;
+      const image = node.querySelector('.gmca-avatar-image');
+      if (!image) return;
+      image.addEventListener('error', () => {
+        const failedUrl = image.getAttribute('src') || '';
+        if (state.avatarUrl && failedUrl === state.avatarUrl) {
+          state.avatarUrl = null;
+          state.avatarUrlExpiresAt = 0;
+          state.avatarNeedsRefresh = true;
+          syncStorefrontCustomerAvatar(null);
+        }
+      }, { once: true });
+    });
   }
 
   function syncStorefrontCustomerAvatar(url, identity) {
+    updateAccountAvatarMarkup();
     const button = $('customerAccountButton');
     const icon = button && button.querySelector('.header-icon');
     if (!button || !icon) return;
@@ -124,6 +143,12 @@
       image.addEventListener('error', () => {
         button.classList.remove('gmca-storefront-has-avatar');
         image.remove();
+        if (state.avatarUrl) {
+          state.avatarUrl = null;
+          state.avatarUrlExpiresAt = 0;
+          state.avatarNeedsRefresh = true;
+        }
+        updateAccountAvatarMarkup();
         console.warn('GENMERCH storefront avatar image could not be displayed; it will be refreshed on the next account sync.');
       }, { once: true });
       icon.appendChild(image);
@@ -149,6 +174,9 @@
     state.avatarOwnerId = null;
     state.avatarUrlExpiresAt = 0;
     state.avatarNeedsRefresh = false;
+    state.avatarSyncPending = false;
+    state.accountLoadedUserId = null;
+    state.accountLoadToken += 1;
     syncStorefrontCustomerAvatar(null);
   }
 
@@ -178,6 +206,7 @@
 
     const userId = String(user.id);
     const requestToken = ++state.avatarRequestToken;
+    state.avatarSyncPending = true;
     if (state.avatarOwnerId !== userId) {
       clearStorefrontAvatarRefreshTimer();
       state.avatarOwnerId = userId;
@@ -208,6 +237,13 @@
         return;
       }
 
+      if (state.avatarPath === path && state.avatarUrl && state.avatarUrlExpiresAt > Date.now() + 120000) {
+        const identity = currentUserName(user, state.profile) || user.email || 'Customer';
+        syncStorefrontCustomerAvatar(state.avatarUrl, identity);
+        scheduleStorefrontAvatarRefresh(userId);
+        return;
+      }
+
       const signedResult = await db.storage
         .from(CUSTOMER_AVATAR_BUCKET)
         .createSignedUrl(path, CUSTOMER_AVATAR_URL_TTL_SECONDS);
@@ -232,6 +268,8 @@
       if (requestToken === state.avatarRequestToken) {
         console.warn('GENMERCH storefront avatar sync could not refresh:', error.message || error);
       }
+    } finally {
+      if (requestToken === state.avatarRequestToken) state.avatarSyncPending = false;
     }
   }
 
@@ -313,7 +351,7 @@
         '</nav>' +
         '<div class="gmca-content">' +
           '<div class="gmca-alert" id="gmcaAlert" role="status" aria-live="polite" hidden></div>' +
-          '<div id="gmcaLoading" class="gmca-loading">Loading your account securely…</div>' +
+          '<div id="gmcaLoading" class="gmca-loading" role="status" aria-live="polite"><span class="gmca-loading-spinner" aria-hidden="true"></span><span>Loading your account…</span></div>' +
           '<section class="gmca-pane" id="gmcaPaneOverview" data-gmca-pane="overview" role="tabpanel" hidden></section>' +
           '<section class="gmca-pane" id="gmcaPaneProfile" data-gmca-pane="profile" role="tabpanel" hidden></section>' +
           '<section class="gmca-pane" id="gmcaPanePoints" data-gmca-pane="points" role="tabpanel" hidden></section>' +
@@ -555,36 +593,75 @@
 
   async function openAccount(restoreSavedTab) {
     ensureModal();
-    try {
-      const { data, error } = await client().auth.getSession();
-      if (error) throw error;
-      const session = data && data.session;
-      if (!session || !session.user) {
-        state.openAfterLogin = true;
-        if (typeof window.openCustomerAuth === 'function') window.openCustomerAuth();
-        return;
-      }
-      state.session = session;
-      state.loading = true;
-      accountPanelStorageSet(ACCOUNT_PANEL_OPEN_KEY, '1');
-      $('gmcaOverlay').classList.add('open');
-      $('gmcaOverlay').setAttribute('aria-hidden', 'false');
-      $('gmcaLoading').hidden = false;
-      document.querySelectorAll('[data-gmca-pane]').forEach((pane) => { pane.hidden = true; });
-      document.body.style.overflow = 'hidden';
+    if (state.openingPromise) return state.openingPromise;
+
+    const openingPromise = (async () => {
+      const overlay = $('gmcaOverlay');
+      const cachedSession = state.session && state.session.user ? state.session : null;
+      const cachedUserId = cachedSession ? String(cachedSession.user.id) : '';
+      const warmAccount = Boolean(cachedUserId && state.accountLoadedUserId === cachedUserId);
       const savedTab = restoreSavedTab === true
         ? (accountPanelStorageGet(ACCOUNT_PANEL_TAB_KEY) || 'overview')
         : 'overview';
-      switchTab(savedTab);
-      await loadAccountData();
-    } catch (error) {
-      if ($('gmcaOverlay')) {
-        $('gmcaOverlay').classList.add('open');
-        $('gmcaOverlay').setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        showAlert(error.message || 'Unable to load your GENMERCH account. Please refresh and try again.', 'error');
+
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      if (warmAccount) {
         $('gmcaLoading').hidden = true;
+        switchTab(savedTab);
+      } else {
+        $('gmcaLoading').hidden = false;
+        document.querySelectorAll('[data-gmca-pane]').forEach((pane) => { pane.hidden = true; });
       }
+
+      try {
+        let session = cachedSession;
+        if (!session) {
+          const { data, error } = await client().auth.getSession();
+          if (error) throw error;
+          session = data && data.session ? data.session : null;
+        }
+
+        if (!overlay.classList.contains('open')) return;
+        if (!session || !session.user) {
+          state.openAfterLogin = true;
+          closeAccount();
+          if (typeof window.openCustomerAuth === 'function') window.openCustomerAuth();
+          return;
+        }
+
+        state.session = session;
+        accountPanelStorageSet(ACCOUNT_PANEL_OPEN_KEY, '1');
+        const userId = String(session.user.id);
+        const hasWarmAccount = state.accountLoadedUserId === userId;
+        if (hasWarmAccount) {
+          $('gmcaLoading').hidden = true;
+          switchTab(savedTab);
+          return;
+        }
+
+        $('gmcaLoading').hidden = false;
+        document.querySelectorAll('[data-gmca-pane]').forEach((pane) => { pane.hidden = true; });
+        await loadAccountData();
+        if (overlay.classList.contains('open')) switchTab(savedTab);
+      } catch (error) {
+        if (overlay.classList.contains('open')) {
+          overlay.classList.add('open');
+          overlay.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          showAlert(error.message || 'Unable to load your GENMERCH account. Please refresh and try again.', 'error');
+          $('gmcaLoading').hidden = true;
+        }
+      }
+    })();
+
+    state.openingPromise = openingPromise;
+    try {
+      await openingPromise;
+    } finally {
+      if (state.openingPromise === openingPromise) state.openingPromise = null;
     }
   }
 
@@ -626,97 +703,194 @@
     }
   }
 
+  function syncCustomerAvatarFromProfile(user, userId, rawPath, db) {
+    const path = String(rawPath || '').trim();
+    const validPath = path && path.startsWith(String(userId) + '/') ? path : null;
+    const identity = currentUserName(user, state.profile) || user.email || 'Customer';
+
+    if (!validPath) {
+      state.avatarRequestToken += 1;
+      clearStorefrontAvatarRefreshTimer();
+      state.avatarPath = null;
+      state.avatarUrl = null;
+      state.avatarUrlExpiresAt = 0;
+      state.avatarNeedsRefresh = false;
+      state.avatarSyncPending = false;
+      state.avatarOwnerId = String(userId);
+      syncStorefrontCustomerAvatar(null, identity);
+      return;
+    }
+
+    const sameAvatar = state.avatarOwnerId === String(userId) && state.avatarPath === validPath;
+    state.avatarPath = validPath;
+    state.avatarOwnerId = String(userId);
+    if (sameAvatar && state.avatarUrl && state.avatarUrlExpiresAt > Date.now() + 120000) {
+      syncStorefrontCustomerAvatar(state.avatarUrl, identity);
+      scheduleStorefrontAvatarRefresh(userId);
+      return;
+    }
+    if (state.avatarSyncPending && sameAvatar) return;
+
+    const requestToken = ++state.avatarRequestToken;
+    clearStorefrontAvatarRefreshTimer();
+    state.avatarSyncPending = true;
+    state.avatarUrl = null;
+    state.avatarUrlExpiresAt = 0;
+    state.avatarNeedsRefresh = false;
+    syncStorefrontCustomerAvatar(null, identity);
+
+    db.storage.from(CUSTOMER_AVATAR_BUCKET)
+      .createSignedUrl(validPath, CUSTOMER_AVATAR_URL_TTL_SECONDS)
+      .then((result) => {
+        if (requestToken !== state.avatarRequestToken) return;
+        if (result.error) throw result.error;
+        const signedUrl = result.data && result.data.signedUrl ? result.data.signedUrl : null;
+        if (!signedUrl) throw new Error('Supabase did not return a signed avatar URL.');
+        state.avatarUrl = signedUrl;
+        state.avatarUrlExpiresAt = Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000;
+        state.avatarNeedsRefresh = false;
+        syncStorefrontCustomerAvatar(signedUrl, identity);
+        scheduleStorefrontAvatarRefresh(userId);
+      })
+      .catch((error) => {
+        if (requestToken === state.avatarRequestToken) {
+          state.avatarUrl = null;
+          state.avatarUrlExpiresAt = 0;
+          state.avatarNeedsRefresh = true;
+          syncStorefrontCustomerAvatar(null, identity);
+          console.warn('GENMERCH account profile photo could not be loaded:', error.message || error);
+        }
+      })
+      .finally(() => {
+        if (requestToken === state.avatarRequestToken) state.avatarSyncPending = false;
+      });
+  }
+
   async function loadAccountData() {
     if (!state.session || !state.session.user) return;
+    if (state.accountLoadPromise) return state.accountLoadPromise;
+
     const user = state.session.user;
-    $('gmcaLoading').hidden = false;
-    showAlert('');
+    const userId = String(user.id);
+    const requestToken = ++state.accountLoadToken;
+    const showBlockingLoader = state.accountLoadedUserId !== userId;
     const db = client();
-    const userId = user.id;
-    const [profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult] = await Promise.all([
-      tryQuery(() => db.from('profiles').select('id,full_name,phone,avatar_path,created_at,updated_at').eq('id', userId).maybeSingle(), null),
-      tryQuery(() => db.from('orders').select('id,order_number,status,payment_status,payment_method,subtotal,shipping_fee,discount_amount,total_amount,loyalty_points_redeemed,loyalty_points_discount,created_at,updated_at,receipt_email', { count: 'exact' }).eq('user_id', userId).order('created_at', { ascending: false }).limit(20), []),
-      tryQuery(() => db.from('customer_addresses').select('id,address_label,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
-      tryQuery(() => db.from('customer_wishlist').select('product_id,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
-      tryQuery(() => db.from('product_reviews').select('id,product_id,order_id,rating,feedback,nickname,moderation_status,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
-      tryQuery(() => db.rpc('get_my_genmerch_loyalty_summary'), null),
-      tryQuery(() => db.from('customer_default_landmarks').select('id,label,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), [])
-    ]);
 
-    state.profile = profileResult.data || null;
-    state.avatarPath = String(state.profile && state.profile.avatar_path || '').trim() || null;
-    state.avatarOwnerId = String(userId);
-    state.avatarUrl = null;
-    if (state.avatarPath && state.avatarPath.startsWith(String(userId) + '/')) {
-      try {
-        const signedAvatar = await db.storage
-          .from(CUSTOMER_AVATAR_BUCKET)
-          .createSignedUrl(state.avatarPath, CUSTOMER_AVATAR_URL_TTL_SECONDS);
-        if (signedAvatar.error) throw signedAvatar.error;
-        state.avatarUrl = signedAvatar.data && signedAvatar.data.signedUrl ? signedAvatar.data.signedUrl : null;
-      } catch (avatarError) {
-        console.warn('GENMERCH customer avatar could not be loaded:', avatarError.message || avatarError);
-      }
-    } else {
-      state.avatarPath = null;
-    }
-    state.avatarUrlExpiresAt = state.avatarUrl
-      ? Date.now() + CUSTOMER_AVATAR_URL_TTL_SECONDS * 1000
-      : 0;
-    syncStorefrontCustomerAvatar(state.avatarUrl, currentUserName(user, state.profile) || user.email || 'Customer');
-    if (state.avatarUrl) scheduleStorefrontAvatarRefresh(userId);
-    else clearStorefrontAvatarRefreshTimer();
-    state.orders = asArray(orderResult);
-    state.orderCount = typeof orderResult.count === 'number' ? orderResult.count : state.orders.length;
-    state.addresses = asArray(addressResult);
-    state.wishlist = asArray(wishlistResult);
-    state.landmarks = asArray(landmarksResult);
-    state.reviews = asArray(reviewResult);
-    state.points = pointsResult.data && typeof pointsResult.data === 'object'
-      ? pointsResult.data
-      : { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
-    state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
-    state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
-    window.genmerchSelectedLoyaltyPoints = state.selectedPoints;
+    const loadPromise = (async () => {
+      if (showBlockingLoader) $('gmcaLoading').hidden = false;
+      showAlert('');
 
-    const orderIds = state.orders.map((order) => order.id);
-    if (orderIds.length) {
-      const [itemsResult, shipmentResult] = await Promise.all([
-        tryQuery(() => db.from('order_items').select('order_id,product_name,size_label,color_label,quantity,unit_price,line_total').in('order_id', orderIds), []),
-        tryQuery(() => db.from('shipments').select('order_id,courier_name,tracking_number,tracking_url,status,shipped_at,delivered_at').in('order_id', orderIds), [])
+      const [profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult] = await Promise.all([
+        tryQuery(() => db.from('profiles').select('id,full_name,phone,avatar_path,created_at,updated_at').eq('id', userId).maybeSingle(), null),
+        tryQuery(() => db.from('orders').select('id,order_number,status,payment_status,payment_method,subtotal,shipping_fee,discount_amount,total_amount,loyalty_points_redeemed,loyalty_points_discount,created_at,updated_at,receipt_email', { count: 'exact' }).eq('user_id', userId).order('created_at', { ascending: false }).limit(20), []),
+        tryQuery(() => db.from('customer_addresses').select('id,address_label,recipient_name,phone,province,city_municipality,barangay,postal_code,street_address,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), []),
+        tryQuery(() => db.from('customer_wishlist').select('product_id,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
+        tryQuery(() => db.from('product_reviews').select('id,product_id,order_id,rating,feedback,nickname,moderation_status,created_at').eq('user_id', userId).order('created_at', { ascending: false }), []),
+        tryQuery(() => db.rpc('get_my_genmerch_loyalty_summary'), null),
+        tryQuery(() => db.from('customer_default_landmarks').select('id,label,landmark,delivery_instructions,is_default,created_at,updated_at').eq('user_id', userId).order('is_default', { ascending: false }).order('created_at', { ascending: false }), [])
       ]);
-      state.orderItems = asArray(itemsResult);
-      state.shipments = asArray(shipmentResult);
-    } else {
+
+      if (requestToken !== state.accountLoadToken ||
+          !state.session || !state.session.user ||
+          String(state.session.user.id) !== userId) return;
+
+      state.profile = profileResult.data || null;
+      if (!profileResult.error) {
+        syncCustomerAvatarFromProfile(user, userId, state.profile && state.profile.avatar_path, db);
+      }
+
+      state.orders = asArray(orderResult);
+      state.orderCount = typeof orderResult.count === 'number' ? orderResult.count : state.orders.length;
+      state.addresses = asArray(addressResult);
+      const cachedWishlistProducts = new Map(
+        (state.wishlist || []).filter((wish) => wish.product).map((wish) => [String(wish.product_id), wish.product])
+      );
+      state.wishlist = asArray(wishlistResult).map((wish) => ({
+        ...wish,
+        product: cachedWishlistProducts.get(String(wish.product_id)) || null
+      }));
+      state.landmarks = asArray(landmarksResult);
+      state.reviews = asArray(reviewResult);
+      state.points = pointsResult.data && typeof pointsResult.data === 'object'
+        ? pointsResult.data
+        : { points_balance: 0, lifetime_earned: 0, lifetime_redeemed: 0, history: [] };
+      state.checkoutBalance = Math.max(0, Number(state.points.points_balance) || 0);
+      state.selectedPoints = Math.min(state.selectedPoints, state.checkoutBalance);
+      window.genmerchSelectedLoyaltyPoints = state.selectedPoints;
+
       state.orderItems = [];
       state.shipments = [];
+      const orderIds = state.orders.map((order) => order.id);
+      const wishlistProductIds = [...new Set(state.wishlist.map((row) => String(row.product_id)))];
+
+      state.accountLoadedUserId = userId;
+      state.loading = false;
+      $('gmcaWelcome').textContent = 'Your shopping activity, rewards and personal information.';
+      $('gmcaLoading').hidden = true;
+      renderAllPanes();
+      renderCheckoutPoints();
+      renderCheckoutAddressPicker();
+
+      if ([profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult].some((result) => result && result.error)) {
+        showAlert('Some account information could not be loaded. Check your connection and tap Refresh account.', 'warning');
+      }
+
+      // Supporting lookups no longer hold the account screen behind the loading indicator.
+      loadAccountSupplementalData(db, userId, requestToken, orderIds, wishlistProductIds)
+        .catch((error) => console.warn('GENMERCH account detail enrichment could not finish:', error.message || error));
+    })();
+
+    state.accountLoadPromise = loadPromise;
+    try {
+      await loadPromise;
+    } finally {
+      if (state.accountLoadPromise === loadPromise) state.accountLoadPromise = null;
+    }
+  }
+
+  async function loadAccountSupplementalData(db, userId, requestToken, orderIds, wishlistProductIds) {
+    const orderDetailsPromise = orderIds.length
+      ? Promise.all([
+          tryQuery(() => db.from('order_items').select('order_id,product_name,size_label,color_label,quantity,unit_price,line_total').in('order_id', orderIds), []),
+          tryQuery(() => db.from('shipments').select('order_id,courier_name,tracking_number,tracking_url,status,shipped_at,delivered_at').in('order_id', orderIds), [])
+        ])
+      : Promise.resolve(null);
+
+    const wishlistProductsPromise = wishlistProductIds.length
+      ? tryQuery(() => db.from('products').select('id,name,base_price,slug,is_active,is_deleted').in('id', wishlistProductIds), [])
+      : Promise.resolve(null);
+
+    const [orderDetails, productResult] = await Promise.all([orderDetailsPromise, wishlistProductsPromise]);
+    if (requestToken !== state.accountLoadToken ||
+        !state.session || !state.session.user ||
+        String(state.session.user.id) !== String(userId)) return;
+
+    let ordersUpdated = false;
+    if (orderDetails) {
+      state.orderItems = asArray(orderDetails[0]);
+      state.shipments = asArray(orderDetails[1]);
+      ordersUpdated = true;
     }
 
-    const wantedProductIds = [...new Set(state.wishlist.map((row) => String(row.product_id)))];
-    if (wantedProductIds.length) {
-      const productResult = await tryQuery(
-        () => db.from('products').select('id,name,base_price,slug,is_active,is_deleted').in('id', wantedProductIds),
-        []
-      );
+    let wishlistUpdated = false;
+    if (productResult) {
+      const products = asArray(productResult);
       state.wishlist = state.wishlist.map((wish) => ({
         ...wish,
-        product: asArray(productResult).find((product) => String(product.id) === String(wish.product_id)) || null
+        product: products.find((product) => String(product.id) === String(wish.product_id)) || null
       }));
-    } else {
-      state.wishlist = [];
+      wishlistUpdated = true;
     }
 
-    const name = currentUserName(user, state.profile);
-    $('gmcaWelcome').textContent = 'Your shopping activity, rewards and personal information.';
-    $('gmcaLoading').hidden = true;
-    renderAllPanes();
-    renderCheckoutPoints();
-    renderCheckoutAddressPicker();
-    if ([profileResult, orderResult, addressResult, wishlistResult, reviewResult, pointsResult, landmarksResult].some((result) => result && result.error)) {
-      showAlert('Some account information could not be loaded. Check your connection and tap Refresh account.', 'warning');
+    if (!$('gmcaOverlay') || !$('gmcaOverlay').classList.contains('open')) return;
+    if (ordersUpdated) {
+      renderOrdersPane();
+      renderOverviewPane();
     }
-    state.loading = false;
+    if (wishlistUpdated) renderActivityPane();
   }
+
+  
 
   function renderAllPanes() {
     renderOverviewPane();
@@ -951,7 +1125,7 @@
     const user = state.session && state.session.user;
     const oldPath = state.avatarPath;
     if (!user || !oldPath || state.uploadingAvatar) return;
-    if (!window.confirm('Remove your profile photo and use your initials avatar instead?')) return;
+    if (!window.confirm('Remove your profile photo and use the default Account icon instead?')) return;
 
     state.uploadingAvatar = true;
     setCustomerAvatarControlsBusy(true);
@@ -2230,46 +2404,4 @@
     window.addEventListener('genmerch:customer-address-saved', loadCheckoutDetails);
     refreshPointsBalance();
   });
-})();
-
-/* Keep the signed-in account badge as initials on desktop, tablet, and mobile. */
-(function installGenmerchResponsiveAccountInitials(){
-  'use strict';
-  function makeInitials(identity){
-    const value=String(identity||'').trim();
-    if(!value)return 'GM';
-    if(value.includes('@')){
-      const local=value.split('@')[0].replace(/[^a-zA-Z0-9]/g,'');
-      return (local.slice(0,2)||'GM').toUpperCase();
-    }
-    const parts=value.split(/\s+/).filter(Boolean);
-    if(parts.length>1)return (parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase();
-    return (parts[0].replace(/[^a-zA-Z0-9]/g,'').slice(0,2)||'GM').toUpperCase();
-  }
-  function start(){
-    const button=document.getElementById('customerAccountButton');
-    const label=document.getElementById('customerAccountLabel');
-    if(!button||!label)return;
-    function apply(){
-      if(!button.classList.contains('customer-account-signed-in'))return;
-      const identity=String(label.dataset.fullName||button.getAttribute('title')||'').trim();
-      if(!identity)return;
-      const initials=makeInitials(identity);
-      const icon=button.querySelector('.header-icon');
-      if(icon&&icon.dataset.initials!==initials)icon.dataset.initials=initials;
-      if(label.textContent.trim()!=='Account')label.textContent='Account';
-      label.setAttribute('aria-label','Account');
-    }
-    apply();
-    if(typeof MutationObserver==='function'){
-      const labelObserver=new MutationObserver(apply);
-      labelObserver.observe(label,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-full-name']});
-      const buttonObserver=new MutationObserver(apply);
-      buttonObserver.observe(button,{attributes:true,attributeFilter:['class','title']});
-    }
-    window.addEventListener('resize',apply,{passive:true});
-    window.addEventListener('orientationchange',apply,{passive:true});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
 })();

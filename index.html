@@ -28,7 +28,7 @@
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261028-1">
   <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261031-6">
+  <link rel="stylesheet" href="/customer-account.css?v=20261031-7">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   
@@ -56,7 +56,7 @@
   
   
   <script src="/install-flow.js?v=20261030-1" defer></script>
-  <script src="/customer-account.js?v=20261031-7" defer></script>
+  <script src="/customer-account.js?v=20261031-8" defer></script>
 
 
 
@@ -5210,22 +5210,10 @@
       }
       return raw;
     }
-    function getCustomerAuthInitials(identity){
-      const value=String(identity||'').trim();
-      if(!value)return 'GM';
-      if(value.includes('@')){
-        const local=value.split('@')[0].replace(/[^a-zA-Z0-9]/g,'');
-        return (local.slice(0,2)||'GM').toUpperCase();
-      }
-      const parts=value.split(/\s+/).filter(Boolean);
-      if(parts.length>=2)return (parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase();
-      return (parts[0].replace(/[^a-zA-Z0-9]/g,'').slice(0,2)||'GM').toUpperCase();
-    }
     function refreshCustomerAccountLabelForViewport(){
       const button=$('customerAccountButton');
       const label=$('customerAccountLabel');
       if(!button||!label||!button.classList.contains('customer-account-signed-in'))return;
-      const fullName=label.dataset.fullName||button.title||'';
       label.textContent='Account';
     }
     function updateCustomerAuthScreen(session){
