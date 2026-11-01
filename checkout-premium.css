@@ -2116,3 +2116,40 @@
 @media(prefers-reduced-motion:reduce){
   .payment-options .pay-opt{filter:none!important}
 }
+
+
+/* GENMERCH mobile density pass — keep controls comfortable while removing duplicate spacing. */
+@media (max-width: 760px) {
+  .checkout-step-bar { gap: 3px !important; padding: 8px 12px !important; }
+  .checkout-step-bar strong { font-size: 16px !important; line-height: 1.2 !important; }
+  .checkout-step-bar small { font-size: 12px !important; line-height: 1.35 !important; }
+  .checkout-step-number { display: none !important; }
+  .checkout-order-items { padding: 7px 9px !important; }
+  .cart-item {
+    grid-template-columns: 58px minmax(0, 1fr) 40px !important;
+    gap: 8px !important;
+    padding: 8px !important;
+    border-radius: 11px !important;
+  }
+  .item-icon, .cart-product-photo { width: 58px !important; height: 68px !important; }
+  .item-name { font-size: 14px !important; line-height: 1.25 !important; }
+  .item-size, .item-stock { font-size: 12px !important; line-height: 1.3 !important; }
+  .item-price { margin-top: 3px !important; font-size: 16px !important; line-height: 1.2 !important; }
+  .qty-row { gap: 6px !important; margin-top: 6px !important; }
+  .qty-btn { flex-basis: 38px !important; width: 38px !important; height: 38px !important; min-height: 38px !important; }
+  .qty-number { min-width: 16px !important; font-size: 14px !important; }
+  .cart-item .remove-btn { width: 40px !important; min-width: 40px !important; height: 40px !important; min-height: 40px !important; }
+  .cart-item .remove-btn-icon { width: 24px !important; height: 24px !important; }
+  .checkout-step-summary { padding: 7px 9px 10px !important; }
+  .checkout-step-one-subtotal { padding: 9px !important; }
+  .checkout-step-one-subtotal-row { gap: 5px 8px !important; padding: 8px 9px !important; font-size: 13px !important; }
+  .checkout-step-one-subtotal-row strong { font-size: 19px !important; }
+  .checkout-step-actions { gap: 8px !important; padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 0px)) !important; }
+  .checkout-step-actions .checkout-btn { min-height: 46px !important; font-size: 15px !important; }
+}
+@media (max-width: 390px) {
+  .cart-item { grid-template-columns: 52px minmax(0, 1fr) 38px !important; gap: 7px !important; padding: 7px !important; }
+  .item-icon, .cart-product-photo { width: 52px !important; height: 62px !important; }
+  .cart-item .remove-btn { width: 38px !important; min-width: 38px !important; height: 38px !important; min-height: 38px !important; }
+  .qty-btn { flex-basis: 36px !important; width: 36px !important; height: 36px !important; min-height: 36px !important; }
+}
