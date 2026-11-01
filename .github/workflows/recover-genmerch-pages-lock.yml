@@ -1,0 +1,33 @@
+name: Recover stale GENMERCH GitHub Pages deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/recover-genmerch-pages-lock.yml
+
+permissions:
+  pages: write
+  contents: read
+
+jobs:
+  cancel-stale-pages-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel orphaned Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          http_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/825272197f9a55db3679edb4db2ce68bd3f57b78/cancel")"
+          if [ "${http_status}" != "204" ]; then
+            echo "GitHub Pages cancel endpoint returned HTTP ${http_status}."
+            exit 1
+          fi
+          echo "The orphaned GitHub Pages deployment was cancelled."
