@@ -1237,3 +1237,66 @@
     overflow-y: visible !important;
   }
 }
+
+
+/* Approved reference match: single, upright mobile GENMERCH wordmark. */
+@media screen and (max-width: 767px) {
+  /* The legacy desktop SVG must never render alongside the mobile wordmark. */
+  body .site-header .main-header .nav > button.brand-lockup > span.brand-type.genmerch-metal-wordmark-wrap {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Match the supplied reference: one bold, upright two-line wordmark. */
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark {
+    display: flex !important;
+    flex: 0 1 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: max-content !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong {
+    display: block !important;
+    color: #171717 !important;
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: clamp(1.22rem, 6.1vw, 1.55rem) !important;
+    font-style: normal !important;
+    font-weight: 900 !important;
+    letter-spacing: -.035em !important;
+    line-height: .98 !important;
+    white-space: nowrap !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong span {
+    color: #171717 !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong b {
+    color: #e51f32 !important;
+    font: inherit !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
+    display: block !important;
+    margin-top: 3px !important;
+    color: #222 !important;
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: clamp(.56rem, 2.4vw, .64rem) !important;
+    font-style: normal !important;
+    font-weight: 900 !important;
+    letter-spacing: .20em !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+}
