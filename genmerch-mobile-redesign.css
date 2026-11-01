@@ -946,17 +946,19 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-    width: 100%;
+    width: 82%;
+    max-width: 280px;
     min-height: 46px;
+    margin-inline: auto;
     padding: 10px 12px;
     border: 1px solid #f0d0c9;
     border-radius: 12px;
-    background: linear-gradient(180deg, #fff 0%, #fff4f0 100%);
+    background: linear-gradient(180deg, #fff 0%, #fff8f5 52%, #ffefea 100%);
     color: #c92b35;
     font-family: Lexend, Arial, sans-serif;
     font-size: .82rem;
     font-weight: 850;
-    box-shadow: 0 2px 6px rgba(100, 38, 30, .07), inset 0 1px 0 #fff;
+    box-shadow: 0 3px 0 rgba(201, 43, 53, .14), 0 5px 10px rgba(100, 38, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .98), inset 0 -1px 0 rgba(240, 208, 201, .35);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -972,8 +974,9 @@
   }
 
   .gm-mobile-menu-help:active {
-    background: #fff0ec;
-    transform: translateY(1px);
+    background: linear-gradient(180deg, #fff2ed 0%, #ffe9e2 100%);
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(201, 43, 53, .12), inset 0 2px 4px rgba(100, 38, 30, .08);
   }
 }
 
