@@ -1335,7 +1335,7 @@
 
   body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
     margin-top: 2px !important;
-    font-size: clamp(.60rem, 2.5vw, .68rem) !important;
+    font-size: clamp(.64rem, 2.65vw, .72rem) !important;
     font-weight: 900 !important;
     line-height: 1 !important;
     letter-spacing: .18em !important;
