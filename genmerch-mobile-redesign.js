@@ -331,16 +331,16 @@
       } else if (actionName === 'testimonials') {
         window.dispatchEvent(new CustomEvent('genmerch:open-trust-testimonials'));
       } else if (actionName === 'partner') {
-        const partnerSection = byId('footerPartnerSection');
-        if (partnerSection) {
-          window.setTimeout(function () {
-            partnerSection.scrollIntoView({
-              behavior: reducedMotionQuery.matches ? 'auto' : 'smooth',
-              block: 'start'
-            });
-            partnerSection.focus({ preventScroll: true });
-          }, 40);
-        }
+        // Let the drawer finish its exit motion, then open the existing
+        // storefront application modal directly (no footer scroll or new page).
+        const openApplication = function () {
+          if (typeof window.openPartnerApplication === 'function') {
+            window.openPartnerApplication();
+            return;
+          }
+          window.dispatchEvent(new CustomEvent('genmerch:open-partner-application'));
+        };
+        window.setTimeout(openApplication, reducedMotionQuery.matches ? 0 : drawerCloseDuration + 30);
       } else if (targetSelector) {
         clickExisting(targetSelector);
       }
