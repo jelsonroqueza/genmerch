@@ -10635,3 +10635,20 @@ body .site-header .reference-desktop-links button.active{
  }
  body .site-header .main-header .nav .header-actions>#customerAccountButton .header-icon{display:flex!important}
 }
+
+
+/* Match the compact account action in the reference header */
+@media(min-width:900px){
+ body .site-header .main-header .nav .header-actions>#customerAccountButton:not(.customer-account-signed-in){
+   display:flex!important;flex:0 0 42px!important;width:42px!important;min-width:42px!important;max-width:42px!important;
+   background:transparent!important;box-shadow:none!important;border:0!important;
+ }
+ body .site-header .main-header .nav .header-actions>#customerAccountButton:not(.customer-account-signed-in)>.header-icon{
+   display:flex!important;width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
+   padding:0!important;background:transparent!important;box-shadow:none!important;border:0!important;
+ }
+ body .site-header .main-header .nav .header-actions>#customerAccountButton:not(.customer-account-signed-in)>.genmerch-premium-account-icon{display:block!important;width:30px!important;height:30px!important}
+ body .site-header .main-header .nav .header-actions>#customerAccountButton:not(.customer-account-signed-in)>.customer-account-label{
+   display:block!important;margin:0!important;padding:0!important;background:transparent!important;color:#151515!important;font-size:9px!important;line-height:1!important;
+ }
+}
