@@ -10382,3 +10382,145 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
     animation:none!important;
   }
 }
+
+
+/* GENMERCH interaction polish — subtle desktop 3D hover and floating wishlist hearts. */
+@media (hover: hover) and (pointer: fine) {
+  #productGrid > .card {
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    transition: transform 240ms cubic-bezier(.2,.72,.25,1), box-shadow 240ms ease, border-color 240ms ease;
+    will-change: transform;
+  }
+  #productGrid > .card.gm-card-hover-active {
+    transform: perspective(1050px) rotateX(var(--gm-tilt-x, 0deg)) rotateY(var(--gm-tilt-y, 0deg)) translateY(-3px);
+    box-shadow: 0 18px 34px rgba(55,30,15,.15), 0 5px 12px rgba(55,30,15,.06);
+    border-color: #f0d4c8;
+    z-index: 4;
+  }
+  #productGrid > .card .card-img {
+    transform-style: preserve-3d;
+  }
+  #productGrid > .card .catalog-card-image {
+    transition: transform 280ms cubic-bezier(.2,.72,.25,1), filter 280ms ease;
+    transform-origin: center center;
+  }
+  #productGrid > .card.gm-card-hover-active .catalog-card-image {
+    transform: translateZ(12px) scale(1.045);
+    filter: saturate(1.035);
+  }
+  #productGrid > .card .add-btn:not(:disabled),
+  #productGrid > .card .card-wishlist-button,
+  .site-header .header-actions .header-action,
+  .desktop-links button,
+  .categories .category,
+  .shop-now {
+    transition: transform 190ms cubic-bezier(.2,.72,.25,1), box-shadow 190ms ease, filter 190ms ease;
+  }
+  #productGrid > .card .add-btn:not(:disabled):hover {
+    transform: translateY(-2px) translateZ(4px);
+    box-shadow: 0 8px 16px rgba(230,54,23,.2);
+  }
+  #productGrid > .card .card-wishlist-button:hover {
+    transform: translateY(-1px) scale(1.07);
+    box-shadow: 0 6px 14px rgba(225,29,46,.13);
+  }
+  .site-header .header-actions .header-action:hover,
+  .desktop-links button:hover,
+  .categories .category:hover,
+  .shop-now:hover {
+    transform: translateY(-2px) perspective(700px) rotateX(2deg);
+    filter: drop-shadow(0 5px 8px rgba(42,25,15,.11));
+  }
+}
+
+#productGrid .card-wishlist-button {
+  overflow: visible;
+  isolation: isolate;
+}
+#productGrid .card-wishlist-button .gm-heart-burst {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: visible;
+  pointer-events: none;
+}
+#productGrid .card-wishlist-button .gm-heart-burst::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(238,48,73,.62);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%,-50%) scale(.35);
+  animation: gmWishlistHeartRing 650ms ease-out both;
+}
+#productGrid .card-wishlist-button .gm-heart-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  color: #ee3049;
+  font-family: Arial, sans-serif;
+  font-size: var(--gm-heart-size, 15px);
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0;
+  text-shadow: 0 2px 5px rgba(180,20,45,.16);
+  transform: translate(-50%,-50%) scale(.25);
+  animation: gmWishlistHeartFloat 940ms cubic-bezier(.17,.68,.28,1) var(--gm-heart-delay,0ms) both;
+  will-change: transform, opacity;
+}
+#productGrid .card-wishlist-button.gm-heart-pop svg {
+  transform-origin: center;
+  animation: gmWishlistHeartPop 440ms cubic-bezier(.2,.8,.25,1) both;
+}
+@keyframes gmWishlistHeartFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(.25) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(1.08) rotate(-5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--gm-heart-x,0px)), calc(-50% + var(--gm-heart-y,-48px))) scale(.76) rotate(var(--gm-heart-rotation,12deg));
+  }
+}
+@keyframes gmWishlistHeartRing {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.35); }
+  22% { opacity: .78; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(2.5); }
+}
+@keyframes gmWishlistHeartPop {
+  0% { transform: scale(.72) rotate(0deg); }
+  43% { transform: scale(1.24) rotate(-8deg); }
+  72% { transform: scale(.94) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #productGrid > .card,
+  #productGrid > .card .catalog-card-image,
+  #productGrid > .card .add-btn,
+  #productGrid > .card .card-wishlist-button,
+  .site-header .header-actions .header-action,
+  .desktop-links button,
+  .categories .category,
+  .shop-now {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  #productGrid .gm-heart-burst,
+  #productGrid .gm-heart-particle,
+  #productGrid .gm-heart-burst::before,
+  #productGrid .gm-heart-pop svg {
+    animation: none !important;
+    display: none !important;
+  }
+}
