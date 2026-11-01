@@ -9823,5 +9823,31 @@
 </script>
 
 <script src="/checkout-premium.js?v=20261031-1"></script>
+
+<script id="genmerch-reference-navigation-repair">
+(function(){
+  function buildReferenceNavigation(){
+    var header=document.querySelector('.site-header');
+    var mainHeader=document.querySelector('.site-header .main-header');
+    var actions=document.querySelector('.site-header .header-actions');
+    if(!header||!mainHeader||!actions)return;
+    Array.prototype.forEach.call(actions.children,function(child){
+      var keep=child.id==='genmerchNotificationButton'||child.id==='openCartButton'||child.id==='customerAccountButton'||child.classList.contains('wishlist-header-button');
+      if(!keep)child.classList.add('reference-header-extra');
+    });
+    var nav=document.getElementById('referenceDesktopLinks');
+    if(!nav){
+      nav=document.createElement('nav');
+      nav.id='referenceDesktopLinks';
+      nav.className='reference-desktop-links';
+      nav.setAttribute('aria-label','Main navigation');
+      nav.innerHTML='<button class="active" type="button" onclick="showInfo(\'New Arrivals\')">New Arrivals</button><button type="button" onclick="showInfo(\'Best Sellers\')">Best Sellers</button><button type="button" onclick="showInfo(\'Promos\')">Promos</button><button type="button" onclick="openCustomerOrders()">Track Order</button><button type="button" onclick="openSellerCentre()">Seller Centre</button><button type="button" onclick="openHelpCenter()">Help</button>';
+      header.insertBefore(nav,mainHeader.nextSibling);
+    }
+  }
+  buildReferenceNavigation();
+  window.addEventListener('load',buildReferenceNavigation,{once:true});
+})();
+</script>
 </body>
 </html>
