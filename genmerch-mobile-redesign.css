@@ -909,11 +909,11 @@
     flex: 0 0 21px;
     width: 21px;
     height: 21px;
-    fill: #f2b900;
-    stroke: #bb850e;
-    stroke-width: 1;
+    fill: #ffd21f;
+    stroke: #ffd21f;
+    stroke-width: .35;
     stroke-linejoin: round;
-    filter: drop-shadow(0 1px 1px rgba(103, 70, 0, .25));
+    filter: drop-shadow(0 1px 0 rgba(255, 238, 153, .95)) drop-shadow(0 2px 2px rgba(135, 91, 0, .3));
   }
 
   .gm-mobile-menu-store-rating-label {
