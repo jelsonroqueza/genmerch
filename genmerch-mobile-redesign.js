@@ -7,6 +7,8 @@
   const mobileMedia = window.matchMedia(MOBILE_QUERY);
   const byId = (id) => document.getElementById(id);
   const query = (selector, root) => (root || document).querySelector(selector);
+  let wishlistBadgeObserver = null;
+  let overlayObserver = null;
 
   function clickExisting(selector) {
     const target = query(selector);
@@ -64,7 +66,10 @@
     const current = query('main.container > .gm-mobile-benefits');
 
     if (mobileMedia.matches) {
-      if (source) source.setAttribute('aria-hidden', 'true');
+      if (source) {
+        source.setAttribute('aria-hidden', 'true');
+        source.dataset.gmMobileHidden = 'true';
+      }
       if (current || !source) return;
 
       const clone = source.cloneNode(true);
@@ -77,7 +82,10 @@
     }
 
     if (current) current.remove();
-    if (source) source.removeAttribute('aria-hidden');
+    if (source && source.dataset.gmMobileHidden === 'true') {
+      source.removeAttribute('aria-hidden');
+      delete source.dataset.gmMobileHidden;
+    }
   }
 
   function syncWishlistBadge() {
@@ -90,12 +98,22 @@
   }
 
   function setupWishlistBadgeMirror() {
+    if (!mobileMedia.matches) {
+      if (wishlistBadgeObserver) {
+        wishlistBadgeObserver.disconnect();
+        wishlistBadgeObserver = null;
+      }
+      return;
+    }
+
     const source = byId('wishlistBadge');
     if (!source) return;
 
     syncWishlistBadge();
-    const observer = new MutationObserver(syncWishlistBadge);
-    observer.observe(source, {
+    if (wishlistBadgeObserver) return;
+
+    wishlistBadgeObserver = new MutationObserver(syncWishlistBadge);
+    wishlistBadgeObserver.observe(source, {
       attributes: true,
       childList: true,
       characterData: true,
@@ -110,21 +128,33 @@
       '.seller-modal-overlay.open, .size-overlay.open, .genmerch-review-overlay.open, ' +
       '.checkout-account-gate-overlay.open, .business-reg-overlay.open, ' +
       '.gmca-overlay.open, .genmerch-action-overlay.active, ' +
-      '.genmerch-notification-backdrop.active'
+      '.genmerch-notification-backdrop.open, .genmerch-notification-panel.open'
     );
     document.body.classList.toggle('gm-mobile-overlay-open', Boolean(openOverlay));
   }
 
   function setupOverlayObserver() {
-    const observer = new MutationObserver(syncOverlayVisibility);
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class', 'aria-hidden'],
-      childList: true,
-      subtree: true
-    });
+    if (!mobileMedia.matches) {
+      if (overlayObserver) {
+        overlayObserver.disconnect();
+        overlayObserver = null;
+      }
+      document.body.classList.remove('gm-mobile-overlay-open');
+      return;
+    }
+
+    if (!overlayObserver) {
+      overlayObserver = new MutationObserver(syncOverlayVisibility);
+      overlayObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'aria-hidden'],
+        childList: true,
+        subtree: true
+      });
+    }
     syncOverlayVisibility();
   }
+
 
   function setupMenuDrawer() {
     const toggle = byId('gmMobileMenuToggle');
@@ -238,7 +268,7 @@
   }
 
   function init() {
-    document.body.classList.add('gm-mobile-redesign-enabled');
+    if (mobileMedia.matches) document.body.classList.add('gm-mobile-redesign-enabled');
     syncMobileSearchPlacement();
     syncMobileBenefits();
     setupWishlistBadgeMirror();
@@ -246,10 +276,24 @@
     setupMenuDrawer();
     setupBottomNavigation();
 
+    const handleViewportModeChange = function () {
+      if (mobileMedia.matches) {
+        document.body.classList.add('gm-mobile-redesign-enabled');
+      } else {
+        document.body.classList.remove('gm-mobile-redesign-enabled');
+        document.body.classList.remove('gm-mobile-menu-open');
+        document.body.classList.remove('gm-mobile-overlay-open');
+      }
+      syncMobileSearchPlacement();
+      syncMobileBenefits();
+      setupWishlistBadgeMirror();
+      setupOverlayObserver();
+    };
+
     if (mobileMedia.addEventListener) {
-      mobileMedia.addEventListener('change', syncMobileBenefits);
+      mobileMedia.addEventListener('change', handleViewportModeChange);
     } else {
-      mobileMedia.addListener(syncMobileBenefits);
+      mobileMedia.addListener(handleViewportModeChange);
     }
 
     window.addEventListener('resize', syncMobileSearchPlacement, { passive: true });
