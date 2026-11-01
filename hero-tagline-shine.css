@@ -1,0 +1,69 @@
+/* GENMERCH hero tagline: refined champagne shimmer, soft glow and low-key sparkle. */
+.hero .hero-copy > .hero-tagline {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 999px;
+  box-shadow:
+    0 5px 14px rgba(149, 83, 39, .09),
+    inset 0 1px 0 rgba(255, 255, 255, .72);
+  animation: gmHeroTaglineGlow 5.8s ease-in-out infinite;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.hero .hero-copy > .hero-tagline::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -35% auto -35% -55%;
+  width: 34%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, .04) 24%,
+    rgba(255, 255, 255, .52) 48%,
+    rgba(255, 249, 224, .2) 62%,
+    transparent 100%
+  );
+  filter: blur(1px);
+  transform: skewX(-18deg);
+  animation: gmHeroTaglineShimmer 7.2s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+.hero .hero-copy > .hero-tagline::before {
+  content: "✦";
+  position: absolute;
+  z-index: 2;
+  top: 7%;
+  right: 8%;
+  color: rgba(255, 255, 255, .82);
+  font-size: .62em;
+  line-height: 1;
+  text-shadow: 0 0 7px rgba(255, 255, 255, .8), 0 0 13px rgba(255, 204, 128, .55);
+  pointer-events: none;
+  opacity: 0;
+  animation: gmHeroTaglineSparkle 7.2s ease-in-out infinite;
+}
+@keyframes gmHeroTaglineShimmer {
+  0%, 12% { left: -55%; opacity: 0; }
+  18% { opacity: .9; }
+  42% { left: 125%; opacity: .65; }
+  48%, 100% { left: 125%; opacity: 0; }
+}
+@keyframes gmHeroTaglineSparkle {
+  0%, 24%, 46%, 100% { opacity: 0; transform: scale(.72) rotate(-12deg); }
+  30%, 38% { opacity: .95; transform: scale(1.08) rotate(8deg); }
+}
+@keyframes gmHeroTaglineGlow {
+  0%, 100% { box-shadow: 0 5px 14px rgba(149, 83, 39, .08), inset 0 1px 0 rgba(255, 255, 255, .72); }
+  50% { box-shadow: 0 7px 19px rgba(185, 112, 58, .16), inset 0 1px 0 rgba(255, 255, 255, .88); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-copy > .hero-tagline,
+  .hero .hero-copy > .hero-tagline::before,
+  .hero .hero-copy > .hero-tagline::after {
+    animation: none !important;
+  }
+  .hero .hero-copy > .hero-tagline::after { display: none; }
+}
