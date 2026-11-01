@@ -247,6 +247,7 @@
     function closeMenu(restoreFocus, immediate) {
       if (scrim.hidden) return;
       if (restoreFocus !== false) restoreFocusAfterClose = true;
+      if (isClosing) return;
       if (closeTimer !== null) {
         window.clearTimeout(closeTimer);
         closeTimer = null;
@@ -270,6 +271,7 @@
 
     function openMenu() {
       if (!mobileMedia.matches) return;
+      const reopeningDuringClose = isClosing;
       if (isClosing) {
         if (closeTimer !== null) {
           window.clearTimeout(closeTimer);
@@ -280,7 +282,7 @@
         scrim.classList.remove('is-closing');
       }
       if (scrim.hidden) lockStorefrontScroll();
-      else if (!isClosing) return;
+      else if (!reopeningDuringClose) return;
 
       scrim.hidden = false;
       scrim.setAttribute('aria-hidden', 'false');
