@@ -3346,3 +3346,12 @@ html.customer-auth-scroll-locked body {
     scroll-behavior: auto !important;
   }
 }
+
+/* GENMERCH V2.0: prevent mobile browser auto-zoom inside customer authentication. */
+@media screen and (max-width: 767px) {
+  #customerAuthOverlay .customer-auth-field input,
+  #customerAuthOverlay .customer-auth-input-row input,
+  #customerAuthOverlay .customer-auth-otp-panel input {
+    font-size: 16px !important;
+  }
+}
