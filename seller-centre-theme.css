@@ -3414,3 +3414,24 @@
     font-size: 25px !important;
   }
 }
+
+
+/* GENMERCH mobile density pass — tighter Seller Centre panels and card rhythm. */
+@media (max-width: 760px) {
+  #sellerDashboardOverlay .seller-panel { padding: 10px !important; }
+  #sellerDashboardOverlay .seller-section-heading,
+  #sellerDashboardOverlay .seller-collapsible-section-heading,
+  #sellerDashboardOverlay .seller-orders-heading,
+  #sellerDashboardOverlay .seller-products-heading,
+  #sellerDashboardOverlay .seller-deleted-heading,
+  #sellerDashboardOverlay .seller-inventory-heading,
+  #sellerDashboardOverlay .seller-products-topbar { padding: 10px !important; margin-bottom: 9px !important; }
+  #sellerDashboardOverlay .seller-metrics-grid { gap: 7px !important; }
+  #sellerDashboardOverlay .seller-metric-card { min-height: 74px !important; padding: 8px !important; }
+  #sellerDashboardOverlay .seller-tabs { gap: 4px !important; padding: 5px 8px !important; }
+  #sellerDashboardOverlay .seller-tab-button { min-height: 40px !important; padding: 8px 9px !important; }
+}
+@media (max-width: 480px) {
+  #sellerDashboardOverlay .seller-panel { padding: 8px !important; }
+  #sellerDashboardOverlay .seller-metric-card { min-height: 70px !important; padding: 7px !important; }
+}
