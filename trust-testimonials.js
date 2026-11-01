@@ -157,21 +157,20 @@
     }
   }
 
+  var previousBodyOverflow = '';
+  var postedCloseTimer = null;
+
   function injectPublicSection() {
-    if (byId('genmerchTrustTestimonials')) return;
-    var header = document.querySelector('.site-header');
-    if (!header) return;
+    if (byId('genmerchTrustTestimonials') || byId('gmttModalOverlay')) return;
 
     var section = document.createElement('section');
     section.className = 'gmtt-section';
     section.id = 'genmerchTrustTestimonials';
-    section.hidden = true;
     section.setAttribute('aria-labelledby', 'gmttTitle');
     section.innerHTML =
       '<div class="gmtt-heading">' +
         '<div><span class="gmtt-eyebrow">Community voices</span><h2 id="gmttTitle">Trust &amp; Testimonials</h2>' +
           '<p>Real feedback from customers across Luzon, Visayas and Mindanao. Read their experiences or share yours with the GENMERCH community.</p></div>' +
-        '<button class="gmtt-primary-button" id="gmttOpenForm" type="button">＋ Share your experience</button>' +
       '</div>' +
       '<div class="gmtt-form-card" id="gmttFormCard" hidden>' +
         '<h3 class="gmtt-form-heading">Share your GENMERCH experience</h3>' +
@@ -190,22 +189,101 @@
       '</div>' +
       '<div class="gmtt-grid" id="gmttPublicList" aria-live="polite"><div class="gmtt-empty">Loading customer testimonials…</div></div>';
 
-    header.insertAdjacentElement('afterend', section);
+    var modal = document.createElement('div');
+    modal.className = 'gmtt-modal-overlay';
+    modal.id = 'gmttModalOverlay';
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML =
+      '<section class="gmtt-modal-dialog" id="gmttModalDialog" role="dialog" aria-modal="true" aria-labelledby="gmttTitle" tabindex="-1">' +
+        '<div class="gmtt-modal-toolbar">' +
+          '<button class="gmtt-primary-button gmtt-add-testimonies" id="gmttOpenForm" type="button" aria-expanded="false">＋ Add Testimonies</button>' +
+          '<button class="gmtt-modal-close" id="gmttCloseModal" type="button" aria-label="Close Trust and Testimonials">×</button>' +
+        '</div>' +
+        '<div class="gmtt-modal-scroll" id="gmttModalScroll"></div>' +
+      '</section>' +
+      '<div class="gmtt-posted-backdrop" id="gmttPostedPopup" hidden>' +
+        '<div class="gmtt-posted-dialog" role="status" aria-live="assertive">' +
+          '<span class="gmtt-posted-check" aria-hidden="true">✓</span>' +
+          '<p>Your testimony is now public and posted.</p>' +
+        '</div>' +
+      '</div>';
+
+    modal.querySelector('#gmttModalScroll').appendChild(section);
+    document.body.appendChild(modal);
 
     byId('gmttOpenForm').addEventListener('click', function () {
       var formCard = byId('gmttFormCard');
       formCard.hidden = !formCard.hidden;
+      byId('gmttOpenForm').setAttribute('aria-expanded', String(!formCard.hidden));
+      byId('gmttOpenForm').textContent = formCard.hidden ? '＋ Add Testimonies' : '− Close Form';
       if (!formCard.hidden) {
-        prepareCustomerIdentity().catch(function () {});
-        formCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        prepareCustomerIdentity().catch(function (error) {
+          setStatus(byId('gmttFormStatus'), error && error.message ? error.message : 'Your account details could not be loaded.', 'error');
+        });
+        formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         byId('gmttName').focus({ preventScroll: true });
       }
     });
     byId('gmttCancel').addEventListener('click', function () {
       byId('gmttFormCard').hidden = true;
+      byId('gmttOpenForm').setAttribute('aria-expanded', 'false');
+      byId('gmttOpenForm').textContent = '＋ Add Testimonies';
       setStatus(byId('gmttFormStatus'), '', '');
     });
     byId('gmttForm').addEventListener('submit', submitTestimonial);
+    byId('gmttCloseModal').addEventListener('click', closeTestimonialsModal);
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal) closeTestimonialsModal();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !modal.hidden) {
+        event.preventDefault();
+        closeTestimonialsModal();
+      }
+    });
+  }
+
+  function openTestimonialsModal() {
+    var modal = byId('gmttModalOverlay');
+    var dialog = byId('gmttModalDialog');
+    if (!modal || !dialog) return;
+    previousBodyOverflow = document.body.style.overflow || '';
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    dialog.focus({ preventScroll: true });
+  }
+
+  function closeTestimonialsModal() {
+    var modal = byId('gmttModalOverlay');
+    var postedPopup = byId('gmttPostedPopup');
+    if (postedCloseTimer !== null) {
+      window.clearTimeout(postedCloseTimer);
+      postedCloseTimer = null;
+    }
+    if (postedPopup) postedPopup.hidden = true;
+    if (!modal || modal.hidden) return;
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = previousBodyOverflow;
+    var menuToggle = byId('gmMobileMenuToggle');
+    if (menuToggle) menuToggle.focus({ preventScroll: true });
+  }
+
+  function showPostedConfirmation() {
+    var popup = byId('gmttPostedPopup');
+    if (!popup) {
+      closeTestimonialsModal();
+      return;
+    }
+    popup.hidden = false;
+    if (postedCloseTimer !== null) window.clearTimeout(postedCloseTimer);
+    postedCloseTimer = window.setTimeout(function () {
+      postedCloseTimer = null;
+      popup.hidden = true;
+      closeTestimonialsModal();
+    }, 1800);
   }
 
   var currentProfile = null;
@@ -352,8 +430,11 @@
       form.reset();
       currentProfile = null;
       currentUser = null;
-      setStatus(byId('gmttFormStatus'), 'Thank you! Your testimonial is now public on GENMERCH.', 'success');
-      await loadTestimonials();
+      setStatus(byId('gmttFormStatus'), 'Your testimony is now public and posted.', 'success');
+      loadTestimonials().catch(function (refreshError) {
+        console.warn('Testimonial posted, but the public list could not refresh immediately:', refreshError);
+      });
+      showPostedConfirmation();
     } catch (error) {
       console.error('GENMERCH testimonial submission failed:', error);
       setStatus(byId('gmttFormStatus'), error && error.message
@@ -479,15 +560,8 @@
   }
 
   function openPublicSection() {
-    var section = byId('genmerchTrustTestimonials');
-    if (!section) return;
-    section.hidden = false;
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    var heading = byId('gmttTitle');
-    if (heading) {
-      heading.setAttribute('tabindex', '-1');
-      heading.focus({ preventScroll: true });
-    }
+    openTestimonialsModal();
+    loadTestimonials().catch(function () {});
   }
 
   function init() {
