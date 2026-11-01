@@ -10524,3 +10524,30 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
     display: none !important;
   }
 }
+
+
+/* Desktop header: official high-resolution GENMERCH cart emblem before the metallic wordmark. */
+.gm-desktop-brand-emblem {
+  display: none !important;
+}
+
+@media screen and (min-width: 761px) {
+  .site-header .main-header .nav > .brand-lockup {
+    gap: clamp(7px, .65vw, 12px) !important;
+  }
+
+  .site-header .main-header .nav > .brand-lockup > .gm-desktop-brand-emblem {
+    display: block !important;
+    flex: 0 0 clamp(50px, 3.7vw, 66px) !important;
+    width: clamp(50px, 3.7vw, 66px) !important;
+    height: clamp(50px, 3.7vw, 66px) !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    vertical-align: middle !important;
+    filter: drop-shadow(0 3px 4px rgba(30, 20, 12, .18)) !important;
+  }
+}
