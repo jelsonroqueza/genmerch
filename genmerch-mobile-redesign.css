@@ -1823,9 +1823,9 @@
 
   body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark > .gm-mobile-brand-logo {
     display: block !important;
-    flex: 0 0 clamp(36px, 8.8vw, 40px) !important;
-    width: clamp(36px, 8.8vw, 40px) !important;
-    height: clamp(36px, 8.8vw, 40px) !important;
+    flex: 0 0 clamp(37.8px, 9.24vw, 42px) !important;
+    width: clamp(37.8px, 9.24vw, 42px) !important;
+    height: clamp(37.8px, 9.24vw, 42px) !important;
     align-self: center !important;
     aspect-ratio: 1 / 1 !important;
     max-width: none !important;
