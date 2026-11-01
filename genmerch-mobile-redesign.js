@@ -166,6 +166,11 @@
     let previousBodyStyles = null;
     let lockedScrollY = 0;
     let touchStartY = 0;
+    let closeTimer = null;
+    let isClosing = false;
+    let restoreFocusAfterClose = false;
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const drawerCloseDuration = 250;
 
     function lockStorefrontScroll() {
       lockedScrollY = window.scrollY || window.pageYOffset || 0;
@@ -224,29 +229,74 @@
 
     scrim.addEventListener('touchmove', preventBackgroundTouchScroll, { passive: false });
 
-    function closeMenu(restoreFocus) {
-      if (scrim.hidden) return;
+    function finishMenuClose() {
+      if (closeTimer !== null) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+      scrim.classList.remove('is-closing');
       scrim.hidden = true;
       scrim.setAttribute('aria-hidden', 'true');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('gm-mobile-menu-open');
+      isClosing = false;
+      if (restoreFocusAfterClose) toggle.focus();
+      restoreFocusAfterClose = false;
+    }
+
+    function closeMenu(restoreFocus, immediate) {
+      if (scrim.hidden) return;
+      if (restoreFocus !== false) restoreFocusAfterClose = true;
+      if (closeTimer !== null) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('gm-mobile-menu-open');
       unlockStorefrontScroll();
-      if (restoreFocus !== false) toggle.focus();
+
+      if (immediate || reducedMotionQuery.matches) {
+        finishMenuClose();
+        return;
+      }
+      if (isClosing) return;
+
+      isClosing = true;
+      scrim.classList.add('is-closing');
+      scrim.setAttribute('aria-hidden', 'true');
+      closeTimer = window.setTimeout(finishMenuClose, drawerCloseDuration);
     }
 
     function openMenu() {
       if (!mobileMedia.matches) return;
-      lockStorefrontScroll();
+      if (isClosing) {
+        if (closeTimer !== null) {
+          window.clearTimeout(closeTimer);
+          closeTimer = null;
+        }
+        isClosing = false;
+        restoreFocusAfterClose = false;
+        scrim.classList.remove('is-closing');
+      }
+      if (scrim.hidden) lockStorefrontScroll();
+      else if (!isClosing) return;
+
       scrim.hidden = false;
       scrim.setAttribute('aria-hidden', 'false');
       toggle.setAttribute('aria-expanded', 'true');
       document.body.classList.add('gm-mobile-menu-open');
+
+      // Ensure the entrance sequence restarts on every open, including a
+      // reopen that happens while a previous close animation is finishing.
+      void scrim.offsetWidth;
+      void panel.offsetWidth;
       const firstAction = query('button:not([disabled])', panel);
       if (firstAction) firstAction.focus();
     }
 
     toggle.addEventListener('click', function () {
-      if (scrim.hidden) openMenu();
+      if (scrim.hidden || isClosing) openMenu();
       else closeMenu(true);
     });
 
@@ -292,10 +342,10 @@
 
     mobileMedia.addEventListener
       ? mobileMedia.addEventListener('change', function (event) {
-          if (!event.matches) closeMenu(false);
+          if (!event.matches) closeMenu(false, true);
         })
       : mobileMedia.addListener(function (event) {
-          if (!event.matches) closeMenu(false);
+          if (!event.matches) closeMenu(false, true);
         });
   }
 
