@@ -10561,3 +10561,41 @@ body .site-header>.desktop-links button:first-child{display:block!important}
  body .site-header>.main-header>.nav>.header-actions #openCartButton{display:flex!important}
  body .site-header>.desktop-links{display:none!important}
 }
+
+
+/* Reference navigation recovery after storefront action hydration */
+body .site-header .header-actions{gap:clamp(12px,1.5vw,22px)!important;min-width:260px!important}
+body .site-header .header-actions #genmerchNotificationButton,
+body .site-header .header-actions .wishlist-header-button,
+body .site-header .header-actions #openCartButton,
+body .site-header .header-actions #customerAccountButton{
+  display:flex!important;flex:0 0 48px!important;width:48px!important;min-width:48px!important;max-width:48px!important;
+  padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important;
+}
+body .site-header .header-actions #customerAccountButton{align-items:center!important;justify-content:center!important}
+body .site-header .header-actions #customerAccountButton .header-icon{display:flex!important;width:31px!important;height:31px!important}
+body .site-header .header-actions .reference-header-extra{display:none!important}
+body .site-header .reference-desktop-links{
+  display:flex!important;position:relative!important;align-items:center!important;justify-content:flex-start!important;
+  gap:clamp(24px,4vw,68px)!important;width:100%!important;min-height:65px!important;margin:0!important;
+  padding:0 max(28px,calc((100% - 1500px)/2 + 58px))!important;box-sizing:border-box!important;
+  border-top:1px solid #efeeed!important;border-bottom:1px solid #efeeed!important;background:#fff!important;
+}
+body .site-header .reference-desktop-links button{
+  display:block!important;min-height:44px!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;color:#151515!important;font:700 14px/1 Lexend,Arial,sans-serif!important;white-space:nowrap!important;
+}
+body .site-header .reference-desktop-links button.active{
+  padding:0 27px!important;border-radius:24px!important;background:linear-gradient(180deg,#ff3543,#e51127)!important;color:#fff!important;box-shadow:0 4px 10px rgba(230,20,38,.2)!important;
+}
+@media(min-width:900px){
+ body .site-header .main-header>.desktop-links{display:none!important}
+}
+@media(max-width:899px){
+ body .site-header .header-actions{min-width:38px!important}
+ body .site-header .header-actions #genmerchNotificationButton,
+ body .site-header .header-actions .wishlist-header-button,
+ body .site-header .header-actions #customerAccountButton{display:none!important}
+ body .site-header .header-actions #openCartButton{display:flex!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important}
+ body .site-header .reference-desktop-links{display:none!important}
+}
