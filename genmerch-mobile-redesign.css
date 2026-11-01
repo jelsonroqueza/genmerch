@@ -3423,3 +3423,106 @@ html.customer-auth-scroll-locked body {
     filter: brightness(.94);
   }
 }
+
+
+/* Customer sidebar social links only — storefront social section remains unchanged. */
+@media screen and (max-width: 767px) {
+  .gm-mobile-menu-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    width: 100%;
+    margin-top: auto;
+    padding: 20px 12px 17px;
+    flex: 0 0 auto;
+  }
+
+  .gm-mobile-menu-social-link {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: 50%;
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, .12),
+      0 7px 13px rgba(35, 25, 20, .13),
+      inset 0 1px 1px rgba(255, 255, 255, .62);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gm-mobile-menu-social-link::before {
+    content: "";
+    position: absolute;
+    inset: 1px 1px 48%;
+    border-radius: 50% 50% 42% 42%;
+    background: linear-gradient(180deg, rgba(255,255,255,.48), rgba(255,255,255,0));
+    pointer-events: none;
+  }
+
+  .gm-mobile-menu-social-link svg {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 25px;
+    height: 25px;
+    fill: #fff;
+  }
+
+  .gm-mobile-social-facebook {
+    background: linear-gradient(145deg, #58a3ff 0%, #0866ff 52%, #0345b5 100%);
+    border-color: rgba(3, 69, 181, .38);
+  }
+
+  .gm-mobile-social-instagram {
+    background: linear-gradient(140deg, #ffd76a 0%, #fa7e1e 27%, #d62976 58%, #962fbf 79%, #4f5bd5 100%);
+    border-color: rgba(180, 43, 128, .35);
+  }
+
+  .gm-mobile-social-instagram svg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+  }
+
+  .gm-mobile-social-instagram .gm-mobile-social-instagram-dot {
+    fill: #fff;
+    stroke: none;
+  }
+
+  .gm-mobile-social-x {
+    background: radial-gradient(circle at 28% 12%, #555 0%, #191919 48%, #000 100%);
+    border-color: #555;
+  }
+
+  .gm-mobile-menu-social-link:active {
+    transform: translateY(2px) scale(.97);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .12), 0 3px 7px rgba(35, 25, 20, .1), inset 0 1px 1px rgba(255,255,255,.5);
+  }
+
+  .gm-mobile-menu-footer {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .gm-mobile-menu-social {
+    gap: 18px;
+  }
+  .gm-mobile-menu-social-link {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-mobile-menu-social-link {
+    transition: none !important;
+  }
+}
