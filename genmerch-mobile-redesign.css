@@ -1300,3 +1300,61 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* Header spacing refinement from user's latest mobile preview feedback. */
+@media screen and (max-width: 767px) {
+  /* Give the two-line brand lockup enough vertical room without shifting its center. */
+  body .site-header .main-header .nav {
+    grid-template-rows: 64px !important;
+    min-height: 64px !important;
+    height: 64px !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup {
+    height: 64px !important;
+    min-height: 64px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark {
+    min-height: 48px !important;
+    gap: 0 !important;
+    transform: none !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong {
+    font-size: clamp(1.28rem, 6.1vw, 1.55rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.035em !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
+    margin-top: 6px !important;
+    font-size: clamp(.58rem, 2.4vw, .64rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: .20em !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions {
+    height: 64px !important;
+    min-height: 64px !important;
+  }
+
+  body .site-header .main-header .nav > #gmMobileMenuToggle,
+  body .site-header .main-header .nav > .header-actions > #openCartButton {
+    align-self: center !important;
+  }
+
+  html {
+    scroll-padding-top: calc(78px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  body main.container > .hero,
+  body main.container > .catalog-search,
+  body main.container > .categories,
+  body main.container > #productGrid {
+    scroll-margin-top: calc(78px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
