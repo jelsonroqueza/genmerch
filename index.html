@@ -6325,7 +6325,7 @@
       const rememberedId=sellerGetRememberedAdminId();
       if(rememberedId){
         try{
-          const client=await getSellerAdminClient(false);
+          const client=await getSellerAdminClient();
           const {data,error}=await client.auth.getUser();
           if(error)throw error;
           const user=data&&data.user;
@@ -6360,11 +6360,43 @@
       showToast('You have logged out of Seller Centre. Enter the passcode again next time.');
     }
 
-    async function getSellerAdminClient(refreshSession){
-      const client=getCustomerAuthClient();let result=await client.auth.getSession();if(result.error)throw result.error;
-      let session=result.data&&result.data.session;
+    function sellerIsBrokenRefreshSessionError(error){
+      const message=String(error&&error.message||'');
+      const code=String(error&&error.code||'');
+      return /refresh.?token.*(not found|invalid)|invalid refresh token|refresh_token_not_found|invalid jwt|jwt expired|token is expired/i.test(message+' '+code);
+    }
+    async function sellerClearBrokenLocalSession(client){
+      try{
+        if(client&&client.auth&&typeof client.auth.signOut==='function'){
+          await client.auth.signOut({scope:'local'});
+        }
+      }catch(cleanupError){
+        console.warn('GENMERCH could not clear the expired local Seller Centre session automatically.',cleanupError);
+      }
+      sellerRememberAdminId('');
+      sellerRememberViewState(false);
+    }
+    async function getSellerAdminClient(){
+      const client=getCustomerAuthClient();
+      let result;
+      try{
+        result=await client.auth.getSession();
+      }catch(error){
+        if(sellerIsBrokenRefreshSessionError(error)){
+          await sellerClearBrokenLocalSession(client);
+          throw new Error('Your saved GENMERCH sign-in session is no longer valid. Please sign in again using the Account button, then reopen Seller Centre.');
+        }
+        throw error;
+      }
+      if(result.error){
+        if(sellerIsBrokenRefreshSessionError(result.error)){
+          await sellerClearBrokenLocalSession(client);
+          throw new Error('Your saved GENMERCH sign-in session is no longer valid. Please sign in again using the Account button, then reopen Seller Centre.');
+        }
+        throw result.error;
+      }
+      const session=result.data&&result.data.session;
       if(!session||!session.user)throw new Error('Please sign in first using the Account button with the authorized Seller Centre admin account.');
-      if(refreshSession){const refreshed=await client.auth.refreshSession();if(refreshed.error)throw refreshed.error;if(refreshed.data&&refreshed.data.session)session=refreshed.data.session;}
       if(!isAuthorizedSellerAdmin(session.user))throw new Error('This Supabase account is not one of the two authorized Seller Centre admin accounts.');
       return client;
     }
@@ -6373,9 +6405,15 @@
       if(String(input.value||'').trim()!==GENMERCH_SELLER_PASSCODE){sellerFeedback('sellerPasscodeFeedback','Incorrect passcode. Please try again.','error');input.value='';input.focus();return;}
       submit.disabled=true;submit.textContent='Verifying…';sellerFeedback('sellerPasscodeFeedback','Checking your Supabase admin session…','');
       try{
-        const client=await getSellerAdminClient(true);
+        const client=await getSellerAdminClient();
         const {data,error}=await client.auth.getUser();
-        if(error)throw error;
+        if(error){
+          if(sellerIsBrokenRefreshSessionError(error)){
+            await sellerClearBrokenLocalSession(client);
+            throw new Error('Your saved GENMERCH sign-in session is no longer valid. Please sign in again using the Account button, then reopen Seller Centre.');
+          }
+          throw error;
+        }
         const user=data&&data.user;
         if(!user||!isAuthorizedSellerAdmin(user))throw new Error('This Supabase account is not one of the two authorized Seller Centre admin accounts.');
         sellerRememberAdminId(user.id);
@@ -6383,7 +6421,18 @@
         sellerRememberViewState(true);
         closeSellerPasscode();sellerShowOverlay('sellerDashboardOverlay');switchSellerTab('products');await loadSellerProducts();
       }
-      catch(error){const message=error&&error.message?error.message:'Could not verify Seller Centre access.';if(/sign in first/i.test(message)){closeSellerPasscode();openCustomerAuth();showToast('Please sign in using the authorized Seller Centre admin account.');}else{sellerFeedback('sellerPasscodeFeedback',message,'error');input.value='';input.focus();}}
+      catch(error){
+        const message=error&&error.message?error.message:'Could not verify Seller Centre access.';
+        if(/sign in first|sign in again/i.test(message)){
+          closeSellerPasscode();
+          openCustomerAuth();
+          showToast(message);
+        }else{
+          sellerFeedback('sellerPasscodeFeedback',message,'error');
+          input.value='';
+          input.focus();
+        }
+      }
       finally{submit.disabled=false;submit.textContent='Unlock Seller Centre';}
     }
     function sellerSetLoadingRow(id,columns,message){const tbody=$(id);if(tbody)tbody.innerHTML='<tr><td colspan="'+columns+'" class="seller-table-empty">'+sellerEscape(message)+'</td></tr>';}
@@ -6449,7 +6498,7 @@
       }
     }
     function sellerSetCategoryOptions(categories){const select=$('sellerProductCategory'),previous=select.value;select.innerHTML='<option value="">Choose a category</option>'+categories.map(item=>'<option value="'+sellerEscape(item.id)+'">'+sellerEscape(item.name||'Unnamed category')+'</option>').join('');if(categories.some(item=>String(item.id)===previous))select.value=previous;}
-    async function sellerAddCustomCategory(){if(!sellerCentreIsUnlocked)return;const input=$('sellerCustomCategoryName'),name=String(input.value||'').trim();if(name.length<2||name.length>80){sellerFeedback('sellerProductFeedback','Enter a custom category name between 2 and 80 characters.','error');input.focus();return;}const button=$('sellerAddCustomCategoryButton');button.disabled=true;button.textContent='Saving…';try{const client=await getSellerAdminClient(false),slug=sellerSlugify(name);if(!slug)throw new Error('Use letters or numbers for the category name.');const existing=sellerCategories.find(row=>String(row.name||'').trim().toLowerCase()===name.toLowerCase());if(existing){$('sellerProductCategory').value=existing.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','That category already exists. It has been selected.','success');return;}const result=await client.from('categories').insert({name,slug,description:'Custom category created in Seller Centre',is_active:true,sort_order:sellerCategories.length+1}).select('id,name,slug,is_active,sort_order').single();if(result.error)throw result.error;sellerCategories.push(result.data);sellerSetCategoryOptions(sellerCategories);$('sellerProductCategory').value=result.data.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','Custom category “'+name+'” saved to Supabase and selected.','success');}catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not create category. Check category permissions.','error');}finally{button.disabled=false;button.textContent='＋ Add Custom';}}
+    async function sellerAddCustomCategory(){if(!sellerCentreIsUnlocked)return;const input=$('sellerCustomCategoryName'),name=String(input.value||'').trim();if(name.length<2||name.length>80){sellerFeedback('sellerProductFeedback','Enter a custom category name between 2 and 80 characters.','error');input.focus();return;}const button=$('sellerAddCustomCategoryButton');button.disabled=true;button.textContent='Saving…';try{const client=await getSellerAdminClient(),slug=sellerSlugify(name);if(!slug)throw new Error('Use letters or numbers for the category name.');const existing=sellerCategories.find(row=>String(row.name||'').trim().toLowerCase()===name.toLowerCase());if(existing){$('sellerProductCategory').value=existing.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','That category already exists. It has been selected.','success');return;}const result=await client.from('categories').insert({name,slug,description:'Custom category created in Seller Centre',is_active:true,sort_order:sellerCategories.length+1}).select('id,name,slug,is_active,sort_order').single();if(result.error)throw result.error;sellerCategories.push(result.data);sellerSetCategoryOptions(sellerCategories);$('sellerProductCategory').value=result.data.id;input.value='';sellerHandleCategoryChange();sellerFeedback('sellerProductFeedback','Custom category “'+name+'” saved to Supabase and selected.','success');}catch(error){sellerFeedback('sellerProductFeedback',error.message||'Could not create category. Check category permissions.','error');}finally{button.disabled=false;button.textContent='＋ Add Custom';}}
     function sellerUpdatePromotionPreview(){const type=String($('sellerPromotionType')?.value||'none'),price=Number($('sellerSellingPrice')?.value||0),node=$('sellerPromotionPreview');if(!node)return;if(type==='percent'){const percent=Number($('sellerPromotionType').value),sale=Math.round(price*(1-percent/100)*100)/100;node.textContent=price>0?'Customer price: '+money(sale)+' (save '+money(price-sale)+', '+percent+'% OFF).':'Enter a regular price to preview the discount.';}else if(type==='free_shipping_metro')node.textContent='Free Shipping for Metro Manila only. Verify the delivery zone at checkout.';else if(type==='free_delivery_metro')node.textContent='Free Delivery for Metro Manila only. Verify the delivery zone at checkout.';else node.textContent='No promotional discount will be applied.';}
 
     async function loadSellerProducts(){
@@ -6457,7 +6506,7 @@
       sellerSetLoadingRow('sellerProductsTableBody',6,'Loading products from Supabase…');
       sellerFeedback('sellerProductsFeedback','','');
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const results=await Promise.all([
           client.from('categories').select('id,name,slug,is_active,sort_order').eq('is_active',true).order('sort_order',{ascending:true}),
           client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,regular_price,promotion_type,promotion_value,is_active,is_deleted,deleted_at,is_demo,is_featured,location,created_at').order('created_at',{ascending:false}).limit(500),
@@ -6591,7 +6640,7 @@
       const originalLabel=button?button.textContent:'↶ Restore';
       if(button){button.disabled=true;button.textContent='Restoring…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('restore_genmerch_product',{p_product_id:productId});
         if(result.error)throw result.error;
         sellerInventoryLoaded=false;
@@ -6648,7 +6697,7 @@
       showCenteredActionStatus('Please Wait','loading');
       let deletionSucceeded=false,cleanupWarning='',storagePaths=[];
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const imageResult=await client.from('product_images').select('image_url').eq('product_id',productId);
         if(imageResult.error)throw imageResult.error;
         const imageRows=imageResult.data||[];
@@ -6716,7 +6765,7 @@
       if(!confirmed)return;
       showCenteredActionStatus('Please Wait','loading');
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('delete_genmerch_product',{p_product_id:productId});
         if(result.error)throw result.error;
         if(sellerEditingProductId&&String(sellerEditingProductId)===String(productId))resetSellerProductForm();
@@ -6785,7 +6834,7 @@
     async function openSellerProductEditor(productId){
       if(!sellerCentreIsUnlocked)return;sellerFeedback('sellerProductFeedback','','');
       try{
-        const client=await getSellerAdminClient(false),results=await Promise.all([
+        const client=await getSellerAdminClient(),results=await Promise.all([
           client.from('products').select('id,category_id,name,slug,sku,description,base_price,compare_at_price,regular_price,promotion_type,promotion_value,location,is_active').eq('id',productId).single(),
           client.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary,color_label').eq('product_id',productId).order('is_primary',{ascending:false}).order('sort_order',{ascending:true}),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active').eq('product_id',productId)
@@ -6866,7 +6915,7 @@
       const form=$('sellerProductForm'),button=$('sellerSaveProductButton');button.disabled=true;button.textContent=sellerEditingProductId?'Saving changes…':'Uploading photos…';sellerFeedback('sellerProductFeedback','','');
       const editingId=sellerEditingProductId,wasEditing=Boolean(editingId),uploadedPaths=[];let insertedImageRows=false,productCreatedId=null,removedImagesToRestore=[],removedDbImages=false,editGalleryCommitComplete=false,galleryCleanupWarning='';
       try{
-        const client=await getSellerAdminClient(false),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
+        const client=await getSellerAdminClient(),name=String($('sellerProductName').value||'').trim(),categoryId=String($('sellerProductCategory').value||'').trim();
         const categoryName=(sellerCategories.find(row=>String(row.id)===categoryId)||{}).name||'Other',location=String($('sellerProductLocation').value||'').trim(),description=String($('sellerProductDescription').value||'').trim();
         const regularPrice=Number($('sellerSellingPrice').value),promotionSelection=String($('sellerPromotionType').value||'none'),promotionType=['10','15','20','25','30','35','40','50','60','70'].includes(promotionSelection)?'percent':promotionSelection,promotionValue=promotionType==='percent'?Number(promotionSelection):0,originalRaw=String($('sellerOriginalPrice').value||'').trim(),original=originalRaw===''?null:Number(originalRaw),price=promotionType==='percent'?Math.round(regularPrice*(1-promotionValue/100)*100)/100:regularPrice;
         const selection=sellerUpdateGalleryCount(),files=selection.files,photoEntries=selection.entries,validation=sellerValidateFiles(files);
@@ -6934,7 +6983,7 @@
       }catch(error){
         if((uploadedPaths.length||removedDbImages)&&!editGalleryCommitComplete){
           try{
-            const client=await getSellerAdminClient(false);
+            const client=await getSellerAdminClient();
             if(insertedImageRows&&editingId)await client.from('product_images').delete().eq('product_id',editingId).in('image_url',uploadedPaths.map(path=>client.storage.from(SELLER_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl));
             if(uploadedPaths.length)await client.storage.from(SELLER_IMAGE_BUCKET).remove(uploadedPaths);
             if(editingId&&removedDbImages&&removedImagesToRestore.length){
@@ -6950,7 +6999,7 @@
           }catch(cleanupError){console.warn('Seller Centre gallery rollback was incomplete:',cleanupError);}
         }
         if(productCreatedId){
-          try{const client=await getSellerAdminClient(false);await client.from('product_images').delete().eq('product_id',productCreatedId);await client.from('product_variants').delete().eq('product_id',productCreatedId);await client.from('products').delete().eq('id',productCreatedId);}catch(_){}
+          try{const client=await getSellerAdminClient();await client.from('product_images').delete().eq('product_id',productCreatedId);await client.from('product_variants').delete().eq('product_id',productCreatedId);await client.from('products').delete().eq('id',productCreatedId);}catch(_){}
         }
         sellerFeedback('sellerProductFeedback',(error.message||'Could not save the product or gallery. Check Storage and database permissions.'),'error');
         showCenteredActionStatus(error.message||'Could not save the product. Please try again.','error',2400);
@@ -7004,7 +7053,7 @@
       sellerOrdersRealtimeSetupPromise=(async()=>{
         let client=null;
         try{
-          client=await getSellerAdminClient(false);
+          client=await getSellerAdminClient();
           if(!sellerCentreIsUnlocked||sellerCurrentTab!=='orders')return;
           if(sellerOrdersRealtimeChannel)return;
           const nextChannel=client.channel('genmerch-seller-orders-admin')
@@ -7080,7 +7129,7 @@
       if(!window.confirm('Update '+(orderNumber||'this order')+' to "'+sellerOrderStatusLabel(targetStatus)+'"? The customer will see this status in My Orders.'))return;
       if(button){button.disabled=true;button.textContent='Updating…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('update_genmerch_order_status',{p_order_id:orderId,p_new_status:targetStatus,p_note:''});
         if(result.error)throw result.error;
         sellerOrdersLoaded=false;
@@ -7105,7 +7154,7 @@
       if(!window.confirm('Mark '+(orderNumber||'this order')+' as shipped with '+courier+' and reference '+reference+'? The customer will see these shipping details.'))return;
       if(button){button.disabled=true;button.textContent='Saving shipment…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('mark_genmerch_order_shipped',{p_order_id:orderId,p_courier_name:courier,p_tracking_number:reference});
         if(result.error)throw result.error;
         let shipmentEmailSent=false;
@@ -7155,7 +7204,7 @@
       if(!window.confirm('Send the refund notification for '+(orderNumber||'this order')+'? Only continue if the refund has already been confirmed in GENMERCH.'))return;
       if(button){button.disabled=true;button.textContent='Sending Refund Email…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const response=await client.functions.invoke('send-genmerch-refund-email',{body:{order_id:orderId}});
         if(response.error)throw response.error;
         const data=response.data||{};
@@ -7173,7 +7222,7 @@
       if(!window.confirm('Mark '+(orderNumber||'this order')+' as completed? Payment must already be settled. This manual override will show Order Received to the customer.'))return;
       if(button){button.disabled=true;button.textContent='Completing…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('complete_genmerch_order_delivery',{p_order_id:orderId});
         if(result.error)throw result.error;
         await maybeSendGenmerchDeliverySurveyEmail(client,{order_id:orderId});
@@ -7192,7 +7241,7 @@
       if(!window.confirm(confirmation))return;
       if(button){button.disabled=true;button.textContent='Confirming payment…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('settle_genmerch_order_payment',{
           p_order_id:orderId,
           p_note:'Seller Centre admin manually confirmed payment was received'
@@ -7439,7 +7488,7 @@
       if(!silent)sellerSetLoadingRow('sellerOrdersTableBody',14,'Loading orders from Supabase…');
       sellerFeedback('sellerOrdersFeedback','','');
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.from('orders').select('id,order_number,customer_name,customer_phone,customer_email,status,payment_status,payment_method,total_amount,subtotal,shipping_fee,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,delivery_zone,created_at,inventory_reserved,inventory_released,cancellation_reason').order('created_at',{ascending:false}).limit(200);
         if(result.error)throw result.error;
         const rows=Array.isArray(result.data)?result.data:[];
@@ -7466,7 +7515,7 @@
       if(!window.confirm('Cancel order '+displayNumber+'? If stock was reserved, the database will return it once and record the movement. Shipped/delivered orders must use a returns workflow.'))return;
       if(button){button.disabled=true;button.textContent='Cancelling…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('cancel_genmerch_order',{p_order_id:orderId,p_reason:'Cancelled by Seller Centre administrator'});
         if(result.error)throw result.error;
         let cancellationEmailStatus=' Cancellation email sent to the customer.';
@@ -7511,7 +7560,7 @@
       }
       if(button){button.disabled=true;button.textContent='Deleting…';}
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('delete_genmerch_order',{
           p_order_id:orderId,
           p_confirmation_order_number:displayNumber,
@@ -7750,7 +7799,7 @@
       sellerFeedback('sellerInventoryFeedback','Checking admin access and Google Sheets authorization…','');
       let spreadsheetUrl='';
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const sessionResult=await client.auth.getSession();
         if(sessionResult.error)throw sessionResult.error;
         const session=sessionResult.data&&sessionResult.data.session;
@@ -8009,7 +8058,7 @@
       sellerFeedback('sellerInventoryFeedback','','');
       sellerSetLoadingRow('sellerInventoryTableBody',7,'Loading inventory from Supabase…');
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const results=await Promise.all([
           client.from('products').select('id,name,category_id,base_price,is_active,is_deleted').eq('is_deleted',false),
           client.from('product_variants').select('id,product_id,sku,size_label,color_label,price_override,stock_quantity,is_active,updated_at').order('updated_at',{ascending:false}),
@@ -8055,7 +8104,7 @@
       button.disabled=true;const priorLabel=button.textContent;button.textContent='Saving…';
       showCenteredActionStatus('Updating inventory, please wait...','loading');
       try{
-        const client=await getSellerAdminClient(false);
+        const client=await getSellerAdminClient();
         const result=await client.rpc('adjust_genmerch_stock',{p_variant_id:variantId,p_adjustment:direction*quantity,p_reason:String($('sellerStockReason').value||'').trim()||null});
         if(result.error)throw result.error;
         sellerInventoryLoaded=false;
