@@ -2924,3 +2924,19 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   color: #ed1c2e !important;
   text-shadow: none !important;
 }
+
+
+/* Tighten only the GEN + MERCH pair into one continuous wordmark. */
+#gmcaOverlay .gmca-brand-line > .gmca-word-merch {
+  margin-left: -7px;
+}
+@media (max-width:760px) {
+  #gmcaOverlay .gmca-brand-line > .gmca-word-merch {
+    margin-left: -4px;
+  }
+}
+@media (max-width:359px) {
+  #gmcaOverlay .gmca-brand-line > .gmca-word-merch {
+    margin-left: -3px;
+  }
+}
