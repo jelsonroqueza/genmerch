@@ -3047,3 +3047,25 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
     margin: 0 !important;
   }
 }
+
+
+/* GENMERCH mobile density pass — compact account cards without shrinking tap targets. */
+@media (max-width: 760px) {
+  #gmcaOverlay .gmca-content { padding-right: 10px !important; padding-left: 10px !important; }
+  #gmcaOverlay .gmca-welcome-card { gap: 8px !important; margin: 8px 0 10px !important; padding: 11px !important; }
+  #gmcaOverlay .gmca-list { gap: 7px !important; }
+  #gmcaOverlay .gmca-order-card { padding: 10px !important; border-radius: 10px !important; }
+  #gmcaOverlay .gmca-order-head { gap: 7px !important; padding-bottom: 7px !important; }
+  #gmcaOverlay .gmca-order-card p,
+  #gmcaOverlay .gmca-order-card small { line-height: 1.35 !important; }
+  #gmcaOverlay .gmca-order-card button,
+  #gmcaOverlay .gmca-order-card a { min-height: 40px; }
+  #gmcaOverlay .gmca-pane-title { margin-bottom: 8px !important; }
+  #gmcaOverlay .gmca-membership-card { gap: 10px !important; margin: 9px 0 11px !important; padding: 12px !important; }
+  #gmcaOverlay .gmca-membership-data { gap: 9px !important; }
+  #gmcaOverlay .gmca-membership-progress { padding-top: 8px !important; }
+}
+@media (max-width: 480px) {
+  #gmcaOverlay .gmca-content { padding-right: 8px !important; padding-left: 8px !important; }
+  #gmcaOverlay .gmca-order-card { padding: 9px !important; }
+}
