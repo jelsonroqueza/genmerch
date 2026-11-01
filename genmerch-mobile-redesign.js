@@ -330,6 +330,17 @@
         scrollToCategories();
       } else if (actionName === 'testimonials') {
         window.dispatchEvent(new CustomEvent('genmerch:open-trust-testimonials'));
+      } else if (actionName === 'partner') {
+        const partnerSection = byId('footerPartnerSection');
+        if (partnerSection) {
+          window.setTimeout(function () {
+            partnerSection.scrollIntoView({
+              behavior: reducedMotionQuery.matches ? 'auto' : 'smooth',
+              block: 'start'
+            });
+            partnerSection.focus({ preventScroll: true });
+          }, 40);
+        }
       } else if (targetSelector) {
         clickExisting(targetSelector);
       }
