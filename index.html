@@ -5173,36 +5173,119 @@
     function openPartnerApplication(){
       const formContent = `
         <div class="partner-application-content">
-          <p class="partner-application-intro">Interested in working with GENMERCH — Suot Apparel? Share your contact details, business plans, selling channels, and product interests below. We’ll review your application and contact you through your preferred method. Required fields are marked <strong>*</strong>.</p>
+          <p class="partner-application-intro">A few quick steps to introduce your business and explore a partnership with GENMERCH. Your progress is saved while this form stays open. Required fields are marked <strong>*</strong>.</p>
           <form id="partnerApplicationForm" novalidate>
             <input type="hidden" id="partnerFormStartedAt" name="form_started_at" value="">
             <div class="partner-honeypot" aria-hidden="true"><label for="partnerWebsiteTrap">Leave this field blank</label><input id="partnerWebsiteTrap" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-            <div class="partner-form-grid">
+            <div class="partner-form-stepper" aria-label="Application progress">
+              <div class="partner-step-progress-track"><span id="partnerStepProgressBar"></span></div>
+              <div class="partner-step-indicators">
+                <div class="partner-step-indicator is-active" data-step-indicator="0"><span>1</span><small>Contact</small></div>
+                <div class="partner-step-indicator" data-step-indicator="1"><span>2</span><small>Business</small></div>
+                <div class="partner-step-indicator" data-step-indicator="2"><span>3</span><small>Finish</small></div>
+              </div>
+              <p class="partner-step-caption" id="partnerStepCaption">Step 1 of 3 · Contact information</p>
+            </div>
+            <section class="partner-form-step is-active" data-partner-step="0" aria-label="Contact information">
+              <div class="partner-step-heading"><span>01</span><div><h3>Let’s get to know you</h3><p>Start with your contact details.</p></div></div>
+              <div class="partner-form-grid">
               <div class="partner-form-field"><label for="partnerFullName">Full name <span class="required">*</span></label><input id="partnerFullName" name="full_name" type="text" autocomplete="name" maxlength="120" required placeholder="Your complete name"></div>
               <div class="partner-form-field"><label for="partnerBusinessName">Business / brand name</label><input id="partnerBusinessName" name="business_name" type="text" autocomplete="organization" maxlength="160" placeholder="Business or shop name (optional)"></div>
               <div class="partner-form-field"><label for="partnerEmail">Email address <span class="required">*</span></label><input id="partnerEmail" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></div>
               <div class="partner-form-field"><label for="partnerPhone">Mobile number <span class="required">*</span></label><input id="partnerPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" pattern="09[0-9]{9}" required placeholder="09171234567" title="Use an 11-digit Philippine mobile number beginning with 09."></div>
               <div class="partner-form-field partner-form-field-full"><label for="partnerLocation">City / municipality and province <span class="required">*</span></label><input id="partnerLocation" name="location" type="text" autocomplete="address-level2" maxlength="160" required placeholder="e.g. Mandaluyong City, Metro Manila"></div>
+              </div>
+            </section>
+            <section class="partner-form-step" data-partner-step="1" aria-label="Business and partnership details" hidden>
+              <div class="partner-step-heading"><span>02</span><div><h3>Tell us about your business</h3><p>Choose the partnership path that fits your plans.</p></div></div>
+              <div class="partner-form-grid">
               <div class="partner-form-field"><label for="partnerType">How would you like to partner? <span class="required">*</span></label><select id="partnerType" name="partner_type" required><option value="">Select partnership type</option><option value="Reseller">Reseller</option><option value="Wholesaler">Wholesaler</option><option value="Brand Affiliate">Brand Affiliate</option></select></div>
               <div class="partner-form-field"><label for="partnerBusinessStage">Business stage</label><select id="partnerBusinessStage" name="business_stage"><option value="">Select one (optional)</option><option value="Already operating">Already selling / operating</option><option value="Starting soon">Planning to start soon</option><option value="Exploring options">Still exploring options</option></select></div>
               <div class="partner-form-field"><label for="partnerSellingChannels">Where do you sell?</label><select id="partnerSellingChannels" name="selling_channels"><option value="">Select selling channel</option><option value="Facebook / Instagram / TikTok">Facebook / Instagram / TikTok</option><option value="Marketplace / online store">Marketplace / online store</option><option value="Physical store">Physical store</option><option value="Multiple channels">Multiple channels</option><option value="Not selling yet">Not selling yet</option></select></div>
+              </div>
+            </section>
+            <section class="partner-form-step" data-partner-step="2" aria-label="Product interests and confirmation" hidden>
+              <div class="partner-step-heading"><span>03</span><div><h3>Almost there</h3><p>Share your interests and confirm your application.</p></div></div>
+              <div class="partner-form-grid">
               <div class="partner-form-field"><label for="partnerProductInterest">Products you are interested in</label><select id="partnerProductInterest" name="interested_products"><option value="">Select product interest</option><option value="T-Shirts">T-Shirts</option><option value="Shorts">Shorts</option><option value="Sandos">Sandos</option><option value="Mixed / all categories">Mixed / all categories</option><option value="Other / future releases">Other / future releases</option></select></div>
               <div class="partner-form-field"><label for="partnerOrderVolume">Estimated monthly order volume</label><select id="partnerOrderVolume" name="estimated_monthly_orders"><option value="">Select an estimate</option><option value="1–10 pieces">1–10 pieces</option><option value="11–30 pieces">11–30 pieces</option><option value="31–100 pieces">31–100 pieces</option><option value="More than 100 pieces">More than 100 pieces</option><option value="Not sure yet">Not sure yet</option></select></div>
               <div class="partner-form-field partner-form-field-full"><label for="partnerSocialLink">Website / shop / social media link</label><input id="partnerSocialLink" name="website_social" type="url" maxlength="240" placeholder="https://... (optional)"></div>
               <div class="partner-form-field"><label for="partnerPreferredContact">Preferred contact method <span class="required">*</span></label><select id="partnerPreferredContact" name="preferred_contact" required><option value="Either">Either email or phone</option><option value="Email">Email</option><option value="Phone">Phone</option></select></div>
               <div class="partner-form-field"><label for="partnerMessage">Anything else we should know?</label><textarea id="partnerMessage" name="message" maxlength="2500" placeholder="Tell us about your goals, target customers, or questions (optional)"></textarea></div>
-            </div>
-            <label class="partner-consent" for="partnerPrivacyConsent"><input id="partnerPrivacyConsent" name="privacy_consent" type="checkbox" required><span>I confirm that the information above is accurate and allow GENMERCH to use it to review this application and contact me about a potential partnership.</span></label>
-            <p class="partner-privacy-note">Please do not include passwords, payment-card details, or sensitive identity documents. See our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. Application and partner-pricing approval depend on review and agreed terms.</p>
-            <div class="partner-form-status" id="partnerApplicationMessage" role="status" aria-live="polite" hidden></div>
-            <button class="partner-submit-btn" id="partnerApplicationSubmit" type="submit">Submit Partner Application</button>
+              </div>
+              <label class="partner-consent" for="partnerPrivacyConsent"><input id="partnerPrivacyConsent" name="privacy_consent" type="checkbox" required><span>I confirm that the information above is accurate and allow GENMERCH to use it to review this application and contact me about a potential partnership.</span></label>
+              <p class="partner-privacy-note">Please do not include passwords, payment-card details, or sensitive identity documents. See our <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. Application and partner-pricing approval depend on review and agreed terms.</p>
+              <div class="partner-form-status" id="partnerApplicationMessage" role="status" aria-live="polite" hidden></div>
+              <div class="partner-step-actions">
+                <button class="partner-step-back" id="partnerStepBack" type="button" hidden>← Back</button>
+                <button class="partner-step-next" id="partnerStepNext" type="button">Continue <span aria-hidden="true">→</span></button>
+              </div>
+              <button class="partner-submit-btn" id="partnerApplicationSubmit" type="submit">Submit Partner Application</button>
+            </section>
           </form>
         </div>`;
       showNotice('Partner With Us — Apply Now',formContent);
       const modal=$('noticeOverlay').querySelector('.notice-modal');
       if(modal)modal.classList.add('genmerch-partner-modal');
       $('partnerFormStartedAt').value=String(Date.now());
-      $('partnerApplicationForm').addEventListener('submit',submitPartnerApplication);
+      const form=$('partnerApplicationForm');
+      form.addEventListener('submit',submitPartnerApplication);
+      setupPartnerApplicationSteps(form);
+    }
+
+    function setupPartnerApplicationSteps(form){
+      const panels=Array.from(form.querySelectorAll('[data-partner-step]'));
+      const indicators=Array.from(form.querySelectorAll('[data-step-indicator]'));
+      const back=$('partnerStepBack');
+      const next=$('partnerStepNext');
+      const submit=$('partnerApplicationSubmit');
+      const progress=$('partnerStepProgressBar');
+      const caption=$('partnerStepCaption');
+      const labels=['Contact information','Business profile','Product interests & confirmation'];
+      let currentStep=0;
+      function showStep(index,animate=true){
+        currentStep=Math.max(0,Math.min(panels.length-1,index));
+        panels.forEach((panel,i)=>{
+          panel.hidden=i!==currentStep;
+          panel.classList.toggle('is-active',i===currentStep);
+          panel.classList.remove('is-entering');
+        });
+        indicators.forEach((indicator,i)=>{
+          indicator.classList.toggle('is-active',i===currentStep);
+          indicator.classList.toggle('is-complete',i<currentStep);
+          if(i===currentStep)indicator.setAttribute('aria-current','step');
+          else indicator.removeAttribute('aria-current');
+        });
+        if(progress)progress.style.width=((currentStep/(panels.length-1))*100)+'%';
+        if(caption)caption.textContent='Step '+(currentStep+1)+' of '+panels.length+' · '+labels[currentStep];
+        if(back)back.hidden=currentStep===0;
+        if(next)next.hidden=currentStep===panels.length-1;
+        if(submit)submit.hidden=currentStep!==panels.length-1;
+        if(animate){
+          const active=panels[currentStep];
+          active.classList.remove('is-entering');
+          void active.offsetWidth;
+          active.classList.add('is-entering');
+        }
+        const content=$('noticeContent');
+        if(content)content.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+      }
+      function validateCurrentStep(){
+        const fields=Array.from(panels[currentStep].querySelectorAll('input,select,textarea')).filter(field=>field.willValidate);
+        for(const field of fields){
+          if(!field.checkValidity()){
+            field.reportValidity();
+            field.focus({preventScroll:false});
+            return false;
+          }
+        }
+        return true;
+      }
+      if(next)next.addEventListener('click',()=>{
+        if(validateCurrentStep())showStep(currentStep+1);
+      });
+      if(back)back.addEventListener('click',()=>showStep(currentStep-1));
+      showStep(0,false);
     }
 
     async function submitPartnerApplication(event){
