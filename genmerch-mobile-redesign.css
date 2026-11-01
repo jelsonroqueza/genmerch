@@ -462,7 +462,7 @@
     grid-area: deals !important;
     width: min(100%, 310px) !important;
     max-width: 100% !important;
-    margin: -4px auto 10px !important;
+    margin: -9px auto 10px !important;
   }
 
   /* A mobile-only clone reuses the four live benefit items already in the hero. */
