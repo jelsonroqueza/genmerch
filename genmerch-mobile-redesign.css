@@ -1226,3 +1226,14 @@
     max-width: 44px !important;
   }
 }
+
+
+/* Keep the document viewport as the scroll container so the compact sticky
+   storefront header remains pinned while the page scrolls vertically. */
+@media screen and (max-width: 767px) {
+  html,
+  body {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+  }
+}
