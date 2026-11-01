@@ -3559,3 +3559,64 @@ html.customer-auth-scroll-locked body {
     transition: none !important;
   }
 }
+
+
+/* Premium Flash Deals lightning bolt: metallic gold face, crisp highlight and controlled electric glow. */
+main.container .hero .flash-deals-lightning {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: clamp(34px, 3.8vw, 46px) !important;
+  height: clamp(40px, 4.4vw, 54px) !important;
+  margin: 0 1px 0 0 !important;
+  padding: 0 !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  vertical-align: middle !important;
+  filter: drop-shadow(0 3px 2px rgba(112, 55, 0, .28)) drop-shadow(0 0 7px rgba(255, 221, 92, .52)) !important;
+}
+
+main.container .hero .flash-deals-bolt-svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+main.container .hero .gm-flash-bolt-shadow {
+  fill: #8e4a00;
+  opacity: .34;
+  transform: translate(1.2px, 2px);
+}
+
+main.container .hero .gm-flash-bolt-face {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .65));
+}
+
+main.container .hero .gm-flash-bolt-glint {
+  opacity: .78;
+}
+
+@media (max-width: 600px) {
+  main.container .hero .flash-deals-lightning {
+    width: 29px !important;
+    height: 36px !important;
+    margin-right: 0 !important;
+    filter: drop-shadow(0 2px 2px rgba(112, 55, 0, .24)) drop-shadow(0 0 5px rgba(255, 221, 92, .46)) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  main.container .hero .flash-deals-lightning {
+    width: 25px !important;
+    height: 32px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.container .hero .flash-deals-lightning {
+    animation: none !important;
+  }
+}
