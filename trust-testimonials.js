@@ -165,6 +165,7 @@
     var section = document.createElement('section');
     section.className = 'gmtt-section';
     section.id = 'genmerchTrustTestimonials';
+    section.hidden = true;
     section.setAttribute('aria-labelledby', 'gmttTitle');
     section.innerHTML =
       '<div class="gmtt-heading">' +
@@ -477,9 +478,22 @@
     }
   }
 
+  function openPublicSection() {
+    var section = byId('genmerchTrustTestimonials');
+    if (!section) return;
+    section.hidden = false;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var heading = byId('gmttTitle');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus({ preventScroll: true });
+    }
+  }
+
   function init() {
     injectPublicSection();
     installSellerCentreTab();
+    window.addEventListener('genmerch:open-trust-testimonials', openPublicSection);
     if (!byId('genmerchTrustTestimonials')) return;
     loadTestimonials().catch(function () {});
     startRealtime();
