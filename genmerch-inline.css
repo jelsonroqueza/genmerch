@@ -10620,3 +10620,27 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
     transition: none !important;
   }
 }
+
+
+/* GENMERCH mobile density pass — product details modal. */
+@media (max-width: 760px) {
+  #productOverlay .product-modal { max-height: 92dvh !important; }
+  #productOverlay .modal-head { min-height: 50px !important; padding: 8px 12px !important; }
+  #productOverlay .product-modal-body { padding: 12px !important; }
+  #productOverlay .product-modal-icon { min-height: 125px !important; margin-bottom: 8px !important; padding: 8px !important; }
+  #productOverlay .product-modal-icon img,
+  #productOverlay #productGalleryMainImage { max-height: clamp(160px, 29dvh, 230px) !important; }
+  #productOverlay .product-modal-gallery { margin-bottom: 14px !important; }
+  #productOverlay .product-detail-size-selector,
+  #productOverlay .product-detail-quantity { margin: 9px 0 !important; padding: 11px !important; border-radius: 12px !important; }
+  #productOverlay .product-color-heading,
+  #productOverlay .product-detail-size-heading,
+  #productOverlay .product-detail-quantity-label { margin-bottom: 8px !important; }
+  #productOverlay .product-detail-size-options { gap: 7px !important; margin-top: 7px !important; }
+  #productOverlay .product-detail-size-option { min-width: 40px !important; min-height: 40px !important; padding: 8px 10px !important; }
+  #productOverlay .product-detail-actions { gap: 8px !important; padding: 9px 11px calc(9px + env(safe-area-inset-bottom)) !important; }
+}
+@media (max-width: 420px) {
+  #productOverlay .product-modal-body { padding: 10px !important; }
+  #productOverlay .product-modal-icon { min-height: 112px !important; }
+}
