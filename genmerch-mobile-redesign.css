@@ -1805,3 +1805,46 @@
     margin-right: 8px !important;
   }
 }
+
+
+/* Mobile header brand lockup: high-resolution cart emblem to the left of GENMERCH. */
+@media screen and (max-width: 767px) {
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: max-content !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark > .gm-mobile-brand-logo {
+    display: block !important;
+    flex: 0 0 clamp(30px, 8.5vw, 36px) !important;
+    width: clamp(30px, 8.5vw, 36px) !important;
+    height: clamp(30px, 8.5vw, 36px) !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    image-rendering: auto;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark > .gm-mobile-brand-copy {
+    display: flex !important;
+    flex: 0 1 auto !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+}
