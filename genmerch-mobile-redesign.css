@@ -3391,3 +3391,35 @@ html.customer-auth-scroll-locked body {
     font-size: 16px !important;
   }
 }
+
+
+/* GENMERCH V2.0 — reference-aligned mobile catalog search button placement. */
+@media screen and (max-width: 767px) {
+  main.container > .catalog-search {
+    padding: 0 0 0 12px !important;
+    border-radius: 999px !important;
+    background: #fff !important;
+    border-color: #e8e8eb !important;
+    overflow: hidden !important;
+  }
+
+  main.container > .catalog-search input {
+    background: #fff !important;
+  }
+
+  main.container > .catalog-search button {
+    align-self: stretch !important;
+    flex: 0 0 58px !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    height: auto !important;
+    min-height: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 999px 999px 0 !important;
+    background: linear-gradient(135deg, #f02d3a, #c91628) !important;
+  }
+
+  main.container > .catalog-search button:active {
+    filter: brightness(.94);
+  }
+}
