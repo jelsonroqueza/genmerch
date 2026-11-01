@@ -392,7 +392,7 @@
               '</div>' +
             '</div>' +
             '<div class="gmca-header-actions">' +
-              '<button type="button" class="gmca-reload-button" id="gmcaReloadButton" aria-label="Reload account data" title="Fetch the latest account information and notifications from the database"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reload</span></button>' +
+
               '<button type="button" class="gmca-notification-button" id="gmcaNotificationButton" aria-label="Order notifications" title="Order notifications"><span class="gmca-notification-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="gmca-notification-badge" id="gmcaNotificationBadge" hidden>0</span></span></button>' +
               '<button type="button" class="gmca-close" id="gmcaClose" aria-label="Close account">×</button>' +
             '</div>' +
@@ -446,7 +446,7 @@
       if (!event.target.closest('.gmca-address-autocomplete')) hideAddressBookSuggestions();
     });
     $('gmcaClose').addEventListener('click', closeAccount);
-    $('gmcaReloadButton').addEventListener('click', () => reloadAccountDataFromHeader());
+
     $('gmcaNotificationButton').addEventListener('click', () => {
       if (typeof window.toggleGenmerchNotifications === 'function') window.toggleGenmerchNotifications();
       else showAlert('Order notifications are temporarily unavailable. Please refresh and try again.', 'warning');
