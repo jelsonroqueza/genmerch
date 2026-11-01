@@ -2940,3 +2940,88 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
     margin-left: -3px;
   }
 }
+
+
+/* Mobile My Account header — compact spacing and balanced controls. */
+@media (max-width:760px) {
+  /* The overlay already applies the iPhone safe-area inset; do not apply it twice here. */
+  #gmcaOverlay .gmca-header-top {
+    gap:7px;
+    padding:7px 12px 8px;
+  }
+  #gmcaOverlay .gmca-brand {
+    gap:8px;
+  }
+  #gmcaOverlay .gmca-brand-mark {
+    flex-basis:45px;
+    width:45px;
+    height:36px;
+  }
+  #gmcaOverlay .gmca-brand-line {
+    gap:3px;
+    line-height:1.08;
+  }
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size:.88rem;
+    line-height:1.1;
+  }
+  #gmcaOverlay .gmca-header p {
+    margin-top:2px;
+    line-height:1.22;
+  }
+  #gmcaOverlay .gmca-header-actions {
+    gap:6px;
+  }
+  #gmcaOverlay .gmca-reload-button {
+    min-height:36px;
+  }
+  #gmcaOverlay .gmca-notification-button {
+    flex-basis:36px;
+    width:36px;
+    height:36px;
+    min-width:36px;
+    min-height:36px;
+  }
+  #gmcaOverlay .gmca-close {
+    flex-basis:36px;
+    width:36px;
+    height:36px;
+    min-width:36px;
+    min-height:36px;
+    font-size:1.25rem;
+  }
+  #gmcaOverlay .gmca-tabs {
+    padding-top:4px;
+  }
+  #gmcaOverlay .gmca-tabs button {
+    min-height:44px;
+    padding-top:7px;
+    padding-bottom:7px;
+  }
+  #gmcaOverlay .gmca-content {
+    padding-top:10px;
+  }
+}
+@media (max-width:480px) {
+  #gmcaOverlay .gmca-header-top {
+    padding-right:9px;
+    padding-left:9px;
+  }
+  #gmcaOverlay .gmca-brand-mark {
+    flex-basis:43px;
+    width:43px;
+    height:35px;
+  }
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size:.82rem;
+  }
+  #gmcaOverlay .gmca-header p {
+    font-size:.62rem;
+    line-height:1.2;
+  }
+}
+@media (max-width:359px) {
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size:.77rem;
+  }
+}
