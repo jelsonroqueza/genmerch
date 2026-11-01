@@ -10710,3 +10710,88 @@ body .site-header .reference-desktop-links button.active{
   .gm-mobile-drawer-head button{width:38px!important;height:38px!important;border:0!important;background:transparent!important;font-size:31px!important;line-height:1!important;color:#222!important}
   .gm-mobile-drawer-panel>button:not(.gm-mobile-drawer-backdrop){padding:17px 6px!important;border:0!important;border-bottom:1px solid #f0eeee!important;background:#fff!important;text-align:left!important;color:#202020!important;font:700 16px/1 Lexend,Arial,sans-serif!important}
 }
+
+
+/* Reference-matched desktop header and mobile hero */
+@media(min-width:900px){
+  body .site-header>.main-header>.nav{
+    grid-template-columns:320px minmax(320px,470px) minmax(280px,1fr)!important;
+    column-gap:clamp(18px,2vw,34px)!important;
+  }
+  body .site-header .main-header .nav .header-actions{
+    width:clamp(280px,22vw,340px)!important;min-width:280px!important;max-width:340px!important;
+    justify-content:space-between!important;gap:0!important;
+  }
+  body .site-header .main-header .nav .header-actions>#genmerchNotificationButton,
+  body .site-header .main-header .nav .header-actions>.wishlist-header-button,
+  body .site-header .main-header .nav .header-actions>#openCartButton,
+  body .site-header .main-header .nav .header-actions>#customerAccountButton,
+  body .site-header .main-header .nav .header-actions>#customerAccountButton:not(.customer-account-signed-in){
+    display:flex!important;flex:0 0 56px!important;width:56px!important;min-width:56px!important;max-width:56px!important;
+  }
+  body .site-header .main-header .nav .header-actions .header-icon{width:31px!important;height:31px!important}
+  body .site-header .main-header .nav .header-actions small,
+  body .site-header .main-header .nav .header-actions .customer-account-label{
+    display:block!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important;
+  }
+}
+@media(max-width:899px){
+  body .site-header .main-header .nav{
+    grid-template-columns:42px minmax(0,1fr) 42px!important;
+    grid-template-rows:62px 54px!important;height:116px!important;min-height:116px!important;
+    padding-inline:12px!important;
+  }
+  body .site-header .main-header .nav>.brand-lockup{
+    width:min(52vw,225px)!important;max-width:calc(100vw - 116px)!important;
+  }
+  body .site-header .main-header .nav>.brand-lockup .brand-word{max-height:34px!important}
+  body .site-header .main-header .nav>.header-menu-trigger,
+  body .site-header .main-header .nav>.header-actions,
+  body .site-header .main-header .nav>.header-actions #openCartButton{
+    width:42px!important;min-width:42px!important;max-width:42px!important;height:42px!important;
+  }
+  body .site-header .main-header .nav>.header-search{height:46px!important}
+  main.container{padding:10px 9px 0!important}
+  main.container .hero{
+    display:flex!important;flex-direction:column!important;border-radius:13px!important;background:#fff0e3!important;overflow:hidden!important;
+  }
+  main.container .hero>.hero-copy{display:contents!important}
+  main.container .hero>.hero-brand-lockup{
+    order:1!important;align-self:center!important;width:min(68%,245px)!important;margin:15px auto 7px!important;
+  }
+  main.container .hero>.hero-tagline{
+    order:2!important;align-self:center!important;margin:0 auto 12px!important;padding:8px 14px!important;font-size:10px!important;
+  }
+  main.container .hero>.hero-art{
+    order:3!important;width:100%!important;min-height:0!important;height:250px!important;margin:0!important;background:#f56318!important;
+  }
+  main.container .hero>.hero-art .hero-models-photo{
+    display:block!important;width:100%!important;height:250px!important;object-fit:cover!important;object-position:center top!important;
+  }
+  main.container .hero>.shop-now{
+    order:4!important;position:relative!important;z-index:2!important;align-self:center!important;width:min(74%,278px)!important;
+    margin:-55px auto 14px!important;min-height:50px!important;
+  }
+  main.container .hero>.hero-benefits.genmerch-benefit-strip{
+    order:5!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;
+    width:100%!important;margin:0!important;padding:11px 3px 6px!important;background:#fff!important;
+  }
+  main.container .hero>.hero-benefits .hero-benefit-item{
+    min-height:62px!important;padding:4px 1px!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;
+  }
+  main.container .hero>.hero-benefits .hero-benefit-icon{transform:scale(.82)!important}
+  main.container .hero>.hero-benefits .hero-benefit-copy strong{font-size:8px!important;line-height:1.15!important}
+  main.container .hero .flash-deals-banner{display:none!important}
+  .trust-strip{
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;
+    margin:0!important;padding:7px 3px!important;background:#fff!important;
+  }
+  .trust-strip>div{
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+    min-width:0!important;padding:3px 1px!important;text-align:center!important;border:0!important;
+  }
+  .trust-strip .trust-icon{width:28px!important;height:28px!important;flex:0 0 28px!important}
+  .trust-strip p{display:block!important;min-width:0!important;margin:3px 0 0!important}
+  .trust-strip p b{display:block!important;font-size:8px!important;line-height:1.1!important}
+  .trust-strip p small{display:none!important}
+}
