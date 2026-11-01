@@ -3025,3 +3025,25 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
     font-size:.77rem;
   }
 }
+
+
+/* Mobile account: let the footer follow the actual content instead of stretching
+   the content pane to fill the entire screen and creating a large blank band. */
+@media (max-width:760px) {
+  #gmcaOverlay .gmca-content {
+    flex: 0 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  #gmcaOverlay .gmca-footer {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    padding: 8px 12px max(9px, env(safe-area-inset-bottom)) !important;
+    gap: 6px !important;
+  }
+  #gmcaOverlay .gmca-footer > span {
+    margin: 0 !important;
+  }
+}
