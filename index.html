@@ -3829,9 +3829,25 @@
       renderCategoryFilters();
       renderProducts();
     });
+    // Run an explicit search, then move the customer to the results whether matches exist or not.
+    function performCatalogSearch(){
+      renderProducts();
+      const resultsHeading=$('productSectionTitle');
+      if(!resultsHeading) return;
+      window.requestAnimationFrame(()=>{
+        resultsHeading.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+      });
+    }
+
+    // Keep live filtering while typing; only explicit searches trigger auto-scroll.
     $('searchInput').addEventListener('input',renderProducts);
-    $('searchButton').addEventListener('click',renderProducts);
-    $('searchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();renderProducts();}});
+    $('searchButton').addEventListener('click',performCatalogSearch);
+    $('searchInput').addEventListener('keydown',event=>{
+      if(event.key==='Enter'){
+        event.preventDefault();
+        performCatalogSearch();
+      }
+    });
 
     $('productGrid').addEventListener('click',event=>{
       const wishlistButton=event.target.closest('[data-wishlist-id]');
