@@ -205,7 +205,7 @@
   </g>
 </svg></span>
         </button>
-        <button class="header-menu-trigger" type="button" onclick="document.getElementById('categoryFilters').scrollIntoView({behavior:'smooth',block:'start'})" aria-label="Browse categories" title="Browse categories"><span></span><span></span><span></span></button>
+        <button class="header-menu-trigger" type="button" onclick="toggleGenmerchMobileMenu()" aria-label="Open menu" aria-expanded="false" title="Browse categories"><span></span><span></span><span></span></button>
         <div class="header-search" role="search" aria-label="Search products">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="m16 16 4.6 4.6"></path></svg>
           <input id="headerSearchInput" type="search" placeholder="Search products" aria-label="Search products" autocomplete="off" oninput="var search=document.getElementById('searchInput');search.value=this.value;search.dispatchEvent(new Event('input',{bubbles:true}))">
@@ -704,11 +704,11 @@
 </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="nav-item active" type="button" onclick="resetCatalog()" aria-label="Home"><span aria-hidden="true">⌂</span><span>Home</span></button>
-    <button class="nav-item" type="button" onclick="document.getElementById('categoryFilters').scrollIntoView({behavior:'smooth',block:'start'})" aria-label="Categories"><span aria-hidden="true">▦</span><span>Categories</span></button>
-    <button class="nav-item" type="button" onclick="openWishlist()" aria-label="Wishlist"><span aria-hidden="true">♡</span><span>Wishlist</span></button>
-    <button class="nav-item" type="button" onclick="openCustomerOrders()" aria-label="Orders"><span aria-hidden="true">▤</span><span>Orders</span></button>
-    <button class="nav-item" type="button" onclick="openGenmerchCustomerAccountEntry()" aria-label="Account"><span aria-hidden="true">♙</span><span>Account</span></button>
+    <button class="nav-item active" type="button" data-gm-mobile-nav="home" onclick="gmReferenceNavigate('home')" aria-label="Home"><span aria-hidden="true">⌂</span><span>Home</span></button>
+    <button class="nav-item" type="button" data-gm-mobile-nav="categories" onclick="gmReferenceNavigate('categories')" aria-label="Categories"><span aria-hidden="true">▦</span><span>Categories</span></button>
+    <button class="nav-item" type="button" data-gm-mobile-nav="wishlist" onclick="gmReferenceNavigate('wishlist')" aria-label="Wishlist"><span aria-hidden="true">♡</span><span>Wishlist</span></button>
+    <button class="nav-item" type="button" data-gm-mobile-nav="orders" onclick="gmReferenceNavigate('orders')" aria-label="Orders"><span aria-hidden="true">▤</span><span>Orders</span></button>
+    <button class="nav-item" type="button" data-gm-mobile-nav="account" onclick="gmReferenceNavigate('account')" aria-label="Account"><span aria-hidden="true">♙</span><span>Account</span></button>
   </nav>
 
   <div class="overlay" id="productOverlay" aria-hidden="true">
@@ -9847,6 +9847,65 @@
   }
   buildReferenceNavigation();
   window.addEventListener('load',buildReferenceNavigation,{once:true});
+})();
+</script>
+
+<script id="genmerch-mobile-controls-repair">
+(function(){
+  function closeMenu(){
+    var drawer=document.getElementById('gmReferenceMobileDrawer');
+    if(drawer){drawer.hidden=true;drawer.setAttribute('aria-hidden','true');}
+    document.body.classList.remove('gm-mobile-menu-open');
+  }
+  window.gmReferenceNavigate=function(target){
+    closeMenu();
+    if(target==='home'){
+      if(typeof window.resetCatalog==='function')window.resetCatalog();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }else if(target==='categories'){
+      var categories=document.getElementById('categoryFilters');
+      if(categories)categories.scrollIntoView({behavior:'smooth',block:'start'});
+    }else if(target==='wishlist'){
+      if(typeof window.openWishlist==='function')window.openWishlist();
+    }else if(target==='orders'){
+      if(typeof window.openCustomerOrders==='function')window.openCustomerOrders();
+    }else if(target==='account'){
+      if(typeof window.openGenmerchCustomerAccountEntry==='function')window.openGenmerchCustomerAccountEntry();
+      else if(typeof window.openCustomerAuth==='function')window.openCustomerAuth();
+    }
+  };
+  window.toggleGenmerchMobileMenu=function(){
+    var drawer=document.getElementById('gmReferenceMobileDrawer');
+    if(!drawer)return;
+    var willOpen=drawer.hidden;
+    drawer.hidden=!willOpen;
+    drawer.setAttribute('aria-hidden',String(!willOpen));
+    document.body.classList.toggle('gm-mobile-menu-open',willOpen);
+  };
+  function install(){
+    var trigger=document.querySelector('.header-menu-trigger');
+    if(trigger){
+      trigger.onclick=function(event){event.preventDefault();window.toggleGenmerchMobileMenu();};
+      trigger.setAttribute('aria-label','Open menu');
+      trigger.setAttribute('aria-expanded','false');
+    }
+    if(!document.getElementById('gmReferenceMobileDrawer')){
+      var drawer=document.createElement('aside');
+      drawer.id='gmReferenceMobileDrawer';
+      drawer.className='gm-mobile-drawer';
+      drawer.hidden=true;
+      drawer.setAttribute('aria-hidden','true');
+      drawer.innerHTML='<button type="button" class="gm-mobile-drawer-backdrop" aria-label="Close menu"></button><section class="gm-mobile-drawer-panel" aria-label="GENMERCH menu"><div class="gm-mobile-drawer-head"><strong>GENMERCH</strong><button type="button" aria-label="Close menu">×</button></div><button type="button" onclick="gmReferenceNavigate(\'home\')">Home</button><button type="button" onclick="gmReferenceNavigate(\'categories\')">Categories</button><button type="button" onclick="gmReferenceNavigate(\'wishlist\')">Wishlist</button><button type="button" onclick="gmReferenceNavigate(\'orders\')">Orders</button><button type="button" onclick="gmReferenceNavigate(\'account\')">Account</button></section>';
+      document.body.appendChild(drawer);
+      drawer.querySelector('.gm-mobile-drawer-backdrop').addEventListener('click',closeMenu);
+      drawer.querySelector('.gm-mobile-drawer-head button').addEventListener('click',closeMenu);
+    }
+    document.querySelectorAll('.bottom-nav [data-gm-mobile-nav]').forEach(function(button){
+      button.addEventListener('click',function(){document.querySelectorAll('.bottom-nav .nav-item').forEach(function(item){item.classList.remove('active');});button.classList.add('active');});
+    });
+  }
+  install();
+  window.addEventListener('load',install,{once:true});
 })();
 </script>
 </body>
