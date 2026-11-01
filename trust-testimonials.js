@@ -532,6 +532,22 @@
     }
   }
 
+  function stopFallbackPolling() {
+    if (refreshInterval !== null) {
+      window.clearInterval(refreshInterval);
+      refreshInterval = null;
+    }
+  }
+
+  function startFallbackPolling() {
+    if (refreshInterval !== null) return;
+    refreshInterval = window.setInterval(function () {
+      if (document.visibilityState === 'visible') {
+        loadTestimonials().catch(function () {});
+      }
+    }, REFRESH_MS);
+  }
+
   function startRealtime() {
     if (realtimeChannel) return;
     try {
@@ -544,18 +560,16 @@
           }, 350);
         })
         .subscribe(function (status) {
-          if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].indexOf(status) !== -1) {
+          if (status === 'SUBSCRIBED') {
+            stopFallbackPolling();
+          } else if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].indexOf(status) !== -1) {
             console.warn('GENMERCH testimonials Realtime is unavailable; periodic refresh remains active.');
+            startFallbackPolling();
           }
         });
     } catch (error) {
       console.warn('GENMERCH testimonials Realtime could not start:', error && error.message ? error.message : error);
-    }
-
-    if (refreshInterval === null) {
-      refreshInterval = window.setInterval(function () {
-        if (document.visibilityState === 'visible') loadTestimonials().catch(function () {});
-      }, REFRESH_MS);
+      startFallbackPolling();
     }
   }
 

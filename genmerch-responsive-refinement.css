@@ -967,3 +967,19 @@ main.container {
     padding-left: 4px !important;
   }
 }
+
+
+/* GENMERCH performance: responsive, low-latency touch handling without blocking native scrolling or pinch zoom. */
+@media (hover: none) and (pointer: coarse) {
+  :is(button, a, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], select) {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto !important;
+  }
+}
