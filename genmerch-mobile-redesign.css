@@ -1721,3 +1721,64 @@
     height: 49px !important;
   }
 }
+
+
+/* Center the complete mobile sign-in tile with clear space below. */
+@media screen and (max-width: 767px) {
+  #customerAuthOverlay.customer-auth-overlay.open {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    --gm-auth-safe-top: max(12px, env(safe-area-inset-top, 0px));
+    --gm-auth-safe-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+    padding: var(--gm-auth-safe-top) 10px var(--gm-auth-safe-bottom) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 1 auto !important;
+    flex-direction: column !important;
+    align-self: center !important;
+    width: min(100%, 440px) !important;
+    max-width: calc(100vw - 20px) !important;
+    height: auto !important;
+    max-height: calc(100vh - 48px) !important;
+    max-height: calc(100dvh - var(--gm-auth-safe-top) - var(--gm-auth-safe-bottom)) !important;
+    min-height: 0 !important;
+    margin: auto !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    transform: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head,
+  #customerAuthOverlay .customer-auth-body {
+    flex: 0 0 auto !important;
+  }
+
+  #customerAuthOverlay .customer-auth-body {
+    padding-bottom: 18px !important;
+  }
+}
+
+@media screen and (max-height: 720px) and (max-width: 767px) {
+  #customerAuthOverlay.customer-auth-overlay.open {
+    --gm-auth-safe-top: max(8px, env(safe-area-inset-top, 0px));
+    --gm-auth-safe-bottom: max(18px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    max-height: calc(100dvh - var(--gm-auth-safe-top) - var(--gm-auth-safe-bottom)) !important;
+  }
+}
