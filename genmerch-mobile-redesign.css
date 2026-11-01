@@ -1872,3 +1872,210 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* Mobile-only premium Flash Deals scale and animated campaign tagline — 2026-11-01. */
+@media screen and (max-width: 767px) {
+  body main.container > .hero .hero-copy > .flash-deals-banner {
+    position: relative !important;
+    isolation: isolate !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: clamp(3px, 1.2vw, 7px) !important;
+    width: min(100%, 322px) !important;
+    max-width: 100% !important;
+    min-height: 54px !important;
+    margin: -9px auto 10px !important;
+    padding: 8px 8px 8px 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, .98) !important;
+    border-radius: 17px !important;
+    background:
+      linear-gradient(115deg, #fff0e2 0%, #fffaf4 48%, #f8dfcd 100%) !important;
+    box-shadow:
+      0 2px 0 rgba(193, 123, 79, .28),
+      0 10px 22px rgba(105, 57, 31, .15),
+      inset 0 1px 0 rgba(255, 255, 255, .98),
+      inset 0 -1px 2px rgba(151, 83, 49, .08) !important;
+    animation: gmMobileFlashDealDepth 5.2s ease-in-out infinite !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner::after {
+    content: "" !important;
+    position: absolute !important;
+    z-index: 4 !important;
+    top: -35% !important;
+    bottom: -35% !important;
+    left: -42% !important;
+    width: 24% !important;
+    border-radius: inherit !important;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      rgba(255, 255, 255, .08) 28%,
+      rgba(255, 255, 255, .48) 50%,
+      rgba(255, 255, 255, .08) 72%,
+      transparent 100%
+    ) !important;
+    transform: skewX(-20deg) !important;
+    pointer-events: none !important;
+    animation: gmMobileFlashDealShimmer 6.4s ease-in-out 1s infinite !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-deals-brand {
+    position: relative !important;
+    z-index: 2 !important;
+    align-self: stretch !important;
+    gap: clamp(3px, 1vw, 5px) !important;
+    margin: -8px 0 -8px -1px !important;
+    padding: 9px clamp(13px, 4vw, 19px) 9px clamp(9px, 2.8vw, 12px) !important;
+    background: linear-gradient(
+      135deg,
+      #ff713b 0%,
+      #ff4628 28%,
+      #f0222a 68%,
+      #c80f29 100%
+    ) !important;
+    filter: drop-shadow(0 2px 2px rgba(149, 25, 26, .22)) !important;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%) !important;
+    -webkit-clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%) !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-deals-lightning {
+    flex: 0 0 auto !important;
+    color: #fff5bd !important;
+    font-size: clamp(1.45rem, 5.4vw, 1.85rem) !important;
+    line-height: 1 !important;
+    text-shadow:
+      0 2px 0 rgba(120, 25, 10, .32),
+      0 0 10px rgba(255, 230, 133, .52) !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-deals-title {
+    color: #fff !important;
+    font-size: clamp(.70rem, 2.75vw, .90rem) !important;
+    font-weight: 1000 !important;
+    letter-spacing: -.025em !important;
+    text-shadow: 0 1px 2px rgba(107, 8, 15, .34) !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-deals-countdown {
+    position: relative !important;
+    z-index: 2 !important;
+    gap: clamp(2px, .65vw, 4px) !important;
+    margin-left: 0 !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-time-unit {
+    min-width: clamp(27px, 8.4vw, 35px) !important;
+    height: clamp(31px, 9.2vw, 37px) !important;
+    padding: 0 clamp(3px, .9vw, 6px) !important;
+    border: 1px solid rgba(255, 255, 255, .20) !important;
+    border-radius: 8px !important;
+    font-size: clamp(.76rem, 2.8vw, .91rem) !important;
+    font-weight: 950 !important;
+    box-shadow:
+      0 3px 0 rgba(0, 0, 0, .22),
+      0 5px 9px rgba(36, 25, 21, .12),
+      inset 0 1px 0 rgba(255, 255, 255, .22),
+      inset 0 -2px 4px rgba(0, 0, 0, .18) !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-time-seconds {
+    border-color: rgba(255, 255, 255, .65) !important;
+    background: linear-gradient(145deg, #ff7352 0%, #f12a2b 54%, #c90e27 100%) !important;
+    box-shadow:
+      0 3px 0 rgba(135, 16, 26, .24),
+      0 5px 9px rgba(110, 20, 26, .12),
+      inset 0 1px 0 rgba(255, 255, 255, .48),
+      inset 0 -2px 4px rgba(113, 0, 15, .18) !important;
+  }
+
+  body main.container > .hero .hero-copy > .flash-deals-banner .flash-time-colon {
+    font-size: .9rem !important;
+    color: #957365 !important;
+  }
+
+  body main.container > .hero .hero-copy > .hero-tagline {
+    position: relative !important;
+    z-index: 2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 38px !important;
+    padding: 9px clamp(14px, 4vw, 20px) !important;
+    border: 1px solid rgba(255, 255, 255, .98) !important;
+    border-radius: 999px !important;
+    background: linear-gradient(
+      110deg,
+      #f8e6d4 0%,
+      #fff8ee 28%,
+      #ffffff 50%,
+      #ffefdf 72%,
+      #f4ddc8 100%
+    ) !important;
+    background-size: 220% 100% !important;
+    color: #2c231e !important;
+    font-size: clamp(.69rem, 2.8vw, .83rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: .025em !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .78) !important;
+    box-shadow:
+      0 2px 0 rgba(194, 147, 108, .42),
+      0 7px 15px rgba(106, 66, 39, .13),
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 -2px 3px rgba(144, 93, 59, .08) !important;
+    transform-origin: center center !important;
+    animation:
+      gmMobileTaglineFloat 4.8s ease-in-out infinite,
+      gmMobileTaglineSheen 7s ease-in-out infinite !important;
+    will-change: transform, background-position !important;
+  }
+
+  @keyframes gmMobileFlashDealShimmer {
+    0%, 28% { left: -42%; opacity: 0; }
+    38% { opacity: .9; }
+    62%, 100% { left: 125%; opacity: 0; }
+  }
+
+  @keyframes gmMobileFlashDealDepth {
+    0%, 100% {
+      box-shadow:
+        0 2px 0 rgba(193, 123, 79, .28),
+        0 10px 22px rgba(105, 57, 31, .15),
+        inset 0 1px 0 rgba(255, 255, 255, .98),
+        inset 0 -1px 2px rgba(151, 83, 49, .08);
+    }
+    50% {
+      box-shadow:
+        0 2px 0 rgba(193, 123, 79, .32),
+        0 12px 25px rgba(105, 57, 31, .19),
+        inset 0 1px 0 rgba(255, 255, 255, .98),
+        inset 0 -1px 2px rgba(151, 83, 49, .08);
+    }
+  }
+
+  @keyframes gmMobileTaglineFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  @keyframes gmMobileTaglineSheen {
+    0%, 18% { background-position: 100% 50%; }
+    58%, 100% { background-position: 0% 50%; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body main.container > .hero .hero-copy > .flash-deals-banner,
+  body main.container > .hero .hero-copy > .flash-deals-banner::after,
+  body main.container > .hero .hero-copy > .hero-tagline {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}
