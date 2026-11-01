@@ -154,7 +154,7 @@
   <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
   <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1"></noscript>
-  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261102-help-lift-1">
+  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261102-my-orders-mobile-1">
   <link rel="stylesheet" href="/hero-tagline-shine.css?v=20261101-elegant-shine-1">
   <link rel="stylesheet" href="/trust-testimonials.css?v=20261101-3d-1">
   <script src="/genmerch-mobile-redesign.js?v=20261101-review-1" defer></script>
@@ -1256,7 +1256,7 @@
       <div class="customer-orders-content">
         <div class="customer-orders-account-banner" id="customerOrdersAccountBanner"></div>
         <section class="customer-my-orders-section">
-          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Use the status tabs to find an order quickly. Payment and delivery statuses are tracked separately.</p></div><div class="customer-orders-head-actions"><button class="customer-orders-mark-read" id="customerOrdersMarkRead" type="button" onclick="markGenmerchHeaderBadgesRead()">✓ Mark all as read</button><button class="customer-orders-refresh" id="customerOrdersRefresh" type="button">↻ Refresh</button></div></div>
+          <div class="customer-orders-section-head"><div><h3>Orders from your account</h3><p>Use the status tabs to find an order quickly. Payment and delivery statuses are tracked separately.</p></div></div>
           <div class="customer-orders-filter-sticky">
             <nav class="customer-orders-filter-tabs" id="customerOrdersFilterTabs" aria-label="Filter orders by status" role="tablist">
               <button type="button" class="customer-order-filter-tab active" role="tab" aria-selected="true" data-customer-order-filter="all"><span>All Orders</span><b id="customerOrderCountAll">0</b></button>
@@ -3075,6 +3075,8 @@
       refunded:{label:'Refunded',detail:'This order is marked as refunded. Check the payment method for refund details.',step:-1}
     };
     let customerOrdersRefreshTimer=null;
+    let customerOrdersLoadSequence=0;
+    let customerGuestTrackingSequence=0;
     let customerGuestTrackingLookup=null;
     let customerOrdersRealtimeChannel=null;
     let customerOrdersRealtimeUserId='';
@@ -3472,9 +3474,11 @@
     async function loadCustomerAccountOrders(silent=false){
       const container=$('customerOrdersList');
       if(!container)return;
+      const requestSequence=++customerOrdersLoadSequence;
       try{
         const client=getCustomerAuthClient();
         const sessionResult=await client.auth.getSession();
+        if(requestSequence!==customerOrdersLoadSequence)return;
         if(sessionResult.error)throw sessionResult.error;
         const session=sessionResult.data&&sessionResult.data.session;
         customerAuthCurrentSession=session&&session.user?session:null;
@@ -3482,29 +3486,43 @@
         if(!session||!session.user){
           if(banner)banner.innerHTML='You are browsing as a guest. Sign in to see orders linked to your account, or use <strong>Track a guest order</strong> below.';
           setCustomerOrdersBadgeCount(0);
+          container.removeAttribute('aria-busy');
           renderCustomerAccountOrders([]);
           return;
         }
         const userId=String(session.user.id);
         if(banner)banner.innerHTML='Signed in as <strong>'+escapeHtml(getCustomerAuthIdentity(session.user))+'</strong>. Only orders linked to this account are shown here.';
-        if(!silent)container.innerHTML='<div class="customer-orders-loading">Fetching your orders from Supabase…</div>';
+        if(!silent){
+          container.setAttribute('aria-busy','true');
+          container.innerHTML='<div class="customer-orders-loading">Fetching your latest orders from Supabase…</div>';
+        }
         const ordersResult=await client.from('orders').select('id,order_number,status,payment_method,payment_status,subtotal,shipping_fee,total_amount,delivery_zone,shipping_street_address,shipping_barangay,shipping_city_municipality,shipping_province,shipping_postal_code,shipping_landmark,delivery_instructions,customer_phone,receipt_email,created_at,updated_at',{count:'exact'}).eq('user_id',userId).order('created_at',{ascending:false}).limit(50);
+        if(requestSequence!==customerOrdersLoadSequence)return;
         if(ordersResult.error)throw ordersResult.error;
         const orders=Array.isArray(ordersResult.data)?ordersResult.data:[];
         setCustomerOrdersBadgeCount(typeof ordersResult.count==='number'?ordersResult.count:orders.length);
-        if(!orders.length){renderCustomerAccountOrders([]);return;}
+        if(!orders.length){
+          container.removeAttribute('aria-busy');
+          renderCustomerAccountOrders([]);
+          return;
+        }
         const orderIds=orders.map(order=>order.id);
         const [itemsResult,historyResult,shipmentsResult]=await Promise.all([
           client.from('order_items').select('id,order_id,product_name,sku,size_label,color_label,unit_price,quantity,line_total,image_url_snapshot,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
           client.from('order_status_history').select('id,order_id,from_status,to_status,note,created_at').in('order_id',orderIds).order('created_at',{ascending:true}),
           client.from('shipments').select('id,order_id,courier_name,tracking_number,tracking_url,status,shipped_at,delivered_at,updated_at').in('order_id',orderIds).order('updated_at',{ascending:false})
         ]);
+        if(requestSequence!==customerOrdersLoadSequence)return;
         if(itemsResult.error)throw itemsResult.error;
         if(historyResult.error)throw historyResult.error;
         if(shipmentsResult.error)throw shipmentsResult.error;
+        container.removeAttribute('aria-busy');
         renderCustomerAccountOrders(orders,Array.isArray(itemsResult.data)?itemsResult.data:[],Array.isArray(historyResult.data)?historyResult.data:[],Array.isArray(shipmentsResult.data)?shipmentsResult.data:[]);
       }catch(error){
-        if(!silent)container.innerHTML='<div class="customer-orders-empty"><strong>Orders could not be loaded</strong>'+escapeHtml(error.message||'Refresh the page and try again.')+'</div>';
+        if(requestSequence!==customerOrdersLoadSequence)return;
+        container.removeAttribute('aria-busy');
+        if(!silent)container.innerHTML='<div class="customer-orders-empty"><strong>Orders could not be loaded</strong>'+escapeHtml(error.message||'Please try opening My Orders again when your connection is available.')+'</div>';
+        else console.warn('GENMERCH could not sync the latest customer orders from Supabase.',error);
       }
     }
     function setGuestTrackMessage(message,type=''){
@@ -3514,14 +3532,16 @@
       node.hidden=!message;
     }
     async function trackGuestOrder(orderNumber,phone,silent=false){
+      const requestSequence=++customerGuestTrackingSequence;
       const client=getCustomerAuthClient();
       const result=await client.rpc('track_genmerch_guest_order',{p_order_number:String(orderNumber||'').trim(),p_customer_phone:String(phone||'').trim()});
+      if(requestSequence!==customerGuestTrackingSequence)return;
       if(result.error)throw result.error;
       const order=Array.isArray(result.data)?result.data[0]:result.data;
       if(!order||!order.order_number)throw new Error('Order details not found. Check the order number and mobile number.');
       customerGuestTrackingLookup={orderNumber:String(orderNumber||'').trim(),phone:String(phone||'').trim()};
       $('customerGuestTrackResult').innerHTML=customerOrderCardMarkup(order,order.items||[],order.timeline||[],order.shipment||null,true);
-      setGuestTrackMessage('Order found. The status and item details below were loaded from Supabase.','success');
+      setGuestTrackMessage('Order found. The latest status and item details were loaded from Supabase.','success');
     }
     async function confirmAccountOrderReceived(orderId,orderNumber,button){
       if(!orderId)return;
@@ -3605,14 +3625,28 @@
       if(originalText==='Sending…')button.textContent='↻ Retry email';
     }
     async function openCustomerOrders(){
-      $('customerOrdersOverlay').classList.add('open');
-      $('customerOrdersOverlay').setAttribute('aria-hidden','false');
+      const overlay=$('customerOrdersOverlay');
+      if(!overlay)return;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
       document.body.style.overflow='hidden';
+
+      // Always perform a fresh Supabase read when the panel opens or reopens.
       await loadCustomerAccountOrders();
+
+      // Re-run the guest lookup too so previously displayed guest order details
+      // are refreshed rather than left on an older status after reopening.
       if(customerGuestTrackingLookup){
         $('customerTrackOrderNumber').value=customerGuestTrackingLookup.orderNumber;
         $('customerTrackPhone').value=customerGuestTrackingLookup.phone;
-        try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);}catch(_){}
+        $('customerGuestTrackResult').innerHTML='<div class="customer-orders-loading">Checking the latest guest order status…</div>';
+        setGuestTrackMessage('Syncing the latest guest order status…');
+        try{
+          await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone,true);
+        }catch(error){
+          $('customerGuestTrackResult').innerHTML='';
+          setGuestTrackMessage(error.message||'The latest guest order status could not be loaded. Please check your connection and try again.','error');
+        }
       }
       startCustomerOrdersRefresh();
     }
@@ -3621,6 +3655,9 @@
       if(!overlay)return;
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden','true');
+      // Prevent a previous request from replacing the latest data after a reopen.
+      customerOrdersLoadSequence++;
+      customerGuestTrackingSequence++;
       stopCustomerOrdersRefresh();
       if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
     }
@@ -3671,12 +3708,6 @@
       if(guestButton){confirmGuestOrderReceived(guestButton.dataset.orderNumber,guestButton);return;}
       const showAllButton=event.target.closest('[data-customer-show-all-orders]');
       if(showAllButton){customerOrderFilterActive='all';renderCustomerOrderFilterResults();}
-    });
-    $('customerOrdersRefresh').addEventListener('click',async()=>{
-      $('customerOrdersRefresh').disabled=true;
-      await loadCustomerAccountOrders();
-      if(customerGuestTrackingLookup){try{await trackGuestOrder(customerGuestTrackingLookup.orderNumber,customerGuestTrackingLookup.phone);}catch(error){setGuestTrackMessage(error.message||'Unable to refresh this order.','error');}}
-      $('customerOrdersRefresh').disabled=false;
     });
     $('customerGuestTrackForm').addEventListener('submit',async event=>{
       event.preventDefault();
