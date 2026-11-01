@@ -3443,12 +3443,19 @@ html.customer-auth-scroll-locked body {
     margin: 0;
     color: #b92b35;
     font-family: Lexend, Arial, sans-serif;
-    font-size: .88rem;
-    font-style: italic;
+    font-size: .82rem;
+    font-style: normal;
     font-weight: 750;
-    letter-spacing: .015em;
-    line-height: 1.25;
+    letter-spacing: .035em;
+    line-height: 1.3;
     text-align: center;
+  }
+
+  .gm-mobile-menu-social-label span {
+    display: inline-block;
+    margin-inline: 7px;
+    color: #b8a7a1;
+    font-weight: 500;
   }
 
   .gm-mobile-menu-social-icons {
