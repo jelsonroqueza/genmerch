@@ -149,7 +149,7 @@
 
 
 
-  <link rel="stylesheet" href="/genmerch-inline.css?v=20261101-desktop-emblem-size-vibrance-1">
+  <link rel="stylesheet" href="/genmerch-inline.css?v=20261102-wishlist-clean-centered-footer-1">
   <link rel="preload" as="style" href="/seller-centre-theme.css?v=20261031-product-editor-close-2" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
   <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
@@ -1345,7 +1345,7 @@
         <button class="wishlist-close-button" id="wishlistCloseButton" type="button" aria-label="Close wishlist">×</button>
       </div>
       <div class="wishlist-modal-body" id="wishlistItemsContainer"><div class="wishlist-empty"><span aria-hidden="true">♡</span><h3>Your wishlist is empty</h3><p>Tap the heart on any product to save it here.</p></div></div>
-      <div class="wishlist-modal-footer"><div class="wishlist-sync-block"><span class="wishlist-sync-status" id="wishlistSyncStatus" role="status" aria-live="polite">Checking account sync…</span><button class="wishlist-sync-now-button" id="wishlistSyncNowButton" type="button">↻ Sync across devices</button></div><button class="wishlist-continue-button" id="wishlistContinueButton" type="button">Continue shopping</button></div>
+      <div class="wishlist-modal-footer"><button class="wishlist-continue-button" id="wishlistContinueButton" type="button">Continue shopping</button></div>
     </section>
   </div>
 
@@ -3839,23 +3839,49 @@
       renderWishlist();
       if(wishlistCloudSyncError&&customerAuthCurrentSession&&customerAuthCurrentSession.user)showToast('Could not connect to your cloud Wishlist. Showing this device’s saved items for now.');
     }
-    function closeWishlist(){
+    async function waitForPendingWishlistWrites(){
+      while(wishlistWriteChains.size){
+        const pendingWrites=[...wishlistWriteChains.values()];
+        await Promise.allSettled(pendingWrites);
+      }
+    }
+    let wishlistClosePromise=null;
+    async function closeWishlist(){
       const overlay=$('wishlistOverlay');
       if(!overlay)return;
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden','true');
-      if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+      if(wishlistClosePromise)return wishlistClosePromise;
+      wishlistClosePromise=(async()=>{
+        const buttons=[...overlay.querySelectorAll('button')];
+        const previousDisabledStates=buttons.map(button=>button.disabled);
+        if(wishlistWriteChains.size){
+          overlay.setAttribute('aria-busy','true');
+          buttons.forEach(button=>{button.disabled=true;});
+          try{
+            await waitForPendingWishlistWrites();
+          }finally{
+            buttons.forEach((button,index)=>{button.disabled=previousDisabledStates[index];});
+            overlay.removeAttribute('aria-busy');
+          }
+        }
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        if(!document.querySelector('.customer-orders-overlay.open,.wishlist-overlay.open,.cart-overlay.open,.cart-modal.open,.overlay.open,.customer-auth-overlay.open,.seller-modal-overlay.open,.size-overlay.open'))document.body.style.overflow='';
+      })();
+      try{
+        await wishlistClosePromise;
+      }finally{
+        wishlistClosePromise=null;
+      }
     }
     $('wishlistCloseButton').addEventListener('click',closeWishlist);
     $('wishlistContinueButton').addEventListener('click',closeWishlist);
-    $('wishlistSyncNowButton').addEventListener('click',syncCustomerDataNow);
     $('syncCustomerDataButton').addEventListener('click',syncCustomerDataNow);
     $('wishlistOverlay').addEventListener('click',event=>{if(event.target===$('wishlistOverlay')){event.preventDefault();event.stopPropagation();}});
-    $('wishlistItemsContainer').addEventListener('click',event=>{
+    $('wishlistItemsContainer').addEventListener('click',async event=>{
       const remove=event.target.closest('[data-wishlist-remove]');
       if(remove){event.preventDefault();event.stopPropagation();removeWishlistProduct(remove.dataset.wishlistRemove);return;}
       const view=event.target.closest('[data-wishlist-view]');
-      if(view){const id=view.dataset.wishlistView;closeWishlist();openProduct(id);}
+      if(view){const id=view.dataset.wishlistView;await closeWishlist();openProduct(id);}
     });
 
     function renderCategoryFilters(){

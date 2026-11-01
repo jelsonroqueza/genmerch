@@ -10551,3 +10551,72 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
     filter: saturate(1.35) contrast(1.05) drop-shadow(0 3px 4px rgba(30, 20, 12, .18)) !important;
   }
 }
+
+
+/* GENMERCH Wishlist footer: centered, subtle 3D action on every device. */
+.wishlist-modal-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
+  min-height: 78px;
+  padding: 16px 18px !important;
+}
+.wishlist-continue-button {
+  flex: 0 1 auto !important;
+  align-self: center !important;
+  width: min(320px, 100%);
+  min-height: 48px;
+  padding: 12px 24px;
+  border: 1px solid #d62b19;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(180deg, #ff4932 0%, #eb2d19 100%);
+  box-shadow:
+    0 3px 0 #b92314,
+    0 7px 15px rgba(126, 35, 22, .16),
+    inset 0 1px 0 rgba(255, 255, 255, .38);
+  font-size: .82rem;
+  font-weight: 900;
+  letter-spacing: .01em;
+  text-align: center;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wishlist-continue-button:hover {
+    filter: brightness(1.035);
+    transform: translateY(-2px);
+    box-shadow:
+      0 5px 0 #b92314,
+      0 10px 18px rgba(126, 35, 22, .18),
+      inset 0 1px 0 rgba(255, 255, 255, .42);
+  }
+}
+.wishlist-continue-button:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #b92314,
+    0 3px 8px rgba(126, 35, 22, .14),
+    inset 0 1px 0 rgba(255, 255, 255, .30);
+}
+.wishlist-continue-button:focus-visible {
+  outline: 3px solid rgba(242, 42, 18, .28);
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  .wishlist-modal-footer {
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: row !important;
+    padding: 14px 13px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .wishlist-continue-button {
+    width: min(320px, 100%);
+    min-height: 46px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wishlist-continue-button {
+    transition: none !important;
+  }
+}
