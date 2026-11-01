@@ -10652,3 +10652,61 @@ body .site-header .reference-desktop-links button.active{
    display:block!important;margin:0!important;padding:0!important;background:transparent!important;color:#151515!important;font-size:9px!important;line-height:1!important;
  }
 }
+
+
+/* Mobile reference spacing and functional controls */
+@media(max-width:899px){
+  body .site-header{overflow:visible!important}
+  body .site-header .main-header .nav{
+    grid-template-columns:44px minmax(0,1fr) 44px!important;
+    grid-template-rows:64px 55px!important;
+    height:119px!important;min-height:119px!important;
+    padding:0 12px!important;column-gap:4px!important;row-gap:0!important;
+  }
+  body .site-header .main-header .nav>.brand-lockup{
+    width:min(58vw,270px)!important;max-width:calc(100vw - 122px)!important;
+    justify-self:center!important;overflow:visible!important;
+  }
+  body .site-header .main-header .nav>.brand-lockup .brand-word{
+    width:100%!important;max-width:100%!important;height:auto!important;max-height:39px!important;
+  }
+  body .site-header .main-header .nav>.header-menu-trigger{
+    display:flex!important;width:44px!important;height:44px!important;min-width:44px!important;
+    justify-self:start!important;align-self:center!important;border-radius:10px!important;pointer-events:auto!important;cursor:pointer!important;z-index:4!important;
+  }
+  body .site-header .main-header .nav>.header-menu-trigger span{width:25px!important;height:2.5px!important;background:#171717!important}
+  body .site-header .main-header .nav>.header-actions{
+    display:flex!important;width:44px!important;min-width:44px!important;max-width:44px!important;
+    justify-self:end!important;align-self:center!important;overflow:visible!important;pointer-events:auto!important;z-index:4!important;
+  }
+  body .site-header .main-header .nav>.header-actions #openCartButton{
+    display:flex!important;flex:0 0 44px!important;width:44px!important;min-width:44px!important;max-width:44px!important;
+    pointer-events:auto!important;cursor:pointer!important;
+  }
+  body .site-header .main-header .nav>.header-actions #openCartButton .header-icon{width:31px!important;height:31px!important}
+  body .site-header .main-header .nav>.header-search{
+    height:47px!important;margin:0!important;padding-left:16px!important;border-radius:25px!important;pointer-events:auto!important;
+  }
+  body .site-header .main-header .nav>.header-search button{flex:0 0 59px!important;pointer-events:auto!important}
+  body .bottom-nav{
+    pointer-events:auto!important;isolation:isolate!important;min-height:70px!important;
+  }
+  body .bottom-nav .nav-item{
+    min-height:54px!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important;z-index:2!important;
+  }
+  body .bottom-nav .nav-item>span:first-child{font-size:24px!important}
+  .gm-mobile-drawer[hidden]{display:none!important}
+  .gm-mobile-drawer{
+    position:fixed!important;inset:0!important;z-index:1000!important;display:block!important;
+  }
+  .gm-mobile-drawer-backdrop{
+    position:absolute!important;inset:0!important;border:0!important;background:rgba(14,12,12,.32)!important;
+  }
+  .gm-mobile-drawer-panel{
+    position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;width:min(82vw,330px)!important;height:100%!important;
+    padding:20px 18px!important;background:#fff!important;box-shadow:12px 0 34px rgba(0,0,0,.18)!important;
+  }
+  .gm-mobile-drawer-head{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:4px 4px 18px!important;border-bottom:1px solid #eee!important;color:#e6192a!important;font:800 20px/1 Lexend,Arial,sans-serif!important}
+  .gm-mobile-drawer-head button{width:38px!important;height:38px!important;border:0!important;background:transparent!important;font-size:31px!important;line-height:1!important;color:#222!important}
+  .gm-mobile-drawer-panel>button:not(.gm-mobile-drawer-backdrop){padding:17px 6px!important;border:0!important;border-bottom:1px solid #f0eeee!important;background:#fff!important;text-align:left!important;color:#202020!important;font:700 16px/1 Lexend,Arial,sans-serif!important}
+}
