@@ -2033,3 +2033,34 @@
     will-change: auto !important;
   }
 }
+
+
+/* Mobile drawer scroll isolation: freeze the storefront, scroll only the sidebar. */
+@media screen and (max-width: 767px) {
+  html.gm-mobile-menu-scroll-locked,
+  html.gm-mobile-menu-scroll-locked body {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+  html.gm-mobile-menu-scroll-locked body {
+    touch-action: none !important;
+  }
+  .gm-mobile-menu-scrim:not([hidden]) {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+  }
+  .gm-mobile-menu-panel {
+    height: 100% !important;
+    max-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+}
