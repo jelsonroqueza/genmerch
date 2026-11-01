@@ -1325,12 +1325,23 @@
   }
 
   body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong {
-    font-size: clamp(1.28rem, 5.8vw, 1.52rem) !important;
+    font-size: clamp(1.32rem, 5.97vw, 1.57rem) !important;
     font-weight: 900 !important;
     line-height: .98 !important;
     letter-spacing: -.04em !important;
     font-kerning: normal !important;
     text-rendering: geometricPrecision;
+  }
+
+  /* Force both halves of the wordmark to use the same heavy Lexend weight. */
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong > span,
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong > b {
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: inherit !important;
+    font-style: normal !important;
+    font-weight: 900 !important;
+    font-variation-settings: "wght" 900 !important;
+    -webkit-text-stroke: .20px currentColor;
   }
 
   body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
