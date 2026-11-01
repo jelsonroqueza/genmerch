@@ -218,6 +218,8 @@
         setActiveNav('home');
       } else if (actionName === 'categories') {
         scrollToCategories();
+      } else if (actionName === 'testimonials') {
+        window.dispatchEvent(new CustomEvent('genmerch:open-trust-testimonials'));
       } else if (targetSelector) {
         clickExisting(targetSelector);
       }
