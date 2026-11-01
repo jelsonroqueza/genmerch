@@ -2842,11 +2842,11 @@
     function normalizeCatalogSearchText(value){
       return String(value===null||value===undefined?'':value)
         .normalize('NFD')
-        .replace(/[\\u0300-\\u036f]/g,'')
+        .replace(/[\u0300-\u036f]/g,'')
         .toLowerCase()
         .replace(/&/g,' and ')
         .replace(/[^a-z0-9]+/g,' ')
-        .replace(/\\s+/g,' ')
+        .replace(/ +/g,' ')
         .trim();
     }
 
@@ -2872,11 +2872,12 @@
     }
 
     function productMatchesCatalogSearch(product,searchTerms){
-      const values=[
+      const values=[];
+      [
         product.name,product.cat,product.desc,product.sku,
         product.brand,product.color,product.material,product.type,
         product.keywords,product.searchKeywords,product.tags
-      ];
+      ].forEach(value=>addCatalogSearchValue(values,value));
       (Array.isArray(product.variants)?product.variants:[]).forEach(variant=>{
         if(!variant)return;
         values.push(variant.sku,variant.size,variant.color);
