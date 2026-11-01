@@ -441,7 +441,7 @@
     width: min(78%, 276px) !important;
     min-width: 0 !important;
     min-height: 46px !important;
-    margin: 0 auto 10px !important;
+    margin: 11px auto 0 !important;
     padding: 11px 22px !important;
     border: 2px solid rgba(255, 255, 255, .72) !important;
     border-radius: 999px !important;
