@@ -2183,3 +2183,298 @@
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 52px) !important;
   }
 }
+
+
+/* GENMERCH My Orders — mobile-first layout refinement. */
+@media screen and (max-width: 650px) {
+  .customer-orders-overlay {
+    align-items: stretch !important;
+    justify-content: center !important;
+    padding:
+      max(8px, env(safe-area-inset-top, 0px))
+      max(8px, env(safe-area-inset-right, 0px))
+      max(8px, env(safe-area-inset-bottom, 0px))
+      max(8px, env(safe-area-inset-left, 0px)) !important;
+  }
+
+  .customer-orders-modal {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    max-width: 620px !important;
+    min-height: 0 !important;
+    margin: auto !important;
+    border-radius: 16px !important;
+  }
+
+  .customer-orders-head {
+    align-items: flex-start !important;
+    gap: 11px !important;
+    padding: 14px 13px 13px !important;
+  }
+
+  .customer-orders-head > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .customer-orders-head h2 {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+    font-size: clamp(1.08rem, 4.7vw, 1.25rem) !important;
+    line-height: 1.16 !important;
+  }
+
+  .customer-orders-head-tag {
+    padding: 4px 7px !important;
+    font-size: .58rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .customer-orders-head p {
+    max-width: 34rem !important;
+    margin-top: 6px !important;
+    font-size: .74rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .customer-orders-close {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.55rem !important;
+  }
+
+  .customer-orders-content {
+    padding: 10px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .customer-orders-account-banner {
+    margin-bottom: 10px !important;
+    padding: 9px 10px !important;
+    font-size: .72rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .customer-my-orders-section,
+  .customer-guest-track-section {
+    padding: 11px !important;
+    margin-bottom: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .customer-guest-track-section {
+    margin-bottom: 0 !important;
+  }
+
+  .customer-orders-section-head {
+    display: block !important;
+    margin-bottom: 9px !important;
+  }
+
+  .customer-orders-section-head h3,
+  .customer-guest-track-section h3 {
+    font-size: .98rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .customer-orders-section-head p,
+  .customer-guest-track-section > p {
+    margin-top: 5px !important;
+    font-size: .73rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .customer-orders-head-actions,
+  .customer-orders-mark-read,
+  .customer-orders-refresh {
+    display: none !important;
+  }
+
+  .customer-orders-filter-sticky {
+    position: sticky !important;
+    top: -10px !important;
+    z-index: 8 !important;
+    margin: 0 -11px !important;
+    padding: 7px 11px 6px !important;
+    background: #fff !important;
+    box-shadow: 0 1px 0 #eee4de !important;
+  }
+
+  .customer-orders-filter-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    scrollbar-width: none !important;
+  }
+
+  .customer-order-filter-tab {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+    padding: 8px 9px !important;
+    border: 1px solid #eee3dd !important;
+    border-bottom: 2px solid #eee3dd !important;
+    border-radius: 9px !important;
+    background: #fff !important;
+    font-size: .68rem !important;
+    line-height: 1.22 !important;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .customer-order-filter-tab span {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+    text-align: left !important;
+  }
+
+  .customer-order-filter-tab b {
+    flex: 0 0 auto !important;
+    min-width: 19px !important;
+    height: 19px !important;
+    padding: 0 4px !important;
+    font-size: .62rem !important;
+  }
+
+  .customer-order-filter-tab.active {
+    border-color: #f5c9bf !important;
+    border-bottom: 2px solid #f22a12 !important;
+    background: #fff7f4 !important;
+  }
+
+  .customer-orders-filter-tabs > .customer-order-filter-tab:last-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  .customer-orders-search-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin: 10px 0 7px !important;
+  }
+
+  .customer-orders-search-row > label {
+    font-size: .72rem !important;
+  }
+
+  .customer-orders-search-box {
+    width: 100% !important;
+    min-height: 45px !important;
+    padding: 0 11px !important;
+    border-radius: 10px !important;
+  }
+
+  .customer-orders-search-box input {
+    min-width: 0 !important;
+    height: 43px !important;
+    font-size: 16px !important;
+  }
+
+  .customer-orders-filter-summary {
+    margin-bottom: 7px !important;
+    font-size: .66rem !important;
+  }
+
+  #customerOrdersList {
+    min-width: 0 !important;
+  }
+
+  #customerOrdersList .customer-orders-loading,
+  #customerOrdersList .customer-orders-empty {
+    min-height: 0 !important;
+    padding: 16px 9px !important;
+    font-size: .78rem !important;
+    line-height: 1.42 !important;
+  }
+
+  #customerOrdersList .customer-orders-empty strong {
+    margin-bottom: 5px !important;
+    font-size: .9rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .customer-guest-track-section > p {
+    margin-bottom: 0 !important;
+  }
+
+  .customer-guest-track-form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    margin-top: 11px !important;
+  }
+
+  .customer-track-field {
+    gap: 5px !important;
+  }
+
+  .customer-track-field label {
+    font-size: .75rem !important;
+  }
+
+  .customer-track-field input {
+    min-height: 45px !important;
+    padding: 10px 11px !important;
+    border-radius: 9px !important;
+    font-size: 16px !important;
+  }
+
+  .customer-track-submit {
+    width: 100% !important;
+    min-height: 47px !important;
+    padding: 11px 14px !important;
+    border-radius: 10px !important;
+    font-size: .88rem !important;
+  }
+
+  .customer-orders-message {
+    margin-top: 9px !important;
+    padding: 9px 10px !important;
+    font-size: .72rem !important;
+  }
+
+  .customer-order-card {
+    margin-top: 10px !important;
+    padding: 11px !important;
+    border-radius: 10px !important;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .customer-orders-overlay {
+    padding: max(6px, env(safe-area-inset-top, 0px)) 6px max(6px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .customer-orders-head {
+    padding: 12px 11px !important;
+  }
+
+  .customer-orders-content {
+    padding: 8px !important;
+  }
+
+  .customer-my-orders-section,
+  .customer-guest-track-section {
+    padding: 10px !important;
+  }
+
+  .customer-order-filter-tab {
+    gap: 5px !important;
+    padding: 7px 8px !important;
+    font-size: .65rem !important;
+  }
+}
