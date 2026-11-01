@@ -1782,3 +1782,11 @@
     max-height: calc(100dvh - var(--gm-auth-safe-top) - var(--gm-auth-safe-bottom)) !important;
   }
 }
+
+
+/* Keep the mobile cart comfortably inset from the right edge. */
+@media screen and (max-width: 767px) {
+  body .site-header .main-header .nav > .header-actions > #openCartButton {
+    margin-right: 8px !important;
+  }
+}
