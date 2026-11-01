@@ -905,13 +905,13 @@
     box-shadow: inset 0 2px 4px rgba(132, 96, 18, .15), 0 1px 0 #c9a344;
   }
 
-  .gm-mobile-menu-store-rating svg {
+  .gm-mobile-menu-links button.gm-mobile-menu-store-rating svg {
     flex: 0 0 21px;
     width: 21px;
     height: 21px;
     fill: #ffd21f;
-    stroke: #ffd21f;
-    stroke-width: .35;
+    stroke: #d69a00;
+    stroke-width: .85;
     stroke-linejoin: round;
     filter: drop-shadow(0 1px 0 rgba(255, 238, 153, .95)) drop-shadow(0 2px 2px rgba(135, 91, 0, .3));
   }
