@@ -3281,3 +3281,68 @@
     transform: none !important;
   }
 }
+
+
+/* iOS Safari: freeze the storefront behind the customer sign-in modal. */
+html.customer-auth-scroll-locked {
+  height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+html.customer-auth-scroll-locked body {
+  position: fixed !important;
+  inset-inline: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+.customer-auth-overlay.open {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y;
+}
+
+.customer-auth-modal {
+  max-height: min(
+    92vh,
+    calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px)
+  ) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y;
+}
+
+.customer-auth-body {
+  overscroll-behavior: contain;
+}
+
+@media screen and (max-width: 650px) {
+  .customer-auth-overlay.open {
+    align-items: center !important;
+    padding:
+      max(12px, env(safe-area-inset-top, 0px))
+      12px
+      max(12px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .customer-auth-modal {
+    width: 100% !important;
+    max-width: 480px !important;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px) !important;
+    border-radius: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-auth-overlay,
+  .customer-auth-modal {
+    scroll-behavior: auto !important;
+  }
+}
