@@ -5843,12 +5843,61 @@
       if(accountLabel&&signedIn)accountLabel.textContent='Account';
     }
     window.addEventListener('resize',refreshCustomerAccountLabelForViewport,{passive:true});
+    let customerAuthBackgroundScrollState=null;
+    function lockCustomerAuthBackgroundScroll(){
+      if(customerAuthBackgroundScrollState||!document.body)return;
+      const body=document.body,root=document.documentElement;
+      const scrollY=Math.max(0,window.scrollY||window.pageYOffset||0);
+      customerAuthBackgroundScrollState={
+        scrollY,
+        bodyPosition:body.style.position,
+        bodyTop:body.style.top,
+        bodyLeft:body.style.left,
+        bodyRight:body.style.right,
+        bodyWidth:body.style.width,
+        bodyHeight:body.style.height,
+        bodyOverflow:body.style.overflow,
+        bodyOverscrollBehavior:body.style.overscrollBehavior,
+        rootOverflow:root.style.overflow,
+        rootOverscrollBehavior:root.style.overscrollBehavior
+      };
+      root.classList.add('customer-auth-scroll-locked');
+      root.style.overflow='hidden';
+      root.style.overscrollBehavior='none';
+      body.style.position='fixed';
+      body.style.top='-'+scrollY+'px';
+      body.style.left='0';
+      body.style.right='0';
+      body.style.width='100%';
+      body.style.height='100%';
+      body.style.overflow='hidden';
+      body.style.overscrollBehavior='none';
+    }
+    function unlockCustomerAuthBackgroundScroll(){
+      const saved=customerAuthBackgroundScrollState;
+      if(!saved)return;
+      const body=document.body,root=document.documentElement;
+      customerAuthBackgroundScrollState=null;
+      root.classList.remove('customer-auth-scroll-locked');
+      root.style.overflow=saved.rootOverflow;
+      root.style.overscrollBehavior=saved.rootOverscrollBehavior;
+      body.style.position=saved.bodyPosition;
+      body.style.top=saved.bodyTop;
+      body.style.left=saved.bodyLeft;
+      body.style.right=saved.bodyRight;
+      body.style.width=saved.bodyWidth;
+      body.style.height=saved.bodyHeight;
+      body.style.overflow=saved.bodyOverflow;
+      body.style.overscrollBehavior=saved.bodyOverscrollBehavior;
+      window.requestAnimationFrame(()=>window.scrollTo(0,saved.scrollY));
+    }
+
     function openCustomerPasswordRecovery(message='Your reset link is verified. Choose a new password.',type='success'){
       customerAuthRecoveryMode=true;
       const overlay=$('customerAuthOverlay');
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden','false');
-      document.body.style.overflow='hidden';
+      lockCustomerAuthBackgroundScroll();
       $('customerAuthMethods').hidden=true;
       $('customerAuthSignedIn').hidden=true;
       $('customerPasswordRecoveryForm').hidden=false;
@@ -5881,7 +5930,7 @@
     function openCustomerAuth(){
       $('customerAuthOverlay').classList.add('open');
       $('customerAuthOverlay').setAttribute('aria-hidden','false');
-      document.body.style.overflow='hidden';
+      lockCustomerAuthBackgroundScroll();
       setCustomerAuthMessage('');
       try{
         const client=getCustomerAuthClient();
@@ -5897,7 +5946,7 @@
     function closeCustomerAuth(){
       $('customerAuthOverlay').classList.remove('open');
       $('customerAuthOverlay').setAttribute('aria-hidden','true');
-      if(!$('cartModal').classList.contains('open')&&!$('productOverlay').classList.contains('open'))document.body.style.overflow='';
+      unlockCustomerAuthBackgroundScroll();
     }
     $('customerAuthClose').addEventListener('click',closeCustomerAuth);
     $('customerAuthOverlay').addEventListener('click',event=>{
