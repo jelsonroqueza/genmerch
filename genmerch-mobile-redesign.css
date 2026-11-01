@@ -3355,3 +3355,39 @@ html.customer-auth-scroll-locked body {
     font-size: 16px !important;
   }
 }
+
+/* GENMERCH V2.0: keep every editable form control at a stable mobile scale. */
+/*
+ * Covers storefront forms and dynamically rendered customer-account,
+ * order, checkout, partner, Seller Centre, review, and testimonial fields.
+ * 16px prevents iOS Safari focus auto-zoom and keeps a consistent text scale
+ * across Android mobile browsers. Native pinch-to-zoom remains enabled.
+ */
+@media screen and (max-width: 1180px), screen and (hover: none) and (pointer: coarse) {
+  body :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]) {
+    font-size: 16px !important;
+  }
+
+  /* Preserve the same mobile text size in the high-specificity header search rules. */
+  .site-header .main-header .nav .search input,
+  .site-header .main-header .nav.genmerch-sticky-fixed .search input {
+    font-size: 16px !important;
+  }
+
+  /* Seller Centre theme rules intentionally use !important; align all editable fields. */
+  #sellerDashboardOverlay .seller-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]),
+  #sellerDashboardOverlay .seller-field textarea,
+  #sellerDashboardOverlay .seller-field select,
+  #sellerDashboardOverlay .seller-filter-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]),
+  #sellerDashboardOverlay .seller-filter-field select,
+  #sellerDashboardOverlay .seller-filter-field textarea,
+  #sellerDashboardOverlay .seller-inventory-tools input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]),
+  #sellerDashboardOverlay .seller-inventory-tools select,
+  #sellerDashboardOverlay .seller-stock-input,
+  #sellerProductEditorOverlay .seller-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]),
+  #sellerProductEditorOverlay .seller-field textarea,
+  #sellerProductEditorOverlay .seller-field select,
+  #sellerPasscodeOverlay .seller-field input:not(.seller-passcode-input):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]) {
+    font-size: 16px !important;
+  }
+}
