@@ -441,21 +441,41 @@
     width: min(78%, 276px) !important;
     min-width: 0 !important;
     min-height: 46px !important;
-    margin: -26px auto 10px !important;
+    margin: 0 auto 10px !important;
     padding: 11px 22px !important;
-    border: 2px solid rgba(255, 255, 255, .68) !important;
+    border: 2px solid rgba(255, 255, 255, .72) !important;
     border-radius: 999px !important;
-    background: linear-gradient(110deg, #f21e31 0%, #e90c24 58%, #c90d24 100%) !important;
+    background: linear-gradient(110deg, #ff3044 0%, #ed1730 55%, #c90d24 100%) !important;
     color: #fff !important;
     font-size: .95rem !important;
     font-weight: 900 !important;
     line-height: 1.2 !important;
-    box-shadow: 0 6px 14px rgba(157, 18, 27, .28) !important;
-    transform: none !important;
+    text-shadow: 0 1px 1px rgba(91, 0, 12, .22) !important;
+    box-shadow:
+      0 4px 0 #a70d21,
+      0 8px 16px rgba(157, 18, 27, .23),
+      inset 0 1px 0 rgba(255, 255, 255, .48),
+      inset 0 -2px 0 rgba(103, 0, 18, .16) !important;
+    transform: translateY(0) !important;
+    transition:
+      transform .16s ease,
+      box-shadow .16s ease,
+      filter .16s ease !important;
   }
 
   main.container > .hero .shop-now:active {
-    transform: scale(.98) !important;
+    transform: translateY(3px) scale(.99) !important;
+    box-shadow:
+      0 1px 0 #a70d21,
+      0 3px 8px rgba(157, 18, 27, .20),
+      inset 0 1px 0 rgba(255, 255, 255, .42),
+      inset 0 -1px 0 rgba(103, 0, 18, .16) !important;
+    filter: brightness(.98) saturate(1.02) !important;
+  }
+
+  main.container > .hero .shop-now:focus-visible {
+    outline: 3px solid rgba(255, 190, 95, .95) !important;
+    outline-offset: 3px !important;
   }
 
   main.container > .hero .flash-deals-banner {
