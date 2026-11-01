@@ -916,3 +916,10 @@
     transform: none !important;
   }
 }
+
+@media screen and (max-width: 767px) {
+  /* The hamburger drawer and five-item mobile bar replace desktop link rows on phones. */
+  .site-header .desktop-links {
+    display: none !important;
+  }
+}
