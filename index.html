@@ -5173,7 +5173,7 @@
     function openPartnerApplication(){
       const formContent = `
         <div class="partner-application-content">
-          <p class="partner-application-intro">A few quick steps to introduce your business and explore a partnership with GENMERCH. Your progress is saved while this form stays open. Required fields are marked <strong>*</strong>.</p>
+          <p class="partner-application-intro">A few quick steps to introduce your business and explore a partnership with GENMERCH. You can move between steps and review your answers before submitting. Required fields are marked <strong>*</strong>.</p>
           <form id="partnerApplicationForm" novalidate>
             <input type="hidden" id="partnerFormStartedAt" name="form_started_at" value="">
             <div class="partner-honeypot" aria-hidden="true"><label for="partnerWebsiteTrap">Leave this field blank</label><input id="partnerWebsiteTrap" name="website" type="text" tabindex="-1" autocomplete="off"></div>
@@ -5202,6 +5202,7 @@
               <div class="partner-form-field"><label for="partnerType">How would you like to partner? <span class="required">*</span></label><select id="partnerType" name="partner_type" required><option value="">Select partnership type</option><option value="Reseller">Reseller</option><option value="Wholesaler">Wholesaler</option><option value="Brand Affiliate">Brand Affiliate</option></select></div>
               <div class="partner-form-field"><label for="partnerBusinessStage">Business stage</label><select id="partnerBusinessStage" name="business_stage"><option value="">Select one (optional)</option><option value="Already operating">Already selling / operating</option><option value="Starting soon">Planning to start soon</option><option value="Exploring options">Still exploring options</option></select></div>
               <div class="partner-form-field"><label for="partnerSellingChannels">Where do you sell?</label><select id="partnerSellingChannels" name="selling_channels"><option value="">Select selling channel</option><option value="Facebook / Instagram / TikTok">Facebook / Instagram / TikTok</option><option value="Marketplace / online store">Marketplace / online store</option><option value="Physical store">Physical store</option><option value="Multiple channels">Multiple channels</option><option value="Not selling yet">Not selling yet</option></select></div>
+              <div class="partner-form-field partner-form-field-full"><label for="partnerSocialLink">Website / shop / social media link</label><input id="partnerSocialLink" name="website_social" type="url" maxlength="240" placeholder="https://... (optional)"></div>
               </div>
             </section>
             <section class="partner-form-step" data-partner-step="2" aria-label="Product interests and confirmation" hidden>
@@ -5209,7 +5210,7 @@
               <div class="partner-form-grid">
               <div class="partner-form-field"><label for="partnerProductInterest">Products you are interested in</label><select id="partnerProductInterest" name="interested_products"><option value="">Select product interest</option><option value="T-Shirts">T-Shirts</option><option value="Shorts">Shorts</option><option value="Sandos">Sandos</option><option value="Mixed / all categories">Mixed / all categories</option><option value="Other / future releases">Other / future releases</option></select></div>
               <div class="partner-form-field"><label for="partnerOrderVolume">Estimated monthly order volume</label><select id="partnerOrderVolume" name="estimated_monthly_orders"><option value="">Select an estimate</option><option value="1–10 pieces">1–10 pieces</option><option value="11–30 pieces">11–30 pieces</option><option value="31–100 pieces">31–100 pieces</option><option value="More than 100 pieces">More than 100 pieces</option><option value="Not sure yet">Not sure yet</option></select></div>
-              <div class="partner-form-field partner-form-field-full"><label for="partnerSocialLink">Website / shop / social media link</label><input id="partnerSocialLink" name="website_social" type="url" maxlength="240" placeholder="https://... (optional)"></div>
+              
               <div class="partner-form-field"><label for="partnerPreferredContact">Preferred contact method <span class="required">*</span></label><select id="partnerPreferredContact" name="preferred_contact" required><option value="Either">Either email or phone</option><option value="Email">Email</option><option value="Phone">Phone</option></select></div>
               <div class="partner-form-field"><label for="partnerMessage">Anything else we should know?</label><textarea id="partnerMessage" name="message" maxlength="2500" placeholder="Tell us about your goals, target customers, or questions (optional)"></textarea></div>
               </div>
