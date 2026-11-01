@@ -154,7 +154,7 @@
   <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
   <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1"></noscript>
-  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261101-flash-deals-original-mobile-1">
+  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261101-mobile-store-rating-help-drawer-1">
   <script src="/genmerch-mobile-redesign.js?v=20261101-review-1" defer></script>
 </head>
 <body>
@@ -279,6 +279,17 @@
         <button type="button" data-gm-mobile-open="#openCustomerRateButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg>Rate Your Purchases</button>
         <button type="button" data-gm-mobile-open="#genmerchNotificationButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg>Notifications</button>
         <button type="button" data-gm-mobile-open="#openSellerCentreButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-1-5H4L3 9Zm1 0v11h16V9M8 20v-6h8v6M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>Seller Centre</button>
+        <button type="button" class="gm-mobile-menu-store-rating" data-gm-mobile-open="#storeRatingNavButton" aria-label="Open overall GENMERCH store rating">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.15 3.02 6.15 6.79.99-4.91 4.79 1.16 6.76L12 17.65l-6.06 3.19 1.16-6.76-4.91-4.79 6.79-.99L12 2.15Z"/></svg>
+          <span class="gm-mobile-menu-store-rating-label">Store Rating</span>
+          <strong id="gmMobileStoreRatingValue" aria-live="polite">…</strong>
+        </button>
+      </div>
+      <div class="gm-mobile-menu-footer">
+        <button type="button" class="gm-mobile-menu-help" data-gm-mobile-open='.desktop-links button[aria-label="Open GENMERCH Help Center"]'>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.1 1.9c-1.1.9-1.7 1.3-1.7 2.6M12 17.2v.1"/></svg>
+          Need Help?
+        </button>
       </div>
     </nav>
   </div>
@@ -8253,8 +8264,10 @@
       if(storeRatingSummaryRequest)return storeRatingSummaryRequest;
       const task=(async()=>{
       const button=$('storeRatingNavButton'),value=$('storeRatingNavValue');
+      const mobileValue=$('gmMobileStoreRatingValue');
       if(!button||!value)return;
       value.textContent='…';
+      if(mobileValue)mobileValue.textContent='…';
       try{
         const client=getCustomerAuthClient(),pageSize=1000;
         let offset=0,totalCount=null,totalRating=0,ratingCount=0;
@@ -8275,12 +8288,14 @@
         const average=ratingCount?totalRating/ratingCount:0;
         loadStoreRatingSummary.summary={loaded:true,average,count:ratingCount};
         value.textContent=ratingCount?average.toFixed(1):'New';
+        if(mobileValue)mobileValue.textContent=ratingCount?average.toFixed(1):'New';
         button.setAttribute('aria-label',ratingCount?'Overall GENMERCH store rating: '+average.toFixed(1)+' out of 5 from '+ratingCount+' published reviews':'GENMERCH has no published customer reviews yet');
         button.title=ratingCount?'Overall store rating: '+average.toFixed(1)+'/5 from '+ratingCount+' published customer review'+(ratingCount===1?'':'s'):'No published customer reviews yet';
       }catch(error){
         console.warn('GENMERCH overall store rating could not load.',error);
         loadStoreRatingSummary.summary={loaded:false,average:0,count:0,error:true};
         value.textContent='—';
+        if(mobileValue)mobileValue.textContent='—';
         button.setAttribute('aria-label','Overall GENMERCH store rating temporarily unavailable');
         button.title='Store rating is temporarily unavailable';
       }
