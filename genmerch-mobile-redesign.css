@@ -3364,7 +3364,7 @@ html.customer-auth-scroll-locked body {
  * across Android mobile browsers. Native pinch-to-zoom remains enabled.
  */
 @media screen and (max-width: 1180px), screen and (hover: none) and (pointer: coarse) {
-  body :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]) {
+  body :is(input, select, textarea):not(.seller-passcode-input):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="range"]) {
     font-size: 16px !important;
   }
 
