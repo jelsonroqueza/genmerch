@@ -10618,3 +10618,20 @@ body .site-header .reference-desktop-links button.active{
    flex:0 0 46px!important;width:46px!important;min-width:46px!important;max-width:46px!important;
  }
 }
+
+
+/* Override legacy per-action widths in the reference header */
+@media(min-width:900px){
+ body .site-header .main-header .nav .header-actions{
+   display:flex!important;width:232px!important;min-width:232px!important;max-width:232px!important;
+   justify-content:space-between!important;align-items:center!important;gap:0!important;
+ }
+ body .site-header .main-header .nav .header-actions>#genmerchNotificationButton,
+ body .site-header .main-header .nav .header-actions>.wishlist-header-button,
+ body .site-header .main-header .nav .header-actions>#openCartButton,
+ body .site-header .main-header .nav .header-actions>#customerAccountButton{
+   display:flex!important;flex:0 0 42px!important;width:42px!important;min-width:42px!important;max-width:42px!important;
+   align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;
+ }
+ body .site-header .main-header .nav .header-actions>#customerAccountButton .header-icon{display:flex!important}
+}
