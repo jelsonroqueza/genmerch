@@ -2478,3 +2478,207 @@
     font-size: .65rem !important;
   }
 }
+
+
+/* GENMERCH premium mobile drawer motion system. */
+@media screen and (max-width: 767px) {
+  .gm-mobile-menu-scrim:not([hidden]) {
+    animation: gmSidebarBackdropIn 280ms ease-out both;
+    background: rgba(14, 17, 21, .52) !important;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .gm-mobile-menu-scrim.is-closing {
+    pointer-events: none !important;
+    animation: gmSidebarBackdropOut 240ms ease-in both !important;
+  }
+
+  .gm-mobile-menu-panel {
+    animation: gmSidebarPanelIn 470ms cubic-bezier(.16, 1, .3, 1) both !important;
+    transform-origin: left center;
+    will-change: transform, opacity;
+    box-shadow: 18px 0 48px rgba(0, 0, 0, .20), 1px 0 0 rgba(255, 255, 255, .75) !important;
+  }
+
+  .gm-mobile-menu-scrim.is-closing .gm-mobile-menu-panel {
+    animation: gmSidebarPanelOut 230ms cubic-bezier(.4, 0, 1, 1) both !important;
+  }
+
+  .gm-mobile-menu-head {
+    animation: gmSidebarHeaderIn 420ms cubic-bezier(.2, .8, .2, 1) 75ms both;
+  }
+
+  .gm-mobile-menu-brand {
+    animation: gmSidebarBrandIn 470ms cubic-bezier(.2, .8, .2, 1) 105ms both;
+    transform-origin: left center;
+  }
+
+  .gm-mobile-menu-close {
+    animation: gmSidebarCloseButtonIn 430ms cubic-bezier(.2, .8, .2, 1) 145ms both;
+    transform-origin: center;
+  }
+
+  .gm-mobile-menu-links > button {
+    animation: gmSidebarMenuItemIn 430ms cubic-bezier(.2, .8, .2, 1) both;
+    will-change: transform, opacity;
+  }
+
+  .gm-mobile-menu-links > button:nth-of-type(1) { animation-delay: 135ms; }
+  .gm-mobile-menu-links > button:nth-of-type(2) { animation-delay: 175ms; }
+  .gm-mobile-menu-links > button:nth-of-type(3) { animation-delay: 215ms; }
+  .gm-mobile-menu-links > button:nth-of-type(4) { animation-delay: 255ms; }
+  .gm-mobile-menu-links > button:nth-of-type(5) { animation-delay: 295ms; }
+  .gm-mobile-menu-links > button:nth-of-type(6) { animation-delay: 335ms; }
+  .gm-mobile-menu-links > button:nth-of-type(7) { animation-delay: 375ms; }
+  .gm-mobile-menu-links > button:nth-of-type(8) { animation-delay: 415ms; }
+  .gm-mobile-menu-links > button:nth-of-type(9) { animation-delay: 455ms; }
+  .gm-mobile-menu-links > button:nth-of-type(10) { animation-delay: 495ms; }
+
+  .gm-mobile-menu-links > button svg {
+    animation: gmSidebarIconIn 410ms cubic-bezier(.2, .8, .2, 1) both;
+  }
+
+  .gm-mobile-menu-links > button:nth-of-type(1) svg { animation-delay: 175ms; }
+  .gm-mobile-menu-links > button:nth-of-type(2) svg { animation-delay: 215ms; }
+  .gm-mobile-menu-links > button:nth-of-type(3) svg { animation-delay: 255ms; }
+  .gm-mobile-menu-links > button:nth-of-type(4) svg { animation-delay: 295ms; }
+  .gm-mobile-menu-links > button:nth-of-type(5) svg { animation-delay: 335ms; }
+  .gm-mobile-menu-links > button:nth-of-type(6) svg { animation-delay: 375ms; }
+  .gm-mobile-menu-links > button:nth-of-type(7) svg { animation-delay: 415ms; }
+  .gm-mobile-menu-links > button:nth-of-type(8) svg { animation-delay: 455ms; }
+  .gm-mobile-menu-links > button:nth-of-type(9) svg { animation-delay: 495ms; }
+  .gm-mobile-menu-links > button:nth-of-type(10) svg { animation-delay: 535ms; }
+
+  .gm-mobile-menu-divider {
+    transform-origin: left center;
+    animation: gmSidebarDividerIn 360ms ease-out 300ms both;
+  }
+
+  .gm-mobile-menu-links > button.gm-mobile-menu-store-rating {
+    animation-name: gmSidebarStoreRatingIn;
+    animation-duration: 560ms;
+    animation-timing-function: cubic-bezier(.18, .9, .25, 1);
+  }
+
+  .gm-mobile-menu-store-rating svg {
+    animation: gmSidebarGoldStarIn 560ms cubic-bezier(.16, 1, .3, 1) 500ms both !important;
+    transform-origin: center;
+  }
+
+  .gm-mobile-menu-footer {
+    animation: gmSidebarFooterIn 420ms cubic-bezier(.2, .8, .2, 1) 560ms both;
+  }
+
+  .gm-mobile-menu-help {
+    animation: gmSidebarHelpIn 500ms cubic-bezier(.16, 1, .3, 1) 585ms both;
+    transform-origin: center;
+  }
+
+  .gm-mobile-menu-links > button:not(.gm-mobile-menu-store-rating):active,
+  .gm-mobile-menu-help:active {
+    transition: transform 120ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  }
+
+  @keyframes gmSidebarBackdropIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes gmSidebarBackdropOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes gmSidebarPanelIn {
+    0% { opacity: .72; transform: translate3d(-28px, 0, 0) scale(.985); }
+    72% { opacity: 1; transform: translate3d(2px, 0, 0) scale(1); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  @keyframes gmSidebarPanelOut {
+    from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    to { opacity: .94; transform: translate3d(-20px, 0, 0) scale(.99); }
+  }
+
+  @keyframes gmSidebarHeaderIn {
+    from { opacity: 0; transform: translate3d(0, -8px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes gmSidebarBrandIn {
+    0% { opacity: 0; transform: translate3d(-9px, 0, 0) scale(.97); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  @keyframes gmSidebarCloseButtonIn {
+    0% { opacity: 0; transform: scale(.82) rotate(-12deg); }
+    70% { opacity: 1; transform: scale(1.04) rotate(2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+
+  @keyframes gmSidebarMenuItemIn {
+    0% { opacity: 0; transform: translate3d(-12px, 5px, 0); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes gmSidebarIconIn {
+    0% { opacity: .25; transform: scale(.76); }
+    75% { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes gmSidebarDividerIn {
+    from { opacity: 0; transform: scaleX(.25); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
+  @keyframes gmSidebarStoreRatingIn {
+    0% { opacity: 0; transform: translate3d(-10px, 4px, 0); box-shadow: 0 0 0 rgba(201, 163, 68, 0); }
+    70% { opacity: 1; transform: translate3d(0, 0, 0); box-shadow: 0 3px 12px rgba(201, 163, 68, .18); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes gmSidebarGoldStarIn {
+    0% { opacity: .3; transform: scale(.65) rotate(-18deg); }
+    72% { opacity: 1; transform: scale(1.12) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+
+  @keyframes gmSidebarFooterIn {
+    from { opacity: 0; transform: translate3d(0, 8px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes gmSidebarHelpIn {
+    0% { opacity: 0; transform: translate3d(0, 10px, 0) scale(.98); }
+    75% { opacity: 1; transform: translate3d(0, -1px, 0) scale(1); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  .gm-mobile-menu-scrim.is-closing .gm-mobile-menu-head,
+  .gm-mobile-menu-scrim.is-closing .gm-mobile-menu-links > button,
+  .gm-mobile-menu-scrim.is-closing .gm-mobile-menu-footer {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-mobile-menu-scrim:not([hidden]),
+  .gm-mobile-menu-scrim.is-closing,
+  .gm-mobile-menu-panel,
+  .gm-mobile-menu-head,
+  .gm-mobile-menu-brand,
+  .gm-mobile-menu-close,
+  .gm-mobile-menu-links > button,
+  .gm-mobile-menu-links > button svg,
+  .gm-mobile-menu-divider,
+  .gm-mobile-menu-footer,
+  .gm-mobile-menu-help,
+  .gm-mobile-menu-store-rating svg {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
