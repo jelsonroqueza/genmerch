@@ -10382,3 +10382,40 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton:not
     animation:none!important;
   }
 }
+
+/* GENMERCH reference interface refresh — 2026-11 */
+:root{--gm-ref-red:#ed1c2e;--gm-ref-ink:#171717;--gm-ref-cream:#fff3e8;--gm-ref-line:#f2ddd1}
+body{background:#fff;color:var(--gm-ref-ink)}
+.site-header{background:#fff!important;box-shadow:0 2px 12px rgba(25,18,15,.08)!important}
+.site-header .main-header{background:#fff!important}
+.hero{overflow:hidden!important;border-radius:18px!important;background:linear-gradient(105deg,#fff2e7 0%,#fff8f2 55%,#f35b18 55%,#f23910 100%)!important;box-shadow:0 8px 26px rgba(44,22,13,.12)!important}
+.hero-copy{background:transparent!important}
+.hero-tagline{border-radius:999px!important;background:rgba(255,255,255,.75)!important;letter-spacing:.12em!important;box-shadow:0 3px 12px rgba(70,40,20,.08)}
+.hero-benefits{gap:10px!important}
+.hero-benefit-item{border:1px solid rgba(237,28,46,.13)!important;border-radius:14px!important;background:rgba(255,255,255,.64)!important;box-shadow:0 4px 12px rgba(50,25,15,.06)!important}
+.hero-benefit-icon{color:var(--gm-ref-red)!important}
+.hero .shop-now,.hero a.button,.hero button{border-radius:999px!important;background:linear-gradient(180deg,#ff3341,#df1025)!important;box-shadow:0 5px 0 #b80c1f,0 9px 20px rgba(210,16,37,.2)!important}
+.search.catalog-search{border:1px solid #e8e5e2!important;border-radius:999px!important;box-shadow:0 3px 14px rgba(25,20,18,.08)!important}
+.search.catalog-search input{border-radius:999px!important}
+.catalog-card,.product-card{border-radius:16px!important;box-shadow:0 5px 18px rgba(25,20,18,.08)!important}
+.bottom-nav{background:rgba(255,255,255,.97)!important;box-shadow:0 -3px 18px rgba(20,20,20,.08)!important}
+@media(min-width:900px){
+ .hero{min-height:420px!important}
+ .hero-art{align-self:stretch!important}
+ .hero-models-photo{height:100%!important;object-fit:cover!important}
+ .hero-benefits{display:flex!important;flex-wrap:nowrap!important}
+ .hero-benefit-item{flex:1 1 0!important;min-width:0!important}
+}
+@media(max-width:899px){
+ .hero{display:flex!important;flex-direction:column!important;background:#fff1e5!important;border-radius:16px!important}
+ .hero-copy{order:0!important;padding:20px 14px 12px!important}
+ .hero-brand-lockup{justify-content:center!important}
+ .hero-tagline{text-align:center!important}
+ .hero-art{order:1!important;width:100%!important;min-height:250px!important;background:#f65b16!important}
+ .hero-models-photo{width:100%!important;height:auto!important;max-height:360px!important;object-fit:cover!important;object-position:center top!important}
+ .hero-benefits{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;margin:10px 0!important}
+ .hero-benefit-item{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;min-height:76px!important;padding:7px 3px!important;text-align:center!important}
+ .hero-benefit-copy strong{font-size:10px!important;line-height:1.2!important}
+ .search.catalog-search{margin:12px 12px 16px!important}
+ .bottom-nav{display:flex!important}
+}
