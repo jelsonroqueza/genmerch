@@ -29,6 +29,33 @@
     setActiveNav('categories');
   }
 
+  function syncMobileSearchPlacement() {
+    const main = query('main.container');
+    const hero = query('.hero', main);
+    const search = query('.catalog-search', main);
+    if (!main || !hero || !search) return;
+
+    if (mobileMedia.matches) {
+      if (!search.__gmMobileOriginalMarker && search.parentNode) {
+        const marker = document.createComment('GENMERCH original desktop search position');
+        search.parentNode.insertBefore(marker, search);
+        search.__gmMobileOriginalMarker = marker;
+      }
+
+      if (search.parentNode === main && main.firstElementChild !== search) {
+        main.insertBefore(search, hero);
+      }
+      return;
+    }
+
+    const marker = search.__gmMobileOriginalMarker;
+    if (marker && marker.parentNode) {
+      marker.parentNode.insertBefore(search, marker.nextSibling);
+      marker.remove();
+      delete search.__gmMobileOriginalMarker;
+    }
+  }
+
   function syncMobileBenefits() {
     const hero = query('main.container > .hero');
     if (!hero) return;
@@ -212,6 +239,7 @@
 
   function init() {
     document.body.classList.add('gm-mobile-redesign-enabled');
+    syncMobileSearchPlacement();
     syncMobileBenefits();
     setupWishlistBadgeMirror();
     setupOverlayObserver();
@@ -224,6 +252,7 @@
       mobileMedia.addListener(syncMobileBenefits);
     }
 
+    window.addEventListener('resize', syncMobileSearchPlacement, { passive: true });
     window.addEventListener('resize', syncMobileBenefits, { passive: true });
   }
 
