@@ -3069,3 +3069,492 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   #gmcaOverlay .gmca-content { padding-right: 8px !important; padding-left: 8px !important; }
   #gmcaOverlay .gmca-order-card { padding: 9px !important; }
 }
+
+
+/* ==========================================================
+   GENMERCH CUSTOMER ACCOUNT — adaptive layout correction
+   Authoritative responsive rules for phone, tablet, laptop and desktop.
+   Keep header/navigation/footer visible; only the account content scrolls.
+   ========================================================== */
+#gmcaOverlay {
+  box-sizing: border-box !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+           max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)) !important;
+  overflow: hidden !important;
+}
+
+#gmcaOverlay .gmca-modal {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(1480px, 100%) !important;
+  height: min(92vh, 1040px) !important;
+  height: min(92dvh, 1040px) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: auto !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain !important;
+}
+
+#gmcaOverlay .gmca-header,
+#gmcaOverlay .gmca-tabs,
+#gmcaOverlay .gmca-footer {
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+#gmcaOverlay .gmca-header-top {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+#gmcaOverlay .gmca-brand,
+#gmcaOverlay .gmca-brand-copy,
+#gmcaOverlay .gmca-header-actions {
+  min-width: 0 !important;
+}
+
+#gmcaOverlay .gmca-tabs {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: thin !important;
+}
+
+#gmcaOverlay .gmca-tabs button {
+  flex: 0 0 auto !important;
+  min-width: max-content !important;
+  max-width: none !important;
+}
+
+#gmcaOverlay .gmca-content {
+  box-sizing: border-box !important;
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-gutter: stable !important;
+}
+
+#gmcaOverlay .gmca-content *,
+#gmcaOverlay .gmca-content *::before,
+#gmcaOverlay .gmca-content *::after {
+  box-sizing: border-box;
+}
+
+#gmcaOverlay .gmca-pane,
+#gmcaOverlay .gmca-section-card,
+#gmcaOverlay .gmca-order-card,
+#gmcaOverlay .gmca-membership-card,
+#gmcaOverlay .gmca-welcome-card,
+#gmcaOverlay .gmca-metric,
+#gmcaOverlay .gmca-form,
+#gmcaOverlay .gmca-address-grid,
+#gmcaOverlay .gmca-overview-bottom {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+#gmcaOverlay .gmca-content img,
+#gmcaOverlay .gmca-content svg,
+#gmcaOverlay .gmca-content video,
+#gmcaOverlay .gmca-content canvas {
+  max-width: 100%;
+}
+
+#gmcaOverlay .gmca-footer {
+  width: 100% !important;
+  margin: 0 !important;
+  padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  #gmcaOverlay { padding: 12px !important; }
+  #gmcaOverlay .gmca-modal {
+    width: min(100%, 960px) !important;
+    height: min(94vh, 1000px) !important;
+    height: min(94dvh, 1000px) !important;
+  }
+  #gmcaOverlay .gmca-content {
+    padding: clamp(12px, 1.8vw, 18px) !important;
+  }
+  #gmcaOverlay .gmca-tabs {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+  #gmcaOverlay .gmca-tabs button {
+    min-height: 44px !important;
+    padding: 8px 10px !important;
+    font-size: .74rem !important;
+  }
+  #gmcaOverlay .gmca-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #gmcaOverlay {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #gmcaOverlay .gmca-modal {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+
+  #gmcaOverlay .gmca-header {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #gmcaOverlay .gmca-header-top {
+    gap: 7px !important;
+    padding-top: max(8px, env(safe-area-inset-top)) !important;
+    padding-right: max(10px, env(safe-area-inset-right)) !important;
+    padding-bottom: 8px !important;
+    padding-left: max(10px, env(safe-area-inset-left)) !important;
+  }
+
+  #gmcaOverlay .gmca-brand {
+    flex: 1 1 auto !important;
+    gap: 7px !important;
+    overflow: hidden !important;
+  }
+
+  #gmcaOverlay .gmca-brand-mark {
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    height: 36px !important;
+  }
+
+  #gmcaOverlay .gmca-brand-copy,
+  #gmcaOverlay .gmca-brand-line {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size: clamp(.76rem, 3.5vw, .9rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  #gmcaOverlay .gmca-header p {
+    max-width: 42vw !important;
+    font-size: clamp(.57rem, 2.5vw, .66rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  #gmcaOverlay .gmca-header-actions {
+    flex: 0 0 auto !important;
+    gap: 5px !important;
+  }
+
+  #gmcaOverlay .gmca-reload-button,
+  #gmcaOverlay .gmca-notification-button,
+  #gmcaOverlay .gmca-close {
+    min-width: 34px !important;
+    min-height: 34px !important;
+  }
+
+  #gmcaOverlay .gmca-notification-button,
+  #gmcaOverlay .gmca-close {
+    flex-basis: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  #gmcaOverlay .gmca-tabs {
+    flex: 0 0 auto !important;
+    gap: 3px !important;
+    padding: 4px max(7px, env(safe-area-inset-right)) 0 max(7px, env(safe-area-inset-left)) !important;
+    scroll-padding-inline: 8px !important;
+    scrollbar-width: none !important;
+  }
+
+  #gmcaOverlay .gmca-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  #gmcaOverlay .gmca-tabs button {
+    min-height: 43px !important;
+    padding: 7px 10px !important;
+    font-size: clamp(.66rem, 2.9vw, .74rem) !important;
+  }
+
+  #gmcaOverlay .gmca-tabs button svg {
+    width: 17px !important;
+    height: 17px !important;
+    flex-basis: 17px !important;
+  }
+
+  #gmcaOverlay .gmca-content {
+    flex: 1 1 0% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 10px max(9px, env(safe-area-inset-right)) 14px max(9px, env(safe-area-inset-left)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  #gmcaOverlay .gmca-welcome-card {
+    min-height: 0 !important;
+    margin: 7px 0 9px !important;
+    padding: 10px !important;
+    gap: 8px !important;
+  }
+
+  #gmcaOverlay .gmca-welcome-card h3 {
+    font-size: clamp(1rem, 4.5vw, 1.2rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  #gmcaOverlay .gmca-welcome-card p {
+    font-size: .7rem !important;
+    line-height: 1.35 !important;
+  }
+
+  #gmcaOverlay .gmca-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  #gmcaOverlay .gmca-metric {
+    min-height: 76px !important;
+    padding: 9px !important;
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    column-gap: 7px !important;
+  }
+
+  #gmcaOverlay .gmca-metric-icon {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 1.05rem !important;
+  }
+
+  #gmcaOverlay .gmca-metric-label,
+  #gmcaOverlay .gmca-metric-caption {
+    font-size: .6rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #gmcaOverlay .gmca-metric-value {
+    font-size: clamp(1.05rem, 5vw, 1.3rem) !important;
+    line-height: 1.1 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #gmcaOverlay .gmca-section-card,
+  #gmcaOverlay .gmca-order-card,
+  #gmcaOverlay .gmca-membership-card {
+    padding: 10px !important;
+    margin-top: 9px !important;
+  }
+
+  #gmcaOverlay .gmca-order-head,
+  #gmcaOverlay .gmca-pane-title,
+  #gmcaOverlay .gmca-section-heading {
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+    gap: 7px !important;
+  }
+
+  #gmcaOverlay .gmca-order-card p,
+  #gmcaOverlay .gmca-order-card small {
+    line-height: 1.35 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #gmcaOverlay .gmca-form {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 11px !important;
+  }
+
+  #gmcaOverlay .gmca-form > *,
+  #gmcaOverlay .gmca-form-full,
+  #gmcaOverlay .gmca-check-label {
+    grid-column: 1 / -1 !important;
+    min-width: 0 !important;
+  }
+
+  #gmcaOverlay .gmca-form input,
+  #gmcaOverlay .gmca-form textarea,
+  #gmcaOverlay .gmca-form select,
+  #gmcaOverlay .gmca-signout-dialog input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: 16px !important;
+  }
+
+  #gmcaOverlay .gmca-address-grid,
+  #gmcaOverlay .gmca-overview-bottom {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #gmcaOverlay .gmca-footer {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    padding: 7px max(10px, env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
+    gap: 6px !important;
+    font-size: .62rem !important;
+  }
+
+  #gmcaOverlay .gmca-footer > span {
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #gmcaOverlay .gmca-brand-mark {
+    flex-basis: 38px !important;
+    width: 38px !important;
+    height: 33px !important;
+  }
+
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size: .74rem !important;
+  }
+
+  #gmcaOverlay .gmca-header p {
+    max-width: 38vw !important;
+    font-size: .55rem !important;
+  }
+
+  #gmcaOverlay .gmca-header-actions {
+    gap: 4px !important;
+  }
+
+  #gmcaOverlay .gmca-notification-button,
+  #gmcaOverlay .gmca-close {
+    flex-basis: 33px !important;
+    width: 33px !important;
+    height: 33px !important;
+    min-width: 33px !important;
+    min-height: 33px !important;
+  }
+
+  #gmcaOverlay .gmca-tabs button {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  #gmcaOverlay .gmca-header p {
+    display: none !important;
+  }
+
+  #gmcaOverlay .gmca-brand-line strong {
+    font-size: .7rem !important;
+  }
+
+  #gmcaOverlay .gmca-tabs button {
+    gap: 5px !important;
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+    font-size: .64rem !important;
+  }
+
+  #gmcaOverlay .gmca-metric {
+    grid-template-columns: 29px minmax(0, 1fr) !important;
+    padding: 7px !important;
+    column-gap: 5px !important;
+  }
+
+  #gmcaOverlay .gmca-metric-icon {
+    width: 29px !important;
+    height: 29px !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  #gmcaOverlay {
+    padding: 0 !important;
+  }
+
+  #gmcaOverlay .gmca-modal {
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  #gmcaOverlay .gmca-header-top {
+    padding-top: max(5px, env(safe-area-inset-top)) !important;
+    padding-bottom: 5px !important;
+  }
+
+  #gmcaOverlay .gmca-tabs button {
+    min-height: 38px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  #gmcaOverlay .gmca-content {
+    padding-top: 7px !important;
+    padding-bottom: 8px !important;
+  }
+
+  #gmcaOverlay .gmca-footer {
+    padding-top: 5px !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (min-width: 761px) and (max-height: 650px) {
+  #gmcaOverlay .gmca-modal {
+    height: 96vh !important;
+    height: 96dvh !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gmcaOverlay .gmca-modal,
+  #gmcaOverlay .gmca-content {
+    scroll-behavior: auto !important;
+  }
+}
