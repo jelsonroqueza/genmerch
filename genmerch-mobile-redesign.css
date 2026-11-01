@@ -305,7 +305,7 @@
     min-width: 0 !important;
     min-height: 0 !important;
     margin: 0 auto !important;
-    padding: 14px 12px 21px !important;
+    padding: 6px 12px 33px !important;
     overflow: hidden !important;
     border: 1px solid rgba(255, 255, 255, .65) !important;
     border-radius: 19px !important;
@@ -441,7 +441,8 @@
     width: min(78%, 276px) !important;
     min-width: 0 !important;
     min-height: 46px !important;
-    margin: 19px auto 0 !important;
+    margin: 0 auto 0 !important;
+    top: 4px !important;
     padding: 11px 22px !important;
     border: 2px solid rgba(255, 255, 255, .72) !important;
     border-radius: 999px !important;
