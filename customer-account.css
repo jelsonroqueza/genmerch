@@ -2906,3 +2906,21 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
 @media(prefers-reduced-motion:reduce){
   .gmca-membership-track span,.gmca-membership-guide>summary span{transition:none}
 }
+
+
+/* Match the My Account wordmark to the storefront GENMERCH brand colors. */
+#gmcaOverlay .gmca-brand-line .gmca-word-gen {
+  display: inline !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #171717 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+#gmcaOverlay .gmca-brand-line .gmca-word-merch {
+  color: #ed1c2e !important;
+  text-shadow: none !important;
+}
