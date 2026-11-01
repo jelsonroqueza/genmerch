@@ -3237,3 +3237,47 @@
     transform: none !important;
   }
 }
+
+
+/* Partner With Us sidebar link: final staggered navigation item. */
+@media screen and (max-width: 767px) {
+  .gm-mobile-menu-links > button:nth-of-type(11) {
+    animation-delay: 535ms;
+  }
+
+  .gm-mobile-menu-links > button:nth-of-type(11) svg {
+    animation-delay: 575ms;
+  }
+
+  .gm-mobile-menu-partner {
+    transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gm-mobile-menu-partner:hover {
+    border-color: #f4d5cc;
+    background: linear-gradient(110deg, #fff9f6, #fff);
+    box-shadow: 0 3px 10px rgba(70, 38, 27, .045);
+  }
+
+  .gm-mobile-menu-partner:active {
+    transform: translateY(1px) scale(.995);
+    border-color: #f0c4b8;
+    background: #fff3ee;
+  }
+
+  #footerPartnerSection {
+    scroll-margin-top: 18px;
+  }
+
+  #footerPartnerSection:focus {
+    outline: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-mobile-menu-partner {
+    transition: none !important;
+    transform: none !important;
+  }
+}
