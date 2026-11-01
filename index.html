@@ -2822,6 +2822,73 @@
       return products.filter(product => Boolean(product.image || (Array.isArray(product.images) && product.images.some(image => image && image.url))));
     }
 
+    // Search aliases let customers use common English and Filipino apparel terms.
+    // Each trigger expands into related words, while ordinary query words still match directly.
+    const GENMERCH_PRODUCT_SEARCH_SYNONYMS = [
+      {triggers:['short','shorts','bermuda'],terms:['short','shorts','short pant','short pants','bermuda','bermuda shorts','cargo shorts','gym shorts','athletic shorts','running shorts','basketball shorts','cycling shorts','lounge shorts','drawstring shorts']},
+      {triggers:['shirt','shirts','tshirt','tshirts','tee','tees'],terms:['shirt','shirts','t shirt','t shirts','tshirt','tshirts','tee','tees','graphic tee','cotton tee','oversized tee','polo shirt','polo shirts']},
+      {triggers:['sando','sandos','tank','sleeveless','undershirt','muscle'],terms:['sando','sandos','tank top','tank tops','sleeveless','sleeveless shirt','undershirt','muscle shirt','athletic tank','gym tank']},
+      {triggers:['hoodie','hoodies','sweatshirt','sweatshirts'],terms:['hoodie','hoodies','sweatshirt','sweatshirts','pullover hoodie','pullover']},
+      {triggers:['pant','pants','trouser','trousers','jogger','joggers','leggings'],terms:['pant','pants','trouser','trousers','jogger','joggers','track pants','long pants','lounge pants','sweatpants','leggings']},
+      {triggers:['cap','caps','hat','hats','snapback'],terms:['cap','caps','hat','hats','baseball cap','snapback','headwear']},
+      {triggers:['jacket','jackets','windbreaker','coat','coats'],terms:['jacket','jackets','windbreaker','coat','coats','outerwear']},
+      {triggers:['polo','polos'],terms:['polo','polos','polo shirt','polo shirts']},
+      {triggers:['dress','dresses'],terms:['dress','dresses','casual dress','summer dress']},
+      {triggers:['bag','bags','backpack','backpacks','tote'],terms:['bag','bags','backpack','backpacks','tote bag','tote bags','shoulder bag','crossbody bag']},
+      {triggers:['shoe','shoes','sneaker','sneakers','footwear'],terms:['shoe','shoes','sneaker','sneakers','running shoes','trainers','footwear']},
+      {triggers:['sock','socks'],terms:['sock','socks','ankle socks','crew socks']}
+    ];
+
+    function normalizeCatalogSearchText(value){
+      return String(value===null||value===undefined?'':value)
+        .normalize('NFD')
+        .replace(/[\\u0300-\\u036f]/g,'')
+        .toLowerCase()
+        .replace(/&/g,' and ')
+        .replace(/[^a-z0-9]+/g,' ')
+        .replace(/\\s+/g,' ')
+        .trim();
+    }
+
+    function addCatalogSearchValue(values,value){
+      if(value===null||value===undefined)return;
+      if(Array.isArray(value)){value.forEach(item=>addCatalogSearchValue(values,item));return;}
+      if(typeof value==='string'||typeof value==='number')values.push(String(value));
+    }
+
+    function getCatalogSearchTerms(query){
+      const normalized=normalizeCatalogSearchText(query);
+      const tokens=normalized.split(' ').filter(token=>token.length>1);
+      const terms=new Set(tokens);
+      GENMERCH_PRODUCT_SEARCH_SYNONYMS.forEach(group=>{
+        if(group.triggers.some(trigger=>tokens.includes(normalizeCatalogSearchText(trigger)))){
+          group.terms.forEach(term=>{
+            const normalizedTerm=normalizeCatalogSearchText(term);
+            if(normalizedTerm)terms.add(normalizedTerm);
+          });
+        }
+      });
+      return [...terms];
+    }
+
+    function productMatchesCatalogSearch(product,searchTerms){
+      const values=[
+        product.name,product.cat,product.desc,product.sku,
+        product.brand,product.color,product.material,product.type,
+        product.keywords,product.searchKeywords,product.tags
+      ];
+      (Array.isArray(product.variants)?product.variants:[]).forEach(variant=>{
+        if(!variant)return;
+        values.push(variant.sku,variant.size,variant.color);
+      });
+      (Array.isArray(product.images)?product.images:[]).forEach(image=>{
+        if(!image)return;
+        values.push(image.alt,image.colorLabel,image.alt_text);
+      });
+      const searchable=' '+normalizeCatalogSearchText(values.join(' '))+' ';
+      return searchTerms.some(term=>searchable.includes(' '+term+' '));
+    }
+
     const WISHLIST_GUEST_STORAGE_KEY = 'genmerch:wishlist:guest:v1';
     let wishlistProductIds = [];
     let wishlistCloudSyncError = '';
@@ -3799,8 +3866,13 @@
     }
 
     function renderProducts(){
-      const query=$('searchInput').value.trim().toLowerCase();
-      const list=getProductsWithImages().filter(product=>{const searchable=[product.name,product.cat,product.desc,product.sku||''].join(' ').toLowerCase();return (currentCategory==='All'||product.cat===currentCategory)&&searchable.includes(query);});
+      const query=normalizeCatalogSearchText($('searchInput').value);
+      const searchTerms=query?getCatalogSearchTerms(query):[];
+      const list=getProductsWithImages().filter(product=>{
+        // A typed search always searches the complete active catalog, regardless of the selected category.
+        if(searchTerms.length)return productMatchesCatalogSearch(product,searchTerms);
+        return currentCategory==='All'||product.cat===currentCategory;
+      });
       const title=currentCategory==='All'?'Suot Apparel — All Products':(categoryIcons[currentCategory]||'🛍️')+' '+currentCategory+' Collection';
       $('productSectionTitle').textContent=title;
       const stateText=catalogLoadState==='connected'?' · Supabase connected':catalogLoadState==='fallback'?' · Offline demo catalog':' · Connecting…';
