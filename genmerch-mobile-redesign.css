@@ -2175,3 +2175,11 @@
     font-size: .77rem !important;
   }
 }
+
+
+/* Give the mobile drawer Help action more breathing room above the bottom edge. */
+@media screen and (max-width: 767px) {
+  .gm-mobile-menu-panel {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 52px) !important;
+  }
+}
