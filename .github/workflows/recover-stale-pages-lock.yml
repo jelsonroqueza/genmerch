@@ -1,0 +1,29 @@
+name: Recover Stale GENMERCH GitHub Pages Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/recover-stale-pages-lock.yml"
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  recover-pages-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel stale GitHub Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STALE_PAGES_DEPLOYMENT: bf44c938314517231b0c31b2b2df8aa7cc1b7f41
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Cancelling stale Pages deployment: ${STALE_PAGES_DEPLOYMENT}"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${STALE_PAGES_DEPLOYMENT}/cancel"
+          status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${STALE_PAGES_DEPLOYMENT}" --jq '.status')"
+          echo "Pages deployment status after cancellation: ${status}"
+          test "${status}" != "in_progress"
