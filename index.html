@@ -154,7 +154,7 @@
   <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
   <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1"></noscript>
-  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261102-sidebar-message-follow-3">
+  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261102-flash-bolt-lighting-1">
   <link rel="stylesheet" href="/hero-tagline-shine.css?v=20261101-elegant-shine-1">
   <link rel="stylesheet" href="/trust-testimonials.css?v=20261101-3d-1">
   <script src="/genmerch-mobile-redesign.js?v=20261102-partner-direct-application-1" defer></script>
@@ -536,7 +536,26 @@
         <button class="shop-now" type="button" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth',block:'start'})"><span class="shop-now-label">Shop Now</span><span class="shop-now-arrow" aria-hidden="true">→</span></button>
         <div class="flash-deals-banner" id="flashDealsBanner" role="status" aria-live="off" aria-label="Flash deals countdown to the next Philippine day">
           <span class="flash-deals-brand" aria-label="Flash deals">
-            <span class="flash-deals-lightning" aria-hidden="true">ϟ</span>
+            <span class="flash-deals-lightning" aria-hidden="true">
+              <svg class="flash-deals-bolt-svg" viewBox="0 0 48 64" role="presentation" focusable="false">
+                <defs>
+                  <linearGradient id="gmFlashBoltGold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#fffde0"/>
+                    <stop offset=".22" stop-color="#fff2a0"/>
+                    <stop offset=".48" stop-color="#ffd33d"/>
+                    <stop offset=".72" stop-color="#f5a900"/>
+                    <stop offset="1" stop-color="#c66b08"/>
+                  </linearGradient>
+                  <linearGradient id="gmFlashBoltHighlight" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#fff" stop-opacity=".95"/>
+                    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path class="gm-flash-bolt-shadow" d="M29 2 5 36h15l-3 26 26-38H27z"/>
+                <path class="gm-flash-bolt-face" d="M28 2 5 36h15l-3 26 26-38H27z" fill="url(#gmFlashBoltGold)" stroke="#fff4b5" stroke-width="1.35" stroke-linejoin="round"/>
+                <path class="gm-flash-bolt-glint" d="m26.8 8-15.2 24h7.2L26 18.4z" fill="url(#gmFlashBoltHighlight)"/>
+              </svg>
+            </span>
             <span class="flash-deals-title">FLASH DEALS</span>
           </span>
           <span class="flash-deals-countdown" aria-label="Time until the next Philippine day">
