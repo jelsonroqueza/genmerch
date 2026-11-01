@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" class="genmerch-initial-loading">
 <head>
+  <!-- Isolated Vercel review sandbox: block all cross-origin API connections, including production Supabase. -->
+  <script id="GENMERCH_PREVIEW_NETWORK_GUARD">
+    (function () {
+      var host = String(window.location.hostname || '').toLowerCase();
+      var isolatedPreview = host.startsWith('genmerch-mobile-review-sandbox') && host.endsWith('.vercel.app');
+      if (!isolatedPreview) return;
+      window.GENMERCH_PREVIEW_SAFE_MODE = true;
+      var policy = document.createElement('meta');
+      policy.httpEquiv = 'Content-Security-Policy';
+      policy.content = "default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; style-src 'self' 'unsafe-inline' https: data:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' data: blob:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'";
+      document.head.appendChild(policy);
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GENMERCH — Suot Apparel | Wear What You Love</title>
@@ -141,6 +154,8 @@
   <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
   <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1"></noscript>
+  <link rel="stylesheet" href="/genmerch-mobile-redesign.css?v=20261101-review-8">
+  <script src="/genmerch-mobile-redesign.js?v=20261101-review-1" defer></script>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -175,6 +190,9 @@
     </div>
     <div class="main-header">
       <div class="nav">
+        <button class="gm-mobile-menu-toggle" id="gmMobileMenuToggle" type="button" aria-label="Open navigation menu" aria-controls="gmMobileMenuPanel" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
         <button class="brand-lockup" type="button" onclick="resetCatalog()" aria-label="GENMERCH Home">
           <span class="brand-type genmerch-metal-wordmark-wrap"><svg class="brand-word genmerch-svg-metal-wordmark" viewBox="0 0 1320 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GENMERCH | SUOT APPAREL" focusable="false">
   <defs>
@@ -209,6 +227,7 @@
     <text x="634" y="76" font-size="70.04" textLength="674" lengthAdjust="spacingAndGlyphs" fill="url(#gmMetalSuotBase)" stroke="none" stroke-width="0">SUOT APPAREL</text>
   </g>
 </svg></span>
+          <span class="gm-mobile-wordmark" aria-hidden="true"><strong><span>GEN</span><b>MERCH</b></strong><small>SUOT APPAREL</small></span>
         </button>
         <div class="header-actions">
           <button class="header-action genmerch-notification-button" id="genmerchNotificationButton" type="button" onclick="toggleGenmerchNotifications()" aria-label="Order notifications" title="Order notifications">
@@ -242,6 +261,26 @@
       </nav>
     </div>
   </header>
+
+  <div class="gm-mobile-menu-scrim" id="gmMobileMenuScrim" hidden aria-hidden="true">
+    <nav class="gm-mobile-menu-panel" id="gmMobileMenuPanel" role="dialog" aria-modal="true" aria-labelledby="gmMobileMenuTitle" tabindex="-1">
+      <div class="gm-mobile-menu-head">
+        <div class="gm-mobile-menu-brand" id="gmMobileMenuTitle"><strong>GEN<span>MERCH</span></strong><small>SUOT APPAREL</small></div>
+        <button class="gm-mobile-menu-close" id="gmMobileMenuClose" type="button" aria-label="Close navigation menu">×</button>
+      </div>
+      <div class="gm-mobile-menu-links">
+        <button type="button" data-gm-mobile-action="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1Z"/></svg>Home</button>
+        <button type="button" data-gm-mobile-action="categories"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Browse Categories</button>
+        <button type="button" data-gm-mobile-open=".wishlist-header-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg>My Wishlist</button>
+        <button type="button" data-gm-mobile-open="#openCustomerOrdersButton"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>My Orders</button>
+        <button type="button" data-gm-mobile-open="#customerAccountButton"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-4 3.4-6 8-6s7.5 2 8 6"/></svg>My Account</button>
+        <div class="gm-mobile-menu-divider" aria-hidden="true"></div>
+        <button type="button" data-gm-mobile-open="#openCustomerRateButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg>Rate Your Purchases</button>
+        <button type="button" data-gm-mobile-open="#genmerchNotificationButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg>Notifications</button>
+        <button type="button" data-gm-mobile-open="#openSellerCentreButton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-1-5H4L3 9Zm1 0v11h16V9M8 20v-6h8v6M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>Seller Centre</button>
+      </div>
+    </nav>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><span id="toastText">Added to your cart</span></div>
 
@@ -702,10 +741,21 @@
 </footer>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="nav-item active genmerch-hard-reload-mobile" type="button" onclick="performGenmerchHardReload(this)" aria-label="Reload GENMERCH and sync latest data" title="Reload GENMERCH"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5M4.7 17A8 8 0 0 0 19 19.2M4 12a8 8 0 0 1 14.3-5.2L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="genmerch-hard-reload-label">Reload</span></button>
-    <button class="nav-item" onclick="openCart()"><span>🛒</span><span>Cart</span></button>
-    <button class="nav-item" type="button" onclick="openCustomerOrders()" aria-label="View order updates"><span>📦</span><span>Orders</span></button>
-    <button class="nav-item" onclick="openCustomerAuth()"><span>👤</span><span>Me</span></button>
+    <button class="gm-mobile-nav-item active" type="button" data-gm-nav="home" aria-label="Home" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1Z"/></svg><span>Home</span>
+    </button>
+    <button class="gm-mobile-nav-item" type="button" data-gm-nav="categories" aria-label="Categories">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Categories</span>
+    </button>
+    <button class="gm-mobile-nav-item" type="button" data-gm-nav="wishlist" aria-label="Wishlist">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.3 4.7 4.7 0 0 1 8.8 2.3Z"/></svg><span>Wishlist</span><span class="gm-mobile-nav-badge" id="gmMobileWishlistBadge" hidden></span>
+    </button>
+    <button class="gm-mobile-nav-item" type="button" data-gm-nav="orders" aria-label="Orders">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Orders</span>
+    </button>
+    <button class="gm-mobile-nav-item" type="button" data-gm-nav="account" aria-label="Account">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-4 3.4-6 8-6s7.5 2 8 6"/></svg><span>Account</span>
+    </button>
   </nav>
 
   <div class="overlay" id="productOverlay" aria-hidden="true">
@@ -8742,7 +8792,7 @@
   </script>
   <script id="GENMERCH_ONLINE_ONLY_SERVICE_WORKER">
     // Online-first only: the service worker does not cache pages, assets, or API responses.
-    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    if (!window.GENMERCH_PREVIEW_SAFE_MODE && 'serviceWorker' in navigator && location.protocol === 'https:') {
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('/online-worker.js', { scope: '/' }).catch(function (error) {
           console.warn('GENMERCH online-only service worker registration failed.', error);

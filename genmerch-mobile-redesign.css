@@ -1,0 +1,1784 @@
+
+/*
+ * GENMERCH V2.0 — isolated mobile storefront redesign.
+ * All rules are scoped to viewports <= 767px. Desktop styling is not targeted.
+ */
+@media screen and (max-width: 767px) {
+  html {
+    scroll-padding-top: 84px;
+    scroll-padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+
+  body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-x: clip;
+  }
+
+  /* Compact native-feeling mobile header; no fake operating-system status bar. */
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 260 !important;
+    background: #fff !important;
+    color: #171717 !important;
+    box-shadow: 0 4px 18px rgba(32, 25, 20, .075) !important;
+  }
+
+  .site-header .announcement-bar {
+    display: none !important;
+  }
+
+  .site-header .main-header {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 3px) 12px 6px !important;
+    background: #fff !important;
+  }
+
+  .site-header .main-header .nav {
+    display: grid !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 48px !important;
+    grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+    grid-template-rows: 48px !important;
+    align-items: center !important;
+    gap: 7px !important;
+    margin: 0 !important;
+  }
+
+  .site-header .gm-mobile-menu-toggle {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    color: #282828 !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .site-header .gm-mobile-menu-toggle:active {
+    background: #f3f3f3 !important;
+    transform: scale(.96);
+  }
+
+  .site-header .gm-mobile-menu-toggle svg {
+    display: block;
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .site-header .brand-lockup {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 230px !important;
+    height: 48px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+
+  .site-header .brand-lockup .brand-type {
+    display: none !important;
+  }
+
+  .site-header .gm-mobile-wordmark {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .site-header .gm-mobile-wordmark strong {
+    display: block;
+    color: #171717;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: clamp(1.22rem, 5.9vw, 1.63rem);
+    font-style: italic;
+    font-weight: 950;
+    letter-spacing: -.075em;
+    line-height: .98;
+  }
+
+  .site-header .gm-mobile-wordmark strong b {
+    color: #e51f32;
+    font: inherit;
+  }
+
+  .site-header .gm-mobile-wordmark small {
+    display: block;
+    margin-top: 4px;
+    color: #222;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: clamp(.48rem, 2.1vw, .61rem);
+    font-weight: 900;
+    letter-spacing: .24em;
+    line-height: 1;
+  }
+
+  .site-header .header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    gap: 0 !important;
+    margin: 0 !important;
+  }
+
+  .site-header .header-actions > .header-action:not(#openCartButton) {
+    display: none !important;
+  }
+
+  .site-header .header-actions > #openCartButton {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #242424 !important;
+  }
+
+  .site-header #openCartButton > small {
+    display: none !important;
+  }
+
+  .site-header #openCartButton .cart-icon {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 31px !important;
+    height: 34px !important;
+    font-size: 1.35rem !important;
+    line-height: 1 !important;
+  }
+
+  .site-header #openCartButton .genmerch-premium-cart-icon {
+    width: 31px !important;
+    height: 31px !important;
+  }
+
+  .site-header #openCartButton #cartBadge {
+    position: absolute !important;
+    top: -5px !important;
+    right: -7px !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    min-width: 17px !important;
+    width: auto !important;
+    height: 17px !important;
+    padding: 0 4px !important;
+    border: 1.5px solid #fff !important;
+    border-radius: 999px !important;
+    background: #ed1c24 !important;
+    color: #fff !important;
+    font-size: .62rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .16);
+  }
+
+  /* Reorder the existing search element, not a duplicate search system. */
+  main.container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 12px !important;
+    gap: 0 !important;
+  }
+
+  main.container > .catalog-search {
+    order: -1 !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    margin: 10px auto 14px !important;
+    padding: 3px 4px 3px 12px !important;
+    border: 1px solid #e8e8eb !important;
+    border-radius: 999px !important;
+    background: #f7f7f8 !important;
+    box-shadow: 0 3px 12px rgba(22, 22, 22, .055) !important;
+    overflow: hidden !important;
+  }
+
+  main.container > .catalog-search::before {
+    content: "";
+    display: block;
+    flex: 0 0 19px;
+    width: 19px;
+    height: 19px;
+    margin-right: 7px;
+    background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f6269' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.8' cy='10.8' r='6.8'/%3E%3Cpath d='m16 16 5 5'/%3E%3C/svg%3E");
+  }
+
+  main.container > .catalog-search input {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    padding: 0 7px !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    color: #252525 !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    box-shadow: none !important;
+  }
+
+  main.container > .catalog-search input::placeholder {
+    color: #777b83 !important;
+    opacity: 1;
+  }
+
+  main.container > .catalog-search button {
+    order: 2 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #f02d3a, #c91628) !important;
+    color: #fff !important;
+  }
+
+  main.container > .catalog-search button svg {
+    width: 20px !important;
+    height: 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+  }
+
+  /* Recompose the existing campaign hero for the narrow viewport only. */
+  main.container > .hero {
+    order: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas:
+      "brand"
+      "tagline"
+      "models"
+      "cta"
+      "deals" !important;
+    align-items: center !important;
+    justify-items: center !important;
+    gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 14px 12px 13px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, .65) !important;
+    border-radius: 19px !important;
+    background:
+      radial-gradient(ellipse at 50% 62%, rgba(255, 178, 76, .24), transparent 54%),
+      linear-gradient(145deg, #fff4df 0%, #ffe4c7 48%, #ff741f 100%) !important;
+    box-shadow: 0 9px 22px rgba(118, 54, 15, .13) !important;
+    text-align: center !important;
+    color: #191513 !important;
+  }
+
+  main.container > .hero .hero-copy {
+    display: contents !important;
+  }
+
+  main.container > .hero .hero-brand-lockup {
+    grid-area: brand !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 auto 8px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  main.container > .hero .hero-cart-image {
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: clamp(34px, 10vw, 45px) !important;
+    height: clamp(34px, 10vw, 45px) !important;
+    object-fit: contain !important;
+  }
+
+  main.container > .hero .hero-wordmark {
+    display: block !important;
+    color: #181818 !important;
+    font-size: clamp(1.35rem, 6.4vw, 1.85rem) !important;
+    font-weight: 950 !important;
+    font-style: italic !important;
+    letter-spacing: -.075em !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  main.container > .hero .hero-wordmark b {
+    color: #e51f32 !important;
+  }
+
+  main.container > .hero .hero-tagline {
+    grid-area: tagline !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 auto 8px !important;
+    padding: 8px 15px !important;
+    border: 1px solid rgba(255, 255, 255, .8) !important;
+    border-radius: 999px !important;
+    background: rgba(255, 250, 241, .92) !important;
+    color: #26211c !important;
+    font-size: clamp(.69rem, 2.8vw, .82rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: .035em !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+    box-shadow: 0 3px 9px rgba(120, 66, 24, .08) !important;
+  }
+
+  main.container > .hero .hero-art {
+    grid-area: models !important;
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: clamp(210px, 68vw, 295px) !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+    isolation: isolate;
+  }
+
+  main.container > .hero .hero-art::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    display: block !important;
+    border: 0 !important;
+    background:
+      radial-gradient(ellipse at 50% 85%, rgba(255, 131, 28, .28), transparent 72%),
+      linear-gradient(180deg, rgba(255, 244, 223, .05), rgba(239, 74, 13, .1)) !important;
+    pointer-events: none !important;
+  }
+
+  main.container > .hero .hero-models-photo {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    object-fit: cover !important;
+    object-position: center 18% !important;
+    clip-path: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 91%, rgba(0,0,0,.82) 100%) !important;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 91%, rgba(0,0,0,.82) 100%) !important;
+  }
+
+  main.container > .hero .hero-benefits {
+    display: none !important;
+  }
+
+  main.container > .hero .shop-now {
+    grid-area: cta !important;
+    position: relative !important;
+    z-index: 5 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    width: min(78%, 276px) !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    margin: -34px auto 10px !important;
+    padding: 11px 22px !important;
+    border: 2px solid rgba(255, 255, 255, .68) !important;
+    border-radius: 999px !important;
+    background: linear-gradient(110deg, #f21e31 0%, #e90c24 58%, #c90d24 100%) !important;
+    color: #fff !important;
+    font-size: .95rem !important;
+    font-weight: 900 !important;
+    line-height: 1.2 !important;
+    box-shadow: 0 6px 14px rgba(157, 18, 27, .28) !important;
+    transform: none !important;
+  }
+
+  main.container > .hero .shop-now:active {
+    transform: scale(.98) !important;
+  }
+
+  main.container > .hero .flash-deals-banner {
+    grid-area: deals !important;
+    width: min(100%, 310px) !important;
+    max-width: 100% !important;
+    margin: 2px auto 0 !important;
+  }
+
+  /* A mobile-only clone reuses the four live benefit items already in the hero. */
+  main.container > .gm-mobile-benefits {
+    order: 1 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    align-items: start !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 12px auto 10px !important;
+    padding: 0 1px !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    padding: 0 1px !important;
+    border: 0 !important;
+    background: transparent !important;
+    text-align: center !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-icon {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 39px !important;
+    width: 39px !important;
+    height: 39px !important;
+    margin: 0 !important;
+    border: 1px solid #ffe0d3 !important;
+    border-radius: 50% !important;
+    background: linear-gradient(145deg, #fff, #fff0e9) !important;
+    color: #e92b2d !important;
+    box-shadow: 0 3px 9px rgba(154, 60, 33, .08) !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-copy {
+    display: block !important;
+    min-width: 0 !important;
+    color: #26201d !important;
+    font-size: clamp(.57rem, 2.35vw, .69rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-copy strong {
+    font-size: inherit !important;
+    font-weight: 850 !important;
+    line-height: inherit !important;
+  }
+
+  /* Keep the existing secondary trust strip, but make it compact and readable. */
+  main.container > .trust-strip {
+    order: 2 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 11px 8px !important;
+    width: calc(100% + 24px) !important;
+    margin: 0 -12px 12px !important;
+    padding: 13px 12px !important;
+    border: 1px solid #f0e7e1 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-shadow: 0 4px 12px rgba(44, 30, 20, .045) !important;
+  }
+
+  main.container > .trust-strip > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  main.container > .trust-strip .trust-icon {
+    flex: 0 0 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.05rem !important;
+  }
+
+  main.container > .trust-strip p {
+    min-width: 0 !important;
+  }
+
+  main.container > .trust-strip b {
+    display: block !important;
+    font-size: .68rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  main.container > .trust-strip small {
+    display: block !important;
+    font-size: .61rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  main.container > .categories {
+    order: 3 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 2px 0 9px !important;
+    padding: 5px 0 8px !important;
+    overflow-x: auto !important;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  main.container > .categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  main.container > .categories .category {
+    flex: 0 0 auto !important;
+    min-height: 38px !important;
+    padding: 9px 14px !important;
+    font-size: .75rem !important;
+  }
+
+  main.container > .catalog-heading {
+    order: 4 !important;
+    width: 100% !important;
+    margin: 4px 0 12px !important;
+    gap: 8px !important;
+  }
+
+  main.container > #productGrid {
+    order: 5 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  /* Five-item fixed mobile navigation; badges are populated from existing app state. */
+  .site-header ~ .bottom-nav,
+  body > .bottom-nav {
+    position: fixed !important;
+    z-index: 180 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    width: 100% !important;
+    height: calc(63px + env(safe-area-inset-bottom, 0px)) !important;
+    margin: 0 !important;
+    padding: 6px 5px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+    border-top: 1px solid #e9e7e5 !important;
+    background: rgba(255, 255, 255, .98) !important;
+    box-shadow: 0 -5px 18px rgba(26, 24, 22, .08) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .bottom-nav .gm-mobile-nav-item {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 4px 1px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: #74777e !important;
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: .62rem !important;
+    font-weight: 600 !important;
+    line-height: 1.1 !important;
+    text-align: center !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav .gm-mobile-nav-item svg {
+    display: block !important;
+    flex: 0 0 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+
+  .bottom-nav .gm-mobile-nav-item.active {
+    color: #e51f32 !important;
+    font-weight: 850 !important;
+  }
+
+  .bottom-nav .gm-mobile-nav-item.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 25px;
+    height: 3px;
+    border-radius: 999px;
+    background: #ed2638;
+    transform: translateX(-50%);
+  }
+
+  .bottom-nav .gm-mobile-nav-item:active {
+    background: #fff1f0 !important;
+    transform: scale(.97);
+  }
+
+  .bottom-nav .gm-mobile-nav-badge {
+    position: absolute !important;
+    top: 1px !important;
+    left: calc(50% + 5px) !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    padding: 0 4px !important;
+    border: 1.5px solid #fff !important;
+    border-radius: 999px !important;
+    background: #ed1c24 !important;
+    color: #fff !important;
+    font-size: .58rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+  }
+
+  .bottom-nav .gm-mobile-nav-badge[hidden] {
+    display: none !important;
+  }
+
+  body.gm-mobile-menu-open .bottom-nav,
+  body.gm-mobile-overlay-open .bottom-nav {
+    display: none !important;
+  }
+
+  /* Drawer exists only on mobile and opens the real existing destinations/actions. */
+  .gm-mobile-menu-scrim {
+    position: fixed;
+    z-index: 1400;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    background: rgba(14, 17, 21, .48);
+    overscroll-behavior: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .gm-mobile-menu-scrim[hidden] {
+    display: none !important;
+  }
+
+  .gm-mobile-menu-panel {
+    display: flex;
+    flex-direction: column;
+    width: min(84vw, 330px);
+    max-width: calc(100vw - 48px);
+    height: 100%;
+    padding: calc(env(safe-area-inset-top, 0px) + 17px) 15px calc(env(safe-area-inset-bottom, 0px) + 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 0 21px 21px 0;
+    background: #fff;
+    color: #24201d;
+    box-shadow: 16px 0 42px rgba(0, 0, 0, .18);
+    animation: gmMobileDrawerIn 210ms cubic-bezier(.2,.75,.25,1) both;
+  }
+
+  .gm-mobile-menu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 2px 2px 17px;
+    border-bottom: 1px solid #eee8e4;
+  }
+
+  .gm-mobile-menu-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .gm-mobile-menu-brand strong {
+    color: #171717;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    font-weight: 950;
+    letter-spacing: -.06em;
+  }
+
+  .gm-mobile-menu-brand strong span {
+    color: #e51f32;
+  }
+
+  .gm-mobile-menu-brand small {
+    color: #655d58;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: .57rem;
+    font-weight: 900;
+    letter-spacing: .2em;
+  }
+
+  .gm-mobile-menu-close {
+    display: grid;
+    place-items: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #eee4df;
+    border-radius: 12px;
+    background: #fff;
+    color: #3e3834;
+    font-size: 1.55rem;
+    line-height: 1;
+  }
+
+  .gm-mobile-menu-links {
+    display: grid;
+    gap: 7px;
+    padding-top: 15px;
+  }
+
+  .gm-mobile-menu-links button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: #fff;
+    color: #36302c;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: .83rem;
+    font-weight: 750;
+    text-align: left;
+  }
+
+  .gm-mobile-menu-links button:active {
+    border-color: #f4c9c0;
+    background: #fff4f0;
+  }
+
+  .gm-mobile-menu-links button svg {
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: #e32c36;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .gm-mobile-menu-divider {
+    height: 1px;
+    margin: 7px 2px;
+    background: #eee8e4;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .gm-mobile-menu-toggle,
+  .gm-mobile-wordmark,
+  .gm-mobile-menu-scrim,
+  .gm-mobile-benefits,
+  .gm-mobile-nav-badge,
+  .gm-mobile-nav-item {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 359px) {
+  .site-header .main-header {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  main.container {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  main.container > .gm-mobile-benefits {
+    gap: 3px !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-icon {
+    flex-basis: 35px !important;
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  main.container > .gm-mobile-benefits .hero-benefit-copy {
+    font-size: .56rem !important;
+  }
+
+  .bottom-nav .gm-mobile-nav-item {
+    font-size: .58rem !important;
+  }
+}
+
+@keyframes gmMobileDrawerIn {
+  from { opacity: .75; transform: translateX(-14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-mobile-menu-panel {
+    animation: none !important;
+  }
+
+  .bottom-nav .gm-mobile-nav-item,
+  .site-header .gm-mobile-menu-toggle,
+  .site-header #openCartButton {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  /* The hamburger drawer and five-item mobile bar replace desktop link rows on phones. */
+  .site-header .desktop-links {
+    display: none !important;
+  }
+}
+
+
+/*
+ * Targeted mobile correction — review branch only.
+ * Resolve legacy high-specificity mobile header rules without touching desktop.
+ */
+@media screen and (max-width: 767px) {
+  html {
+    scroll-padding-top: calc(66px + env(safe-area-inset-top, 0px)) !important;
+    scroll-padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Keep exactly one compact sticky shell. The inner row must not be sticky too. */
+  body .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 260 !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: #fff !important;
+    box-shadow: 0 3px 12px rgba(32, 25, 20, .075) !important;
+    transform: none !important;
+    isolation: isolate !important;
+  }
+
+  body .site-header .announcement-bar {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  body .site-header .main-header {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    isolation: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: env(safe-area-inset-top, 0px) 0 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Equal side tracks center the wordmark on the viewport's true center line. */
+  body .site-header .main-header .nav {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) 48px !important;
+    grid-template-rows: 52px !important;
+    grid-auto-rows: 0 !important;
+    align-items: center !important;
+    justify-items: stretch !important;
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+    gap: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-width: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  body .site-header .main-header .nav > #gmMobileMenuToggle {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: start !important;
+    align-self: center !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: transparent !important;
+    color: #282828 !important;
+  }
+
+  body .site-header .main-header .nav > #gmMobileMenuToggle svg {
+    display: block !important;
+    width: 25px !important;
+    height: 25px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+  }
+
+  body .site-header .main-header .nav > .brand-lockup {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    align-self: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 230px !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    gap: 2px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body .site-header .main-header .nav > .brand-lockup > .brand-type {
+    display: none !important;
+  }
+
+  body .site-header .main-header .nav > .brand-lockup > .gm-mobile-wordmark {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    align-self: center !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > .header-action:not(#openCartButton) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #customerAccountButton,
+  body .site-header .main-header .nav > .header-actions > #openCustomerOrdersButton,
+  body .site-header .main-header .nav > .header-actions > #openCustomerRateButton,
+  body .site-header .main-header .nav > .header-actions > .wishlist-header-button,
+  body .site-header .main-header .nav > .header-actions > .genmerch-notification-button {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #openCartButton {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: transparent !important;
+    color: #242424 !important;
+    box-shadow: none !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #openCartButton > small {
+    display: none !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #openCartButton .cart-icon {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    font-size: 1.3rem !important;
+    line-height: 1 !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #openCartButton .genmerch-premium-cart-icon {
+    display: block !important;
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions > #openCartButton #cartBadge {
+    position: absolute !important;
+    top: -5px !important;
+    right: -7px !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    min-width: 17px !important;
+    height: 17px !important;
+    padding: 0 4px !important;
+    border: 1.5px solid #fff !important;
+    border-radius: 999px !important;
+    background: #ed1c24 !important;
+    color: #fff !important;
+    font-size: .62rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+  }
+
+  /* The hero's existing four benefit cards stay hidden; the one mobile clone below
+     the hero remains the single visible four-benefit presentation. */
+  body main.container > .hero .hero-copy > .hero-benefits.genmerch-benefit-strip {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  body .site-header .main-header .nav,
+  body .site-header .main-header,
+  body .site-header {
+    outline: 0 !important;
+  }
+
+  body main.container > .hero,
+  body main.container > .catalog-search,
+  body main.container > .categories,
+  body main.container > #productGrid {
+    scroll-margin-top: calc(66px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  .site-header ~ .bottom-nav,
+  body > .bottom-nav {
+    box-sizing: border-box !important;
+    height: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 5px 5px calc(5px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 180 !important;
+  }
+}
+
+@media screen and (max-width: 359px) {
+  body .site-header .main-header .nav {
+    grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+  }
+
+  body .site-header .main-header .nav > .brand-lockup {
+    max-width: 208px !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+  }
+}
+
+
+/* Keep the document viewport as the scroll container so the compact sticky
+   storefront header remains pinned while the page scrolls vertically. */
+@media screen and (max-width: 767px) {
+  html,
+  body {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+  }
+}
+
+
+/* Approved reference match: single, upright mobile GENMERCH wordmark. */
+@media screen and (max-width: 767px) {
+  /* The legacy desktop SVG must never render alongside the mobile wordmark. */
+  body .site-header .main-header .nav > button.brand-lockup > span.brand-type.genmerch-metal-wordmark-wrap {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Match the supplied reference: one bold, upright two-line wordmark. */
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark {
+    display: flex !important;
+    flex: 0 1 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: max-content !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong {
+    display: block !important;
+    color: #171717 !important;
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: clamp(1.22rem, 6.1vw, 1.55rem) !important;
+    font-style: normal !important;
+    font-weight: 900 !important;
+    letter-spacing: -.035em !important;
+    line-height: .98 !important;
+    white-space: nowrap !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong span {
+    color: #171717 !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong b {
+    color: #e51f32 !important;
+    font: inherit !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
+    display: block !important;
+    margin-top: 3px !important;
+    color: #222 !important;
+    font-family: Lexend, Arial, sans-serif !important;
+    font-size: clamp(.56rem, 2.4vw, .64rem) !important;
+    font-style: normal !important;
+    font-weight: 900 !important;
+    letter-spacing: .20em !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+}
+
+
+/* Header spacing refinement from user's latest mobile preview feedback. */
+@media screen and (max-width: 767px) {
+  /* Give the two-line brand lockup enough vertical room without shifting its center. */
+  body .site-header .main-header .nav {
+    grid-template-rows: 64px !important;
+    min-height: 64px !important;
+    height: 64px !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup {
+    height: 64px !important;
+    min-height: 64px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark {
+    min-height: 48px !important;
+    gap: 0 !important;
+    transform: none !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark strong {
+    font-size: clamp(1.28rem, 6.1vw, 1.55rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.035em !important;
+  }
+
+  body .site-header .main-header .nav > button.brand-lockup > .gm-mobile-wordmark small {
+    margin-top: 6px !important;
+    font-size: clamp(.58rem, 2.4vw, .64rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: .20em !important;
+  }
+
+  body .site-header .main-header .nav > .header-actions {
+    height: 64px !important;
+    min-height: 64px !important;
+  }
+
+  body .site-header .main-header .nav > #gmMobileMenuToggle,
+  body .site-header .main-header .nav > .header-actions > #openCartButton {
+    align-self: center !important;
+  }
+
+  html {
+    scroll-padding-top: calc(78px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  body main.container > .hero,
+  body main.container > .catalog-search,
+  body main.container > .categories,
+  body main.container > #productGrid {
+    scroll-margin-top: calc(78px + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+
+
+/* Mobile customer sign-in simplification: remove redundant branding and compact the form. */
+@media screen and (max-width: 767px) {
+  /* Keep the dialog accessible and usable while removing the tall decorative brand intro. */
+  #customerAuthOverlay {
+    box-sizing: border-box !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow-y: auto !important;
+    padding: max(8px, env(safe-area-inset-top, 0px)) 8px max(8px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    display: flex !important;
+    flex-direction: column !important;
+    width: min(100%, 440px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 16px) !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 16px !important;
+  }
+
+  /* The page is already GENMERCH-branded; remove only the redundant sign-in intro on phones. */
+  #customerAuthOverlay .customer-auth-head {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 44px !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 6px 9px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(220, 123, 75, .18) !important;
+    background: linear-gradient(180deg, #fffaf5 0%, #f8eee5 100%) !important;
+    text-align: right !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head::before,
+  #customerAuthOverlay .customer-auth-head::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head-brand {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  #customerAuthOverlay .customer-auth-close {
+    position: static !important;
+    display: grid !important;
+    flex: 0 0 30px !important;
+    place-items: center !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    margin: 0 0 0 auto !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+  }
+
+  #customerAuthOverlay .customer-auth-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 13px 14px 16px !important;
+    background: linear-gradient(180deg, #fffaf5 0%, #f4e9df 100%) !important;
+  }
+
+  /* Keep the three trust benefits, but present them as a compact strip. */
+  #customerAuthOverlay .customer-auth-benefits {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin: 0 0 12px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 58px !important;
+    gap: 3px !important;
+    padding: 6px 3px !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 2px 6px rgba(84,51,36,.035) !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit-icon {
+    width: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    margin: 0 !important;
+    border-radius: 7px !important;
+    font-size: .88rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit strong {
+    font-size: clamp(.55rem, 2.2vw, .63rem) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit small {
+    display: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-tabs {
+    gap: 4px !important;
+    margin: 0 0 12px !important;
+    padding: 4px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-tab {
+    min-height: 38px !important;
+    padding: 8px 8px !important;
+    font-size: .78rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-field {
+    margin: 0 0 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-field label {
+    margin: 0 0 5px !important;
+    font-size: .76rem !important;
+    line-height: 1.25 !important;
+  }
+
+  #customerAuthOverlay .customer-auth-field input {
+    height: 43px !important;
+    min-height: 43px !important;
+    padding: 0 11px !important;
+    font-size: .85rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-password-wrap {
+    min-width: 0 !important;
+  }
+
+  #customerAuthOverlay .customer-auth-password-toggle {
+    min-height: 32px !important;
+    padding: 5px 9px !important;
+    font-size: .72rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-help {
+    margin: 5px 0 0 !important;
+    font-size: .67rem !important;
+    line-height: 1.3 !important;
+  }
+
+  #customerAuthOverlay .customer-auth-forgot-row {
+    margin: 0 0 9px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-forgot-link {
+    min-height: 30px !important;
+    font-size: .72rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-send,
+  #customerAuthOverlay .customer-auth-submit,
+  #customerAuthOverlay .customer-auth-google {
+    min-height: 43px !important;
+    border-radius: 10px !important;
+    font-size: .82rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-divider {
+    margin: 9px 0 !important;
+    font-size: .65rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-google {
+    padding: 8px 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-privacy {
+    margin: 9px 0 0 !important;
+    font-size: .62rem !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  #customerAuthOverlay {
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    max-width: calc(100vw - 12px) !important;
+    border-radius: 14px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-body {
+    padding: 11px 10px 13px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefits {
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit {
+    min-height: 54px !important;
+    padding: 5px 2px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit strong {
+    font-size: .55rem !important;
+  }
+
+  #customerAuthOverlay .customer-auth-tabs {
+    margin-bottom: 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-field input {
+    height: 41px !important;
+    min-height: 41px !important;
+  }
+}
+
+@media screen and (max-height: 700px) and (max-width: 767px) {
+  #customerAuthOverlay {
+    align-items: flex-start !important;
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 12px) !important;
+  }
+
+  #customerAuthOverlay .customer-auth-body {
+    padding-top: 9px !important;
+    padding-bottom: 11px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefits {
+    margin-bottom: 8px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-benefit {
+    min-height: 49px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-field {
+    margin-bottom: 8px !important;
+  }
+}
+
+
+/* Correction: keep the cart logo and Welcome heading; hide only the two requested texts. */
+@media screen and (max-width: 767px) {
+  /* Restore the cart image and the Welcome heading in the sign-in dialog. */
+  #customerAuthOverlay .customer-auth-head {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 132px !important;
+    height: auto !important;
+    padding: 11px 42px 12px !important;
+    overflow: hidden !important;
+    text-align: center !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head-brand {
+    position: relative !important;
+    z-index: 1 !important;
+    display: flex !important;
+    visibility: visible !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 auto !important;
+    width: 76px !important;
+    height: 54px !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo img {
+    display: block !important;
+    width: 74px !important;
+    height: 54px !important;
+    object-fit: contain !important;
+  }
+
+  /* Remove only the GENMERCH label directly beneath the cart image. */
+  #customerAuthOverlay .customer-auth-eyebrow {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Keep the Welcome to GENMERCH heading. */
+  #customerAuthOverlay .customer-auth-head h2 {
+    display: block !important;
+    margin: 0 !important;
+    font-size: clamp(1.03rem, 4.2vw, 1.18rem) !important;
+    line-height: 1.18 !important;
+    text-align: center !important;
+  }
+
+  /* Remove only the requested account-instruction subtitle. */
+  #customerAuthOverlay .customer-auth-head p {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Keep the close control available in the top-right corner. */
+  #customerAuthOverlay .customer-auth-close {
+    position: absolute !important;
+    z-index: 3 !important;
+    top: 8px !important;
+    right: 8px !important;
+    display: grid !important;
+    flex: 0 0 30px !important;
+    place-items: center !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+@media screen and (max-width: 360px) {
+  #customerAuthOverlay .customer-auth-head {
+    min-height: 124px !important;
+    padding: 9px 38px 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo {
+    width: 70px !important;
+    height: 49px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo img {
+    width: 68px !important;
+    height: 49px !important;
+  }
+}
+
+
+/* Center the complete mobile sign-in tile with clear space below. */
+@media screen and (max-width: 767px) {
+  #customerAuthOverlay.customer-auth-overlay.open {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    --gm-auth-safe-top: max(12px, env(safe-area-inset-top, 0px));
+    --gm-auth-safe-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+    padding: var(--gm-auth-safe-top) 10px var(--gm-auth-safe-bottom) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 1 auto !important;
+    flex-direction: column !important;
+    align-self: center !important;
+    width: min(100%, 440px) !important;
+    max-width: calc(100vw - 20px) !important;
+    height: auto !important;
+    max-height: calc(100vh - 48px) !important;
+    max-height: calc(100dvh - var(--gm-auth-safe-top) - var(--gm-auth-safe-bottom)) !important;
+    min-height: 0 !important;
+    margin: auto !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    transform: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head,
+  #customerAuthOverlay .customer-auth-body {
+    flex: 0 0 auto !important;
+  }
+
+  #customerAuthOverlay .customer-auth-body {
+    padding-bottom: 18px !important;
+  }
+}
+
+@media screen and (max-height: 720px) and (max-width: 767px) {
+  #customerAuthOverlay.customer-auth-overlay.open {
+    --gm-auth-safe-top: max(8px, env(safe-area-inset-top, 0px));
+    --gm-auth-safe-bottom: max(18px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+  }
+
+  #customerAuthOverlay .customer-auth-modal {
+    max-height: calc(100dvh - var(--gm-auth-safe-top) - var(--gm-auth-safe-bottom)) !important;
+  }
+}
