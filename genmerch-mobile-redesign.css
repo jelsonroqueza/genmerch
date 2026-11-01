@@ -1614,3 +1614,110 @@
     margin-bottom: 8px !important;
   }
 }
+
+
+/* Correction: keep the cart logo and Welcome heading; hide only the two requested texts. */
+@media screen and (max-width: 767px) {
+  /* Restore the cart image and the Welcome heading in the sign-in dialog. */
+  #customerAuthOverlay .customer-auth-head {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 132px !important;
+    height: auto !important;
+    padding: 11px 42px 12px !important;
+    overflow: hidden !important;
+    text-align: center !important;
+  }
+
+  #customerAuthOverlay .customer-auth-head-brand {
+    position: relative !important;
+    z-index: 1 !important;
+    display: flex !important;
+    visibility: visible !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo {
+    display: grid !important;
+    place-items: center !important;
+    flex: 0 0 auto !important;
+    width: 76px !important;
+    height: 54px !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo img {
+    display: block !important;
+    width: 74px !important;
+    height: 54px !important;
+    object-fit: contain !important;
+  }
+
+  /* Remove only the GENMERCH label directly beneath the cart image. */
+  #customerAuthOverlay .customer-auth-eyebrow {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Keep the Welcome to GENMERCH heading. */
+  #customerAuthOverlay .customer-auth-head h2 {
+    display: block !important;
+    margin: 0 !important;
+    font-size: clamp(1.03rem, 4.2vw, 1.18rem) !important;
+    line-height: 1.18 !important;
+    text-align: center !important;
+  }
+
+  /* Remove only the requested account-instruction subtitle. */
+  #customerAuthOverlay .customer-auth-head p {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Keep the close control available in the top-right corner. */
+  #customerAuthOverlay .customer-auth-close {
+    position: absolute !important;
+    z-index: 3 !important;
+    top: 8px !important;
+    right: 8px !important;
+    display: grid !important;
+    flex: 0 0 30px !important;
+    place-items: center !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+@media screen and (max-width: 360px) {
+  #customerAuthOverlay .customer-auth-head {
+    min-height: 124px !important;
+    padding: 9px 38px 10px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo {
+    width: 70px !important;
+    height: 49px !important;
+  }
+
+  #customerAuthOverlay .customer-auth-brand-logo img {
+    width: 68px !important;
+    height: 49px !important;
+  }
+}
