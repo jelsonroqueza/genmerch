@@ -441,7 +441,7 @@
     width: min(78%, 276px) !important;
     min-width: 0 !important;
     min-height: 46px !important;
-    margin: -34px auto 10px !important;
+    margin: -26px auto 10px !important;
     padding: 11px 22px !important;
     border: 2px solid rgba(255, 255, 255, .68) !important;
     border-radius: 999px !important;
@@ -462,7 +462,7 @@
     grid-area: deals !important;
     width: min(100%, 310px) !important;
     max-width: 100% !important;
-    margin: 0 auto 8px !important;
+    margin: -4px auto 10px !important;
   }
 
   /* A mobile-only clone reuses the four live benefit items already in the hero. */
