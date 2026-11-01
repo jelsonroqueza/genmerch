@@ -3429,28 +3429,49 @@ html.customer-auth-scroll-locked body {
 @media screen and (max-width: 767px) {
   .gm-mobile-menu-social {
     display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    width: 100%;
+    margin-top: auto;
+    padding: 15px 12px 17px;
+  }
+
+  .gm-mobile-menu-social-label {
+    margin: 0;
+    color: #b92b35;
+    font-family: Lexend, Arial, sans-serif;
+    font-size: .88rem;
+    font-style: italic;
+    font-weight: 750;
+    letter-spacing: .015em;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .gm-mobile-menu-social-icons {
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 22px;
     width: 100%;
-    margin-top: auto;
-    padding: 20px 12px 17px;
-    flex: 0 0 auto;
   }
 
   .gm-mobile-menu-social-link {
     position: relative;
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
-    flex: 0 0 48px;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
     overflow: hidden;
     border: 1px solid rgba(0, 0, 0, .12);
     border-radius: 50%;
     box-shadow:
-      0 4px 0 rgba(0, 0, 0, .12),
-      0 7px 13px rgba(35, 25, 20, .13),
+      0 3px 0 rgba(0, 0, 0, .11),
+      0 6px 12px rgba(35, 25, 20, .12),
       inset 0 1px 1px rgba(255, 255, 255, .62);
     transition: transform 160ms ease, box-shadow 160ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -3469,8 +3490,8 @@ html.customer-auth-scroll-locked body {
     position: relative;
     z-index: 1;
     display: block;
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
     fill: #fff;
   }
 
@@ -3512,12 +3533,17 @@ html.customer-auth-scroll-locked body {
 
 @media (max-width: 360px) {
   .gm-mobile-menu-social {
+    gap: 11px;
+  }
+
+  .gm-mobile-menu-social-icons {
     gap: 18px;
   }
+
   .gm-mobile-menu-social-link {
-    width: 44px;
-    height: 44px;
-    flex-basis: 44px;
+    width: 43px;
+    height: 43px;
+    flex-basis: 43px;
   }
 }
 
