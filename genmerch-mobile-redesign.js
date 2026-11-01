@@ -163,7 +163,66 @@
     const close = byId('gmMobileMenuClose');
     if (!toggle || !scrim || !panel || !close) return;
 
-    let previousOverflow = '';
+    let previousBodyStyles = null;
+    let lockedScrollY = 0;
+    let touchStartY = 0;
+
+    function lockStorefrontScroll() {
+      lockedScrollY = window.scrollY || window.pageYOffset || 0;
+      previousBodyStyles = {
+        position: document.body.style.position,
+        top: document.body.style.top,
+        left: document.body.style.left,
+        right: document.body.style.right,
+        width: document.body.style.width,
+        overflow: document.body.style.overflow
+      };
+      document.documentElement.classList.add('gm-mobile-menu-scroll-locked');
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + lockedScrollY + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function unlockStorefrontScroll() {
+      if (!previousBodyStyles) return;
+      document.documentElement.classList.remove('gm-mobile-menu-scroll-locked');
+      document.body.style.position = previousBodyStyles.position;
+      document.body.style.top = previousBodyStyles.top;
+      document.body.style.left = previousBodyStyles.left;
+      document.body.style.right = previousBodyStyles.right;
+      document.body.style.width = previousBodyStyles.width;
+      document.body.style.overflow = previousBodyStyles.overflow;
+      previousBodyStyles = null;
+      window.scrollTo(0, lockedScrollY);
+    }
+
+    function preventBackgroundTouchScroll(event) {
+      if (scrim.hidden) return;
+      if (!panel.contains(event.target)) {
+        event.preventDefault();
+        return;
+      }
+      const deltaY = event.touches && event.touches.length ? event.touches[0].clientY - touchStartY : 0;
+      const canScroll = panel.scrollHeight > panel.clientHeight + 1;
+      const atTop = panel.scrollTop <= 0;
+      const atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+      if (!canScroll || (atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
+        event.preventDefault();
+      }
+    }
+
+    panel.addEventListener('touchstart', function (event) {
+      if (event.touches && event.touches.length) touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    scrim.addEventListener('touchstart', function (event) {
+      if (event.touches && event.touches.length) touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    scrim.addEventListener('touchmove', preventBackgroundTouchScroll, { passive: false });
 
     function closeMenu(restoreFocus) {
       if (scrim.hidden) return;
@@ -171,18 +230,17 @@
       scrim.setAttribute('aria-hidden', 'true');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('gm-mobile-menu-open');
-      document.body.style.overflow = previousOverflow;
+      unlockStorefrontScroll();
       if (restoreFocus !== false) toggle.focus();
     }
 
     function openMenu() {
       if (!mobileMedia.matches) return;
-      previousOverflow = document.body.style.overflow || '';
+      lockStorefrontScroll();
       scrim.hidden = false;
       scrim.setAttribute('aria-hidden', 'false');
       toggle.setAttribute('aria-expanded', 'true');
       document.body.classList.add('gm-mobile-menu-open');
-      document.body.style.overflow = 'hidden';
       const firstAction = query('button:not([disabled])', panel);
       if (firstAction) firstAction.focus();
     }
