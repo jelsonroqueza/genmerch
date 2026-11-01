@@ -294,7 +294,6 @@
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
     grid-template-areas:
-      "brand"
       "tagline"
       "models"
       "cta"
