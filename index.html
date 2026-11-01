@@ -31,8 +31,10 @@
   <meta name="theme-color" content="#ee4d2d">
   <link rel="manifest" href="/manifest.json?v=20261028-1">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261101-share-1">
-  <link rel="stylesheet" href="/install-flow.css?v=20261030-1">
-  <link rel="stylesheet" href="/customer-account.css?v=20261031-membership-tiers-1">
+  <link rel="preload" as="style" href="/install-flow.css?v=20261030-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/install-flow.css?v=20261030-1"></noscript>
+  <link rel="preload" as="style" href="/customer-account.css?v=20261031-membership-tiers-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/customer-account.css?v=20261031-membership-tiers-1"></noscript>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
   
@@ -134,8 +136,10 @@
 
 
   <link rel="stylesheet" href="/genmerch-inline.css?v=20261031-speed-optimization-1">
-  <link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2">
-  <link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1">
+  <link rel="preload" as="style" href="/seller-centre-theme.css?v=20261031-product-editor-close-2" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/seller-centre-theme.css?v=20261031-product-editor-close-2"></noscript>
+  <link rel="preload" as="style" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1" fetchpriority="low" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/checkout-premium.css?v=20261031-payment-vibrance-refined-1"></noscript>
 </head>
 <body>
   <div id="genmerchInitialLoader" role="status" aria-label="Loading GENMERCH" aria-live="polite">
@@ -1462,7 +1466,7 @@
     let productOptionsExpanded = false;
     let catalogLoadState = 'loading';
     const GENMERCH_CATALOG_CACHE_KEY = 'genmerch.catalog.snapshot.v1';
-    const GENMERCH_CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
+    const GENMERCH_CATALOG_CACHE_TTL_MS = 15 * 60 * 1000;
     function restoreCatalogFromCache(){
       try{
         const raw=sessionStorage.getItem(GENMERCH_CATALOG_CACHE_KEY);
@@ -8185,7 +8189,21 @@
       $('customerRateBody').innerHTML='<div class="customer-orders-loading">Loading your delivered products…</div>';
       await loadCustomerRateCenter();
     }
+    let storeRatingSummaryIdleScheduled=false;
+    let storeRatingSummaryRequest=null;
+    function scheduleStoreRatingSummary(){
+      if(storeRatingSummaryIdleScheduled)return;
+      storeRatingSummaryIdleScheduled=true;
+      const run=()=>{loadStoreRatingSummary().catch(error=>console.warn('GENMERCH store rating summary is still syncing.',error));};
+      if(typeof window.requestIdleCallback==='function'){
+        window.requestIdleCallback(run,{timeout:4500});
+      }else{
+        window.setTimeout(run,2200);
+      }
+    }
     async function loadStoreRatingSummary(){
+      if(storeRatingSummaryRequest)return storeRatingSummaryRequest;
+      const task=(async()=>{
       const button=$('storeRatingNavButton'),value=$('storeRatingNavValue');
       if(!button||!value)return;
       value.textContent='…';
@@ -8218,6 +8236,10 @@
         button.setAttribute('aria-label','Overall GENMERCH store rating temporarily unavailable');
         button.title='Store rating is temporarily unavailable';
       }
+      })();
+      storeRatingSummaryRequest=task;
+      try{return await task;}
+      finally{if(storeRatingSummaryRequest===task)storeRatingSummaryRequest=null;}
     }
     function showStoreRatingDetails(){
       const summary=loadStoreRatingSummary.summary;
@@ -8624,8 +8646,8 @@
         renderProducts();
         updateCart();
       }
-      // Ratings are secondary content and must never keep the first storefront render waiting.
-      loadStoreRatingSummary();
+      // Ratings are secondary content. Defer the full aggregate scan until the browser is idle.
+      scheduleStoreRatingSummary();
       window.setTimeout(async function(){
         const backgroundTasks=[];
         if(hasWarmCatalog){
@@ -8647,9 +8669,8 @@
         if(session){
           syncCustomerOrdersBadgeRealtime(session);
           refreshCustomerRateBadge(session);
-          if(typeof window.loadGenmerchNotifications==='function'){
-            Promise.resolve(window.loadGenmerchNotifications()).catch(error=>console.warn('GENMERCH notifications are still syncing.',error));
-          }
+          // Notifications initialize and bind their own auth + Realtime listener.
+          // Do not issue a second full notification fetch from storefront startup.
         }
         backgroundTasks.push(syncCustomerDraftForCustomerStartup(session));
         backgroundTasks.push(syncWishlistForCustomerSession(session,false));
