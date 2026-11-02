@@ -737,13 +737,16 @@
       }
     }
     function clearSavedDraft() {
-      const confirmed = window.confirm('Clear the saved cart and all delivery details from this browser? This cannot be undone.');
+      const confirmed = window.confirm('Clear the saved cart, delivery details, and all saved form entries for every account from this browser? This cannot be undone.');
       if (!confirmed) return;
       resetDraftInMemory();
       try {
         localStorage.removeItem(GENMERCH_DRAFT_STORAGE_KEY);
+        localStorage.removeItem(GENMERCH_DRAFT_OWNER_KEY);
+        localStorage.removeItem(GENMERCH_DRAFT_UPDATED_AT_KEY);
+        if(typeof window.GENMERCH_CLEAR_ALL_FORM_DRAFTS==='function')window.GENMERCH_CLEAR_ALL_FORM_DRAFTS();
         draftStorageAvailable = true;
-        setDraftSaveStatus('Saved cart and delivery details cleared from this browser.');
+        setDraftSaveStatus('Saved cart, delivery details, and all form drafts cleared from this browser.');
       } catch (error) {
         setDraftSaveStatus('The form is cleared, but browser storage could not be cleared. Check your browser settings.', true);
       }
@@ -4049,6 +4052,7 @@
       $('partnerFormStartedAt').value=String(Date.now());
       const form=$('partnerApplicationForm');
       form.addEventListener('submit',submitPartnerApplication);
+      if(typeof window.GENMERCH_RESTORE_FORM_DRAFT==='function')window.GENMERCH_RESTORE_FORM_DRAFT(form);
       setupPartnerApplicationSteps(form);
     }
 
@@ -4061,7 +4065,11 @@
       const progress=$('partnerStepProgressBar');
       const caption=$('partnerStepCaption');
       const labels=['Contact information','Business profile','Product interests & confirmation'];
-      let currentStep=0;
+      let currentStep=Math.max(0,Math.min(panels.length-1,Number(form.dataset.gmDraftStep)||0));
+      form.addEventListener('genmerch:restore-draft-step',event=>{
+        const step=Number(event.detail&&event.detail.step);
+        if(Number.isInteger(step))showStep(step,false);
+      });
       function showStep(index,animate=true){
         currentStep=Math.max(0,Math.min(panels.length-1,index));
         panels.forEach((panel,i)=>{
@@ -4104,7 +4112,7 @@
         if(validateCurrentStep())showStep(currentStep+1);
       });
       if(back)back.addEventListener('click',()=>showStep(currentStep-1));
-      showStep(0,false);
+      showStep(currentStep,false);
     }
 
     async function submitPartnerApplication(event){
@@ -5877,6 +5885,7 @@
       const editing=mode==='edit';$('sellerProductFormTitle').textContent=editing?'Edit product':'Add a product';
       $('sellerProductFormSubtitle').textContent=editing?'Update product details and manage its gallery. Keep 1–30 photos total; each new upload must be 2 MB or smaller.':'New products save to Supabase. Upload 1–30 gallery photos; each photo must be 2 MB or smaller. Default size/color variants start at zero stock.';
       $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);$('sellerProductLocation').required=!editing;
+      $('sellerProductForm').dataset.gmDraftKey='sellerProduct:'+(editing&&sellerEditingProductId?sellerEditingProductId:'create');
     }
     function resetSellerProductForm(){
       sellerEditingProductId=null;sellerEditingProductSku='';sellerEditingVariants=[];sellerSelectedSizes=new Set();sellerEditingImages=[];$('sellerProductForm').reset();SELLER_IMAGE_INPUT_IDS.forEach((id,index)=>{$(id).value='';$('sellerImageColor'+(index+1)).value='';});sellerClearPreviewUrls();
@@ -7498,6 +7507,8 @@
       const body=$('customerRateBody');
       const image=safeCatalogImageUrl(item.image_url_snapshot||'');
       body.innerHTML='<button type="button" class="genmerch-review-photo-button" id="customerReviewBackButton">← Back to delivered products</button><form class="genmerch-review-form" id="customerReviewForm" style="margin-top:12px"><h3>Rate Your Product</h3><p>'+escapeHtml(item.product_name||'GENMERCH Product')+' · '+escapeHtml(item.color_label||'Color not specified')+' · '+escapeHtml(item.size_label||'Size not specified')+'</p>'+(image?'<img src="'+escapeHtml(image)+'" alt="" style="width:76px;height:76px;object-fit:cover;border-radius:9px">':'')+'<div class="genmerch-review-field"><label>Your rating</label><div class="genmerch-review-stars" role="group" aria-label="Choose a star rating">'+[1,2,3,4,5].map(n=>'<button type="button" class="genmerch-review-star '+(n<=5?'active':'')+'" data-review-star="'+n+'" aria-label="'+n+' star'+(n===1?'':'s')+'" aria-pressed="'+(n===5?'true':'false')+'">★</button>').join('')+'</div><div class="genmerch-review-rating-label" id="customerReviewRatingLabel">Excellent</div></div><div class="genmerch-review-field"><label for="customerReviewFeedback">Your feedback</label><textarea id="customerReviewFeedback" maxlength="2000" minlength="3" placeholder="Share your experience with this product…" required></textarea></div><div class="genmerch-review-field"><label for="customerReviewNickname">Enter your nickname</label><input id="customerReviewNickname" maxlength="40" minlength="2" placeholder="Nickname shown with your review" required></div><div class="genmerch-review-field"><label>Photos (optional, up to 3; max 2 MB each)</label><div class="genmerch-review-photo-actions"><label class="genmerch-review-photo-button" for="customerReviewCameraInput">📷 Take a Picture</label><input id="customerReviewCameraInput" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden><label class="genmerch-review-photo-button" for="customerReviewUploadInput">＋ Upload Picture(s)</label><input id="customerReviewUploadInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></div><div class="genmerch-review-photo-preview" id="customerReviewPhotoPreview"></div></div><button class="genmerch-review-submit" id="customerReviewSubmit" type="submit">Submit Review</button><div class="genmerch-review-status" id="customerReviewFormStatus" role="status" aria-live="polite" hidden></div></form>';
+      const reviewForm=$('customerReviewForm');
+      if(reviewForm)reviewForm.dataset.gmDraftKey='customerReview:'+String(item.id||item.product_id||'default');
       $('customerReviewBackButton').addEventListener('click',loadCustomerRateCenter);
       body.querySelectorAll('[data-review-star]').forEach(button=>button.addEventListener('click',()=>setCustomerReviewRating(button.dataset.reviewStar)));
       const addFiles=input=>{
@@ -7757,6 +7768,14 @@
       }
       return syncCustomerDraftForSession(session,false);
     }
+    window.GENMERCH_GET_FORM_DRAFT_SESSION = async function(){
+      const authResult=await getCustomerAuthClient().auth.getSession();
+      if(authResult.error)throw authResult.error;
+      const session=authResult.data&&authResult.data.session&&authResult.data.session.user
+        ?authResult.data.session:null;
+      customerAuthCurrentSession=session;
+      return session;
+    };
     window.GENMERCH_INITIALIZATION_PROMISE=initializeStorefront();
     if(typeof window.GENMERCH_APP_SCRIPT_READY_RESOLVE==='function'){
       window.GENMERCH_APP_SCRIPT_READY_RESOLVE(window.GENMERCH_INITIALIZATION_PROMISE);
