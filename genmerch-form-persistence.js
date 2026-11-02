@@ -337,6 +337,23 @@
         else field.value = '';
         delete field.dataset.gmDraftTouched;
       });
+      if (group.isForm) {
+        delete group.element.dataset.gmDraftExtraTouched;
+        delete group.element.dataset.gmDraftStep;
+        const stars = Array.from(group.element.querySelectorAll('[data-review-star]'));
+        stars.forEach(function (star) {
+          const active = Number(star.dataset.reviewStar) === 5;
+          star.classList.toggle('active', Number(star.dataset.reviewStar) <= 5);
+          star.setAttribute('aria-pressed', String(active));
+        });
+        const ratingLabel = group.element.querySelector('#customerReviewRatingLabel');
+        if (ratingLabel) ratingLabel.textContent = 'Excellent';
+        if (group.element.querySelector('[data-partner-step]')) {
+          group.element.dispatchEvent(new CustomEvent('genmerch:restore-draft-step', {
+            detail: { step: 0 }
+          }));
+        }
+      }
       restoredGroups.delete(group.element);
     });
   }
