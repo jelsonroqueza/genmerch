@@ -3780,3 +3780,138 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
 @media(prefers-reduced-motion:reduce){
   #gmcaOverlay .gmca-profile-photo-actions .gmca-secondary{transition:none}
 }
+
+/* Premium midnight navy bronze and champagne membership tile */
+#gmcaOverlay .gmca-membership-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  --gmca-tier-accent:#d9a16f;
+  border:1px solid color-mix(in srgb,var(--gmca-tier-accent) 72%,#f3d9ad);
+  border-radius:19px;
+  background:
+    radial-gradient(ellipse at 96% 0%,rgba(222,145,82,.23),transparent 36%),
+    radial-gradient(ellipse at 5% 100%,rgba(66,111,164,.2),transparent 43%),
+    linear-gradient(122deg,#08172d 0%,#102544 45%,#17243a 72%,#101827 100%);
+  box-shadow:
+    0 16px 34px rgba(7,19,38,.25),
+    0 0 0 1px rgba(255,255,255,.035) inset,
+    inset 0 1px 0 rgba(255,255,255,.13);
+}
+#gmcaOverlay .gmca-membership-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(145deg,transparent 46%,rgba(229,157,97,.055) 72%,rgba(239,185,124,.12) 100%),
+    radial-gradient(ellipse at 100% 100%,rgba(26,57,91,.25),transparent 40%);
+}
+#gmcaOverlay .gmca-membership-card > *{
+  position:relative;
+  z-index:1;
+}
+#gmcaOverlay .gmca-membership-level-bronze{--gmca-tier-accent:#dba16f}
+#gmcaOverlay .gmca-membership-level-silver{--gmca-tier-accent:#d5e1ed}
+#gmcaOverlay .gmca-membership-level-gold{--gmca-tier-accent:#f1ce78}
+#gmcaOverlay .gmca-membership-level-platinum{--gmca-tier-accent:#b9e3f2}
+#gmcaOverlay .gmca-membership-kicker{
+  color:#f0c18d;
+  font-size:.69rem;
+  letter-spacing:.17em;
+  text-shadow:0 1px 9px rgba(231,166,104,.22);
+}
+#gmcaOverlay .gmca-membership-level-row{gap:13px}
+#gmcaOverlay .gmca-membership-medal{
+  border:1px solid color-mix(in srgb,var(--gmca-tier-accent) 75%,#f3d8b1);
+  border-radius:17px;
+  background:
+    radial-gradient(circle at 28% 18%,rgba(255,255,255,.18),transparent 42%),
+    linear-gradient(145deg,rgba(222,163,111,.22),rgba(15,35,58,.9));
+  box-shadow:
+    0 7px 17px rgba(0,0,0,.23),
+    inset 0 1px 0 rgba(255,255,255,.23),
+    inset 0 -4px 12px rgba(0,0,0,.14);
+}
+#gmcaOverlay .gmca-membership-level-row h3{
+  color:var(--gmca-tier-accent);
+  letter-spacing:.045em;
+  text-shadow:0 2px 12px color-mix(in srgb,var(--gmca-tier-accent) 22%,transparent);
+}
+#gmcaOverlay .gmca-membership-level-row p,
+#gmcaOverlay .gmca-membership-unavailable p{color:#cbd6e4}
+#gmcaOverlay .gmca-membership-spend>span{
+  color:#d9e0e9;
+  letter-spacing:.12em;
+}
+#gmcaOverlay .gmca-membership-spend>strong{
+  color:#fff;
+  text-shadow:0 2px 13px rgba(220,173,123,.14);
+}
+#gmcaOverlay .gmca-membership-spend>small{
+  color:#b9c7d8;
+}
+#gmcaOverlay .gmca-membership-progress{
+  border-top-color:rgba(225,191,153,.23);
+}
+#gmcaOverlay .gmca-membership-progress-heading{color:#f6f7fa}
+#gmcaOverlay .gmca-membership-progress-heading b{
+  color:#f1c995;
+  text-shadow:0 1px 8px rgba(240,194,141,.2);
+}
+#gmcaOverlay .gmca-membership-track{
+  height:10px;
+  background:linear-gradient(180deg,#273a54,#17263b);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.4),0 1px 0 rgba(255,255,255,.08);
+}
+#gmcaOverlay .gmca-membership-track span{
+  background:linear-gradient(90deg,#f5d6a5 0%,#dca36d 42%,#b87545 100%);
+  box-shadow:0 0 13px rgba(225,168,111,.4),inset 0 1px 0 rgba(255,255,255,.4);
+}
+#gmcaOverlay .gmca-membership-progress>p{color:#c4d0df}
+#gmcaOverlay .gmca-membership-guide{
+  border-top-color:rgba(225,191,153,.23);
+}
+#gmcaOverlay .gmca-membership-guide>summary{color:#f6f5f2}
+#gmcaOverlay .gmca-membership-guide>summary span{
+  color:#efc28f;
+}
+#gmcaOverlay .gmca-membership-guide-content>p{color:#c5d0df}
+#gmcaOverlay .gmca-membership-tier-row{
+  border-color:rgba(221,190,157,.2);
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+#gmcaOverlay .gmca-membership-tier-row strong{color:#f8f5f0}
+#gmcaOverlay .gmca-membership-tier-row span{color:#c8d3e0}
+#gmcaOverlay .gmca-membership-tier-row-bronze{border-color:rgba(219,161,111,.48)}
+#gmcaOverlay .gmca-membership-tier-row-silver{border-color:rgba(213,225,237,.4)}
+#gmcaOverlay .gmca-membership-tier-row-gold{border-color:rgba(241,206,120,.46)}
+#gmcaOverlay .gmca-membership-tier-row-platinum{border-color:rgba(185,227,242,.43)}
+#gmcaOverlay .gmca-membership-guide-content ul{color:#c8d3e0}
+@media(max-width:760px){
+  #gmcaOverlay .gmca-membership-card{
+    gap:13px;
+    margin:12px 0;
+    padding:15px;
+    border-radius:17px;
+  }
+  #gmcaOverlay .gmca-membership-level-row{gap:12px}
+  #gmcaOverlay .gmca-membership-medal{
+    flex-basis:54px;
+    width:54px;
+    height:54px;
+  }
+  #gmcaOverlay .gmca-membership-spend>span{font-size:.66rem}
+  #gmcaOverlay .gmca-membership-guide{padding-top:12px}
+}
+@media(max-width:380px){
+  #gmcaOverlay .gmca-membership-card{padding:12px}
+  #gmcaOverlay .gmca-membership-level-row h3{font-size:1.06rem}
+  #gmcaOverlay .gmca-membership-progress-heading{font-size:.72rem}
+}
+@media(prefers-reduced-motion:reduce){
+  #gmcaOverlay .gmca-membership-track span,
+  #gmcaOverlay .gmca-membership-guide>summary span{transition:none}
+}
