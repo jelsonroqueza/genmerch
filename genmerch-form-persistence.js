@@ -295,19 +295,20 @@
     let changed = false;
     Object.keys(sourceStore.groups || {}).forEach(function (key) {
       const source = sourceStore.groups[key];
-      if (!source || !source.values || !Array.isArray(source.touchedFields) || !source.touchedFields.length) return;
+      if (!source || !source.values || (!Array.isArray(source.touchedFields) || !source.touchedFields.length) && !source.extraTouched) return;
       const target = targetStore.groups[key] || { values: {}, touchedFields: [] };
       const values = Object.assign({}, target.values || {});
-      source.touchedFields.forEach(function (fieldKey) {
+      let groupChanged = false;
+      (source.touchedFields || []).forEach(function (fieldKey) {
         if (Object.prototype.hasOwnProperty.call(source.values, fieldKey)) {
           values[fieldKey] = source.values[fieldKey];
-          changed = true;
+          groupChanged = true;
         }
       });
-      if (!changed && !source.extraTouched) return;
+      if (!groupChanged && !source.extraTouched) return;
       const merged = Object.assign({}, target, {
         values: values,
-        touchedFields: Array.from(new Set([].concat(target.touchedFields || [], source.touchedFields))),
+        touchedFields: Array.from(new Set([].concat(target.touchedFields || [], source.touchedFields || []))),
         updatedAt: Math.max(Number(target.updatedAt) || 0, Number(source.updatedAt) || Date.now())
       });
       if (source.extraTouched) {
@@ -428,8 +429,9 @@
     records.forEach(function (record) {
       record.addedNodes.forEach(function (node) {
         if (!(node instanceof Element)) return;
-        const form = node.matches('form') ? node : node.closest('form');
-        if (form) restoreWithin(form, true);
+        const isNewForm = node.matches('form');
+        const form = isNewForm ? node : node.closest('form');
+        if (form) restoreWithin(form, !isNewForm);
         restoreWithin(node, false);
       });
     });
@@ -478,6 +480,7 @@
           if (key && key.startsWith(STORAGE_PREFIX)) keys.push(key);
         }
         keys.forEach(function (key) { window.localStorage.removeItem(key); });
+        clearVisibleFields();
         dirtyGroups.clear();
         saveTimers.forEach(function (timer) { window.clearTimeout(timer); });
         saveTimers.clear();
