@@ -212,7 +212,7 @@
     const store = readStore();
     const saved = store.groups[group.key];
     if (!saved || !saved.values || typeof saved.values !== 'object') {
-      restoredGroups.set(group.element, currentScope);
+      restoredGroups.set(group.element, currentScope + '|' + group.key);
       return;
     }
     const fields = getGroupFields(group);
@@ -247,7 +247,7 @@
         if (star && star.getAttribute('aria-pressed') !== 'true') star.click();
       }
     }
-    if (!pendingSelectRestore) restoredGroups.set(group.element, currentScope);
+    if (!pendingSelectRestore) restoredGroups.set(group.element, currentScope + '|' + group.key);
   }
 
   function enumerateGroups(root) {
@@ -275,7 +275,7 @@
   function restoreWithin(root, preserveExisting) {
     if (!scopeInitialized) return;
     enumerateGroups(root).forEach(function (group) {
-      if (restoredGroups.get(group.element) === currentScope && !preserveExisting) return;
+      if (restoredGroups.get(group.element) === currentScope + '|' + group.key && !preserveExisting) return;
       restoreGroup(group, Boolean(preserveExisting));
     });
   }
@@ -314,6 +314,7 @@
   }
 
   function switchScope(session, initial) {
+    if (!scopeInitialized) initial = true;
     const nextScope = scopeForSession(session);
     if (scopeInitialized && nextScope === currentScope) return;
     const previousScope = currentScope;
@@ -381,7 +382,7 @@
       record.addedNodes.forEach(function (node) {
         if (!(node instanceof Element)) return;
         const form = node.matches('form') ? node : node.closest('form');
-        if (form) restoreWithin(form, false);
+        if (form) restoreWithin(form, true);
         restoreWithin(node, false);
       });
     });
