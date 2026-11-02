@@ -11,8 +11,8 @@
     'custName','firstName','lastName','custPhone','streetAddress','province','city',
     'barangay','postalCode','landmark','specialInstructions'
   ]);
-  const SENSITIVE_NAME = /(?:^|[_-])(password|passcode|otp|one.?time.?code|verification.?code|security.?code|token|secret|cvv|cvc|pin)(?:$|[_-])/i;
-  const SENSITIVE_ID = /(password|passcode|one.?time.?code|verification.?code|security.?code|access.?token|refresh.?token|auth.?token|secret|cvv|cvc|card.?number|credit.?card|debit.?card)/i;
+  const SENSITIVE_NAME = /(?:^|[_-])(password|passcode|otp|one.?time.?code|verification.?code|security.?code|token|secret|cvv|cvc|pin|card.?number|credit.?card|debit.?card|bank.?account|account.?number|routing.?number|expiry|expiration)(?:$|[_-])/i;
+  const SENSITIVE_ID = /(password|passcode|one.?time.?code|verification.?code|security.?code|access.?token|refresh.?token|auth.?token|secret|cvv|cvc|card.?number|credit.?card|debit.?card|bank.?account|account.?number|routing.?number)/i;
   const dirtyGroups = new Map();
   const saveTimers = new Map();
   const restoredGroups = new WeakMap();
@@ -449,6 +449,8 @@
         const isNewForm = node.matches('form');
         const form = isNewForm ? node : node.closest('form');
         if (form) restoreWithin(form, !isNewForm);
+        const container = node.matches(ROOT_SELECTOR) ? node : node.closest(ROOT_SELECTOR);
+        if (container) restoreWithin(container, true);
         restoreWithin(node, false);
       });
     });
