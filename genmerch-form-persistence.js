@@ -190,7 +190,49 @@
       extraTouched: Boolean(group.isForm && group.element.dataset.gmDraftExtraTouched === '1') || Boolean(previous.extraTouched),
       updatedAt: Date.now()
     }, getExtraFormState(group));
-    return writeStore(store);
+    const saved = writeStore(store);
+    if (saved) ensureClearControl(group);
+    return saved;
+  }
+
+  function clearGroupDraft(group, clearFields) {
+    if (!group) return false;
+    const store = readStore();
+    delete store.groups[group.key];
+    const saved = writeStore(store);
+    if (clearFields) {
+      getGroupFields(group).forEach(function (field) {
+        if (field.type === 'checkbox' || field.type === 'radio') field.checked = false;
+        else if (field.tagName === 'SELECT') field.selectedIndex = 0;
+        else field.value = '';
+        delete field.dataset.gmDraftTouched;
+      });
+    }
+    if (group.element && group.element.querySelector) {
+      const button = group.element.querySelector(':scope > .gm-form-draft-clear');
+      if (button) button.remove();
+      delete group.element.dataset.gmDraftExtraTouched;
+      delete group.element.dataset.gmDraftStep;
+    }
+    restoredGroups.delete(group.element);
+    return saved;
+  }
+
+  function ensureClearControl(group) {
+    if (!group || !group.isForm || group.element.id === 'checkoutForm') return;
+    if (!getGroupFields(group).length) return;
+    if (group.element.querySelector(':scope > .gm-form-draft-clear')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'gm-form-draft-clear';
+    button.textContent = 'Clear saved entries';
+    button.setAttribute('aria-label', 'Clear saved entries for this form');
+    button.addEventListener('click', function () {
+      if (!window.confirm('Clear the saved entries for this form? This cannot be undone.')) return;
+      flushGroup(group);
+      clearGroupDraft(group, true);
+    });
+    group.element.appendChild(button);
   }
 
   function flushGroup(group) {
@@ -243,6 +285,7 @@
     });
 
     if (group.isForm) {
+      ensureClearControl(group);
       if (Number.isInteger(saved.activeStep)) {
         group.element.dataset.gmDraftStep = String(saved.activeStep);
         group.element.dispatchEvent(new CustomEvent('genmerch:restore-draft-step', {
@@ -490,6 +533,13 @@
     window.GENMERCH_RESTORE_FORM_DRAFT = function (form) {
       if (!form) return;
       restoreWithin(form, false);
+    };
+    window.GENMERCH_CLEAR_FORM_DRAFT = function (form, clearFields) {
+      if (!form) return false;
+      const group = { element: form, key: formKey(form), isForm: true };
+      if (!group.key) return false;
+      flushGroup(group);
+      return clearGroupDraft(group, clearFields !== false);
     };
     window.GENMERCH_CLEAR_ALL_FORM_DRAFTS = function () {
       try {
