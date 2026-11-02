@@ -83,7 +83,7 @@
     const GENMERCH_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4k2dHjjZu6AD4OsV2J8eow_AlhBl_7j';
     async function fetchSupabaseTable(table, query) {
       const response = await fetch(GENMERCH_SUPABASE_URL + '/rest/v1/' + table + '?' + query, {
-        method: 'GET', mode: 'cors', credentials: 'omit',
+        method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store',
         headers: { apikey: GENMERCH_SUPABASE_PUBLISHABLE_KEY, Accept: 'application/json' }
       });
       if (!response.ok) { const details = await response.text().catch(() => ''); throw new Error('Supabase ' + table + ' request failed (' + response.status + '): ' + details.slice(0,180)); }
@@ -2393,12 +2393,78 @@
       document.getElementById('categoryFilters').scrollIntoView({behavior:'smooth',block:'nearest'});
     }
 
+    let genmerchHomeRefreshPromise = null;
+    async function refreshGenmerchHomeData(){
+      if(genmerchHomeRefreshPromise)return genmerchHomeRefreshPromise;
+      const task=(async()=>{
+        const catalogTask=(async()=>{
+          await refreshCatalogForLiveStock(false);
+          renderCategoryFilters();
+          renderProducts();
+        })();
+
+        let session=customerAuthCurrentSession;
+        try{
+          const authResult=await getCustomerAuthClient().auth.getSession();
+          if(authResult.error)throw authResult.error;
+          session=authResult.data&&authResult.data.session&&authResult.data.session.user
+            ?authResult.data.session:null;
+          customerAuthCurrentSession=session;
+        }catch(error){
+          console.warn('GENMERCH could not resolve the customer session during Home refresh.',error);
+        }
+
+        const customerTasks=[
+          catalogTask,
+          syncWishlistForCustomerSession(session,true),
+          refreshCustomerOrdersBadge(session),
+          refreshCustomerRateBadge(session)
+        ];
+        if(typeof window.loadGenmerchNotifications==='function'){
+          customerTasks.push(window.loadGenmerchNotifications());
+        }
+        if(typeof window.genmerchReloadCustomerAccount==='function'){
+          customerTasks.push(window.genmerchReloadCustomerAccount({silent:true}));
+        }
+
+        const results=await Promise.allSettled(customerTasks);
+        results.forEach((result,index)=>{
+          if(result.status==='rejected'){
+            console.warn('GENMERCH Home refresh task '+(index+1)+' could not complete.',result.reason);
+          }
+        });
+        return results.every(result=>result.status==='fulfilled');
+      })();
+      genmerchHomeRefreshPromise=task;
+      try{return await task;}
+      finally{if(genmerchHomeRefreshPromise===task)genmerchHomeRefreshPromise=null;}
+    }
+
+    function refreshGenmerchCatalogOnResume(){
+      if(document.visibilityState!=='visible'||!navigator.onLine)return;
+      refreshCatalogForLiveStock(false).then(()=>{
+        renderCategoryFilters();
+        renderProducts();
+      }).catch(error=>{
+        console.warn('GENMERCH catalog refresh after browser resume failed; the last available catalog remains visible.',error);
+      });
+      if(typeof window.loadGenmerchNotifications==='function'){
+        Promise.resolve(window.loadGenmerchNotifications()).catch(error=>
+          console.warn('GENMERCH notifications refresh after browser resume failed.',error)
+        );
+      }
+    }
+
     function resetCatalog(){
       currentCategory='All';
       $('searchInput').value='';
+      if(typeof closeCategoryPicker==='function')closeCategoryPicker();
       renderCategoryFilters();
       renderProducts();
       window.scrollTo({top:0,behavior:'smooth'});
+      refreshGenmerchHomeData().catch(error=>
+        console.warn('GENMERCH Home refresh could not complete; the current storefront remains available.',error)
+      );
     }
 
     let categoryPickerOverlay = null;
@@ -7702,6 +7768,7 @@
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') saveDraftState();
       else{
+        refreshGenmerchCatalogOnResume();
         syncWishlistForCustomerSession(undefined,true);
         syncCustomerDraftForSession(undefined,true);
         syncCustomerOrdersBadgeRealtime(customerAuthCurrentSession);
