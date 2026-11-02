@@ -168,7 +168,7 @@
   }
 
   function saveGroup(group) {
-    if (!group || !group.element || !group.element.isConnected) return false;
+    if (!scopeInitialized || !group || !group.element || !group.element.isConnected) return false;
     const fields = getGroupFields(group);
     if (!fields.length) return false;
     const keys = fieldKeys(fields);
@@ -217,6 +217,7 @@
     }
     const fields = getGroupFields(group);
     const keys = fieldKeys(fields);
+    let pendingSelectRestore = false;
     fields.forEach(function (field, index) {
       const savedValue = saved.values[keys[index]];
       if (!savedValue || field.dataset.gmDraftTouched === '1') return;
@@ -227,7 +228,10 @@
           : String(field.value || '') !== '';
         if (hasExistingValue) return;
       }
-      applyFieldValue(field, savedValue);
+      const applied = applyFieldValue(field, savedValue);
+      if (!applied && field.tagName === 'SELECT' && savedValue.kind === 'value' && String(savedValue.value || '') !== '') {
+        pendingSelectRestore = true;
+      }
     });
 
     if (group.isForm) {
@@ -243,7 +247,7 @@
         if (star && star.getAttribute('aria-pressed') !== 'true') star.click();
       }
     }
-    restoredGroups.set(group.element, currentScope);
+    if (!pendingSelectRestore) restoredGroups.set(group.element, currentScope);
   }
 
   function enumerateGroups(root) {
@@ -269,6 +273,7 @@
   }
 
   function restoreWithin(root, preserveExisting) {
+    if (!scopeInitialized) return;
     enumerateGroups(root).forEach(function (group) {
       if (restoredGroups.get(group.element) === currentScope && !preserveExisting) return;
       restoreGroup(group, Boolean(preserveExisting));
@@ -299,6 +304,15 @@
     return userId ? 'user:' + userId : 'guest';
   }
 
+  function saveTouchedGroups() {
+    enumerateGroups(document).forEach(function (group) {
+      const hasTouchedField = getGroupFields(group).some(function (field) {
+        return field.dataset.gmDraftTouched === '1';
+      });
+      if (hasTouchedField) saveGroup(group);
+    });
+  }
+
   function switchScope(session, initial) {
     const nextScope = scopeForSession(session);
     if (scopeInitialized && nextScope === currentScope) return;
@@ -315,6 +329,7 @@
       clearVisibleFields();
     }
     restoreWithin(document, !initial);
+    if (initial) saveTouchedGroups();
   }
 
   function onFieldEdit(event) {
@@ -331,8 +346,9 @@
 
     const star = target.closest('[data-review-star]');
     if (star) {
-      const group = groupForField(star.closest('form') ? star.closest('form').querySelector('textarea,input,select') : null);
-      if (group) scheduleSave(group, 0);
+      const starForm = star.closest('form');
+      const starKey = starForm ? formKey(starForm) : '';
+      if (starForm && starKey) scheduleSave({ element: starForm, key: starKey, isForm: true }, 0);
     }
 
     const form = target.closest('form');
@@ -400,7 +416,6 @@
 
     observer = new MutationObserver(onMutations);
     if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-    restoreWithin(document, false);
     initializeScope();
 
     window.GENMERCH_RESTORE_FORM_DRAFT = function (form) {
