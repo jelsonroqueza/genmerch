@@ -20,8 +20,8 @@
   let scopeInitialized = false;
   let observer = null;
 
-  function storageKey() {
-    return STORAGE_PREFIX + encodeURIComponent(currentScope);
+  function storageKey(scope) {
+    return STORAGE_PREFIX + encodeURIComponent(scope || currentScope);
   }
 
   function isSensitiveField(field) {
@@ -126,9 +126,9 @@
     return true;
   }
 
-  function readStore() {
+  function readStore(scope) {
     try {
-      const raw = window.localStorage.getItem(storageKey());
+      const raw = window.localStorage.getItem(storageKey(scope));
       if (!raw) return { version: 1, groups: {} };
       const parsed = JSON.parse(raw);
       if (!parsed || parsed.version !== 1 || typeof parsed.groups !== 'object') return { version: 1, groups: {} };
@@ -139,14 +139,14 @@
     }
   }
 
-  function writeStore(store) {
+  function writeStore(store, scope) {
     try {
       const serialized = JSON.stringify(store);
       if (serialized.length > 1800000) {
         console.warn('GENMERCH form draft storage limit reached. The latest change was not saved.');
         return false;
       }
-      window.localStorage.setItem(storageKey(), serialized);
+      window.localStorage.setItem(storageKey(scope), serialized);
       return true;
     } catch (error) {
       console.warn('GENMERCH could not save a form draft in browser storage.', error);
@@ -178,8 +178,15 @@
     });
     const store = readStore();
     const previous = store.groups[group.key] || {};
+    const touchedKeys = fields.reduce(function (list, field, index) {
+      if (field.dataset.gmDraftTouched === '1') list.push(keys[index]);
+      return list;
+    }, []);
+    const mergedTouchedKeys = Array.from(new Set([].concat(previous.touchedFields || [], touchedKeys)));
     store.groups[group.key] = Object.assign({}, previous, {
       values: values,
+      touchedFields: mergedTouchedKeys,
+      extraTouched: Boolean(group.isForm && group.element.dataset.gmDraftExtraTouched === '1') || Boolean(previous.extraTouched),
       updatedAt: Date.now()
     }, getExtraFormState(group));
     return writeStore(store);
@@ -280,8 +287,36 @@
     });
   }
 
-  function saveAllVisible() {
-    enumerateGroups(document).forEach(function (group) { saveGroup(group); });
+  function mergeTouchedDrafts(sourceScope, targetScope) {
+    const sourceStore = readStore(sourceScope);
+    const targetStore = readStore(targetScope);
+    let changed = false;
+    Object.keys(sourceStore.groups || {}).forEach(function (key) {
+      const source = sourceStore.groups[key];
+      if (!source || !source.values || !Array.isArray(source.touchedFields) || !source.touchedFields.length) return;
+      const target = targetStore.groups[key] || { values: {}, touchedFields: [] };
+      const values = Object.assign({}, target.values || {});
+      source.touchedFields.forEach(function (fieldKey) {
+        if (Object.prototype.hasOwnProperty.call(source.values, fieldKey)) {
+          values[fieldKey] = source.values[fieldKey];
+          changed = true;
+        }
+      });
+      if (!changed && !source.extraTouched) return;
+      const merged = Object.assign({}, target, {
+        values: values,
+        touchedFields: Array.from(new Set([].concat(target.touchedFields || [], source.touchedFields))),
+        updatedAt: Math.max(Number(target.updatedAt) || 0, Number(source.updatedAt) || Date.now())
+      });
+      if (source.extraTouched) {
+        if (Number.isInteger(source.activeStep)) merged.activeStep = source.activeStep;
+        if (Number.isInteger(source.rating)) merged.rating = source.rating;
+        merged.extraTouched = true;
+        changed = true;
+      }
+      targetStore.groups[key] = merged;
+    });
+    if (changed) writeStore(targetStore, targetScope);
   }
 
   function flushAllDirty() {
@@ -323,8 +358,8 @@
     scopeInitialized = true;
 
     if (!initial && previousScope === 'guest' && nextScope !== 'guest') {
-      // Carry any in-progress guest form into the newly signed-in customer's private draft space.
-      saveAllVisible();
+      // Merge only fields the guest actually edited; never overwrite the customer's untouched saved fields.
+      mergeTouchedDrafts(previousScope, nextScope);
     } else if (!initial && previousScope !== 'guest' && previousScope !== nextScope) {
       // Do not expose one customer's unsaved entries to another customer on a shared browser.
       clearVisibleFields();
@@ -349,13 +384,19 @@
     if (star) {
       const starForm = star.closest('form');
       const starKey = starForm ? formKey(starForm) : '';
-      if (starForm && starKey) scheduleSave({ element: starForm, key: starKey, isForm: true }, 0);
+      if (starForm && starKey) {
+        starForm.dataset.gmDraftExtraTouched = '1';
+        scheduleSave({ element: starForm, key: starKey, isForm: true }, 0);
+      }
     }
 
     const form = target.closest('form');
     if (form && form.querySelector('[data-partner-step]')) {
       const group = { element: form, key: formKey(form), isForm: true };
-      if (group.key) scheduleSave(group, 0);
+      if (group.key) {
+        form.dataset.gmDraftExtraTouched = '1';
+        scheduleSave(group, 0);
+      }
     }
 
     const closeControl = target.closest(
