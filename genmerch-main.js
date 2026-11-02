@@ -4163,6 +4163,7 @@
         if(!data.ok)throw new Error(data.message||'We could not submit your application right now. Please try again or contact us directly.');
         status.hidden=false;status.className='partner-form-status success';
         status.textContent='Thank you! Your GENMERCH partner application was submitted successfully. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. Our team will review your details and contact you using your preferred method.';
+        if(typeof window.GENMERCH_CLEAR_FORM_DRAFT==='function')window.GENMERCH_CLEAR_FORM_DRAFT(form,false);
         form.reset();$('partnerFormStartedAt').value=String(Date.now());
       }catch(error){
         status.hidden=false;status.className='partner-form-status error';
