@@ -2464,18 +2464,64 @@
         orderedNames.map(name=>{const rows=groups.get(name)||[];return card(name,name,rows.length,rows[0],categoryIcons[name]||'🛍️');}).join('');
     }
 
+    let categoryPickerScrollY = 0;
+    let categoryPickerBodyStyles = null;
+
     function openCategoryPicker(){
-      const overlay=ensureCategoryPicker();categoryPickerPreviousFocus=document.activeElement;
-      renderCategoryPicker();overlay.classList.add('is-open');overlay.setAttribute('aria-hidden','false');
-      document.body.classList.add('gm-category-picker-open');
-      const close=overlay.querySelector('[data-category-picker-close]');if(close)window.requestAnimationFrame(()=>close.focus());
+      const overlay=ensureCategoryPicker();
+      if(overlay.classList.contains('is-open'))return;
+      categoryPickerPreviousFocus=document.activeElement;
+      renderCategoryPicker();
+
+      // Fixed-body locking prevents background scroll on iOS Safari as well as Android browsers.
+      categoryPickerScrollY=window.scrollY||window.pageYOffset||0;
+      const body=document.body;
+      categoryPickerBodyStyles={
+        position:body.style.position,
+        top:body.style.top,
+        left:body.style.left,
+        right:body.style.right,
+        width:body.style.width,
+        overflow:body.style.overflow,
+        paddingRight:body.style.paddingRight
+      };
+      const scrollbarGap=Math.max(0,window.innerWidth-document.documentElement.clientWidth);
+      body.style.position='fixed';
+      body.style.top=(-categoryPickerScrollY)+'px';
+      body.style.left='0';
+      body.style.right='0';
+      body.style.width='100%';
+      body.style.overflow='hidden';
+      if(scrollbarGap)body.style.paddingRight=scrollbarGap+'px';
+
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden','false');
+      body.classList.add('gm-category-picker-open');
+      const close=overlay.querySelector('[data-category-picker-close]');
+      if(close)window.requestAnimationFrame(()=>close.focus());
     }
     function closeCategoryPicker(){
       if(!categoryPickerOverlay||!categoryPickerOverlay.classList.contains('is-open'))return;
-      categoryPickerOverlay.classList.remove('is-open');categoryPickerOverlay.setAttribute('aria-hidden','true');
+      categoryPickerOverlay.classList.remove('is-open');
+      categoryPickerOverlay.setAttribute('aria-hidden','true');
       document.body.classList.remove('gm-category-picker-open');
+
+      const body=document.body;
+      if(categoryPickerBodyStyles){
+        body.style.position=categoryPickerBodyStyles.position;
+        body.style.top=categoryPickerBodyStyles.top;
+        body.style.left=categoryPickerBodyStyles.left;
+        body.style.right=categoryPickerBodyStyles.right;
+        body.style.width=categoryPickerBodyStyles.width;
+        body.style.overflow=categoryPickerBodyStyles.overflow;
+        body.style.paddingRight=categoryPickerBodyStyles.paddingRight;
+        categoryPickerBodyStyles=null;
+      }
+      window.scrollTo(0,categoryPickerScrollY);
+
       const target=categoryPickerPreviousFocus&&categoryPickerPreviousFocus.isConnected?categoryPickerPreviousFocus:document.querySelector('.bottom-nav [data-gm-nav="categories"]');
-      if(target&&typeof target.focus==='function')target.focus();categoryPickerPreviousFocus=null;
+      if(target&&typeof target.focus==='function')target.focus();
+      categoryPickerPreviousFocus=null;
     }
     window.addEventListener('genmerch:open-category-picker',openCategoryPicker);
 
