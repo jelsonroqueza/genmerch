@@ -1261,22 +1261,12 @@
         (state.orders.length ? '<div class="gmca-list">' + state.orders.slice(0, 3).map((order) => orderCard(order, true)).join('') + '</div>' :
           '<div class="gmca-empty gmca-orders-empty"><span class="gmca-empty-package" aria-hidden="true">▣</span><strong>No orders yet.</strong><p>Your orders will appear here after you place your first order.</p><button type="button" class="gmca-primary gmca-browse-products" id="gmcaBrowseProducts">Browse Products</button></div>') +
       '</section>' +
-      '<div class="gmca-overview-bottom">' +
-        '<section class="gmca-section-card gmca-member-card"><div class="gmca-card-title"><span class="gmca-card-icon gmca-member-icon" aria-hidden="true">●</span><div><h3>Member details</h3><p>Your personal information and account details.</p></div></div>' +
-          '<div class="gmca-member-details">' +
-            '<div class="gmca-detail-line"><span>✉ <span>Registered email</span></span><strong>' + esc(user.email || '—') + '</strong></div>' +
-            '<div class="gmca-detail-line"><span>⌕ <span>Phone number</span></span><strong>' + esc(currentPhone(user, state.profile) || 'Not added yet') + '</strong></div>' +
-            '<div class="gmca-detail-line"><span>▦ <span>Member since</span></span><strong>' + dateLabel(user.created_at) + '</strong></div>' +
-          '</div>' +
-          '<div class="gmca-member-actions"><button type="button" class="gmca-secondary" data-gmca-jump="profile">✎ Edit profile</button></div>' +
-        '</section>' +
-        '<section class="gmca-section-card gmca-rewards-card"><div class="gmca-section-heading"><div class="gmca-card-title"><span class="gmca-card-icon gmca-reward-icon" aria-hidden="true">♛</span><div><h3>Your GENMERCH Rewards</h3><p>Earn points and redeem them for discounts on eligible purchases.</p></div></div><button type="button" class="gmca-text-action" data-gmca-jump="points">View points history <span aria-hidden="true">›</span></button></div>' +
-          '<div class="gmca-rewards-summary"><div class="gmca-points-mark" aria-hidden="true">P</div><div class="gmca-rewards-balance"><span>Available points</span><strong>' + esc(points.toLocaleString('en-PH')) + '</strong><small>points</small></div>' +
-            '<ul class="gmca-rewards-facts"><li>Earn 1 point for every ₱100 of eligible merchandise spending.</li><li>Each point is worth ₱1 when redeemed at checkout.</li><li>Redeem at least 20 points, subject to checkout limits.</li></ul>' +
-          '</div>' +
-          '<div class="gmca-reward-progress"><div class="gmca-progress-heading"><strong>Progress to 100 points</strong><b>' + esc(Math.min(points, 100).toLocaleString('en-PH')) + ' / 100 points</b></div><div class="gmca-progress-track" role="progressbar" aria-label="Progress to 100 loyalty points" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + esc(progress) + '"><span style="width:' + progress + '%"></span></div><small>100 points represent up to ₱100 in eligible checkout value. Redemption limits apply.</small></div>' +
-        '</section>' +
-      '</div>';
+      '<section class="gmca-section-card gmca-rewards-card"><div class="gmca-section-heading"><div class="gmca-card-title"><span class="gmca-card-icon gmca-reward-icon" aria-hidden="true">♛</span><div><h3>Your GENMERCH Rewards</h3><p>Earn points and redeem them for discounts on eligible purchases.</p></div></div><button type="button" class="gmca-text-action" data-gmca-jump="points">View points history <span aria-hidden="true">›</span></button></div>' +
+        '<div class="gmca-rewards-summary"><div class="gmca-points-mark" aria-hidden="true">P</div><div class="gmca-rewards-balance"><span>Available points</span><strong>' + esc(points.toLocaleString('en-PH')) + '</strong><small>points</small></div>' +
+          '<ul class="gmca-rewards-facts"><li>Earn 1 point for every ₱100 of eligible merchandise spending.</li><li>Each point is worth ₱1 when redeemed at checkout.</li><li>Redeem at least 20 points, subject to checkout limits.</li></ul>' +
+        '</div>' +
+        '<div class="gmca-reward-progress"><div class="gmca-progress-heading"><strong>Progress to 100 points</strong><b>' + esc(Math.min(points, 100).toLocaleString('en-PH')) + ' / 100 points</b></div><div class="gmca-progress-track" role="progressbar" aria-label="Progress to 100 loyalty points" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + esc(progress) + '"><span style="width:' + progress + '%"></span></div><small>100 points represent up to ₱100 in eligible checkout value. Redemption limits apply.</small></div>' +
+      '</section>';
     pane.querySelectorAll('[data-gmca-jump]').forEach((button) => button.addEventListener('click', () => switchTab(button.getAttribute('data-gmca-jump'))));
     $('gmcaBrowseProducts')?.addEventListener('click', () => {
       closeAccount();
@@ -1297,6 +1287,13 @@
     const fullName = currentUserName(user, state.profile);
     const phone = currentPhone(user, state.profile);
     pane.innerHTML =
+      '<section class="gmca-section-card gmca-member-card"><div class="gmca-card-title"><span class="gmca-card-icon gmca-member-icon" aria-hidden="true">●</span><div><h3>Member details</h3><p>Your personal information and account details.</p></div></div>' +
+        '<div class="gmca-member-details">' +
+          '<div class="gmca-detail-line"><span>✉ <span>Registered email</span></span><strong>' + esc(user.email || '—') + '</strong></div>' +
+          '<div class="gmca-detail-line"><span>⌕ <span>Phone number</span></span><strong>' + esc(phone || 'Not added yet') + '</strong></div>' +
+          '<div class="gmca-detail-line"><span>▦ <span>Member since</span></span><strong>' + dateLabel(user.created_at) + '</strong></div>' +
+        '</div>' +
+      '</section>' +
       '<div class="gmca-pane-title"><div><h3>My Profile</h3><p>Update the information saved to your GENMERCH customer profile.</p></div></div>' +
       '<section class="gmca-profile-photo-card">' +
         '<span class="gmca-profile-photo-preview" id="gmcaProfileAvatar" aria-hidden="true">' + avatarMarkup(fullName || user.email || 'GM') + '</span>' +
