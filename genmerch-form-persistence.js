@@ -132,6 +132,7 @@
       if (!raw) return { version: 1, groups: {} };
       const parsed = JSON.parse(raw);
       if (!parsed || parsed.version !== 1 || typeof parsed.groups !== 'object') return { version: 1, groups: {} };
+      if ((scope || currentScope) === 'guest' && parsed.claimedBy) return { version: 1, groups: {} };
       return parsed;
     } catch (error) {
       console.warn('GENMERCH saved form drafts are unavailable in this browser.', error);
@@ -289,6 +290,7 @@
 
   function mergeTouchedDrafts(sourceScope, targetScope) {
     const sourceStore = readStore(sourceScope);
+    if (sourceStore.claimedBy && sourceStore.claimedBy !== targetScope) return;
     const targetStore = readStore(targetScope);
     let changed = false;
     Object.keys(sourceStore.groups || {}).forEach(function (key) {
@@ -316,7 +318,11 @@
       }
       targetStore.groups[key] = merged;
     });
-    if (changed) writeStore(targetStore, targetScope);
+    if (changed) {
+      sourceStore.claimedBy = targetScope;
+      writeStore(sourceStore, sourceScope);
+      writeStore(targetStore, targetScope);
+    }
   }
 
   function flushAllDirty() {
