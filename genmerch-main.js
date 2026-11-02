@@ -18,6 +18,7 @@
 
     let cart = [];
     let currentCategory = 'All';
+    let catalogCategoryOrder = [];
     let selectedPayment = 'COD';
     let toastTimer;
     let pendingSizeProductId = null;
@@ -102,6 +103,7 @@
         fetchSupabaseTable('product_images','select=id,product_id,image_url,alt_text,sort_order,is_primary,color_label&order=sort_order.asc')
       ]);
       const categoryRows=result[0], productRows=result[1], variantRows=result[2], imageRows=result[3];
+      catalogCategoryOrder = categoryRows.map(row => String(row.name || '').trim()).filter(Boolean);
       const categoryById=new Map(categoryRows.map(row=>[String(row.id),row.name||'Other']));
       const variantsByProduct=new Map(), imagesByProduct=new Map();
       variantRows.forEach(row=>{const k=String(row.product_id);if(!variantsByProduct.has(k))variantsByProduct.set(k,[]);variantsByProduct.get(k).push({id:String(row.id),sku:row.sku||'',size:String(row.size_label||'One Size'),color:String(row.color_label||''),price:row.price_override===null||row.price_override===undefined?null:Number(row.price_override),stock:Math.max(0,Math.floor(Number(row.stock_quantity)||0))});});
@@ -1321,9 +1323,8 @@
     }
 
     const categoryIcons = {
-      'T-Shirts': '👕',
-      'Shorts': '🩳',
-      'Sando': '👕'
+      'T-Shirts': '👕', 'T-Shirts & Tops': '👕', 'Shorts': '🩳', 'Pants': '👖',
+      'Caps': '🧢', 'GenMerch Premium': '✨', 'Sando': '👕', 'Other': '🛍️', 'Others': '🛍️'
     };
 
     function getProductsWithImages(){
@@ -2399,6 +2400,84 @@
       renderProducts();
       window.scrollTo({top:0,behavior:'smooth'});
     }
+
+    let categoryPickerOverlay = null;
+    let categoryPickerPreviousFocus = null;
+
+    function ensureCategoryPicker(){
+      if(categoryPickerOverlay)return categoryPickerOverlay;
+      const overlay=document.createElement('div');
+      overlay.className='gm-category-picker-overlay';
+      overlay.id='gmCategoryPickerOverlay';
+      overlay.setAttribute('aria-hidden','true');
+      overlay.innerHTML='<section class="gm-category-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="gmCategoryPickerTitle" tabindex="-1">'+
+        '<header class="gm-category-picker-header"><div class="gm-category-picker-heading"><span class="gm-category-picker-eyebrow">GENMERCH COLLECTIONS</span><h2 id="gmCategoryPickerTitle">Shop by Category</h2><p>Choose a collection to explore the available products.</p></div>'+
+        '<button class="gm-category-picker-close" type="button" data-category-picker-close aria-label="Close categories">×</button></header>'+
+        '<div class="gm-category-picker-grid" id="gmCategoryPickerGrid" aria-live="polite"></div>'+
+        '<p class="gm-category-picker-footnote">Categories and product counts update from the active GENMERCH catalog.</p></section>';
+      document.body.appendChild(overlay);
+      categoryPickerOverlay=overlay;
+      overlay.addEventListener('click',function(event){
+        if(event.target===overlay || (event.target instanceof Element && event.target.closest('[data-category-picker-close]'))){closeCategoryPicker();return;}
+        const choice=event.target instanceof Element?event.target.closest('[data-category-picker-value]'):null;
+        if(!choice)return;
+        const value=choice.getAttribute('data-category-picker-value')||'__all__';
+        currentCategory=value==='__all__'?'All':value;
+        const search=$('searchInput');if(search)search.value='';
+        renderCategoryFilters();renderProducts();closeCategoryPicker();
+        window.setTimeout(function(){const heading=$('productSectionTitle');if(heading)heading.scrollIntoView({behavior:'smooth',block:'start'});},80);
+      });
+      document.addEventListener('keydown',function(event){
+        if(event.key==='Escape' && categoryPickerOverlay&&categoryPickerOverlay.classList.contains('is-open')){event.preventDefault();closeCategoryPicker();}
+      });
+      return overlay;
+    }
+
+    function renderCategoryPicker(){
+      const overlay=ensureCategoryPicker(),grid=overlay.querySelector('#gmCategoryPickerGrid');
+      if(!grid)return;
+      const visibleProducts=getProductsWithImages(),groups=new Map();
+      visibleProducts.forEach(product=>{
+        const name=String(product.cat||'').trim();if(!name)return;
+        if(!groups.has(name))groups.set(name,[]);groups.get(name).push(product);
+      });
+      const orderedNames=Array.from(groups.keys()).sort((a,b)=>{
+        const ai=catalogCategoryOrder.findIndex(name=>name.toLowerCase()===a.toLowerCase());
+        const bi=catalogCategoryOrder.findIndex(name=>name.toLowerCase()===b.toLowerCase());
+        if(ai>=0&&bi>=0)return ai-bi;if(ai>=0)return -1;if(bi>=0)return 1;
+        return a.localeCompare(b,'en',{sensitivity:'base'});
+      });
+      function card(value,label,count,product,icon){
+        const image=product&&(product.image||(Array.isArray(product.images)?(product.images.find(item=>item&&item.url)||{}).url:''));
+        const url=image?safeCatalogImageUrl(image):'';
+        const visual=url?'<img src="'+escapeHtml(url)+'" alt="'+escapeHtml((product&&product.imageAlt)||label)+'" loading="lazy" decoding="async">':
+          '<span class="gm-category-picker-fallback" aria-hidden="true">'+escapeHtml(icon||'🛍️')+'</span>';
+        return '<button class="gm-category-picker-card" type="button" data-category-picker-value="'+escapeHtml(value)+'">'+
+          '<span class="gm-category-picker-image">'+visual+'<span class="gm-category-picker-image-shade" aria-hidden="true"></span></span>'+
+          '<span class="gm-category-picker-card-copy"><strong>'+escapeHtml(label)+'</strong><small>'+count+' '+(count===1?'product':'products')+'</small></span>'+
+          '<span class="gm-category-picker-arrow" aria-hidden="true">›</span></button>';
+      }
+      if(!visibleProducts.length){
+        grid.innerHTML='<div class="gm-category-picker-empty"><span aria-hidden="true">🛍️</span><strong>No active product categories yet</strong><p>Available collections will appear here as products are published in Seller Centre.</p></div>';return;
+      }
+      grid.innerHTML=card('__all__','All Products',visibleProducts.length,visibleProducts[0],'🛍️')+
+        orderedNames.map(name=>{const rows=groups.get(name)||[];return card(name,name,rows.length,rows[0],categoryIcons[name]||'🛍️');}).join('');
+    }
+
+    function openCategoryPicker(){
+      const overlay=ensureCategoryPicker();categoryPickerPreviousFocus=document.activeElement;
+      renderCategoryPicker();overlay.classList.add('is-open');overlay.setAttribute('aria-hidden','false');
+      document.body.classList.add('gm-category-picker-open');
+      const close=overlay.querySelector('[data-category-picker-close]');if(close)window.requestAnimationFrame(()=>close.focus());
+    }
+    function closeCategoryPicker(){
+      if(!categoryPickerOverlay||!categoryPickerOverlay.classList.contains('is-open'))return;
+      categoryPickerOverlay.classList.remove('is-open');categoryPickerOverlay.setAttribute('aria-hidden','true');
+      document.body.classList.remove('gm-category-picker-open');
+      const target=categoryPickerPreviousFocus&&categoryPickerPreviousFocus.isConnected?categoryPickerPreviousFocus:document.querySelector('.bottom-nav [data-gm-nav="categories"]');
+      if(target&&typeof target.focus==='function')target.focus();categoryPickerPreviousFocus=null;
+    }
+    window.addEventListener('genmerch:open-category-picker',openCategoryPicker);
 
     function renderProducts(){
       const query=normalizeCatalogSearchText($('searchInput').value);

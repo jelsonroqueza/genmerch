@@ -25,10 +25,8 @@
   }
 
   function scrollToCategories() {
-    const categories = byId('categoryFilters');
-    if (!categories) return;
-    categories.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setActiveNav('categories');
+    window.dispatchEvent(new CustomEvent('genmerch:open-category-picker'));
   }
 
   function syncMobileSearchPlacement() {
