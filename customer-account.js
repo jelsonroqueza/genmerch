@@ -1550,9 +1550,20 @@
     if (!pane) return;
     const showingReviews = state.activityTab === 'reviews';
     const wishlistMarkup = state.wishlist.length
-      ? '<div class="gmca-activity-list">' + state.wishlist.map((wish) => {
+      ? '<div class="gmca-activity-list gmca-wishlist-list">' + state.wishlist.map((wish) => {
         const product = wish.product;
-        return '<article class="gmca-activity-row"><div><strong>' + esc(product ? product.name : 'Saved product') + '</strong><small>Saved ' + esc(dateLabel(wish.created_at)) + (product && product.is_active && !product.is_deleted ? ' · Available in the catalog' : ' · May no longer be available') + '</small></div><b>' + (product && product.base_price != null ? esc(php(product.base_price)) : '') + '</b></article>';
+        const availability = product && product.is_active && !product.is_deleted
+          ? ' · Available in the catalog'
+          : ' · May no longer be available';
+        const savedDetails = 'Saved ' + dateLabel(wish.created_at) + availability;
+        const price = product && product.base_price != null ? php(product.base_price) : '';
+        return '<article class="gmca-activity-row gmca-wishlist-row">' +
+          '<div class="gmca-wishlist-details">' +
+            '<strong class="gmca-wishlist-name">' + esc(product ? product.name : 'Saved product') + '</strong>' +
+            '<small class="gmca-wishlist-meta">' + esc(savedDetails) + '</small>' +
+          '</div>' +
+          (price ? '<b class="gmca-wishlist-price">' + esc(price) + '</b>' : '') +
+        '</article>';
       }).join('') + '</div>'
       : '<div class="gmca-empty gmca-empty-small"><span>♡</span><strong>No saved products yet</strong><p>Products you add to your wishlist will appear here.</p></div>';
     const reviewMarkup = state.reviews.length
