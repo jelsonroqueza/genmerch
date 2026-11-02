@@ -26,6 +26,9 @@
     navTab: 'overview',
     activityTab: 'wishlist',
     notificationBadgeObserver: null,
+    realtimeAccountChannel: null,
+    realtimeRefreshTimer: null,
+    realtimeAccountUserId: null,
     checkoutBalance: 0,
     selectedPoints: 0,
     baseCheckoutTotal: '',
@@ -449,7 +452,7 @@
 
     $('gmcaNotificationButton').addEventListener('click', () => {
       if (typeof window.toggleGenmerchNotifications === 'function') window.toggleGenmerchNotifications();
-      else showAlert('Order notifications are temporarily unavailable. Please refresh and try again.', 'warning');
+      else showAlert('Order notifications are temporarily unavailable. Please try again.', 'warning');
     });
     syncAccountNotificationBadge();
     if (typeof MutationObserver === 'function') {
@@ -691,6 +694,77 @@
   }
 
 
+  function stopAccountRealtimeSync() {
+    if (state.realtimeRefreshTimer !== null) {
+      window.clearTimeout(state.realtimeRefreshTimer);
+      state.realtimeRefreshTimer = null;
+    }
+    const channel = state.realtimeAccountChannel;
+    state.realtimeAccountChannel = null;
+    state.realtimeAccountUserId = null;
+    if (channel) {
+      try { client().removeChannel(channel); } catch (error) {
+        console.warn('GENMERCH account Realtime channel cleanup failed:', error.message || error);
+      }
+    }
+  }
+
+  function startAccountRealtimeSync(userId) {
+    const normalizedUserId = String(userId || '');
+    if (!normalizedUserId || !state.session || !state.session.user ||
+        String(state.session.user.id) !== normalizedUserId) return;
+    if (state.realtimeAccountUserId === normalizedUserId && state.realtimeAccountChannel) return;
+
+    stopAccountRealtimeSync();
+    const db = client();
+    let channel = db.channel('gmca-account-' + normalizedUserId);
+
+    const refreshFromRealtime = (payload) => {
+      if (!state.session || !state.session.user ||
+          String(state.session.user.id) !== normalizedUserId ||
+          !$('gmcaOverlay')?.classList.contains('open')) return;
+      if (state.realtimeRefreshTimer !== null) window.clearTimeout(state.realtimeRefreshTimer);
+      state.realtimeRefreshTimer = window.setTimeout(async () => {
+        state.realtimeRefreshTimer = null;
+        if (!$('gmcaOverlay')?.classList.contains('open') ||
+            !state.session || !state.session.user ||
+            String(state.session.user.id) !== normalizedUserId) return;
+        try {
+          await loadAccountData();
+          if (typeof window.loadGenmerchNotifications === 'function') {
+            await window.loadGenmerchNotifications();
+          }
+        } catch (error) {
+          console.warn('GENMERCH automatic account sync could not complete:', error.message || error);
+        }
+      }, 350);
+    };
+
+    const listen = (table, filter) => {
+      const config = { event: '*', schema: 'public', table };
+      if (filter) config.filter = filter;
+      channel = channel.on('postgres_changes', config, refreshFromRealtime);
+    };
+
+    listen('profiles', 'id=eq.' + normalizedUserId);
+    listen('orders', 'user_id=eq.' + normalizedUserId);
+    listen('customer_addresses', 'user_id=eq.' + normalizedUserId);
+    listen('customer_wishlist', 'user_id=eq.' + normalizedUserId);
+    listen('product_reviews', 'user_id=eq.' + normalizedUserId);
+    listen('customer_default_landmarks', 'user_id=eq.' + normalizedUserId);
+    listen('order_items');
+    listen('shipments');
+    listen('products');
+
+    state.realtimeAccountChannel = channel;
+    state.realtimeAccountUserId = normalizedUserId;
+    channel.subscribe((status) => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.warn('GENMERCH customer account Realtime status:', status);
+      }
+    });
+  }
+
   async function openAccount(restoreSavedTab) {
     ensureModal();
     if (state.openingPromise) return state.openingPromise;
@@ -734,6 +808,7 @@
         state.session = session;
         accountPanelStorageSet(ACCOUNT_PANEL_OPEN_KEY, '1');
         const userId = String(session.user.id);
+        startAccountRealtimeSync(userId);
         const hasWarmAccount = state.accountLoadedUserId === userId;
         if (hasWarmAccount) {
           $('gmcaLoading').hidden = true;
@@ -750,7 +825,7 @@
           overlay.classList.add('open');
           overlay.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
-          showAlert(error.message || 'Unable to load your GENMERCH account. Please refresh and try again.', 'error');
+          showAlert(error.message || 'Unable to load your GENMERCH account. Please try again.', 'error');
           $('gmcaLoading').hidden = true;
         }
       }
@@ -765,6 +840,7 @@
   }
 
   function closeAccount() {
+    stopAccountRealtimeSync();
     const overlay = $('gmcaOverlay');
     if (!overlay) return;
     overlay.classList.remove('open');
@@ -947,16 +1023,16 @@
       renderCheckoutAddressPicker();
 
       if (state.accountLastLoadHadErrors) {
-        showAlert('Some account information could not be loaded. Check your connection and tap Reload to retry.', 'warning');
+        showAlert('Some account information could not be loaded. Check your connection and your account will retry automatically.', 'warning');
       }
 
-      // Wait for order items, shipment status and saved product details so Reload reports only after its supporting reads finish.
+      // Wait for order items, shipment status and saved product details so automatic sync reports only after its supporting reads finish.
       try {
         await loadAccountSupplementalData(db, userId, requestToken, orderIds, wishlistProductIds);
       } catch (error) {
         state.accountLastLoadHadErrors = true;
         console.warn('GENMERCH account detail enrichment could not finish:', error.message || error);
-        showAlert('Some order, shipment or Wishlist details could not be refreshed. Tap Reload to retry.', 'warning');
+        showAlert('Some order, shipment or Wishlist details could not be refreshed. Your account will retry automatically.', 'warning');
       }
     })();
 
@@ -1003,7 +1079,7 @@
 
       if (!silent && $('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
         if (state.accountLastLoadHadErrors) {
-          showAlert('Some records could not be refreshed. Your account remains available; tap Reload to retry.','warning');
+          showAlert('Some records could not be refreshed. Your account remains available; your account will retry automatically.','warning');
         } else {
           showAlert('✓ Account records and notifications are up to date.','success');
         }
@@ -1015,7 +1091,7 @@
     try {
       return await refreshPromise;
     } catch (error) {
-      console.error('GENMERCH account Reload failed.',error);
+      console.error('GENMERCH account automatic sync failed.',error);
       if (!silent && $('gmcaOverlay') && $('gmcaOverlay').classList.contains('open')) {
         showAlert(error && error.message ? error.message : 'Account data could not be refreshed. Please try again.','error');
       }
@@ -1053,7 +1129,7 @@
     );
     if (supplementalHadErrors) {
       state.accountLastLoadHadErrors = true;
-      showAlert('Some order, shipment or Wishlist details could not be refreshed. Tap Reload to retry.','warning');
+      showAlert('Some order, shipment or Wishlist details could not be refreshed. Your account will retry automatically.','warning');
     }
 
     let ordersUpdated = false;
@@ -1184,7 +1260,7 @@
             '<div class="gmca-detail-line"><span>⌕ <span>Phone number</span></span><strong>' + esc(currentPhone(user, state.profile) || 'Not added yet') + '</strong></div>' +
             '<div class="gmca-detail-line"><span>▦ <span>Member since</span></span><strong>' + dateLabel(user.created_at) + '</strong></div>' +
           '</div>' +
-          '<div class="gmca-member-actions"><button type="button" class="gmca-secondary" id="gmcaRefreshOverview">↻ Refresh account</button><button type="button" class="gmca-secondary" data-gmca-jump="profile">✎ Edit profile</button></div>' +
+          '<div class="gmca-member-actions"><button type="button" class="gmca-secondary" data-gmca-jump="profile">✎ Edit profile</button></div>' +
         '</section>' +
         '<section class="gmca-section-card gmca-rewards-card"><div class="gmca-section-heading"><div class="gmca-card-title"><span class="gmca-card-icon gmca-reward-icon" aria-hidden="true">♛</span><div><h3>Your GENMERCH Rewards</h3><p>Earn points and redeem them for discounts on eligible purchases.</p></div></div><button type="button" class="gmca-text-action" data-gmca-jump="points">View points history <span aria-hidden="true">›</span></button></div>' +
           '<div class="gmca-rewards-summary"><div class="gmca-points-mark" aria-hidden="true">P</div><div class="gmca-rewards-balance"><span>Available points</span><strong>' + esc(points.toLocaleString('en-PH')) + '</strong><small>points</small></div>' +
@@ -1194,7 +1270,6 @@
         '</section>' +
       '</div>';
     pane.querySelectorAll('[data-gmca-jump]').forEach((button) => button.addEventListener('click', () => switchTab(button.getAttribute('data-gmca-jump'))));
-    $('gmcaRefreshOverview')?.addEventListener('click', loadAccountData);
     $('gmcaBrowseProducts')?.addEventListener('click', () => {
       closeAccount();
       if (typeof window.resetCatalog === 'function') window.resetCatalog();
@@ -1477,7 +1552,7 @@
     const points = state.points || {};
     const history = Array.isArray(points.history) ? points.history : [];
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>GENMERCH Loyalty Points</h3><p>Points are recorded in a server-controlled ledger and tied to your signed-in customer account.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaPointsRefresh">↻ Refresh</button></div>' +
+      '<div class="gmca-pane-title"><div><h3>GENMERCH Loyalty Points</h3><p>Points are recorded in a server-controlled ledger and tied to your signed-in customer account.</p></div></div>' +
       '<div class="gmca-points-hero"><span>AVAILABLE POINTS</span><strong>' + esc(Math.max(0, Number(points.points_balance) || 0).toLocaleString('en-PH')) + '</strong><p>1 point = ₱1 discount when redeemed on an eligible order.</p></div>' +
       '<div class="gmca-metric-grid gmca-points-metrics">' +
         metricCard('LIFETIME EARNED', String(Number(points.lifetime_earned) || 0), 'earned & restored', 'points') +
@@ -1494,7 +1569,6 @@
         (history.length ? '<div class="gmca-ledger">' + history.map(ledgerRow).join('') + '</div>' :
           '<div class="gmca-empty"><span>✦</span><strong>No points transactions yet</strong><p>Eligible completed and paid orders will generate points automatically.</p></div>') +
       '</div>';
-    $('gmcaPointsRefresh').addEventListener('click', loadAccountData);
     pane.querySelectorAll('[data-gmca-jump]').forEach((button) => button.addEventListener('click', () => switchTab(button.getAttribute('data-gmca-jump'))));
   }
 
@@ -1529,12 +1603,11 @@
     const pane = document.querySelector('[data-gmca-pane="orders"]');
     if (!pane) return;
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>My Orders</h3><p>' + esc(Number(state.orderCount) || 0) + ' total order(s) linked to this account. Latest 20 shown below.</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaOrdersRefresh">↻ Refresh</button></div>' +
+      '<div class="gmca-pane-title"><div><h3>My Orders</h3><p>' + esc(Number(state.orderCount) || 0) + ' total order(s) linked to this account. Latest 20 shown below.</p></div></div>' +
       '<div class="gmca-order-summary-strip"><div><span>All orders</span><strong>' + esc(Number(state.orderCount) || 0) + '</strong></div><div><span>Delivered</span><strong>' + esc(state.orders.filter((order) => String(order.status).toLowerCase() === 'delivered').length) + '</strong></div><div><span>In progress</span><strong>' + esc(state.orders.filter((order) => ['pending','confirmed','processing','shipped','out_for_delivery'].includes(String(order.status).toLowerCase())).length) + '</strong></div><div><span>Cancelled</span><strong>' + esc(state.orders.filter((order) => ['cancelled','refunded'].includes(String(order.status).toLowerCase())).length) + '</strong></div></div>' +
       (state.orders.length ? '<div class="gmca-list">' + state.orders.map((order) => orderCard(order, false)).join('') + '</div>' :
         '<div class="gmca-empty"><span>▣</span><strong>No account orders yet</strong><p>Sign in before placing an order to keep your purchase history together here.</p></div>') +
       '<div class="gmca-pane-actions"><button type="button" class="gmca-primary" id="gmcaOpenFullTracker">Open full order tracker</button></div>';
-    $('gmcaOrdersRefresh').addEventListener('click', loadAccountData);
     $('gmcaOpenFullTracker').addEventListener('click', () => {
       closeAccount();
       if (typeof window.openCustomerOrders === 'function') window.openCustomerOrders();
@@ -1572,9 +1645,8 @@
       ).join('') + '</div>'
       : '<div class="gmca-empty gmca-empty-small"><span>★</span><strong>No reviews yet</strong><p>Your product ratings and feedback will appear here after you review a purchase.</p></div>';
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>' + (showingReviews ? 'My Reviews' : 'My Wishlist') + '</h3><p>' + (showingReviews ? state.reviews.length + ' rating(s) and feedback linked to your account.' : state.wishlist.length + ' saved product(s) in your wishlist.') + '</p></div><button type="button" class="gmca-secondary gmca-small-button" id="gmcaActivityRefresh">↻ Refresh</button></div>' +
+      '<div class="gmca-pane-title"><div><h3>' + (showingReviews ? 'My Reviews' : 'My Wishlist') + '</h3><p>' + (showingReviews ? state.reviews.length + ' rating(s) and feedback linked to your account.' : state.wishlist.length + ' saved product(s) in your wishlist.') + '</p></div></div>' +
       '<section class="gmca-section-card gmca-activity-panel">' + (showingReviews ? reviewMarkup : wishlistMarkup) + '</section>';
-    $('gmcaActivityRefresh').addEventListener('click', loadAccountData);
   }
 
 
@@ -1583,7 +1655,7 @@
     if (!pane) return;
     const rows = state.addresses || [];
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>Account Settings</h3><p>Manage saved delivery addresses and default delivery landmarks.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaManageLandmarks">Manage landmarks</button><button type="button" class="gmca-secondary gmca-small-button" id="gmcaAddressesRefresh">↻ Refresh</button></div></div>' +
+      '<div class="gmca-pane-title"><div><h3>Account Settings</h3><p>Manage saved delivery addresses and default delivery landmarks.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaManageLandmarks">Manage landmarks</button></div></div>' +
       '<details class="gmca-editor" id="gmcaAddressEditor"><summary id="gmcaAddressEditorSummary">＋ Add a saved address</summary>' +
         '<form id="gmcaAddressForm" class="gmca-form gmca-address-form">' +
           '<input id="gmcaAddressId" type="hidden">' +
@@ -1616,7 +1688,6 @@
         '</article>'
       ).join('') + '</div>' :
         '<div class="gmca-empty gmca-address-empty"><span>⌂</span><strong>No saved addresses yet</strong><p>After your first successful order, GENMERCH will save that delivery address to your address book automatically.</p></div>');
-    $('gmcaAddressesRefresh').addEventListener('click', loadAccountData);
     $('gmcaManageLandmarks').addEventListener('click', () => switchTab('landmarks'));
     $('gmcaAddressCancel').addEventListener('click', resetAddressEditor);
     $('gmcaAddressForm').addEventListener('submit', (event) => { event.preventDefault(); saveAddress(); });
@@ -2082,7 +2153,7 @@
     if (!pane) return;
     const rows = state.landmarks || [];
     pane.innerHTML =
-      '<div class="gmca-pane-title"><div><h3>Saved Delivery Landmarks</h3><p>Save frequently used directions and special delivery instructions for faster checkout.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksBack">← Account settings</button><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksRefresh">↻ Refresh</button></div></div>' +
+      '<div class="gmca-pane-title"><div><h3>Saved Delivery Landmarks</h3><p>Save frequently used directions and special delivery instructions for faster checkout.</p></div><div class="gmca-settings-actions"><button type="button" class="gmca-secondary gmca-small-button" id="gmcaLandmarksBack">← Account settings</button></div></div>' +
       '<details class="gmca-editor" id="gmcaLandmarkEditor"><summary id="gmcaLandmarkEditorSummary">＋ Add a default landmark</summary>' +
         '<form id="gmcaLandmarkForm" class="gmca-form gmca-landmark-form">' +
           '<input id="gmcaLandmarkId" type="hidden">' +
@@ -2102,7 +2173,6 @@
         '<button type="button" class="gmca-danger" data-gmca-delete-landmark="' + esc(landmark.id) + '">Delete</button></div></article>'
       ).join('') + '</div>' :
         '<div class="gmca-empty gmca-address-empty"><span>⌖</span><strong>No saved landmarks yet</strong><p>GENMERCH can save your landmark and delivery instructions after you place an order.</p></div>');
-    $('gmcaLandmarksRefresh').addEventListener('click', loadAccountData);
     $('gmcaLandmarksBack').addEventListener('click', () => switchTab('settings'));
     $('gmcaLandmarkCancel').addEventListener('click', resetLandmarkEditor);
     $('gmcaLandmarkForm').addEventListener('submit', (event) => { event.preventDefault(); saveLandmark(); });
