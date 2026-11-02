@@ -5886,6 +5886,7 @@
       $('sellerProductFormSubtitle').textContent=editing?'Update product details and manage its gallery. Keep 1–30 photos total; each new upload must be 2 MB or smaller.':'New products save to Supabase. Upload 1–30 gallery photos; each photo must be 2 MB or smaller. Default size/color variants start at zero stock.';
       $('sellerSaveProductButton').textContent=editing?'Save product changes':'＋ Add product to Supabase';$('sellerCancelEditButton').hidden=!editing;$('sellerProductForm').classList.toggle('editing',editing);$('sellerProductLocation').required=!editing;
       $('sellerProductForm').dataset.gmDraftKey='sellerProduct:'+(editing&&sellerEditingProductId?sellerEditingProductId:'create');
+      if(typeof window.GENMERCH_RESTORE_FORM_DRAFT==='function')window.GENMERCH_RESTORE_FORM_DRAFT($('sellerProductForm'));
     }
     function resetSellerProductForm(){
       sellerEditingProductId=null;sellerEditingProductSku='';sellerEditingVariants=[];sellerSelectedSizes=new Set();sellerEditingImages=[];$('sellerProductForm').reset();SELLER_IMAGE_INPUT_IDS.forEach((id,index)=>{$(id).value='';$('sellerImageColor'+(index+1)).value='';});sellerClearPreviewUrls();
