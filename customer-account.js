@@ -335,6 +335,14 @@
 
   function handleStorefrontAvatarVisibilityChange() {
     if (document.visibilityState !== 'visible') return;
+
+    const accountOverlay = $('gmcaOverlay');
+    if (accountOverlay && accountOverlay.classList.contains('open')) {
+      reloadAccountDataFromHeader({ silent: true }).catch((error) => {
+        console.warn('GENMERCH account refresh after browser resume failed:', error.message || error);
+      });
+    }
+
     const user = state.session && state.session.user;
     if (!user) return;
     if (state.avatarNeedsRefresh ||
