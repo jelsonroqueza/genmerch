@@ -4115,6 +4115,86 @@
       showStep(currentStep,false);
     }
 
+    function showPartnerApplicationCelebration(referenceId){
+      const overlayId='gmPartnerApplicationSuccessOverlay';
+      const existing=document.getElementById(overlayId);
+      if(existing)existing.remove();
+
+      if(!document.getElementById('gmPartnerApplicationSuccessStyles')){
+        const style=document.createElement('style');
+        style.id='gmPartnerApplicationSuccessStyles';
+        style.textContent=[
+          '#gmPartnerApplicationSuccessOverlay{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;box-sizing:border-box;padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom));background:rgba(25,18,17,.76);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);opacity:1;transition:opacity .18s ease}',
+          '#gmPartnerApplicationSuccessOverlay *{box-sizing:border-box}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-confetti-piece{position:absolute;top:-22px;display:block;opacity:0;animation:gmPartnerSuccessConfettiFall var(--gm-duration,3.2s) linear var(--gm-delay,0s) forwards}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-card{position:relative;z-index:2;width:min(100%,460px);max-height:calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;border:1px solid rgba(255,255,255,.92);border-radius:26px;padding:30px 28px 24px;background:linear-gradient(160deg,#fff 0%,#fffaf7 100%);box-shadow:0 30px 90px rgba(0,0,0,.4),0 8px 24px rgba(245,52,30,.13);text-align:center;opacity:0;transform:translateY(18px) scale(.94);animation:gmPartnerSuccessCardIn .48s cubic-bezier(.2,.85,.25,1) .06s forwards}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-icon{width:82px;height:82px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 32% 25%,#f0fff5 0%,#d9fbe5 58%,#b9f2cd 100%);border:1px solid #bcebc9;box-shadow:0 9px 24px rgba(34,166,89,.18),inset 0 2px 5px rgba(255,255,255,.9);animation:gmPartnerSuccessPulse 2.2s ease-in-out .6s infinite}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-icon svg{width:42px;height:42px;fill:none;stroke:#159447;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-kicker{margin:0 0 7px;color:#e63a24;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-title{margin:0;color:#30221e;font-size:clamp(24px,5vw,31px);line-height:1.15;font-weight:850;letter-spacing:-.035em}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-copy{margin:13px auto 19px;max-width:350px;color:#6d5a53;font-size:14px;line-height:1.65}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-reference{display:flex;flex-direction:column;gap:7px;margin:0 0 20px;padding:13px 15px;border:1px solid #f0d9cf;border-radius:14px;background:#fff5f0;text-align:left}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-reference-label{color:#9a766a;font-size:10px;font-weight:800;letter-spacing:.12em}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-reference-value{color:#382a25;font-size:12px;font-weight:750;line-height:1.5;overflow-wrap:anywhere;user-select:all}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-done{width:100%;min-height:48px;border:0;border-radius:13px;padding:13px 20px;background:linear-gradient(135deg,#ff452b 0%,#ed2413 100%);box-shadow:0 8px 19px rgba(237,36,19,.2);color:#fff;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-done:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(237,36,19,.28)}',
+          '#gmPartnerApplicationSuccessOverlay .gm-partner-success-footnote{margin:13px 0 0;color:#967f76;font-size:11px;line-height:1.5}',
+          '#gmPartnerApplicationSuccessOverlay.is-closing{opacity:0}',
+          '#gmPartnerApplicationSuccessOverlay.is-closing .gm-partner-success-card{transform:translateY(10px) scale(.97)}',
+          '@keyframes gmPartnerSuccessCardIn{to{opacity:1;transform:translateY(0) scale(1)}}',
+          '@keyframes gmPartnerSuccessPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}',
+          '@keyframes gmPartnerSuccessConfettiFall{0%{opacity:0;transform:translate3d(0,-18px,0) rotate(0deg)}8%{opacity:1}100%{opacity:0;transform:translate3d(var(--gm-drift,0px),110vh,0) rotate(var(--gm-spin,720deg))}}',
+          '@media(max-width:480px){#gmPartnerApplicationSuccessOverlay .gm-partner-success-card{padding:26px 21px 21px;border-radius:22px}#gmPartnerApplicationSuccessOverlay .gm-partner-success-icon{width:72px;height:72px}#gmPartnerApplicationSuccessOverlay .gm-partner-success-copy{font-size:13px}}',
+          '@media(prefers-reduced-motion:reduce){#gmPartnerApplicationSuccessOverlay,#gmPartnerApplicationSuccessOverlay *{animation:none!important;transition:none!important}#gmPartnerApplicationSuccessOverlay .gm-partner-success-card{opacity:1;transform:none}}'
+        ].join('\n');
+        document.head.appendChild(style);
+      }
+
+      const overlay=document.createElement('div');
+      overlay.id=overlayId;
+      overlay.className='gm-partner-success-overlay';
+      overlay.innerHTML='<div class="gm-partner-success-confetti" aria-hidden="true"></div><section class="gm-partner-success-card" role="dialog" aria-modal="true" aria-labelledby="gmPartnerSuccessTitle" aria-describedby="gmPartnerSuccessDescription" tabindex="-1"><div class="gm-partner-success-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m12 25 8 8 17-18"></path></svg></div><p class="gm-partner-success-kicker">GENMERCH PARTNERSHIP</p><h2 class="gm-partner-success-title" id="gmPartnerSuccessTitle">Application Submitted!</h2><p class="gm-partner-success-copy" id="gmPartnerSuccessDescription">Thank you for your interest in partnering with GENMERCH. Your application has been received successfully. Our team will review your details and contact you using your preferred method.</p><div class="gm-partner-success-reference"><span class="gm-partner-success-reference-label">REFERENCE NUMBER</span><strong class="gm-partner-success-reference-value" id="gmPartnerSuccessReference"></strong></div><button class="gm-partner-success-done" type="button">Done</button><p class="gm-partner-success-footnote">We appreciate your interest in growing with GENMERCH.</p></section>';
+      overlay.querySelector('#gmPartnerSuccessReference').textContent=String(referenceId||'GENMERCH PARTNER');
+
+      const confetti=overlay.querySelector('.gm-partner-success-confetti');
+      const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!reduceMotion){
+        const palette=['#ff3b24','#ffb52e','#22b86a','#3698ff','#a66cff','#ff6fa8','#f5d76e'];
+        for(let i=0;i<64;i++){
+          const piece=document.createElement('span');
+          piece.className='gm-partner-success-confetti-piece';
+          piece.style.left=(Math.random()*100)+'%';
+          piece.style.setProperty('--gm-drift',(Math.round(Math.random()*220-110))+'px');
+          piece.style.setProperty('--gm-delay',(Math.random()*.7).toFixed(2)+'s');
+          piece.style.setProperty('--gm-duration',(2.8+Math.random()*1.6).toFixed(2)+'s');
+          piece.style.setProperty('--gm-spin',(360+Math.round(Math.random()*900))+'deg');
+          piece.style.width=(6+Math.random()*6)+'px';
+          piece.style.height=(9+Math.random()*9)+'px';
+          piece.style.backgroundColor=palette[i%palette.length];
+          if(i%4===0)piece.style.borderRadius='50%';
+          else if(i%4===1)piece.style.borderRadius='2px';
+          confetti.appendChild(piece);
+        }
+      }
+
+      const done=overlay.querySelector('.gm-partner-success-done');
+      const handleKeydown=event=>{if(event.key==='Escape')closeCelebration();};
+      function closeCelebration(){
+        if(!overlay.isConnected)return;
+        overlay.classList.add('is-closing');
+        document.removeEventListener('keydown',handleKeydown);
+        window.setTimeout(()=>overlay.remove(),190);
+        const closeButton=$('closeNoticeButton');
+        if(closeButton)window.setTimeout(()=>closeButton.focus({preventScroll:true}),200);
+      }
+      done.addEventListener('click',closeCelebration);
+      overlay.addEventListener('click',event=>{if(event.target===overlay)closeCelebration();});
+      document.addEventListener('keydown',handleKeydown);
+      document.body.appendChild(overlay);
+      done.focus({preventScroll:true});
+    }
+
     async function submitPartnerApplication(event){
       event.preventDefault();
       const form=event.currentTarget;
@@ -4161,10 +4241,12 @@
           throw new Error('We could not submit your application right now. Please email negosyonipinoy@yahoo.com.ph or call 09750634497.');
         }
         if(!data.ok)throw new Error(data.message||'We could not submit your application right now. Please try again or contact us directly.');
+        const referenceId=String(data.reference_id||'GENMERCH PARTNER');
         status.hidden=false;status.className='partner-form-status success';
-        status.textContent='Thank you! Your GENMERCH partner application was submitted successfully. Reference: '+String(data.reference_id||'GENMERCH PARTNER')+'. Our team will review your details and contact you using your preferred method.';
+        status.textContent='Thank you! Your GENMERCH partner application was submitted successfully. Reference: '+referenceId+'. Our team will review your details and contact you using your preferred method.';
         if(typeof window.GENMERCH_CLEAR_FORM_DRAFT==='function')window.GENMERCH_CLEAR_FORM_DRAFT(form,false);
         form.reset();$('partnerFormStartedAt').value=String(Date.now());
+        showPartnerApplicationCelebration(referenceId);
       }catch(error){
         status.hidden=false;status.className='partner-form-status error';
         status.textContent=(error&&error.message?error.message:'Application submission failed.')+' You may also contact negosyonipinoy@yahoo.com.ph or 09750634497.';
