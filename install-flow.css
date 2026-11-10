@@ -2,8 +2,8 @@
 .gm-install-card{width:min(390px,100%);max-height:calc(100dvh - 40px);overflow:auto;border:1px solid #e5e7eb;border-radius:24px;background:#fff;padding:25px 23px 22px;text-align:center;box-shadow:0 26px 80px rgba(0,0,0,.3);color:#1f2937}
 .gm-install-secured{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:0 auto 17px;padding:7px 12px;border:1px solid #bbebcb;border-radius:999px;background:#effcf3;color:#166534;font-size:.78rem;font-weight:850;letter-spacing:.02em}
 .gm-install-lock{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#16803d;color:#fff;font-size:.75rem;font-weight:900}
-.gm-install-brand-mark{display:grid;place-items:center;margin:0 auto 16px;width:82px;height:82px;border-radius:23px;overflow:hidden;box-shadow:0 8px 22px rgba(238,77,45,.2)}
-.gm-install-brand-mark img{display:block;width:100%;height:100%;object-fit:cover}
+.gm-install-brand-mark{display:grid;place-items:center;margin:0 auto 16px;width:88px;height:88px;border:1px solid #dce4ee;border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 8px 22px rgba(18,31,53,.10)}
+.gm-install-brand-mark img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}
 .gm-install-card h2{margin:0 auto 10px;max-width:310px;font-size:1.28rem;line-height:1.25;font-weight:900;letter-spacing:-.025em;color:#171717}
 .gm-install-card p{margin:0 auto 20px;max-width:315px;color:#5d6470;font-size:.9rem;line-height:1.55}
 .gm-install-card .gm-install-note{margin-top:-6px;margin-bottom:18px;font-size:.8rem;color:#8a3a28}

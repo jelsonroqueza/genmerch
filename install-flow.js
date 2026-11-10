@@ -76,7 +76,7 @@
     overlay.innerHTML =
       '<section class="gm-install-card" role="dialog" aria-modal="true" aria-labelledby="gmInstallTitle" aria-describedby="gmInstallDescription">' +
         '<div class="gm-install-secured"><span class="gm-install-lock" aria-hidden="true">✓</span><span>GENMERCH App</span></div>' +
-        '<div class="gm-install-brand-mark" aria-hidden="true"><img src="/icons/genmerch-install-192.svg" alt=""></div>' +
+        '<div class="gm-install-brand-mark" aria-hidden="true"><img src="/icons/genmerch-app-192.png?v=20261111-logo-fix-1" alt=""></div>' +
         '<h2 id="gmInstallTitle">Install GENMERCH for quicker shopping</h2>' +
         '<p id="gmInstallDescription">Add GENMERCH to your Home Screen for one-tap access to the official shop. You can also continue to the website without installing.</p>' +
         '<div class="gm-install-actions">' +
