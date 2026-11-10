@@ -366,6 +366,89 @@
     }
   }
 
+
+  let wishlistPreviewOverlay = null;
+  let wishlistPreviewReturnFocus = null;
+  let wishlistPreviewPreviousBodyOverflow = '';
+  let wishlistPreviewPreviousHtmlOverflow = '';
+  let wishlistPreviewKeydownHandler = null;
+
+  function safeWishlistImageUrl(value) {
+    try {
+      const url = new URL(String(value || '').trim());
+      if (url.protocol !== 'https:' ||
+          !url.hostname.endsWith('.supabase.co') ||
+          url.hostname.split('.').length !== 3 ||
+          !url.pathname.includes('/storage/v1/object/public/product-images/')) return '';
+      return url.href;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function closeWishlistImagePreview() {
+    if (!wishlistPreviewOverlay) return;
+    if (wishlistPreviewKeydownHandler) {
+      document.removeEventListener('keydown', wishlistPreviewKeydownHandler);
+      wishlistPreviewKeydownHandler = null;
+    }
+    wishlistPreviewOverlay.remove();
+    wishlistPreviewOverlay = null;
+    document.body.style.overflow = wishlistPreviewPreviousBodyOverflow;
+    document.documentElement.style.overflow = wishlistPreviewPreviousHtmlOverflow;
+    const returnFocus = wishlistPreviewReturnFocus;
+    wishlistPreviewReturnFocus = null;
+    if (returnFocus && document.contains(returnFocus)) {
+      try { returnFocus.focus({ preventScroll: true }); } catch (_) { returnFocus.focus(); }
+    }
+  }
+
+  function openWishlistImagePreview(imageUrl, imageAlt, triggerButton) {
+    const safeUrl = safeWishlistImageUrl(imageUrl);
+    if (!safeUrl) return;
+    if (wishlistPreviewOverlay) closeWishlistImagePreview();
+
+    wishlistPreviewReturnFocus = triggerButton || document.activeElement;
+    wishlistPreviewPreviousBodyOverflow = document.body.style.overflow;
+    wishlistPreviewPreviousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    const label = String(imageAlt || 'GENMERCH product photo').trim() || 'GENMERCH product photo';
+    const overlay = document.createElement('div');
+    overlay.className = 'gmca-wishlist-image-preview';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Enlarged product photo');
+    overlay.innerHTML =
+      '<div class="gmca-wishlist-image-preview-panel">' +
+        '<div class="gmca-wishlist-image-preview-header">' +
+          '<span>Product photo</span>' +
+          '<button type="button" class="gmca-wishlist-image-preview-close" data-gmca-wishlist-preview-close aria-label="Close enlarged photo">×</button>' +
+        '</div>' +
+        '<div class="gmca-wishlist-image-preview-stage">' +
+          '<img src="' + esc(safeUrl) + '" alt="' + esc(label) + '" draggable="false" decoding="async">' +
+        '</div>' +
+        '<p class="gmca-wishlist-image-preview-caption">' + esc(label) + '</p>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+    wishlistPreviewOverlay = overlay;
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) closeWishlistImagePreview();
+    });
+    const closeButton = overlay.querySelector('[data-gmca-wishlist-preview-close]');
+    if (closeButton) closeButton.addEventListener('click', closeWishlistImagePreview);
+    wishlistPreviewKeydownHandler = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeWishlistImagePreview();
+      }
+    };
+    document.addEventListener('keydown', wishlistPreviewKeydownHandler);
+    if (closeButton) closeButton.focus({ preventScroll: true });
+  }
+
   function hideAddressBookSuggestions() {
     document.querySelectorAll('.gmca-address-suggestions').forEach((box) => {
       box.classList.remove('open');
@@ -1125,15 +1208,23 @@
     const wishlistProductsPromise = wishlistProductIds.length
       ? tryQuery(() => db.from('products').select('id,name,base_price,slug,is_active,is_deleted').in('id', wishlistProductIds), [])
       : Promise.resolve(null);
+    const wishlistImagesPromise = wishlistProductIds.length
+      ? tryQuery(() => db.from('product_images').select('id,product_id,image_url,alt_text,sort_order,is_primary').in('product_id', wishlistProductIds).order('is_primary', { ascending: false }).order('sort_order', { ascending: true }), [])
+      : Promise.resolve(null);
 
-    const [orderDetails, productResult] = await Promise.all([orderDetailsPromise, wishlistProductsPromise]);
+    const [orderDetails, productResult, wishlistImagesResult] = await Promise.all([
+      orderDetailsPromise,
+      wishlistProductsPromise,
+      wishlistImagesPromise
+    ]);
     if (requestToken !== state.accountLoadToken ||
         !state.session || !state.session.user ||
         String(state.session.user.id) !== String(userId)) return;
 
     const supplementalHadErrors = Boolean(
       (orderDetails && (orderDetails[0].error || orderDetails[1].error)) ||
-      (productResult && productResult.error)
+      (productResult && productResult.error) ||
+      (wishlistImagesResult && wishlistImagesResult.error)
     );
     if (supplementalHadErrors) {
       state.accountLastLoadHadErrors = true;
@@ -1148,12 +1239,43 @@
     }
 
     let wishlistUpdated = false;
-    if (productResult) {
+    if (productResult && !productResult.error) {
       const products = asArray(productResult);
-      state.wishlist = state.wishlist.map((wish) => ({
-        ...wish,
-        product: products.find((product) => String(product.id) === String(wish.product_id)) || null
-      }));
+      const productsById = new Map(products.map((product) => [String(product.id), product]));
+      const imagesByProductId = new Map();
+      if (wishlistImagesResult && !wishlistImagesResult.error) {
+        asArray(wishlistImagesResult).forEach((image) => {
+          const productId = String(image.product_id);
+          if (!imagesByProductId.has(productId)) imagesByProductId.set(productId, []);
+          imagesByProductId.get(productId).push(image);
+        });
+      }
+
+      state.wishlist = state.wishlist.map((wish) => {
+        const product = productsById.get(String(wish.product_id)) || null;
+        if (!product) return { ...wish, product: null };
+        const cachedProduct = wish.product || {};
+        const imageRows = imagesByProductId.get(String(product.id)) || [];
+        imageRows.sort((left, right) =>
+          Number(Boolean(right.is_primary)) - Number(Boolean(left.is_primary)) ||
+          (Number(left.sort_order) || 0) - (Number(right.sort_order) || 0)
+        );
+        const primaryImage = imageRows.find((image) => image.is_primary) || imageRows[0] || null;
+        const imagesLoaded = wishlistImagesResult && !wishlistImagesResult.error;
+        return {
+          ...wish,
+          product: {
+            ...cachedProduct,
+            ...product,
+            image_url: imagesLoaded
+              ? String(primaryImage && primaryImage.image_url || '')
+              : String(cachedProduct.image_url || ''),
+            image_alt: imagesLoaded
+              ? String(primaryImage && primaryImage.alt_text || product.name || 'GENMERCH product')
+              : String(cachedProduct.image_alt || product.name || 'GENMERCH product')
+          }
+        };
+      });
       wishlistUpdated = true;
     }
 
@@ -1635,9 +1757,15 @@
           : ' · May no longer be available';
         const savedDetails = 'Saved ' + dateLabel(wish.created_at) + availability;
         const price = product && product.base_price != null ? php(product.base_price) : '';
+        const productName = product ? String(product.name || 'Saved product') : 'Saved product';
+        const imageUrl = product ? safeWishlistImageUrl(product.image_url) : '';
+        const photoMarkup = imageUrl
+          ? '<button type="button" class="gmca-wishlist-photo-button" data-gmca-wishlist-image data-image-url="' + esc(imageUrl) + '" data-image-alt="' + esc(product.image_alt || productName) + '" aria-label="View larger photo of ' + esc(productName) + '" title="Tap to enlarge photo"><img src="' + esc(imageUrl) + '" alt="' + esc(product.image_alt || productName) + '" loading="lazy" decoding="async" draggable="false"><span class="gmca-wishlist-photo-zoom" aria-hidden="true">⌕</span></button>'
+          : '<div class="gmca-wishlist-photo-placeholder" aria-hidden="true">🛍️</div>';
         return '<article class="gmca-activity-row gmca-wishlist-row">' +
+          photoMarkup +
           '<div class="gmca-wishlist-details">' +
-            '<strong class="gmca-wishlist-name">' + esc(product ? product.name : 'Saved product') + '</strong>' +
+            '<strong class="gmca-wishlist-name">' + esc(productName) + '</strong>' +
             '<small class="gmca-wishlist-meta">' + esc(savedDetails) + '</small>' +
           '</div>' +
           (price ? '<b class="gmca-wishlist-price">' + esc(price) + '</b>' : '') +
@@ -1652,6 +1780,18 @@
     pane.innerHTML =
       '<div class="gmca-pane-title"><div><h3>' + (showingReviews ? 'My Reviews' : 'My Wishlist') + '</h3><p>' + (showingReviews ? state.reviews.length + ' rating(s) and feedback linked to your account.' : state.wishlist.length + ' saved product(s) in your wishlist.') + '</p></div></div>' +
       '<section class="gmca-section-card gmca-activity-panel">' + (showingReviews ? reviewMarkup : wishlistMarkup) + '</section>';
+
+    if (!showingReviews) {
+      pane.querySelectorAll('[data-gmca-wishlist-image]').forEach((button) => {
+        button.addEventListener('click', () => {
+          openWishlistImagePreview(
+            button.getAttribute('data-image-url'),
+            button.getAttribute('data-image-alt'),
+            button
+          );
+        });
+      });
+    }
   }
 
 

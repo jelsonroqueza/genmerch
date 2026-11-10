@@ -3915,3 +3915,196 @@ body .site-header .main-header .nav .header-actions > #customerAccountButton.gmc
   #gmcaOverlay .gmca-membership-track span,
   #gmcaOverlay .gmca-membership-guide>summary span{transition:none}
 }
+
+
+/* GENMERCH customer Wishlist photos and accessible enlarged preview. */
+#gmcaOverlay .gmca-wishlist-row {
+  grid-template-columns: 76px minmax(0, 1fr) max-content !important;
+  align-items: center !important;
+  column-gap: clamp(12px, 2.2vw, 20px) !important;
+}
+#gmcaOverlay .gmca-wishlist-photo-button,
+#gmcaOverlay .gmca-wishlist-photo-placeholder {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 76px;
+  width: 76px;
+  height: 80px;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid #dce4ef;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #ffffff, #f0f4f9);
+}
+#gmcaOverlay .gmca-wishlist-photo-button {
+  cursor: zoom-in;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+#gmcaOverlay .gmca-wishlist-photo-button:hover,
+#gmcaOverlay .gmca-wishlist-photo-button:focus-visible {
+  border-color: #f26a32;
+  box-shadow: 0 5px 16px rgba(242, 106, 50, .16);
+  outline: none;
+  transform: translateY(-1px);
+}
+#gmcaOverlay .gmca-wishlist-photo-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+#gmcaOverlay .gmca-wishlist-photo-zoom {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 50%;
+  background: rgba(20, 30, 48, .78);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+}
+#gmcaOverlay .gmca-wishlist-photo-placeholder {
+  color: #8090a6;
+  font-size: 26px;
+}
+#gmcaOverlay .gmca-wishlist-details {
+  min-width: 0;
+}
+.gmca-wishlist-image-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 14050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: rgba(8, 13, 24, .88);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+.gmca-wishlist-image-preview-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 18px;
+  background: #fff;
+  color: #19243a;
+  box-shadow: 0 28px 80px rgba(0,0,0,.35);
+}
+.gmca-wishlist-image-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 8px 12px 8px 18px;
+  border-bottom: 1px solid #e8edf4;
+  font-weight: 800;
+}
+.gmca-wishlist-image-preview-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d9e1ec;
+  border-radius: 12px;
+  background: #f7f9fc;
+  color: #27354b;
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+}
+.gmca-wishlist-image-preview-close:focus-visible {
+  outline: 3px solid rgba(242,106,50,.4);
+  outline-offset: 2px;
+}
+.gmca-wishlist-image-preview-stage {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  max-height: calc(100dvh - 150px);
+  padding: 16px;
+  overflow: auto;
+  background: #f2f5f9;
+}
+.gmca-wishlist-image-preview-stage img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 220px);
+  object-fit: contain;
+  object-position: center;
+  border-radius: 8px;
+}
+.gmca-wishlist-image-preview-caption {
+  margin: 0;
+  padding: 12px 16px 15px;
+  color: #5f6f86;
+  font-size: .9rem;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  #gmcaOverlay .gmca-wishlist-row {
+    grid-template-columns: 64px minmax(0, 1fr) max-content !important;
+    column-gap: 11px !important;
+  }
+  #gmcaOverlay .gmca-wishlist-photo-button,
+  #gmcaOverlay .gmca-wishlist-photo-placeholder {
+    flex-basis: 64px;
+    width: 64px;
+    height: 70px;
+    border-radius: 11px;
+  }
+  .gmca-wishlist-image-preview {
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+  .gmca-wishlist-image-preview-panel { border-radius: 14px; }
+  .gmca-wishlist-image-preview-stage {
+    min-height: 130px;
+    padding: 10px;
+  }
+  .gmca-wishlist-image-preview-stage img {
+    max-height: calc(100dvh - 170px);
+  }
+}
+@media (max-width: 380px) {
+  #gmcaOverlay .gmca-wishlist-row {
+    grid-template-columns: 56px minmax(0, 1fr) max-content !important;
+    column-gap: 8px !important;
+  }
+  #gmcaOverlay .gmca-wishlist-photo-button,
+  #gmcaOverlay .gmca-wishlist-photo-placeholder {
+    flex-basis: 56px;
+    width: 56px;
+    height: 62px;
+  }
+  #gmcaOverlay .gmca-wishlist-photo-zoom {
+    right: 3px;
+    bottom: 3px;
+    width: 19px;
+    height: 19px;
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #gmcaOverlay .gmca-wishlist-photo-button { transition: none; }
+}
